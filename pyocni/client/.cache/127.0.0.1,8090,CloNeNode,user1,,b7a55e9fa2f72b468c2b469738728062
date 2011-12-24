@@ -1,0 +1,8 @@
+status: 200
+content-length: 64
+content-location: http://127.0.0.1:8090/CloNeNode/user1/
+server: ocni-server/1.1 (linux) OCNI/1.1
+date: Mon, 12 Dec 2011 11:31:55 GMT
+content-type: application:json:occi; charset=UTF-8
+
+["/CloNeNode/user1/CloNeNode20", "/CloNeNode/user1/CloNeNode10"]

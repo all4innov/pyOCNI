@@ -1,0 +1,52 @@
+status: 200
+content-length: 1357
+content-location: http://127.0.0.1:8090/CloNeNode/user1/CloNeNode20
+server: ocni-server/1.1 (linux) OCNI/1.1
+date: Mon, 12 Dec 2011 11:31:55 GMT
+content-type: application:json:occi; charset=UTF-8
+
+{
+    "kind": {
+        "term": "CloNeNode",
+        "scheme": "http://schemas.ogf.org/occi/ocni",
+        "class": "kind",
+        "title": "Clone Node resource"
+    },
+    "occi.core.title": "CloNeNode20",
+    "links": [],
+    "occi.core.summary": "CloNeNode with openflow mixin created by Houssem",
+    "mixins": [
+        {
+            "term": "OpenFlowCloNeNode",
+            "scheme": "http://schemas.ogf.org/occi/ocni",
+            "class": "mixin",
+            "title": "OpenFlow CloNeNode mixin"
+        }
+    ],
+    "location": "/CloNeNode/user1/CloNeNode20",
+    "attributes": {
+        "ocni.clonenode.location": "EU",
+        "ocni.openflowclonenode.of_controller_port": "6633",
+        "ocni.openflowclonenode.of_controller": [
+            "192.168.10.2",
+            "192.168.10.2"
+        ],
+        "ocni.clonenode.state": "active",
+        "ocni.clonenode.availability": [
+            {
+                "ocni_availability_end": "12:30",
+                "ocni_availability_start": "08:00"
+            },
+            {
+                "ocni_availability_end": "18:00",
+                "ocni_availability_start": "14:00"
+            }
+        ],
+        "ocni.openflowclonenode.datapath_id": "0x004E46324304",
+        "ocni.openflowclonenode.ports": [
+            "6632",
+            "245"
+        ]
+    },
+    "occi.core.id": "CloNeNode20"
+}
