@@ -1,0 +1,11 @@
+config
+configobj
+logging
+ordereddict
+jsonpickle
+routes
+webob
+pesto
+eventlet
+sphinx
+ZODB3
