@@ -1,4 +1,4 @@
-pyocni Readme
+pyocni README
 -------------
 
 Copyright (C) Houssem Medhioub <houssem.medhioub@it-sudparis.eu>
@@ -70,6 +70,7 @@ python start.py
 -----------------------------------------------------------------------------
 Retrieval of all registered Kinds and Mixins:
 curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/-/
+__________________________________________________________________________________________________________________
 
 Creation of Resource instance (compute)
 curl -X POST -d@post_compute.json -H 'content-type: application/json:occi' -v http://localhost:8090/compute/
@@ -85,6 +86,7 @@ curl -X POST -d@post_clonenode_openflow.json -H 'content-type: application/json:
 
 Creation of Resource instance (CloNeLink) with l3vpn Mixin
 curl -X POST -d@post_clonelink_l3vpn.json -H 'content-type: application/json:occi' -v http://localhost:8090/CloNeLink/
+__________________________________________________________________________________________________________________
 
 Retrieval of Resource instance (Compute)
 curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/compute/user1/compute1
@@ -97,7 +99,14 @@ curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/CloNeLin
 
 Retrieval of all resource instance below a path
 curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/CloNeNode/user1/
+__________________________________________________________________________________________________________________
 
+UPDATE of Resource instance (CloNeLink) with l3vpn Mixin
+curl -X PUT -d@post_clonelink_l3vpn.json -H 'accept: application/json:occi' -v http://localhost:8090/CloNeLink/user1/CloNeLink1
+__________________________________________________________________________________________________________________
+
+Delete of Resource instance (CloNeLink) with l3vpn Mixin
+curl -X DELETE -H 'accept: application/json:occi' -v http://localhost:8090/CloNeLink/user1/CloNeLink1
 
 -----------------------------------------------------------------------------
 5. For developers

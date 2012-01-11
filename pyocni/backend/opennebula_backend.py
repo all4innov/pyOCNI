@@ -42,26 +42,26 @@ class opennebula_backend(backend):
 
         logger.debug('The create operation of the opennebula_backend')
 
-        f = open('/tmp/template', 'w')
-        f.write('Name = ' + str(entity.occi_compute_hostname) + '\n')
-        f.write('CPU = ' + str(entity.occi_compute_cores) + '\n')
-        f.write('MEMORY = ' + str(entity.occi_compute_memory) + '\n')
-        f.write('DISK = [ IMAGE_ID = 1,\n')
-        f.write('  target = "hda",\n')
-        f.write('  readonly = "no"]\n')
-        f.write('OS = [ ARCH = ' + str(entity.occi_compute_architecture) + ' ]\n')
-        f.write('FEATURE = [ acpi = "yes"]\n')
-        f.write('NIC = [ NETWORK_ID = 3 ]\n')
-        f.write('GRAPHICS = [ type = "vnc", listen="127.0.0.1", port="-1"]\n')
-
-        #print f.read()
-
-        templateID=commands.getstatusoutput('onetemplate create /tmp/template')
-        print templateID
-        rt=commands.getstatusoutput('onetemplate instanciate ' + str(templateID))
-        print rt
-        f.close()
-        print '###########################################################################'
+#        f = open('/tmp/template', 'w')
+#        f.write('Name = ' + str(entity.occi_compute_hostname) + '\n')
+#        f.write('CPU = ' + str(entity.occi_compute_cores) + '\n')
+#        f.write('MEMORY = ' + str(entity.occi_compute_memory) + '\n')
+#        f.write('DISK = [ IMAGE_ID = 1,\n')
+#        f.write('  target = "hda",\n')
+#        f.write('  readonly = "no"]\n')
+#        f.write('OS = [ ARCH = ' + str(entity.occi_compute_architecture) + ' ]\n')
+#        f.write('FEATURE = [ acpi = "yes"]\n')
+#        f.write('NIC = [ NETWORK_ID = 3 ]\n')
+#        f.write('GRAPHICS = [ type = "vnc", listen="127.0.0.1", port="-1"]\n')
+#
+#        #print f.read()
+#
+#        templateID=commands.getstatusoutput('onetemplate create /tmp/template')
+#        print templateID
+#        rt=commands.getstatusoutput('onetemplate instanciate ' + str(templateID))
+#        print rt
+#        f.close()
+#        print '###########################################################################'
 
 
     def read(self, entity):

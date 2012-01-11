@@ -28,6 +28,7 @@ Created on Feb 25, 2011
 # OCCI Core version 1.1
 #====================================================================
 
+import persistent
 
 class Attribute(object):
     """
@@ -56,7 +57,7 @@ class Attribute(object):
         self.description = description
 
 
-class Category(object):
+class Category(persistent.Persistent):
     """
 
     The Category type is the basis of the type identification mechanism used by the OCCI classification system.
@@ -167,7 +168,7 @@ class Mixin(Category):
         self.entities = entities or []
 
 
-class Action(object):
+class Action(persistent.Persistent):
     """
 
     The Action type is an abstract type. Each sub-type of Action defines an invocable
@@ -193,7 +194,7 @@ class Action(object):
         return  self.category.scheme + '#' + self.category.term
 
 
-class Entity(object):
+class Entity(persistent.Persistent):
     """
 
     The Entity type is an abstract type of the Resource type and the Link type.

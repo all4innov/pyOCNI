@@ -19,9 +19,10 @@
 Created on Feb 25, 2011
 
 @author: Houssem Medhioub
+@author: Daniel Turull (DELETE and PUT of OperationResource class)
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Telecom - Telecom SudParis
-@version: 0.1
+@version: 0.3
 @license: LGPL - Lesser General Public License
 """
 
@@ -68,6 +69,7 @@ from pyocni.backend.l3vpn_backend import l3vpn_backend
 from pyocni.backend.opennebula_backend import opennebula_backend
 from pyocni.backend.openstack_backend import openstack_backend
 
+from pyocni.pyocni_tools import ask_user_details as shell_ask
 
 # getting the Logger
 logger = config.logger
@@ -92,6 +94,15 @@ return_code = {'OK': 200,
                'Internal Server Error': 500,
                'Not Implemented': 501,
                'Service Unavailable': 503}
+
+# ======================================================================================
+# Reinialization of the locations registry and objects registry (clear ZODB)
+# ======================================================================================
+result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+                                     "   Do you want to purge 'locations' and 'objects' Databases (DB  reinialization)?", "no")
+if result == 'yes':
+    location_registry().purge_locations_db()
+    location_registry().purge_objects_db()
 
 
 # ======================================================================================
@@ -171,12 +182,30 @@ location_registry().register_location("/OpenFlowCloNeLink/", OpenFlowCloNeLink()
 location_registry().register_location("/OpenFlowCloNeNetworkInterface/", OpenFlowCloNeNetworkInterface())
 location_registry().register_location("/l3vpn/", l3vpn())
 
-# register backends
-backend_registry().register_backend(dummy_backend())
-backend_registry().register_backend(openflow_backend())
-backend_registry().register_backend(l3vpn_backend())
-backend_registry().register_backend(opennebula_backend())
-backend_registry().register_backend(openstack_backend())
+# ======================================================================================
+# the Backend registry
+# ======================================================================================
+
+result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+                                     "   Do you want to register the dummy backend ?", "yes")
+if result == 'yes':
+    backend_registry().register_backend(dummy_backend())
+result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+                                     "   Do you want to register the OpenFlow backend ?", "no")
+if result == 'yes':
+    backend_registry().register_backend(openflow_backend())
+result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+                                     "    Do you want to register the L3VPN backend ?", "no")
+if result == 'yes':
+    backend_registry().register_backend(l3vpn_backend())
+result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+                                     "    Do you want to register the OpenNebula backend ?", "no")
+if result == 'yes':
+    backend_registry().register_backend(opennebula_backend())
+result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+                                     "    Do you want to register the OpenStack backend ?", "no")
+if result == 'yes':
+    backend_registry().register_backend(openstack_backend())
 
 
 class QueryInterface(object):
@@ -240,7 +269,7 @@ class QueryInterface(object):
 # Operation on Paths in the Name-space
 # ======================================================================================
 #
-#   Retrieving All resource instances Below a Path
+#   Retrieving All resource instances Below a Path (DONE)
 #
 #   Deletion of all resource instances below a path
 class OperationPath(object):
@@ -308,13 +337,13 @@ class OperationPath(object):
 # Operations on Resource Instances
 # ======================================================================================
 #
-#   Creating a resource instance
+#   Creating a resource instance (DONE)
 #
-#   Retrieving a resource instance
+#   Retrieving a resource instance (DONE)
 #
-#   Updating a resource instance
+#   Updating a resource instance (DONE)
 #
-#   Deleting a resource instance
+#   Deleting a resource instance (DONE)
 #
 #   Triggering an Action on a resource instance
 class OperationResource(object):
@@ -389,19 +418,48 @@ class OperationResource(object):
     def put(self):
         """
 
-        Creating a resource instance by providing the path in the name-space hierarchy
+        Creating a resource instance by providing the path in the name-space hierarchy (To do)
         Or
-        Updating a resource instance
+        Updating a resource instance (Done)
 
         """
+        # =1= get old resources
+        _old_resource = location_registry().get_object(self.req.path)
+        # =2= get new resources
+        resource_json_serializer = json_serializer.resource_serializer()
+        _resource = resource_json_serializer.from_json(self.req.body)
+
+        # =3= unregister old and register new
+        location_registry().unregister_location(self.req.path)
+        location_registry().register_location(self.req.path, _resource)
+
+        # =4= execute the backend command by sending the resource object
+        for _backend in backend_registry().get_backends().values():
+            _backend.update(_old_resource, _resource)
+
+        self.res.body = 'Resource ' + self.req.path + ' has been updated'
+
         return self.res
 
     def delete(self):
         """
 
-        Removing a Mixin definition
+        Deleting a resource instance
 
         """
+        # =1= get resources
+        _resource = location_registry().get_object(self.req.path)
+
+        # =2= remove resources
+        location_registry().unregister_location(self.req.path)
+
+        # =3= execute the backend command by sending the resource object
+        for _backend in backend_registry().get_backends().values():
+            _backend.delete(_resource)
+
+        # =4= return OK with the Location of the created resource
+        self.res.body = 'Resource with this PATH has been removed'
+
         return self.res
 
 # ======================================================================================
@@ -440,8 +498,14 @@ class ocni_server(object):
         to run the server
 
         """
+        print ("\n______________________________________________________________________________________\n"
+               "The OCNI server is running at: ")
         wsgi.server(eventlet.listen((config.OCNI_IP, int(config.OCNI_PORT))), self.app)
 
+        print ("\n______________________________________________________________________________________\n"
+               "Closing correctly 'locations' and 'objects' Databases: ")
+        location_registry(). close_locations_db()
+        location_registry().close_objects_db()
 
 if __name__ == '__main__':
     logger.debug('############ BEGIN OCCI Category rendering ###############')
@@ -455,7 +519,7 @@ if __name__ == '__main__':
     location_registry().register_location("/network/123", network_instance)
 
     networkinterface_instance = NetworkInterface('456', 'source', '/network/123', '192.168.1.2', '00:00:10:20:30:40',
-                                                 'active')
+        'active')
     location_registry().register_location("/link/networkinterface/456", networkinterface_instance)
 
     l = link_renderer()

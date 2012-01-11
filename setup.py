@@ -25,7 +25,8 @@ setup(name='pyocni',
           'webob',
           'pesto',
           'eventlet',
-          'sphinx'
+          'sphinx',
+          'ZODB3'
           #'pack>=0.97',
           #'pack'
       ],

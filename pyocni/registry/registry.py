@@ -30,14 +30,131 @@ import pyocni.pyocni_tools.config as config
 
 from pyocni.specification.occi_core import Category, Kind, Mixin, Action, Entity, Resource, Link
 
+from ZODB.FileStorage import FileStorage
+from ZODB.DB import DB
+import transaction
+
 # getting the Logger
 logger = config.logger
-
 
 # ======================================================================================
 # Location registry
 # ======================================================================================
 class location_registry(object):
+    """
+
+    A registry containing all the locations and objects
+
+    """
+
+    # ======== locations[object_id] = location =============
+    storage_locations = FileStorage('locations.fs')
+    db_locations = DB(storage_locations)
+    connection_locations = db_locations.open()
+    locations = connection_locations.root()
+
+
+    # ======== objects[location] = object ==================
+    storage_objects = FileStorage('objects.fs')
+    db_objects = DB(storage_objects)
+    connection_objects = db_objects.open()
+    objects = connection_objects.root()
+
+    def __init__(self):
+        pass
+
+    def register_location(self, location, object):
+        if  object.__repr__() in location_registry.locations:
+            logger.warning('the location \'' + str(location) + '\' is already registered')
+            try:
+                raise ocni_exceptions.AlreadyRegistered('the location \'' + str(location) + '\' is already registered')
+            except Exception:
+                pass
+                #raise ocni_exceptions.AlreadyRegistered('the location \'' + str(location) + '\' is already registered')
+            else:
+                pass
+
+        elif location in location_registry.objects:
+            logger.warning('the object \'' + str(object) + '\' is already registered')
+            try:
+                raise ocni_exceptions.AlreadyRegistered('the object \'' + str(object) + '\' is already registered')
+            except Exception:
+                pass
+                #raise ocni_exceptions.AlreadyRegistered('the object \'' + str(object) + '\' is already registered')
+            else :
+                pass
+
+        else:
+            logger.debug("Registering the location \'" + location + "\' to the object \'" + object.__repr__() + "\'")
+            location_registry.locations[object.__repr__()] = location
+            location_registry.objects[location] = object
+            transaction.commit()
+
+    def unregister_location(self, location):
+        if location in location_registry.objects:
+            logger.debug("Un-registering the location \'" + str(location) + "\'")
+            del location_registry.locations[location_registry.objects[location].__repr__()]
+            del location_registry.objects[location]
+            transaction.commit()
+        else:
+            logger.warning("The location \'" + str(location) + "\'" + " is not registered")
+
+    def get_location(self, object):
+        try:
+            return location_registry.locations.get(object.__repr__())
+        except Exception:
+            return None
+
+    def get_object(self, location):
+        try:
+            return location_registry.objects.get(location)
+        except Exception:
+            return None
+
+    def get_object_under_location(self, location_path):
+        _objects = []
+        try:
+            for _location in location_registry().objects:
+                if _location.startswith(location_path):
+                    _objects.append(location_registry.objects[_location])
+            return _objects
+        except Exception:
+            return None
+
+    def get_locations_under_path(self, path):
+        _locations = []
+        try:
+            for _location in location_registry().locations.values():
+                if _location.startswith(path):
+                    _locations.append(_location)
+            return _locations
+        except Exception:
+            return None
+        pass
+
+    def purge_locations_db(self):
+        location_registry.locations.clear()
+        transaction.commit()
+
+    def purge_objects_db(self):
+        location_registry.objects.clear()
+        transaction.commit()
+
+    def close_locations_db(self):
+        self.connection_locations.close()
+        self.db_locations.close()
+        self.storage_locations.close()
+
+    def close_objects_db(self):
+        self.connection_objects.close()
+        self.db_objects.close()
+        self.storage_objects.close()
+
+
+# ======================================================================================
+# Location registry (old) with no persistent storage through ZODB (deprecated)
+# ======================================================================================
+class location_registry_old(object):
     """
 
     A registry containing all the locations and objects
@@ -71,7 +188,7 @@ class location_registry(object):
             del location_registry.locations[location_registry.objects[location].__repr__()]
             del location_registry.objects[location]
         else:
-            logger.WARNING("The location \'" + location + "\'" + " is not registered")
+            logger.warning("The location \'" + location + "\'" + " is not registered")
 
     def get_location(self, object):
         try:
