@@ -18,8 +18,9 @@ Table of Contents
 5. For developers
 6. Licensing
 7. Contacts
-8. Todo
-9. json files to execute the HowTo use examples
+8. Acknowledgment
+9. Todo
+10. json files to execute the HowTo use examples
 
 -----------------------------------------------------------------------------
 0. What is it?
@@ -48,8 +49,8 @@ the api documentation are available through this html file:
 3.1. Requirements
 -----------------
 This software needs this packages to run:
-* Python == 2.7
-* Python-all-dev (for eventlet/greenlet install/make)
+* python == 2.7
+* python-all-dev (for eventlet/greenlet install/make)
 * python-setuptools (to execute the setup.py file)
 
 3.2. Install
@@ -143,7 +144,16 @@ Houssem Medhioub:
 houssem.medhioub@it-sudparis.eu
 
 -----------------------------------------------------------------------------
-8. Todo
+8. Acknowledgment
+-----------------------------------------------------------------------------
+This work has been supported by:
+     SAIL project (IST 7th Framework Programme Integrated Project) [http://sail-project.eu/]
+     CompatibleOne Project (French FUI project) [http://compatibleone.org/]
+
+
+
+-----------------------------------------------------------------------------
+9. Todo
 -----------------------------------------------------------------------------
 This release of pyocni is experimental.  There are many aspects of
 the application that need tending to if it is ever going to fly.
@@ -153,7 +163,7 @@ Some of pyocni's immediate needs might be:
   - 
 
 -----------------------------------------------------------------------------
-9. json files to execute the HowTo use examples
+10. json files to execute the HowTo use examples
 -----------------------------------------------------------------------------
 
 post_compute.json
@@ -352,5 +362,3 @@ post_clonenode_l3vpn.json
           }
        }
     }
-
-This file was modified by PyCharm 2.0.1 for binding GitHub repository
