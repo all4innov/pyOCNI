@@ -26,14 +26,14 @@ Table of Contents
 0. What is it?
 -----------------------------------------------------------------------------
 
-PyOCNI: A Python implementation of an extended OCCI with a JSON serialization
+PyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI with a JSON serialization and a cloud networking extension
 
 -----------------------------------------------------------------------------
 1. The Latest Version
 -----------------------------------------------------------------------------
 
-version 0.1
-1 Dec 2011
+version 0.2
+11 Jan 2012
 status: Still an ongoing work
 
 -----------------------------------------------------------------------------
