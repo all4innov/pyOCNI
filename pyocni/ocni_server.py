@@ -57,7 +57,7 @@ from pyocni.specification.occi_infrastructure import Compute, Network, Storage,\
     NetworkInterface, StorageLink, IPNetworking, IPNetworkInterface
 
 from pyocni.specification.ocni import CloNeNode, CloNeLink, FNS, CloNeComputeLink, CloNeStorageLink, CloNeNetworkInterface,\
-    FNSInterface, Ethernet, IPv4, OpenFlowCloNeNode, OpenFlowCloNeLink, OpenFlowCloNeNetworkInterface, l3vpn
+    FNSInterface, Ethernet, IPv4, OpenFlowCloNeNode, OpenFlowCloNeLink, OpenFlowCloNeNetworkInterface, l3vpn, libnetvirt 
 
 from pyocni.registry.registry import category_registry, location_registry, backend_registry, serialization_registry
 
@@ -68,6 +68,7 @@ from pyocni.backend.openflow_backend import openflow_backend
 from pyocni.backend.l3vpn_backend import l3vpn_backend
 from pyocni.backend.opennebula_backend import opennebula_backend
 from pyocni.backend.openstack_backend import openstack_backend
+from pyocni.backend.libnetvirt_backend import libnetvirt_backend
 
 from pyocni.pyocni_tools import ask_user_details as shell_ask
 
@@ -143,6 +144,7 @@ category_registry().register_mixin(OpenFlowCloNeNode())
 category_registry().register_mixin(OpenFlowCloNeLink())
 category_registry().register_mixin(OpenFlowCloNeNetworkInterface())
 category_registry().register_mixin(l3vpn())
+category_registry().register_mixin(libnetvirt())
 
 # ======================================================================================
 # the location registry
@@ -181,6 +183,7 @@ location_registry().register_location("/OpenFlowCloNeNode/", OpenFlowCloNeNode()
 location_registry().register_location("/OpenFlowCloNeLink/", OpenFlowCloNeLink())
 location_registry().register_location("/OpenFlowCloNeNetworkInterface/", OpenFlowCloNeNetworkInterface())
 location_registry().register_location("/l3vpn/", l3vpn())
+location_registry().register_location("/libnetvirt/", libnetvirt())
 
 # ======================================================================================
 # the Backend registry
@@ -206,7 +209,10 @@ result = shell_ask.query_yes_no_quit(" \n_______________________________________
                                      "    Do you want to register the OpenStack backend ?", "no")
 if result == 'yes':
     backend_registry().register_backend(openstack_backend())
-
+result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+                                     "    Do you want to register the libnetvirt backend ?", "no")
+if result == 'yes':
+    backend_registry().register_backend(libnetvirt_backend())
 
 class QueryInterface(object):
     """
