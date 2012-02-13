@@ -134,7 +134,7 @@ class category_serializer(object):
         logger.debug('category_serializer_to_json-serialization=' + result_dump.getvalue())
         return result_dump.getvalue()
 
-    def from_json(self, obj):
+    def from_json(self, json_doc):
         """
 
         method to convert from JSON to an object (OCCI object)
@@ -162,7 +162,7 @@ class entity_serializer(object):
 
         """
 
-    def from_json(self, obj):
+    def from_json(self, json_doc):
         """
 
         method to convert from JSON to an object (OCCI object)
@@ -470,7 +470,7 @@ class link_serializer(object):
         logger.debug('link_serialization_to_json=' + result_dump.getvalue())
         return result_dump.getvalue()
 
-    def from_json(self, obj):
+    def from_json(self, json_doc):
         """
 
         method to convert from JSON to an object (OCCI object)
@@ -497,7 +497,7 @@ class action_serializer(object):
 
         """
 
-    def from_json(self, obj):
+    def from_json(self, json_doc):
         """
 
         method to convert from JSON to an object (OCCI object)

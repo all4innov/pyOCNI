@@ -102,6 +102,13 @@ class category_serializer(object):
 
         return header
 
+    def from_http(self, http_doc):
+        """
+
+        method to convert from HTTP to an object (OCCI object)
+
+        """
+        pass
 
 # ======================================================================================
 # OCCI Link instance rendering
@@ -141,6 +148,13 @@ class link_serializer(object):
 
         return header
 
+    def from_http(self, http_doc):
+        """
+
+        method to convert from HTTP to an object (OCCI object)
+
+        """
+        pass
 
 # ======================================================================================
 # OCCI action instance rendering
@@ -166,6 +180,13 @@ class action_serializer(object):
 
         return header
 
+    def from_http(self, http_doc):
+        """
+
+        method to convert from HTTP to an object (OCCI object)
+
+        """
+        pass
 
 # ======================================================================================
 # OCCI Entity attributes rendering
@@ -189,6 +210,13 @@ class attributes_serializer(object):
 
         return header
 
+    def from_http(self, http_doc):
+        """
+
+        method to convert from HTTP to an object (OCCI object)
+
+        """
+        pass
 
 # ======================================================================================
 # OCCI Location-URIs rendering
@@ -207,6 +235,13 @@ class location_serializer(object):
 
         return header
 
+    def from_http(self, http_doc):
+        """
+
+        method to convert from HTTP to an object (OCCI object)
+
+        """
+        pass
 
 # ======================================================================================
 # OCCI Content-type text/plain rendering
