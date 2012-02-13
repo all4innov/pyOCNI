@@ -52,8 +52,8 @@ header_location = "X-OCCI-Location"
 # OCCI Category rendering
 # Rendering of the OCCI Category, Kind and Mixin types
 # ======================================================================================
-class category_renderer(object):
-    def renderer(self, obj):
+class category_serializer(object):
+    def to_http(self, obj):
         header = {}
         category_value = ''
         category_param = ''
@@ -107,8 +107,8 @@ class category_renderer(object):
 # OCCI Link instance rendering
 # Rendering of OCCI Link instance references
 # ======================================================================================
-class link_renderer(object):
-    def renderer(self, obj):
+class link_serializer(object):
+    def to_http(self, obj):
         header = {}
         link_value = ''
         link_param = ''
@@ -146,8 +146,8 @@ class link_renderer(object):
 # OCCI action instance rendering
 # Rendering of references to OCCI Action instances
 # ======================================================================================
-class action_renderer(object):
-    def renderer(self, obj, action):
+class action_serializer(object):
+    def to_http(self, obj, action):
         header = {}
         link_value = ''
 
@@ -171,8 +171,8 @@ class action_renderer(object):
 # OCCI Entity attributes rendering
 # Rendering of OCCI Entity attributes
 # ======================================================================================
-class attributes_renderer(object):
-    def renderer(self, obj):
+class attributes_serializer(object):
+    def to_http(self, obj):
         header = {}
         attribute_value = []
 
@@ -194,8 +194,8 @@ class attributes_renderer(object):
 # OCCI Location-URIs rendering
 # Rendering of Location-URIs
 # ======================================================================================
-class location_renderer(object):
-    def renderer(self, locations):
+class location_serializer(object):
+    def to_http(self, locations):
         header = {}
         location_values = []
 
@@ -211,28 +211,28 @@ class location_renderer(object):
 # ======================================================================================
 # OCCI Content-type text/plain rendering
 # ======================================================================================
-class text_plain_renderer(object):
+class text_plain_serializer(object):
     pass
 
 
 # ======================================================================================
 # OCCI Content-type text/occi rendering
 # ======================================================================================
-class text_occi_renderer(object):
+class text_occi_serializer(object):
     pass
 
 
 # ======================================================================================
 # OCCI Content-type text/uri-list rendering
 # ======================================================================================
-class text_urilist_renderer(object):
+class text_urilist_serializer(object):
     pass
 
 
 # ======================================================================================
 # OCCI main rendering
 # ======================================================================================
-class main_renderer(object):
+class main_serializer(object):
     pass
 
 

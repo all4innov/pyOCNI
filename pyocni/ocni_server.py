@@ -28,7 +28,9 @@ Created on Feb 25, 2011
 
 import pyocni.pyocni_tools.config as config
 from pyocni.pyocni_tools import create_new_class
+
 import  pyocni.serialization.serializer_json as json_serializer
+import  pyocni.serialization.serializer_http as http_serializer
 
 from collections import OrderedDict
 
@@ -61,7 +63,7 @@ from pyocni.specification.ocni import CloNeNode, CloNeLink, FNS, CloNeComputeLin
 
 from pyocni.registry.registry import category_registry, location_registry, backend_registry, serialization_registry
 
-from pyocni.serialization.serializer_http import category_renderer, link_renderer, action_renderer, attributes_renderer, location_renderer
+
 
 from pyocni.backend.dummy_backend import dummy_backend
 from pyocni.backend.openflow_backend import openflow_backend
@@ -222,7 +224,7 @@ class QueryInterface(object):
     """
 
     def __init__(self, req):
-        self.request = req
+        self.req = req
         self.res = Response()
         self.res.content_type = 'application:json:occi'
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
@@ -252,7 +254,7 @@ class QueryInterface(object):
         return self.res
 
     def post(self):
-        print self.request
+        print self.req
         return 'N/A : No POST verb for a Query Interface'
 
     def put(self):
@@ -286,7 +288,7 @@ class OperationPath(object):
     """
 
     def __init__(self, req, term='', user=''):
-        self.request = req
+        self.req = req
         self.term = term
         self.user = user
         self.res = Response()
@@ -515,8 +517,8 @@ class ocni_server(object):
 
 if __name__ == '__main__':
     logger.debug('############ BEGIN OCCI Category rendering ###############')
-    c = category_renderer()
-    result = c.renderer(Compute._kind)
+    c = http_serializer.category_serializer()
+    result = c.to_http(Compute._kind)
     logger.debug(result.get('Category'))
     logger.debug('############# END OCCI Category rendering ################')
 
@@ -528,8 +530,8 @@ if __name__ == '__main__':
         'active')
     location_registry().register_location("/link/networkinterface/456", networkinterface_instance)
 
-    l = link_renderer()
-    result = l.renderer(NetworkInterface('456', 'source', '/network/123', 'eth0', '00:01:20:50:90:80', 'active'))
+    l = http_serializer.link_serializer()
+    result = l.to_http(NetworkInterface('456', 'source', '/network/123', 'eth0', '00:01:20:50:90:80', 'active'))
     logger.debug(result.get('Link'))
     logger.debug('############# END OCCI Link instance rendering ################')
 
@@ -537,24 +539,24 @@ if __name__ == '__main__':
     compute_instance = Compute('/compute/user1/compute1', 'active', occi_core_title='compute1 created by Houssem')
     location_registry().register_location("/compute/user1/compute1", compute_instance)
 
-    a = action_renderer()
-    result = a.renderer(compute_instance, Compute._action_start)
+    a = http_serializer.action_serializer()
+    result = a.to_http(compute_instance, Compute._action_start)
     logger.debug(result.get('Link'))
     logger.debug('############# END OCCI Action instance rendering ################')
 
     logger.debug('############# Begin OCCI Entity attributes rendering ################')
-    att = attributes_renderer()
-    result = att.renderer(compute_instance)
+    att = http_serializer.attributes_serializer()
+    result = att.to_http(compute_instance)
     result2 = result.get('X-OCCI-Attribute')
     for r in result2:
         logger.debug('X-OCCI-Attribute' + ': ' + r)
     logger.debug('############# END OCCI Entity attributes rendering ################')
 
     logger.debug('############# BEGIN OCCI Location-URIs rendering ################')
-    location = location_renderer()
+    location = http_serializer.location_serializer()
     temp = location_registry().locations.values()
 
-    result = location.renderer(temp)
+    result = location.to_http(temp)
     result2 = result.get('X-OCCI-Location')
     for r in result2:
         logger.debug('X-OCCI-Location' + ': ' + r)

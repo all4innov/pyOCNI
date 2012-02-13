@@ -77,7 +77,7 @@ OCNI_PORT = config.OCNI_PORT
 class category_serializer(object):
     """
 
-    This class is used for the serialization of OCCI category (Kind, Mixin, action)
+    This class is used for the serialization of OCCI category (Kind, Mixin, action) in JSON
 
     """
 
@@ -150,7 +150,7 @@ class category_serializer(object):
 class entity_serializer(object):
     """
 
-    This class is used for the serialization of OCCI entity
+    This class is used for the serialization of OCCI entity in JSON
     (Not needed until now ;-) )
 
     """
@@ -178,7 +178,7 @@ class entity_serializer(object):
 class resource_serializer(object):
     """
 
-    This class is used for the serialization of OCCI resource
+    This class is used for the serialization of OCCI resource in JSON
 
     """
 
