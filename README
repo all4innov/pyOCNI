@@ -295,7 +295,7 @@ post_clonenode_openflow.json
         }
     }
 
-post_clonenode_l3vpn.json
+post_clonelink_l3vpn.json
 -------------------------
     {
        "kind":{
@@ -305,7 +305,7 @@ post_clonenode_l3vpn.json
        },
        "occi.core.id":"CloNeLink1",
        "occi.core.title":"CloNeLink1",
-       "occi.core.summary":"CloNeLink with l3vpn mixin created by Houssem",
+       "occi.core.summary":"CloNeLink with l3vpn mixin",
        "mixins":[
           {
              "term":"L3VPN",
