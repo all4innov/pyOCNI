@@ -163,10 +163,9 @@ This work has been supported by:
 -----------------------------------------------------------------------------
 9. Todo
 -----------------------------------------------------------------------------
-This release of pyocni is experimental.  There are many aspects of
-the application that need tending to if it is ever going to fly.
+This release of pyocni is experimental.
 
-Some of pyocni's immediate needs might be:
+Some of pyocni's needs might be:
 
   - 
 
