@@ -38,7 +38,7 @@ import transaction
 logger = config.logger
 
 # ======================================================================================
-# Location registry
+# Location registry (using ZODB)
 # ======================================================================================
 class location_registry(object):
     """
@@ -152,7 +152,7 @@ class location_registry(object):
 
 
 # ======================================================================================
-# Location registry (old) with no persistent storage through ZODB (deprecated)
+# Location registry (without persistent storage through ZODB - deprecated)
 # ======================================================================================
 class location_registry_old(object):
     """
@@ -242,18 +242,6 @@ class category_registry(object):
     actions = {}
 
     def __init__(self):
-        #       self.register_kind(Entity._kind)
-        #        self.register_kind(Resource._resource_kind)
-        #        self.register_kind(Link._kind)
-        #
-        #        self.register_kind(Compute._kind)
-        #        self.register_kind(Network._kind)
-        #        self.register_kind(Storage._kind)
-        #        self.register_kind(Network_interface._kind)
-        #        self.register_kind(Storage_link._kind)
-        #
-        #        self.register_mixin(ip_networking())
-        #        self.register_mixin(ip_network_interface())
         pass
 
     def register_kind(self, _kind):
@@ -332,12 +320,12 @@ class category_registry(object):
         except Exception:
             return None
 
-            # only items !!!
-            #def get_categories(self):
-            #    try:
-            #       return dict(category_registry.kinds.items() + category_registry.mixins.items())
-            #   except:
-            #        return None
+    ## only items !!!
+    #def get_categories(self):
+    #    try:
+    #       return dict(category_registry.kinds.items() + category_registry.mixins.items())
+    #   except:
+    #        return None
 
 
 # ======================================================================================
