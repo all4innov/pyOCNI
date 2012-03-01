@@ -36,8 +36,8 @@ Icon?
 Thumbs.db
 
 # Folders #
-######################
-.idea/ 
+###################### 
+.idea/
 
 # ZODB - Database Files #
 #########################
