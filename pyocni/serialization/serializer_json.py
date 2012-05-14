@@ -39,8 +39,11 @@ except ImportError:
     import json
 
 import jsonpickle
-
-from collections import OrderedDict
+import sys
+if sys.version_info < (2, 7):
+    from pyocni.pyocni_tools.OrderedDict import OrderedDict
+else:
+    from collections import OrderedDict
 
 from  pyocni.specification.occi_core import Category, Kind, Mixin, Action, Entity, Resource, Link
 
