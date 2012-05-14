@@ -1,0 +1,12 @@
+====== Retrieval of all registered Kinds and Mixins  ======
+curl -X GET -v http://127.0.0.1:8090/-/
+
+====== Creation of Resource instance (CloNeNode) ======
+curl -X POST -v http://127.0.0.1:8090/CloNeNode/
+
+====== Retrieval of Resource instance (CloNeNode) ======
+curl -X GET -v http://127.0.0.1:8090/CloNeNode/user1/CloNeNode1
+
+
+=========================== epydoc ==========================
+houssem-Latitude[02:42:21]houssem~$   epydoc --html -o PycharmProjects/PyOCNI/doc/ --name PyOCNI PycharmProjects/PyOCNI
