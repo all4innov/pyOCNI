@@ -18,7 +18,6 @@ setup(name='pyocni',
       install_requires=[
           'config',
           'configobj',
-          'logging',
           'ordereddict',
           'simplejson',
           'jsonpickle',
