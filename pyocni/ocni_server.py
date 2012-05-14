@@ -31,8 +31,11 @@ from pyocni.pyocni_tools import create_new_class
 
 import  pyocni.serialization.serializer_json as json_serializer
 import  pyocni.serialization.serializer_http as http_serializer
-
-from collections import OrderedDict
+import sys
+if sys.version_info < (2, 7):
+    from pyocni.pyocni_tools.OrderedDict import OrderedDict
+else:
+    from collections import OrderedDict
 
 import pyocni.pyocni_tools.DoItYourselfWebOb as url_mapper
 
