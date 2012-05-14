@@ -39,6 +39,7 @@ class dummy_backend(backend):
 
         '''
         logger.debug('The create operation of the dummy_backend')
+        logger.debug('bilel')
 
     def read(self, entity):
         '''

@@ -388,6 +388,9 @@ class OperationResource(object):
             json.dump(result_json, result_dump, indent=4 * ' ')
 
             self.res.body = result_dump.getvalue()
+
+            #for _backend in backend_registry().get_backends().values():
+            #    _backend.read()
         else:
             #self.res.status = ''
             self.res.body = 'No resource with this PATH'
