@@ -38,6 +38,8 @@ Thumbs.db
 # Folders #
 ###################### 
 .idea/
+build/
+dest/
 
 # ZODB - Database Files #
 #########################
