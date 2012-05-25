@@ -11,15 +11,14 @@ setup(name='pyocni',
       description='PyOCNI: A Python implementation of an extended OCCI with a JSON serialization',
       long_description=read('README'),
       url='http://www.example.com/pyocni',
-      platforms=['any'],
       #packages=['pyocni'],
       packages=find_packages(), #['pyocni'],
       package_data = {
         # If any package contains *.txt or *.rst files, include them:
-        'pyocni': ['*.py', '*.conf'],
+        'pyocni': ['*.conf', '*.py'],
         # And include any *.msg files found in the 'pyocni' package, too:
-        'pyocni': ['*.msg'],
-        },
+        'pyocni': ['*.conf', '*.msg'],
+       },
       install_requires=[
           'config',
           'configobj',
