@@ -27,6 +27,7 @@ Created on Feb 25, 2011
 """
 
 import pyocni.pyocni_tools.config as config
+import pyocni.pyocni_tools.UUID_Generator as uuid_generator
 from pyocni.pyocni_tools import create_new_class
 
 import  pyocni.serialization.serializer_json as json_serializer
@@ -43,8 +44,6 @@ import eventlet
 from eventlet import wsgi
 
 from webob import Request, Response
-import uuid
-import re
 
 import cStringIO
 
@@ -415,7 +414,7 @@ class OperationResource(object):
         # =2= add the created resource to the registry
 
         _user_id = 'user1'
-        _location = '/' + self.term + '/' + _user_id + '/' + str(_resource.occi_core_id)
+        _location = '/' + self.term + '/' + _user_id + '/' + uuid_generator.get_UUID()
         location_registry().register_location(_location, _resource)
 
         # =3= execute the backend command by sending the resource object
