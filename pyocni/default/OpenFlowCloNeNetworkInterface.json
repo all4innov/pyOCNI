@@ -1,0 +1,13 @@
+{
+    "term": "OpenFlowCloNeNetworkInterface",
+    "title": "OpenFlow CloNe Network Interface mixin",
+    "actions": [],
+    "location": "/OpenFlowCloNeNetworkInterface/",
+    "rel": [],
+    "attributes": [
+        "ocni.openflowclonenetworkinterface.datapath_id",
+        "ocni.openflowclonenetworkinterface.ports"
+    ],
+    "scheme": "http://schemas.ogf.org/occi/ocni",
+    "class": "mixin"
+}

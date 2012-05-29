@@ -1,0 +1,14 @@
+{
+    "term": "ipnetwork",
+    "title": "ip network mixin",
+    "actions": [],
+    "location": "/ipnetworking/",
+    "rel": [],
+    "attributes": [
+        "occi.network.address",
+        "occi.network.gateway",
+        "occi.network.allocation"
+    ],
+    "scheme": "http://schemas.ogf.org/occi/infrastructure/network",
+    "class": "mixin"
+}

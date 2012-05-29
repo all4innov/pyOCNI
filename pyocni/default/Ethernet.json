@@ -1,0 +1,12 @@
+{
+    "term": "Ethernet",
+    "title": "Ethernet mixin",
+    "actions": [],
+    "location": "/Ethernet/",
+    "rel": [],
+    "attributes": [
+        "ocni.ethernet.mac_address"
+    ],
+    "scheme": "http://schemas.ogf.org/occi/ocni",
+    "class": "mixin"
+}

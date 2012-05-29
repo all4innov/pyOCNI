@@ -1,0 +1,20 @@
+{
+    "term": "FNS",
+    "title": "Flash Network Slice resource",
+    "actions": [
+        "http://schemas.ogf/occi/ocni/FNS/action#start",
+        "http://schemas.ogf/occi/ocni/FNS/action#stop",
+        "http://schemas.ogf/occi/ocni/FNS/action#restart"
+    ],
+    "location": "/FNS/",
+    "rel": [
+        "http://schemas.ogf.org/occi/core#resource"
+    ],
+    "attributes": [
+        "ocni.fns.availability",
+        "ocni.fns.state",
+        "ocni.fns.resources"
+    ],
+    "scheme": "http://schemas.ogf.org/occi/ocni",
+    "class": "kind"
+}

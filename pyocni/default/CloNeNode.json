@@ -1,0 +1,20 @@
+{
+    "term": "CloNeNode",
+    "title": "Clone Node resource",
+    "actions": [
+        "http://schemas.ogf/occi/ocni/CloNeNode/action#start",
+        "http://schemas.ogf/occi/ocni/CloNeNode/action#stop",
+        "http://schemas.ogf/occi/ocni/CloNeNode/action#restart"
+    ],
+    "location": "/CloNeNode/",
+    "rel": [
+        "http://schemas.ogf.org/occi/core#resource"
+    ],
+    "attributes": [
+        "ocni.clonenode.availability",
+        "ocni.clonenode.location",
+        "ocni.clonenode.state"
+    ],
+    "scheme": "http://schemas.ogf.org/occi/ocni",
+    "class": "kind"
+}

@@ -1,0 +1,23 @@
+{
+    "term": "CloNeLink",
+    "title": "CloNeLink resource",
+    "actions": [
+        "http://schemas.ogf/occi/ocni/CloNeLink/action#up",
+        "http://schemas.ogf/occi/ocni/CloNeLink/action#down"
+    ],
+    "location": "/CloNeLink/",
+    "rel": [
+        "http://schemas.ogf.org/occi/core#resource"
+    ],
+    "attributes": [
+        "ocni.clonelink.availability",
+        "ocni.clonelink.state",
+        "ocni.clonelink.bandwidth",
+        "ocni.clonelink.latency",
+        "ocni.clonelink.jitter",
+        "ocni.clonelink.loss",
+        "ocni.clonelink.routing_scheme"
+    ],
+    "scheme": "http://schemas.ogf.org/occi/ocni",
+    "class": "kind"
+}
