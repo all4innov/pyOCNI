@@ -20,6 +20,8 @@ Created on May 29, 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
+@author: Houssem Medhioub
+@contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
 @version: 0.1
 @license: LGPL - Lesser General Public License
@@ -38,7 +40,7 @@ import couchdb
 logger = config.logger
 import simplejson as json
 
-#<<<<<CategoryRegistry>>>>>
+#====================CategoryRegistry====================
 
 class Category_registry(object):
     """
