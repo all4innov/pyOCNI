@@ -27,18 +27,30 @@ Created on May 29, 2012
 @license: LGPL - Lesser General Public License
 """
 
-import pyocni.pyocni_tools.ocni_exceptions as ocni_exceptions
+import pyocni.pyocni_tools.ask_user_details as shell_ask
 import pyocni.pyocni_tools.config as config
+from pyocni.pyocni_tools.Enum import Enum
 
-from pyocni.specification.occi_core import Category, Kind, Mixin, Action, Entity, Resource, Link
-
-
-import transaction
+try:
+    import simplejson as json
+except ImportError:
+    import json
 import os
 import couchdb
+
 # getting the Logger
 logger = config.logger
-import simplejson as json
+
+
+# Get the database server configuration
+
+DB_server_IP = config.DB_IP
+DB_server_PORT = config.DB_PORT
+DB_Category_children = config.DB_CATEGORY_CHILDREN
+DB_Entity_children = config.DB_ENTITY_CHILDREN
+
+entity_children = Enum("resources","links")
+category_children = Enum("mixins", "actions", "kinds")
 
 #====================CategoryRegistry====================
 
@@ -48,31 +60,85 @@ class Category_registry(object):
     A registry containing default Kinds, Mixins, actions and more.
 
     """
+    content = ""
 
     def __init__(self):
         """
         Initialize db for the upcoming inputs
         """
-        server=couchdb.Server()
-        server.delete('category')
-        self.category_db=server.create('category')
+
+        try:
+            self.server = couchdb.Server()
+        except Exception:
+            logger.error("Database is unreachable")
+        # ======================================================================================
+        # Reinitialization of the database
+        # ======================================================================================
+        result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+        "   Do you want to purge all databases (DB  reinitialization)?", "no")
+        if result == 'yes':
+            try:
+                del self.server[DB_Category_children]
+                self.server.create(DB_Category_children)
+            except Exception:
+                logger.debug("No DB named: '" + DB_Category_children + "' to delete.")
+                self.server.create(DB_Category_children)
+            try:
+                del self.server[DB_Entity_children]
+                self.server.create(DB_Entity_children)
+            except Exception:
+                logger.debug("No DB named: '" + DB_Entity_children + "' to delete")
+                self.server.create(DB_Entity_children)
+        else:
+            try:
+                self.server[DB_Category_children]
+            except couchdb.http.ResourceNotFound:
+                logger.debug("The database named: '" + DB_Category_children + "' does not exist.")
+                self.server.create(DB_Category_children)
+            try:
+                self.server[DB_Entity_children]
+            except couchdb.http.ResourceNotFound:
+                logger.debug("The database named: '" + DB_Entity_children + "'does not exist.")
+                self.server[DB_Entity_children]
 
 
     def load_defaults(self):
 
-       """
-       Load default kinds and mixins from the default folder
+        """
+        Load default kinds and mixins from the default folder
 
-       """
-       #try :
-       for file in os.listdir("../default"):
-           print "../default/"+ file
-           default_file=open("../default/"+ file,"r")
-           contenu=default_file.read()
-           contenu = json.loads(contenu)
-           doc_id,doc_rev=self.category_db.save(contenu)
-       #except:
-           #print("Default files missing, please contact administrator")
+        """
+        try :
+           for file in os.listdir("../Examples"):
+            default_file=open("../Examples/"+ file,"r")
+            content=default_file.read()
+            content = json.loads(content)
+            self.JSON_mini_parser(content)
+            # must have a way to distinguish between CategoryChildren & EntityChildren
+            doc_id,doc_rev=self.DataBase.save(content)
+        except Exception as e:
+            print e.message
+
+    def JSON_mini_parser(self,jdata):
+        """
+        Detects the type of the request and stores it in the convenient database
+        """
+
+        for key ,val in jdata.items():
+            pass
+        key = "hello"
+
+        if key in entity_children.__dict__.keys():
+            self.DataBase = self.server[DB_Entity_children]
+        elif key in category_children.__dict__.keys():
+            self.DataBase = self.server[DB_Category_children]
+        else:
+            raise Exception(str(key)+ " is an unknown type")
+
+
+
+
+
 
 
 if __name__=='__main__':
