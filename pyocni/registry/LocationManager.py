@@ -48,11 +48,33 @@ DB_server_IP = config.DB_IP
 DB_server_PORT = config.DB_PORT
 
 entity_children = Enum("resources","links")
-category_children = Enum("mixins", "actions", "kinds")
 
-#====================CategoryRegistry====================
+def purgeLocationDBs():
+    """
+    Delete resource and link databases
+    """
+    try:
+        server = couchdb.Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
+    except Exception:
+        logger.error("Database is unreachable")
+    try:
+        del server[config.Resource_DB]
+        server.create(config.Resource_DB)
 
-class Category_registry(object):
+    except Exception:
+        logger.debug("No DB named: '" + config.Resource_DB + "' to delete")
+        server.create(config.Resource_DB)
+    try:
+        del server[config.Link_DB]
+        server.create(config.Link_DB)
+    except Exception:
+        logger.debug("No DB named: '" + config.Link_DB + "' to delete")
+        server.create(config.Link_DB)
+
+
+#====================ResourceRegistry====================
+
+class Resource_registry(object):
     """
 
     A registry containing default Kinds, Mixins, actions and more.
@@ -75,7 +97,7 @@ class Category_registry(object):
         # ======================================================================================
 
         result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-        "   Do you want to purge all databases (DB  reinitialization)?", "no")
+                                             "   Do you want to purge all databases (DB  reinitialization)?", "no")
         if result == 'yes':
             try:
                 del self.server[config.Kind_DB]
@@ -142,13 +164,13 @@ class Category_registry(object):
 
         """
         try :
-           for file in os.listdir("../Examples"):
-            default_file=open("../Examples/"+ file,"r")
-            content=default_file.read()
-            content = json.loads(content)
-            self.JSON_mini_parser(content)
-            # must have a way to distinguish between CategoryChildren & EntityChildren
-            doc_id,doc_rev=self.DataBase.save(content)
+            for file in os.listdir("../Examples"):
+                default_file=open("../Examples/"+ file,"r")
+                content=default_file.read()
+                content = json.loads(content)
+                self.JSON_mini_parser(content)
+                # must have a way to distinguish between CategoryChildren & EntityChildren
+                doc_id,doc_rev=self.DataBase.save(content)
         except Exception as e:
             print e.message
 
@@ -176,6 +198,7 @@ class Category_registry(object):
 if __name__=='__main__':
     Cat_Reg=Category_registry()
     Cat_Reg.load_defaults()
+
 
 
 
