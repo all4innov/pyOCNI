@@ -51,21 +51,6 @@ logger = config.logger
 OCNI_IP = config.OCNI_IP
 OCNI_PORT = config.OCNI_PORT
 
-# ======================================================================================
-# HTTP Return Codes
-# ======================================================================================
-return_code = {'OK': 200,
-               'Accepted': 202,
-               'Bad Request': 400,
-               'Unauthorized': 401,
-               'Forbidden': 403,
-               'Method Not Allowed': 405,
-               'Conflict': 409,
-               'Gone': 410,
-               'Unsupported Media Type': 415,
-               'Internal Server Error': 500,
-               'Not Implemented': 501,
-               'Service Unavailable': 503}
 
 # ======================================================================================
 # the Backend registry
@@ -116,7 +101,7 @@ class ocni_server(object):
     #===== Kind Routes =====
 
     app.add_route('/-/kind/',controller=operationKind)
-    app.add_route('/-/kind/{user_id}/{id}',controller=operationKind)
+    app.add_route('/-/kind/{user_id}/{doc_id}',controller=operationKind)
 
     def run_server(self):
         """
@@ -124,14 +109,14 @@ class ocni_server(object):
         to run the server
 
         """
-        result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-                                             "   Do you want to purge all databases (DB  reinitialization)?", "no")
-        if result == 'yes':
-            LocationManager.purgeLocationDBs()
-            CategoryManager.purgeCategoryDBs()
+#        result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+#                                             "   Do you want to purge all databases (DB  reinitialization)?", "no")
+#        if result == 'yes':
+#            LocationManager.purgeLocationDBs()
+#            CategoryManager.purgeCategoryDBs()
 
         print ("\n______________________________________________________________________________________\n"
-               "The OCNI server is running at: ")
+               "The OCNI server is running at: " + config.OCNI_IP + ":"+config.OCNI_PORT)
         wsgi.server(eventlet.listen((config.OCNI_IP, int(config.OCNI_PORT))), self.app)
 
         print ("\n______________________________________________________________________________________\n"

@@ -36,7 +36,7 @@ try:
 except ImportError:
     import json
 import os
-import couchdb
+from couchdbkit import *
 
 # getting the Logger
 logger = config.logger
@@ -54,22 +54,22 @@ def purgeLocationDBs():
     Delete resource and link databases
     """
     try:
-        server = couchdb.Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
+        server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
     except Exception:
         logger.error("Database is unreachable")
     try:
         del server[config.Resource_DB]
-        server.create(config.Resource_DB)
+        server.create_db(config.Resource_DB)
 
     except Exception:
         logger.debug("No DB named: '" + config.Resource_DB + "' to delete")
-        server.create(config.Resource_DB)
+        server.create_db(config.Resource_DB)
     try:
         del server[config.Link_DB]
-        server.create(config.Link_DB)
+        server.create_db(config.Link_DB)
     except Exception:
         logger.debug("No DB named: '" + config.Link_DB + "' to delete")
-        server.create(config.Link_DB)
+        server.create_db(config.Link_DB)
 
 
 #====================ResourceRegistry====================
@@ -88,7 +88,7 @@ class Resource_registry(object):
         """
 
         try:
-            self.server = couchdb.Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
+            self.server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
         except Exception:
             logger.error("Database is unreachable")
 

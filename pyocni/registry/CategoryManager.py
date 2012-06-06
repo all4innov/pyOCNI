@@ -36,8 +36,11 @@ try:
 except ImportError:
     import json
 from datetime import datetime
-import couchdb
+from pyocni.pyocni_tools import UUID_Generator
+from couchdbkit import *
+from pprint import *
 import base64
+
 # getting the Logger
 logger = config.logger
 
@@ -49,32 +52,49 @@ DB_server_PORT = config.DB_PORT
 
 entity_children = Enum("resources","links")
 
+# ======================================================================================
+# HTTP Return Codes
+# ======================================================================================
+return_code = {'OK': 200,
+               'Accepted': 202,
+               'Bad Request': 400,
+               'Unauthorized': 401,
+               'Forbidden': 403,
+               'Resource not found': 404,
+               'Method Not Allowed': 405,
+               'Conflict': 409,
+               'Gone': 410,
+               'Unsupported Media Type': 415,
+               'Internal Server Error': 500,
+               'Not Implemented': 501,
+               'Service Unavailable': 503}
+
 
 def purgeCategoryDBs():
 
     try:
-        server = couchdb.Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
+        server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
     except Exception:
         logger.error("Database is unreachable")
 
     try:
-        del server[config.Kind_DB]
-        server.create(config.Kind_DB)
+        server.delete_db(config.Kind_DB)
+        server.create_db(config.Kind_DB)
     except Exception:
         logger.debug("No DB named: '" + config.Kind_DB + "' to delete.")
-        server.create(config.Kind_DB)
+        server.create_db(config.Kind_DB)
     try:
-        del server[config.Action_DB]
-        server.create(config.Action_DB)
+        server.delete_db(config.Action_DB)
+        server.create_db(config.Action_DB)
     except Exception:
         logger.debug("No DB named: '" + config.Action_DB + "' to delete")
-        server.create(config.Action_DB)
+        server.create_db(config.Action_DB)
     try:
-        del server[config.Mixin_DB]
-        server.create(config.Mixin_DB)
+        server.delete_db(config.Mixin_DB)
+        server.create_db(config.Mixin_DB)
     except Exception:
         logger.debug("No DB named: '" + config.Mixin_DB + "' to delete")
-        server.create(config.Mixin_DB)
+        server.create_db(config.Mixin_DB)
 
 class KindManager:
     """
@@ -84,39 +104,59 @@ class KindManager:
     """
 
 
-    def __init__(self,req, id=None,user_id=None):
+    def __init__(self,req, doc_id=None,user_id=None):
 
         self.req = req
-        self.id=id
+        self.doc_id=doc_id
         self.user_id=user_id
         self.res = Response()
         self.res.content_type = req.accept
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
         try:
-            self.server = couchdb.Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
+            self.server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
         except Exception:
             logger.error("Database is unreachable")
-            self.res.body = "Nothing has been added to the database, please check log for more informations"
+            self.res.body = "Nothing has been added to the database, please check log for more details"
+            self.res.status_code = return_code["Internal Server Error"]
         try:
-            self.server.create(config.Kind_DB)
-        except Exception:
-            logger.debug("Database '" + config.Kind_DB + "' already exists")
+            self.database = self.server.get_or_create_db(config.Kind_DB)
+            self.add_design_doc_to_db()
+        except Exception as e:
+            logger.debug(e.message)
+
+
+    def add_design_doc_to_db(self):
+
+        design_doc = {
+            "_id": "_design/get_kind",
+            "language": "javascript",
+            "type": "DesignDoc",
+            "views": {
+                "all": {
+                    "map": "(function(doc) { emit(doc._id, doc.Description) });"
+                },
+            }
+
+        }
+        if self.database.doc_exist(design_doc['_id']):
+            pass
+        else:
+            self.database.save_doc(design_doc)
 
 
     def get(self):
 
         """
-        Retrieval of registered Kinds that belongs to the user_id
+        Retrieval of all registered Kinds
         """
-
-        _kind_values = list()
-
-        #retrieve all kinds from the KindDB
-
-        #convert _kind_values to json
-
-        self.res.body = None
-
+        query = self.database.view('/get_kind/all')
+        var = list()
+        #Extract kind description from the dictionary
+        for elem in query:
+            var.append(elem['value'])
+        #Convert the list into JSON
+        self.res.body = json.dumps(var)
+        self.res.status_code = return_code['OK']
         return self.res
 
     def post(self):
@@ -134,24 +174,27 @@ class KindManager:
             pass
         else:
             logger.error(self.req.content_type + " is an unknown request content type")
-            raise ValueError("Unknown content type")
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
 
         #Decode authorization header to get the user_id
         var,user_id = self.req.authorization
         user_id = base64.decodestring(user_id)
         user_id = user_id.split(':')[0]
-        #Some modification to the request body are needed
-        self.req.body=self.req.body.strip()
-        self.req.body = self.req.body[1:]
-        #add the JSON to database
+        jBody = json.loads(self.req.body)
+        #add the JSON to database along with other attributes
+        doc_id = UUID_Generator.get_UUID()
         jData = dict()
-        jData["KindDescription"]= self.req.body
         jData["Creator"]= user_id
         jData["CreationDate"]= str(datetime.now())
-
-        self.server[config.Kind_DB].save(jData)
-        self.res.body = "A new kind has been successfully added to database"
-
+        jData["Location"]= "/-/kind/" + user_id + "/" + str(doc_id)
+        jData["Description"]= jBody
+        jData["Type"]= "Kind"
+        self.database[doc_id] = jData
+        kind_location = jData["Location"]
+        self.res.body = "A new kind has been successfully added to database : " + kind_location
+        self.res.status_code = return_code["OK"]
         return self.res
 
     def put(self):
@@ -159,12 +202,27 @@ class KindManager:
         Update a kind using the id and user_id attributes
 
         """
+
         return 'QueryInterface response from PUT '
 
     def delete(self):
         """
 
-        Delete a kind using the id and user_id attributes
+        Delete a kind using the doc_id
 
         """
-        return 'QueryInterface response from DELETE'
+        #Verify the existence of such kind
+        if self.database.doc_exist(self.doc_id):
+            #If so then delete
+            try:
+                self.database.delete_doc(self.doc_id)
+                self.res.body = "Kind has been successfully deleted "
+                self.res.status_code = return_code['OK']
+            except Exception as e:
+                return e.message
+        else:
+            #else reply with kind not found
+            self.res.body = "Kind not found"
+            self.res.status_code = return_code["Resource not found"]
+
+        return self.res

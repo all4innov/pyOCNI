@@ -29,14 +29,13 @@ Created on Jun 4, 2012
 import pycurl
 import pprint
 
-if __name__ == '__main__':
 
-    # ====== Adding a new Kind ======
-    print ('======================================== Adding a new kind ========================================')
-    body='''
-        '{
-         "kinds":[
-            {
+
+
+body='''
+{
+    "kinds": [
+        {
             "term": "compute",
             "scheme": "http://schemas.ogf.org/occi/infrastructure#",
             "title": "Compute Resource",
@@ -50,7 +49,7 @@ if __name__ == '__main__':
                             "mutable": true,
                             "required": false,
                             "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*",
+                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
                             "minimum": "1",
                             "maximum": "255"
                         },
@@ -73,13 +72,58 @@ if __name__ == '__main__':
             "location": "/compute/"
         }
     ]
-    }
-    '''
+}
+'''
+# ====== Adding a new Kind ======
+def test_add_kind():
+    print ('======================================== Adding a new kind ========================================')
     c = pycurl.Curl()
     c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/kind/')
     c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
     c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
     c.setopt(pycurl.POST, 1)
-    c.setopt(pycurl.USERPWD, 'user1:password')
+    c.setopt(pycurl.USERPWD, 'user_1:password')
     c.setopt(pycurl.POSTFIELDS,body)
     c.perform()
+    c.close()
+    print ('\n==================================================================================================')
+
+# ====== Deleting a Kind ======
+def test_delete_kind():
+
+    print ('======================================== Deleting a kind ========================================')
+    c = pycurl.Curl()
+    c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/kind/user_1/2ee')
+    c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+    c.setopt(pycurl.HTTPHEADER, ['Content-Type: text/plain'])
+    c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
+    c.setopt(pycurl.USERPWD, 'user_1:password')
+    c.perform()
+    c.close()
+    print ('\n==================================================================================================')
+
+# ====== Getting all kinds ======
+def test_get_all_kinds():
+
+    print ('==========================================================================================')
+    Test = 'Getting all kinds'
+    Res = 'OK'
+    try:
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.perform()
+        c.close()
+    except Exception:
+        Res = 'Failed'
+    print ("\n" + Test + " = " + Res)
+    print ('\n==========================================================================================')
+
+if __name__ == '__main__':
+
+    #test_add_kind()
+    test_delete_kind()
+    #test_get_all_kinds()
