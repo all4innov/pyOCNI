@@ -78,20 +78,17 @@ def purgeCategoryDBs():
         logger.error("Database is unreachable")
 
     try:
-        server.delete_db(config.Kind_DB)
-        server.create_db(config.Kind_DB)
+        server.flush(config.Kind_DB)
     except Exception:
         logger.debug("No DB named: '" + config.Kind_DB + "' to delete.")
         server.create_db(config.Kind_DB)
     try:
-        server.delete_db(config.Action_DB)
-        server.create_db(config.Action_DB)
+        server.flush(config.Action_DB)
     except Exception:
         logger.debug("No DB named: '" + config.Action_DB + "' to delete")
         server.create_db(config.Action_DB)
     try:
-        server.delete_db(config.Mixin_DB)
-        server.create_db(config.Mixin_DB)
+        server.flush(config.Mixin_DB)
     except Exception:
         logger.debug("No DB named: '" + config.Mixin_DB + "' to delete")
         server.create_db(config.Mixin_DB)
@@ -134,7 +131,7 @@ class KindManager:
             "views": {
                 "all": {
                     "map": "(function(doc) { emit(doc._id, doc.Description) });"
-                },
+                }
             }
 
         }
@@ -202,6 +199,48 @@ class KindManager:
         Update a kind using the id and user_id attributes
 
         """
+        #Detect the body type (HTTP or JSON)
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution 1 : convert to Json then validate
+            # Solution 2  (To adopt) : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type =="application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            logger.error(self.req.content_type + " is an unknown request content type")
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+        #Get the new data from the request
+        j_newData = json.loads(self.req.body)
+        #Get the old kind data from the database
+
+        oldData = self.database.get(self.doc_id)
+        if oldData is not None:
+            j_oldData = oldData['Description']
+            newData_keys =  j_newData.keys()
+            try:
+                val = newData_keys.index('kinds')
+                j_oldData['kinds'] = j_newData['kinds']
+            except Exception:
+                oldData_keys =  j_oldData['kinds'][0].keys()
+                for key in newData_keys:
+                    try:
+                        val = oldData_keys.index(key)
+                        j_oldData['kinds'][0][key] = j_newData[key]
+                    except Exception:
+                        print key + 'could not be updated'
+            oldData['Description'] = j_oldData
+            pprint(oldData)
+            print '==============================='
+            self.database.save_doc(oldData,force_update = True)
+            pprint(self.database.get(self.doc_id))
+        else:
+            print ('no doc to update ')
+
+
+
 
         return 'QueryInterface response from PUT '
 

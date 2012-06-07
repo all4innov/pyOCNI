@@ -66,13 +66,19 @@ body='''
             "actions": [
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#suspend"
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
+
             ],
             "location": "/compute/"
         }
     ]
 }
+'''
+updated_data = '''
+{"actions": ["http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
+                ]}
 '''
 # ====== Adding a new Kind ======
 def test_add_kind():
@@ -122,8 +128,31 @@ def test_get_all_kinds():
     print ("\n" + Test + " = " + Res)
     print ('\n==========================================================================================')
 
+    # ====== Update kind ======
+def test_update_kind():
+
+    print ('==========================================================================================')
+    Test = 'Getting all kinds'
+    Res = 'OK'
+    try:
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,updated_data)
+        c.perform()
+        c.close()
+    except Exception:
+        Res = 'Failed'
+    print ("\n" + Test + " = " + Res)
+    print ('\n==========================================================================================')
+
+
 if __name__ == '__main__':
 
     #test_add_kind()
-    test_delete_kind()
+    #test_delete_kind()
     #test_get_all_kinds()
+    test_update_kind()
