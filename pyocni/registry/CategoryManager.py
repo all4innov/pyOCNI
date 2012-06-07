@@ -220,29 +220,33 @@ class KindManager:
         if oldData is not None:
             j_oldData = oldData['Description']
             newData_keys =  j_newData.keys()
+            #Try to change the hole kind description
             try:
                 val = newData_keys.index('kinds')
                 j_oldData['kinds'] = j_newData['kinds']
             except Exception:
+                #Try to change parts of the kind description
                 oldData_keys =  j_oldData['kinds'][0].keys()
                 for key in newData_keys:
                     try:
                         val = oldData_keys.index(key)
                         j_oldData['kinds'][0][key] = j_newData[key]
                     except Exception:
-                        print key + 'could not be updated'
+                        logger.debug(key + 'could not be found')
+                        problems = True
             oldData['Description'] = j_oldData
-            pprint(oldData)
-            print '==============================='
+            #Update the document
             self.database.save_doc(oldData,force_update = True)
-            pprint(self.database.get(self.doc_id))
+            if problems:
+                self.res.status_code = return_code['Bad Request']
+                self.res.body = 'Document ' + self.doc_id + 'has not been totally updated. Check log for more details'
+            else:
+                self.res.status_code = return_code['OK']
+                self.res.body = 'Document ' + self.doc_id + 'has been updated successfully'
         else:
-            print ('no doc to update ')
+            self.res.body = 'Document ' + self.doc_id + 'couldn\'t be updated'
+            self.res.status_code = return_code['Resource not found']
 
-
-
-
-        return 'QueryInterface response from PUT '
 
     def delete(self):
         """
