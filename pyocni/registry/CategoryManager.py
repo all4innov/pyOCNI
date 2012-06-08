@@ -144,17 +144,30 @@ class KindManager:
     def get(self):
 
         """
-        Retrieval of all registered Kinds
+        Retrieval of all registered Kinds or just one kind
         """
-        query = self.database.view('/get_kind/all')
-        var = list()
-        #Extract kind description from the dictionary
-        for elem in query:
-            var.append(elem['value'])
-        #Convert the list into JSON
-        self.res.body = json.dumps(var)
-        self.res.status_code = return_code['OK']
-        return self.res
+        #if the doc_id is specified then only one kind will be returned if it exists
+        if self.doc_id is not None:
+            if self.database.doc_exist(self.doc_id):
+                elem = self.database.get(self.doc_id)
+                self.res.body = json.dumps(elem['Description'])
+                self.res.status = return_code['OK']
+                return self.res
+            else:
+                self.res.body = self.doc_id + 'have no match'
+                self.res.body = return_code['Resource not found']
+                return self.res
+        #No doc_id specified, all kinds will be returned
+        else:
+            query = self.database.view('/get_kind/all')
+            var = list()
+            #Extract kind description from the dictionary
+            for elem in query:
+                var.append(elem['value'])
+            #Convert the list into JSON
+            self.res.body = json.dumps(var)
+            self.res.status_code = return_code['OK']
+            return self.res
 
     def post(self):
         """
@@ -188,7 +201,11 @@ class KindManager:
         jData["Location"]= "/-/kind/" + user_id + "/" + str(doc_id)
         jData["Description"]= jBody
         jData["Type"]= "Kind"
-        self.database[doc_id] = jData
+        try:
+            self.database[doc_id] = jData
+        except Exception:
+            self.database = self.server.get_or_create_db(config.Kind_DB)
+            self.database[doc_id] = jData
         kind_location = jData["Location"]
         self.res.body = "A new kind has been successfully added to database : " + kind_location
         self.res.status_code = return_code["OK"]
@@ -227,6 +244,7 @@ class KindManager:
             except Exception:
                 #Try to change parts of the kind description
                 oldData_keys =  j_oldData['kinds'][0].keys()
+                problems = False
                 for key in newData_keys:
                     try:
                         val = oldData_keys.index(key)
@@ -239,13 +257,14 @@ class KindManager:
             self.database.save_doc(oldData,force_update = True)
             if problems:
                 self.res.status_code = return_code['Bad Request']
-                self.res.body = 'Document ' + self.doc_id + 'has not been totally updated. Check log for more details'
+                self.res.body = 'Document ' + str(self.doc_id) + 'has not been totally updated. Check log for more details'
             else:
                 self.res.status_code = return_code['OK']
-                self.res.body = 'Document ' + self.doc_id + 'has been updated successfully'
+                self.res.body = 'Document ' + str(self.doc_id) + 'has been updated successfully'
         else:
-            self.res.body = 'Document ' + self.doc_id + 'couldn\'t be updated'
+            self.res.body = 'Document ' + str(self.doc_id) + 'couldn\'t be updated'
             self.res.status_code = return_code['Resource not found']
+        return self.res
 
 
     def delete(self):
