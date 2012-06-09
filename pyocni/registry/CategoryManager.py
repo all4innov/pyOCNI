@@ -1,6 +1,6 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-# Copyright (C) 2012 Bilel Msekni - Institut Mines-Telecom
+# Copyright (C) 2011 Houssem Medhioub - Institut Telecom
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -100,21 +100,19 @@ class KindManager:
 
     """
 
+    def __init__(self):
 
-    def __init__(self,req, doc_id=None,user_id=None):
-
-        self.req = req
-        self.doc_id=doc_id
-        self.user_id=user_id
-        self.res = Response()
-        self.res.content_type = req.accept
-        self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
+#        self.req = req
+#        self.doc_id=doc_id
+#        self.user_id=user_id
+#        self.res = Response()
+#        self.res.content_type = req.accept
+#        self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
         try:
             self.server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
         except Exception:
             logger.error("Database is unreachable")
-            self.res.body = "Nothing has been added to the database, please check log for more details"
-            self.res.status_code = return_code["Internal Server Error"]
+            raise Exception("Database is unreachable")
         try:
             self.database = self.server.get_or_create_db(config.Kind_DB)
             self.add_design_doc_to_db()
@@ -141,34 +139,29 @@ class KindManager:
             self.database.save_doc(design_doc)
 
 
-    def get(self):
+    def get_by_id(self,doc_id=None):
 
-        """
-        Retrieval of all registered Kinds or just one kind
-        """
-        #if the doc_id is specified then only one kind will be returned if it exists
-        if self.doc_id is not None:
-            if self.database.doc_exist(self.doc_id):
-                elem = self.database.get(self.doc_id)
-                self.res.body = json.dumps(elem['Description'])
-                self.res.status = return_code['OK']
-                return self.res
-            else:
-                self.res.body = self.doc_id + 'have no match'
-                self.res.body = return_code['Resource not found']
-                return self.res
-        #No doc_id specified, all kinds will be returned
+
+    #if the doc_id is specified then only one kind will be returned if it exists
+        if self.database.doc_exist(doc_id):
+            res =''
+            elem = self.database.get(doc_id)
+            res = elem['Description']
+            logger.log("Kind found")
+            return res
         else:
-            query = self.database.view('/get_kind/all')
-            var = list()
-            #Extract kind description from the dictionary
-            for elem in query:
-                var.append(elem['value'])
-            #Convert the list into JSON
-            self.res.body = json.dumps(var)
-            self.res.status_code = return_code['OK']
-            return self.res
+            message = self.doc_id + 'have no match'
+            logger.log(message)
+            return message
 
+    def get_all(self):
+        query = self.database.view('/get_kind/all')
+        var = list()
+        #Extract kind descriptions from the dictionary
+        for elem in query:
+            var.append(elem['value'])
+        logger.log("Kinds found")
+        return var
     def post(self):
         """
         Create a new kind
@@ -206,8 +199,9 @@ class KindManager:
         except Exception:
             self.database = self.server.get_or_create_db(config.Kind_DB)
             self.database[doc_id] = jData
-        kind_location = jData["Location"]
-        self.res.body = "A new kind has been successfully added to database : " + kind_location
+        message = "A new kind has been successfully added to database : " + jData["Location"]
+        logger.log(message)
+        self.res.body = message
         self.res.status_code = return_code["OK"]
         return self.res
 
@@ -278,13 +272,222 @@ class KindManager:
             #If so then delete
             try:
                 self.database.delete_doc(self.doc_id)
-                self.res.body = "Kind has been successfully deleted "
+                message = "Kind has been successfully deleted "
+                self.res.body = message
                 self.res.status_code = return_code['OK']
+                logger.log(message)
             except Exception as e:
                 return e.message
         else:
             #else reply with kind not found
-            self.res.body = "Kind not found"
+            message = "Kind not found"
+            self.res.body = message
+            self.res.status_code = return_code["Resource not found"]
+            logger.log(message)
+        return self.res
+
+class MixinManager:
+    """
+
+        CRUD operation on Mixin
+
+    """
+
+
+    def __init__(self,req, doc_id=None,user_id=None):
+
+        self.req = req
+        self.doc_id=doc_id
+        self.user_id=user_id
+        self.res = Response()
+        self.res.content_type = req.accept
+        self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
+        try:
+            self.server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
+        except Exception:
+            logger.error("Database is unreachable")
+            self.res.body = "Nothing has been added to the database, please check log for more details"
+            self.res.status_code = return_code["Internal Server Error"]
+        try:
+            self.database = self.server.get_or_create_db(config.Mixin_DB)
+            self.add_design_doc_to_db()
+        except Exception as e:
+            logger.debug(e.message)
+
+
+    def add_design_doc_to_db(self):
+
+        design_doc = {
+            "_id": "_design/get_mixin",
+            "language": "javascript",
+            "type": "DesignDoc",
+            "views": {
+                "all": {
+                    "map": "(function(doc) { emit(doc._id, doc.Description) });"
+                }
+            }
+
+        }
+        if self.database.doc_exist(design_doc['_id']):
+            pass
+        else:
+            self.database.save_doc(design_doc)
+
+
+    def get(self):
+
+        """
+        Retrieval of all registered Mixins or just one Mixin
+        """
+        #if the doc_id is specified then only one mixin will be returned if it exists
+        if self.doc_id is not None:
+            if self.database.doc_exist(self.doc_id):
+                elem = self.database.get(self.doc_id)
+                self.res.body = json.dumps(elem['Description'])
+                self.res.status = return_code['OK']
+                logger.log("Mixin found")
+                return self.res
+            else:
+                message = self.doc_id + 'have no match'
+                logger.log(message)
+                self.res.body = message
+                self.res.body = return_code['Resource not found']
+                return self.res
+        #No doc_id specified, all mixins will be returned
+        else:
+            query = self.database.view('/get_mixin/all')
+            var = list()
+            #Extract mixin description from the dictionary
+            for elem in query:
+                var.append(elem['value'])
+                #Convert the list into JSON
+            self.res.body = json.dumps(var)
+            self.res.status_code = return_code['OK']
+            logger.log("Mixins found")
+            return self.res
+
+    def post(self):
+        """
+        Create a new mixin
+
+        """
+        #Detect the body type (HTTP or JSON)
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution 1 : convert to Json then validate
+            # Solution 2  (To adopt) : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type =="application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            logger.error(self.req.content_type + " is an unknown request content type")
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+        jBody = json.loads(self.req.body)
+        #add the JSON to database along with other attributes
+        doc_id = UUID_Generator.get_UUID()
+        jData = dict()
+        jData["Creator"]= user_id
+        jData["CreationDate"]= str(datetime.now())
+        jData["Location"]= "/-/mixin/" + user_id + "/" + str(doc_id)
+        jData["Description"]= jBody
+        jData["Type"]= "Mixin"
+        try:
+            self.database[doc_id] = jData
+        except Exception:
+            self.database = self.server.get_or_create_db(config.Mixin_DB)
+            self.database[doc_id] = jData
+        message = "A new mixin has been successfully added to database : " + jData["Location"]
+        logger.log(message)
+        self.res.body = message
+        self.res.status_code = return_code["OK"]
+        return self.res
+
+    def put(self):
+        """
+        Update a mixin using the id and user_id attributes
+
+        """
+        #Detect the body type (HTTP or JSON)
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution 1 : convert to Json then validate
+            # Solution 2  (To adopt) : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type =="application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            logger.error(self.req.content_type + " is an unknown request content type")
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+            #Get the new data from the request
+        j_newData = json.loads(self.req.body)
+        #Get the old mixin data from the database
+
+        oldData = self.database.get(self.doc_id)
+        if oldData is not None:
+            j_oldData = oldData['Description']
+            newData_keys =  j_newData.keys()
+            #Try to update the hole mixin description
+            try:
+                val = newData_keys.index('mixins')
+                j_oldData['mixins'] = j_newData['mixins']
+            except Exception:
+                #Try to change parts of the mixin description
+                oldData_keys =  j_oldData['mixins'][0].keys()
+                problems = False
+                for key in newData_keys:
+                    try:
+                        val = oldData_keys.index(key)
+                        j_oldData['mixins'][0][key] = j_newData[key]
+                    except Exception:
+                        logger.debug(key + 'could not be found')
+                        problems = True
+            oldData['Description'] = j_oldData
+            #Update the document
+            self.database.save_doc(oldData,force_update = True)
+            if problems:
+                self.res.status_code = return_code['Bad Request']
+                self.res.body = 'Document ' + str(self.doc_id) + 'has not been totally updated. Check log for more details'
+            else:
+                self.res.status_code = return_code['OK']
+                self.res.body = 'Document ' + str(self.doc_id) + 'has been updated successfully'
+        else:
+            self.res.body = 'Document ' + str(self.doc_id) + 'couldn\'t be updated'
+            self.res.status_code = return_code['Resource not found']
+        return self.res
+
+
+    def delete(self):
+        """
+
+        Delete a mixin using the doc_id
+
+        """
+        #Verify the existence of such mixin
+        if self.database.doc_exist(self.doc_id):
+            #If so then delete
+            try:
+                self.database.delete_doc(self.doc_id)
+                message = "Mixin has been successfully deleted "
+                logger.log(message)
+                self.res.body = message
+                self.res.status_code = return_code['OK']
+            except Exception as e:
+                logger.error(e.message)
+                self.res.status_code = return_code['Internal Server Error']
+        else:
+            #else reply with mixin not found
+            message = "Kind not found"
+            logger.log(message)
+            self.res.body = message
             self.res.status_code = return_code["Resource not found"]
 
         return self.res

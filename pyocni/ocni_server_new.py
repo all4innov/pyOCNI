@@ -1,6 +1,6 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-# Copyright (C) 2012 Msekni Bilel - Institut Telecom
+# Copyright (C) 2011 Houssem Medhioub - Institut Telecom
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -18,19 +18,18 @@
 """
 Created on Jun 01, 2012
 
+@author: Bilel Msekni
+@contact: bilel.msekni@telecom-sudparis.eu
 @author: Houssem Medhioub
 @author: Daniel Turull (DELETE and PUT of OperationResource class)
 @contact: houssem.medhioub@it-sudparis.eu
-@author: Bilel Msekni
-@contact: bilel.msekni@telecom-sudparis.eu
 @organization: Institut Telecom - Telecom SudParis
 @version: 1.0
 @license: LGPL - Lesser General Public License
 """
+import CRUD_Operations.CategoryInterface import KindInterface
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.DoItYourselfWebOb as url_mapper
-import pyocni.registry.LocationManager as LocationManager
-import pyocni.registry.CategoryManager as CategoryManager
 import eventlet
 
 from eventlet import wsgi
@@ -94,7 +93,7 @@ class ocni_server(object):
 
     """
 
-    operationKind = url_mapper.rest_controller(CategoryManager.KindManager)
+    operationKind = url_mapper.rest_controller(KindInterface)
 
     app = url_mapper.Router()
 
