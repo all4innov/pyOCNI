@@ -75,10 +75,7 @@ body='''
 }
 '''
 updated_data = '''
-{"actions": ["http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-                ]}
+{"actions": []}
 '''
 # ====== Adding a new Kind ======
 def test_add_kind():
@@ -107,7 +104,7 @@ def test_delete_kind():
     Res =' I don\'t know'
     Test = 'Deleting a kind'
     c = pycurl.Curl()
-    c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/kind/user_1/2ee')
+    c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/kind/user_1/ab35c72f-7194-4c75-86d0-bbccd9a19f0a')
     c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
     c.setopt(pycurl.HTTPHEADER, ['Content-Type: text/plain'])
     c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -150,7 +147,7 @@ def test_get_one_kind():
     Test = 'Getting one kind'
     Res = 'I don\'t know'
     c = pycurl.Curl()
-    c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+    c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/5f1e0483-c079-4a70-9c1e-6df5c2c1752c')
     c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
     c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
     c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -171,7 +168,7 @@ def test_update_kind():
     Test = 'Updating a kind'
     Res = 'I don\'t know'
     c = pycurl.Curl()
-    c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+    c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/ab35c72f-7194-4c75-86d0-bbccd9a19f0a')
     c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
     c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
     c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -189,8 +186,8 @@ def test_update_kind():
 
 if __name__ == '__main__':
 
-    test_add_kind()
+    #test_add_kind()
     test_delete_kind()
-    test_get_all_kinds()
-    test_update_kind()
-    test_get_one_kind()
+    #test_get_all_kinds()
+    #test_update_kind()
+    #test_get_one_kind()

@@ -1,6 +1,6 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-# Copyright (C) 2012 Bilel Msekni - Institut Mines-Telecom
+# Copyright (C) 2011 Houssem Medhioub - Institut Telecom
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -27,9 +27,6 @@ Created on May 29, 2012
 @license: LGPL - Lesser General Public License
 """
 
-from webob import Request, Response
-from pyocni.pyocni_tools.Enum import Enum
-
 import pyocni.pyocni_tools.config as config
 try:
     import simplejson as json
@@ -38,8 +35,6 @@ except ImportError:
 from datetime import datetime
 from pyocni.pyocni_tools import UUID_Generator
 from couchdbkit import *
-from pprint import *
-import base64
 
 # getting the Logger
 logger = config.logger
@@ -49,25 +44,6 @@ logger = config.logger
 
 DB_server_IP = config.DB_IP
 DB_server_PORT = config.DB_PORT
-
-entity_children = Enum("resources","links")
-
-# ======================================================================================
-# HTTP Return Codes
-# ======================================================================================
-return_code = {'OK': 200,
-               'Accepted': 202,
-               'Bad Request': 400,
-               'Unauthorized': 401,
-               'Forbidden': 403,
-               'Resource not found': 404,
-               'Method Not Allowed': 405,
-               'Conflict': 409,
-               'Gone': 410,
-               'Unsupported Media Type': 415,
-               'Internal Server Error': 500,
-               'Not Implemented': 501,
-               'Service Unavailable': 503}
 
 
 def purgeCategoryDBs():
@@ -100,30 +76,23 @@ class KindManager:
 
     """
 
+    def __init__(self):
 
-    def __init__(self,req, doc_id=None,user_id=None):
-
-        self.req = req
-        self.doc_id=doc_id
-        self.user_id=user_id
-        self.res = Response()
-        self.res.content_type = req.accept
-        self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
         try:
             self.server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
         except Exception:
             logger.error("Database is unreachable")
-            self.res.body = "Nothing has been added to the database, please check log for more details"
-            self.res.status_code = return_code["Internal Server Error"]
+            raise Exception("Database is unreachable")
         try:
-            self.database = self.server.get_or_create_db(config.Kind_DB)
-            self.add_design_doc_to_db()
+            self.add_design_kind_docs_to_db()
         except Exception as e:
             logger.debug(e.message)
 
 
-    def add_design_doc_to_db(self):
-
+    def add_design_kind_docs_to_db(self):
+        """
+        Add admin design documents to database.
+        """
         design_doc = {
             "_id": "_design/get_kind",
             "language": "javascript",
@@ -135,156 +104,128 @@ class KindManager:
             }
 
         }
-        if self.database.doc_exist(design_doc['_id']):
+        database = self.server.get_or_create_db(config.Kind_DB)
+        if database.doc_exist(design_doc['_id']):
             pass
         else:
-            self.database.save_doc(design_doc)
+            database.save_doc(design_doc)
 
 
-    def get(self):
-
+    def get_kind_by_id(self,doc_id=None):
         """
-        Retrieval of all registered Kinds or just one kind
+        returns the document matching the id provided in the request
         """
-        #if the doc_id is specified then only one kind will be returned if it exists
-        if self.doc_id is not None:
-            if self.database.doc_exist(self.doc_id):
-                elem = self.database.get(self.doc_id)
-                self.res.body = json.dumps(elem['Description'])
-                self.res.status = return_code['OK']
-                return self.res
-            else:
-                self.res.body = self.doc_id + 'have no match'
-                self.res.body = return_code['Resource not found']
-                return self.res
-        #No doc_id specified, all kinds will be returned
+        database = self.server.get_or_create_db(config.Kind_DB)
+    #if the doc_id is specified then only one kind will be returned if it exists
+        if database.doc_exist(doc_id):
+            res =''
+            elem = database.get(doc_id)
+            res = elem['Description']
+            logger.debug("Kind found")
+            return res
         else:
-            query = self.database.view('/get_kind/all')
-            var = list()
-            #Extract kind description from the dictionary
-            for elem in query:
-                var.append(elem['value'])
-            #Convert the list into JSON
-            self.res.body = json.dumps(var)
-            self.res.status_code = return_code['OK']
-            return self.res
+            message = "Document " + str(doc_id) + " have no match"
+            logger.debug(message)
+            return message
 
-    def post(self):
+    def get_all_kinds(self):
         """
-        Create a new kind
+        Returns all documents stored in database
+        """
+        database = self.server.get_or_create_db(config.Kind_DB)
+        query = database.view('/get_kind/all')
+        var = list()
+        #Extract kind descriptions from the dictionary
+        for elem in query:
+            var.append(elem['value'])
+        logger.debug("Kinds found")
+        return var
+    def register_kind(self,creator,description):
 
         """
-        #Detect the body type (HTTP or JSON)
-        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
-            # Solution 1 : convert to Json then validate
-            # Solution 2  (To adopt) : Validate HTTP then convert to JSON
-            pass
-        elif self.req.content_type =="application/occi+json":
-            #Validate the JSON message
-            pass
-        else:
-            logger.error(self.req.content_type + " is an unknown request content type")
-            self.res.status_code = return_code["Unsupported Media Type"]
-            self.res.body = self.req.content_type + " is an unknown request content type"
-            return self.res
-
-        #Decode authorization header to get the user_id
-        var,user_id = self.req.authorization
-        user_id = base64.decodestring(user_id)
-        user_id = user_id.split(':')[0]
-        jBody = json.loads(self.req.body)
-        #add the JSON to database along with other attributes
+        Add a new kind to the database
+        """
+        database = self.server.get_or_create_db(config.Kind_DB)
         doc_id = UUID_Generator.get_UUID()
         jData = dict()
-        jData["Creator"]= user_id
+        jData["Creator"]= creator
         jData["CreationDate"]= str(datetime.now())
-        jData["Location"]= "/-/kind/" + user_id + "/" + str(doc_id)
-        jData["Description"]= jBody
+        jData["Location"]= "/-/kind/" + creator + "/" + str(doc_id)
+        jData["Description"]= description
         jData["Type"]= "Kind"
+        provider = {"local":[],"remote":[]}
+        jData["Provider"]= provider
         try:
-            self.database[doc_id] = jData
-        except Exception:
-            self.database = self.server.get_or_create_db(config.Kind_DB)
-            self.database[doc_id] = jData
-        kind_location = jData["Location"]
-        self.res.body = "A new kind has been successfully added to database : " + kind_location
-        self.res.status_code = return_code["OK"]
-        return self.res
+            database[doc_id] = jData
+            logger.debug("Document has been successfully added to database : " + jData["Location"])
+            return jData["Location"]
+        except Exception as e:
+            logger.error(e.message)
+            raise Exception(" A problem has occured")
 
-    def put(self):
+    def update_part_of_kind(self,doc_id,newData,j_oldData,newData_keys):
         """
-        Update a kind using the id and user_id attributes
-
+        update only a part of the kind description (can be called only after a failed try to fully update the kind description)
         """
-        #Detect the body type (HTTP or JSON)
-        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
-            # Solution 1 : convert to Json then validate
-            # Solution 2  (To adopt) : Validate HTTP then convert to JSON
-            pass
-        elif self.req.content_type =="application/occi+json":
-            #Validate the JSON message
-            pass
+        database = self.server.get_or_create_db(config.Kind_DB)
+        #Try to change parts of the kind description
+        oldData_keys =  j_oldData['kinds'][0].keys()
+        problems = False
+        for key in newData_keys:
+            try:
+                oldData_keys.index(key)
+                j_oldData['kinds'][0][key] = newData[key]
+            except Exception:
+                #Keep the record of the keys(=parts) that couldn't be updated
+                logger.debug(key + 'could not be found')
+                problems = True
+        if problems:
+            message = "Document " + str(doc_id) + " has not been totally updated. Check log for more details"
         else:
-            logger.error(self.req.content_type + " is an unknown request content type")
-            self.res.status_code = return_code["Unsupported Media Type"]
-            self.res.body = self.req.content_type + " is an unknown request content type"
-            return self.res
-        #Get the new data from the request
-        j_newData = json.loads(self.req.body)
-        #Get the old kind data from the database
+            message = "Document " + str(doc_id) + " has been updated successfully"
+        return j_oldData,message
 
-        oldData = self.database.get(self.doc_id)
+    def update_kind(self,doc_id=None,new_Data=None):
+        """
+        update all of the kind description
+        """
+        #Get the old kind data from the database
+        database = self.server.get_or_create_db(config.Kind_DB)
+        oldData = database.get(doc_id)
         if oldData is not None:
             j_oldData = oldData['Description']
-            newData_keys =  j_newData.keys()
+            newData_keys =  new_Data.keys()
             #Try to change the hole kind description
             try:
                 val = newData_keys.index('kinds')
-                j_oldData['kinds'] = j_newData['kinds']
+                j_oldData['kinds'] = new_Data['kinds']
+                oldData['Description'] = j_oldData
+                mesg = "Document " + str(doc_id) + " has been updated successfully"
             except Exception:
-                #Try to change parts of the kind description
-                oldData_keys =  j_oldData['kinds'][0].keys()
-                problems = False
-                for key in newData_keys:
-                    try:
-                        val = oldData_keys.index(key)
-                        j_oldData['kinds'][0][key] = j_newData[key]
-                    except Exception:
-                        logger.debug(key + 'could not be found')
-                        problems = True
-            oldData['Description'] = j_oldData
+                res,mesg = self.update_part_of_kind(doc_id,new_Data,j_oldData,newData_keys)
+                oldData['Description'] = res
             #Update the document
-            self.database.save_doc(oldData,force_update = True)
-            if problems:
-                self.res.status_code = return_code['Bad Request']
-                self.res.body = 'Document ' + str(self.doc_id) + 'has not been totally updated. Check log for more details'
-            else:
-                self.res.status_code = return_code['OK']
-                self.res.body = 'Document ' + str(self.doc_id) + 'has been updated successfully'
+            database.save_doc(oldData,force_update = True)
+            return mesg
         else:
-            self.res.body = 'Document ' + str(self.doc_id) + 'couldn\'t be updated'
-            self.res.status_code = return_code['Resource not found']
-        return self.res
+            return 'Document ' + str(doc_id) + 'couldn\'t be found'
 
 
-    def delete(self):
-        """
 
-        Delete a kind using the doc_id
-
-        """
-        #Verify the existence of such kind
-        if self.database.doc_exist(self.doc_id):
-            #If so then delete
+    def delete_document(self,doc_id):
+        database = self.server.get_or_create_db(config.Kind_DB)
+        #Verify the existence of such document
+        if database.doc_exist(doc_id):
+        #If so then delete
             try:
-                self.database.delete_doc(self.doc_id)
-                self.res.body = "Kind has been successfully deleted "
-                self.res.status_code = return_code['OK']
+                database.delete_doc(doc_id)
+                message = "Document " + str(doc_id) + " has been successfully deleted "
+                logger.debug(message)
+                return message
             except Exception as e:
                 return e.message
         else:
             #else reply with kind not found
-            self.res.body = "Kind not found"
-            self.res.status_code = return_code["Resource not found"]
-
-        return self.res
+            message = "Document " + str(doc_id) + " not found"
+            logger.debug(message)
+            return message
