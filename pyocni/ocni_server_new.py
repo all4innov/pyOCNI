@@ -27,7 +27,7 @@ Created on Jun 01, 2012
 @version: 1.0
 @license: LGPL - Lesser General Public License
 """
-import CRUD_Operations.CategoryInterface import KindInterface
+from pyocni.CRUD_Interfaces.CategoryInterfaces import KindInterface
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.DoItYourselfWebOb as url_mapper
 import eventlet
