@@ -75,7 +75,52 @@ body='''
 }
 '''
 updated_data = '''
-{"actions": []}
+{
+   "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
+   "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0",
+   "LastUpdate": "2012-06-09 19:03:33.321330",
+   "CreationDate": "2012-06-08 10:15:42.049834",
+   "Description": {
+       "kinds": [
+           {
+               "term": "compute",
+               "title": "Compute Resource",
+               "related": [
+                   "http://schemas.ogf.org/occi/core#resource"
+               ],
+               "actions": [
+
+               ],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "state": {
+                               "default": "inactive",
+                               "mutable": false,
+                               "required": false,
+                               "type": "string",
+                               "pattern": "inactive|active|suspended|failed"
+                           },
+                           "hostname": {
+                               "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                               "required": false,
+                               "maximum": "255",
+                               "minimum": "1",
+                               "mutable": true,
+                               "type": "string"
+                           }
+                       }
+                   }
+               },
+               "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+               "location": "/compute/"
+           }
+       ]
+   },
+   "Creator": "user_1",
+   "Location": "/-/kind/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
+   "Type": "Kind"
+}
 '''
 # ====== Adding a new Kind ======
 def test_add_kind():
@@ -168,7 +213,7 @@ def test_update_kind():
     Test = 'Updating a kind'
     Res = 'I don\'t know'
     c = pycurl.Curl()
-    c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/ab35c72f-7194-4c75-86d0-bbccd9a19f0a')
+    c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2')
     c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
     c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
     c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -187,7 +232,7 @@ def test_update_kind():
 if __name__ == '__main__':
 
     #test_add_kind()
-    test_delete_kind()
+    #test_delete_kind()
     #test_get_all_kinds()
-    #test_update_kind()
+    test_update_kind()
     #test_get_one_kind()
