@@ -54,7 +54,7 @@ OCNI_PORT = config.OCNI_PORT
 # ======================================================================================
 # the Backend registry
 # ======================================================================================
-
+#
 #result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
 #                                     "   Do you want to register the dummy backend ?", "yes")
 #if result == 'yes':
@@ -113,11 +113,11 @@ class ocni_server(object):
         to run the server
 
         """
-        result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-                                             "   Do you want to purge all databases (DB  reinitialization)?", "no")
-        if result == 'yes':
-            LocationManager.purgeLocationDBs()
-            CategoryManager.purgeCategoryDBs()
+#        result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+#                                             "   Do you want to purge all databases (DB  reinitialization)?", "no")
+#        if result == 'yes':
+#            LocationManager.purgeLocationDBs()
+#            CategoryManager.purgeCategoryDBs()
 
         print ("\n______________________________________________________________________________________\n"
                "The OCNI server is running at: " + config.OCNI_IP + ":"+config.OCNI_PORT)

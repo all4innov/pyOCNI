@@ -72,13 +72,13 @@ class test_get(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_get_all_kinds(self):
+    def test_get_all_actions(self):
         """
-        Get all kinds
+        Get all actions
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -89,15 +89,15 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_kind_by_id(self):
+    def test_get_action_by_id(self):
         """
-        get the kind specific to the id
+        get the action specific to the id
 
         """
-        id = '8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb'
+        id = '6bebe042-4e3e-40de-9c21-bdc34d400358'
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/'+id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -108,15 +108,15 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_kind_with_wrong_id(self):
+    def test_get_action_with_wrong_id(self):
         """
-        get a kind using a bad id
+        get an action using a bad id
 
         """
         id = "41005914"
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/'+id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -138,45 +138,23 @@ class test_post(TestCase):
         """
         self.body='''
 {
-    "kinds": [
-        {
-            "term": "compute",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/core#resource"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
+            "actions": [
+                    {
+                    "term": "stop",
+                    "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                    "title": "Stop Compute instance",
+                    "attributes": {
+                        "method": {
                             "mutable": true,
                             "required": false,
                             "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
+                            "pattern": "graceful|acpioff|poweroff",
+                            "default": "poweroff"
                         }
                     }
                 }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-
-            ],
-            "location": "/compute/"
+            ]
         }
-    ]
-}
 '''
         self.p = Process(target = start_server)
         self.p.start()
@@ -185,11 +163,11 @@ class test_post(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_add_kind(self):
+    def test_add_action(self):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/kind/')
+        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/action/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.POST, 1)
@@ -208,64 +186,37 @@ class test_put(TestCase):
     def setUp(self):
         self.p = Process(target=start_server)
         self.p.start()
-        self.updated_data = '''
+        time.sleep(0.5)
+        self.updated_data ='''
 {
-   "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
-   "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0",
-   "LastUpdate": "2012-06-09 19:03:33.321330",
-   "CreationDate": "2012-06-08 10:15:42.049834",
-   "Description": {
-       "kinds": [
-           {
-               "term": "compute",
-               "title": "Compute Resource",
-               "related": [
-                   "http://schemas.ogf.org/occi/core#resource"
-               ],
-               "actions": [
-
-               ],
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "state": {
-                               "default": "inactive",
-                               "mutable": false,
-                               "required": false,
-                               "type": "string",
-                               "pattern": "inactive|active|suspended|failed"
-                           },
-                           "hostname": {
-                               "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                               "required": false,
-                               "maximum": "255",
-                               "minimum": "1",
-                               "mutable": true,
-                               "type": "string"
-                           }
-                       }
-                   }
-               },
-               "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-               "location": "/compute/"
-           }
-       ]
-   },
-   "Creator": "user_1",
-   "Location": "/-/kind/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
-   "Type": "Kind"
+    "Description": {
+        "actions": [
+            {
+                "attributes": {
+                    "method": {
+                        "default": "poweroff",
+                        "mutable": true,
+                        "required": false,
+                        "type": "string",
+                        "pattern": "graceful|acpioff|poweroff"
+                    }
+                },
+                "term": "start",
+                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                "title": "start Compute instance"
+            }
+        ]
+    }
 }
 '''
-        time.sleep(0.5)
-
 
     def tearDown(self):
         self.p.terminate()
 
-    def test_update_kind_normal(self):
+    def test_update_action_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/6bebe042-4e3e-40de-9c21-bdc34d400358')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -278,10 +229,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_update_kind_unauthorized(self):
+    def test_update_action_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/userm/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/userm/6bebe042-4e3e-40de-9c21-bdc34d400358')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -294,10 +245,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_update_kind_notfound(self):
+    def test_update_action_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/ab50-0e340bce9cc2')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -323,10 +274,10 @@ class test_delete(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_delete_kind_normal(self):
+    def test_delete_action_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/bbe47489-0011-4f34-9d84-edf007afc1d1')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/163d14f3-c648-456e-9b4a-f1b26590c0c2')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -338,10 +289,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_delete_kind_unauthorized(self):
+    def test_delete_action_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/userm/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/userm/6bebe042-4e3e-40de-9c21-bdc34d400358')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -353,10 +304,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_delete_kind_notfound(self):
+    def test_delete_action_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/bbe47489-001')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/bbe47489-001')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')

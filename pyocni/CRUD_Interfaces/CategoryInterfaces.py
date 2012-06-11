@@ -26,8 +26,8 @@ Created on Jun 09, 2012
 @version: 0.2
 @license: LGPL - Lesser General Public License
 """
-from webob import Request, Response
-from pyocni.registry.CategoryManager import KindManager
+from webob import Request,Response
+from pyocni.registry.CategoryManager import KindManager,MixinManager,ActionManager
 try:
     import simplejson as json
 except ImportError:
@@ -69,7 +69,7 @@ class KindInterface(object):
         try:
             self.manager = KindManager()
         except Exception:
-            self.res.body = "Nothing has been added to the database, please check log for more details"
+            self.res.body = "An error has occurred, please check log for more details"
             self.res.status_code = return_code["Internal Server Error"]
 
     def get(self):
@@ -79,19 +79,17 @@ class KindInterface(object):
         """
         #if the doc_id is specified then only one kind will be returned if it exists
         if self.doc_id is not None:
-            res = self.manager.get_kind_by_id(self.doc_id)
-            self.res.body = json.dumps(res)
-            self.res.status = return_code['OK']
+            var,self.res.status = self.manager.get_kind_by_id(self.doc_id)
+            self.res.body = json.dumps(var)
             #No doc_id specified, all kinds will be returned
         else:
-            var = self.manager.get_all_kinds()
+            var,self.res.status = self.manager.get_all_kinds()
             self.res.body = json.dumps(var)
-            self.res.status_code = return_code['OK']
         return self.res
 
     def post(self):
         """
-        Create a new document
+        Create a new kind document in the database
 
         """
 
@@ -117,14 +115,7 @@ class KindInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        try:
-            path = self.manager.register_kind(user_id,jBody)
-            self.res.body = "A new kind has been successfully added to database : " + path
-            self.res.status_code = return_code['OK']
-        except Exception:
-            self.res.body = "A problem has occured, please check log for more details"
-            self.res.status_code = return_code['Internal Server Error']
-
+        self.res.body,self.res.status = self.manager.register_kind(user_id,jBody)
         return self.res
 
     def put(self):
@@ -150,10 +141,7 @@ class KindInterface(object):
             return self.res
         #Get the new data from the request
         j_newData = json.loads(self.req.body)
-        try:
-            self.res.body = self.manager.update_kind(self.doc_id,j_newData)
-        except Exception:
-            self.res.status = return_code['Internal Server Error']
+        self.res.body,self.res.status = self.manager.update_kind(self.doc_id,self.user_id,j_newData)
         return self.res
 
     def delete(self):
@@ -162,8 +150,215 @@ class KindInterface(object):
         Delete a document using the doc_id provided in the request
 
         """
-        self.res.body = self.manager.delete_document(self.doc_id)
-        self.res.status_code = return_code['OK']
+        self.res.body,self.res.status = self.manager.delete_kind_document(self.doc_id,self.user_id)
         return self.res
 
+class MixinInterface(object):
+    """
 
+        CRUD operation on mixins
+
+    """
+    def __init__(self,req, doc_id=None,user_id=None):
+
+        self.req = req
+        self.doc_id=doc_id
+        self.user_id=user_id
+        self.res = Response()
+        self.res.content_type = req.accept
+        self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
+        try:
+            self.manager = MixinManager()
+        except Exception:
+            self.res.body = "An error has occurred, please check log for more details"
+            self.res.status_code = return_code["Internal Server Error"]
+
+    def get(self):
+
+        """
+        Retrieval of all registered mixins or just one mixin
+        """
+        #if the doc_id is specified then only one mixin will be returned if it exists
+        if self.doc_id is not None:
+            var,self.res.status = self.manager.get_mixin_by_id(self.doc_id)
+            self.res.body = json.dumps(var)
+            #No doc_id specified, all mixins will be returned
+        else:
+            var,self.res.status = self.manager.get_all_mixins()
+            self.res.body = json.dumps(var)
+        return self.res
+
+    def post(self):
+
+        """
+        Create a new mixin document in the database
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi:json":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+        jBody = json.loads(self.req.body)
+        #add the JSON data to database
+
+        self.res.body,self.res.status = self.manager.register_mixin(user_id,jBody)
+
+        return self.res
+
+    def put(self):
+        """
+        Update the document specific to the id provided with new data
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/occi:json":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+            #Get the new data from the request
+        j_newData = json.loads(self.req.body)
+
+        self.res.body, self.res.status_code = self.manager.update_mixin(self.doc_id,self.user_id,j_newData)
+        return self.res
+
+    def delete(self):
+        """
+
+        Delete a document using the doc_id
+
+        """
+        self.res.body, self.res.status_code = self.manager.delete_mixin_document(self.doc_id,self.user_id)
+        return self.res
+
+class ActionInterface(object):
+    """
+
+        CRUD operation on actions
+
+    """
+    def __init__(self,req, doc_id=None,user_id=None):
+
+        self.req = req
+        self.doc_id=doc_id
+        self.user_id=user_id
+        self.res = Response()
+        self.res.content_type = req.accept
+        self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
+        try:
+            self.manager = ActionManager()
+        except Exception:
+            self.res.body = "An error has occurred, please check log for more details"
+            self.res.status_code = return_code["Internal Server Error"]
+
+    def get(self):
+
+        """
+        Retrieval of all registered actions or just one action
+        """
+        #if the doc_id is specified then only one action will be returned if it exists
+        if self.doc_id is not None:
+            var,self.res.status = self.manager.get_action_by_id(self.doc_id)
+            self.res.body = json.dumps(var)
+            #No doc_id specified, all actions will be returned
+        else:
+            var,self.res.status = self.manager.get_all_actions()
+            self.res.body = json.dumps(var)
+        return self.res
+
+    def post(self):
+
+        """
+        Create a new action document in the database
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi:json":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+        jBody = json.loads(self.req.body)
+        #add the JSON data to database
+
+        self.res.body,self.res.status = self.manager.register_action(user_id,jBody)
+
+        return self.res
+
+    def put(self):
+        """
+        Update the document specific to the id provided with new data
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/occi:json":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+            #Get the new data from the request
+        j_newData = json.loads(self.req.body)
+
+        self.res.body, self.res.status_code = self.manager.update_action(self.doc_id,self.user_id,j_newData)
+        return self.res
+
+    def delete(self):
+        """
+
+        Delete a document using the doc_id
+
+        """
+        self.res.body, self.res.status_code = self.manager.delete_action_document(self.doc_id,self.user_id)
+        return self.res
