@@ -52,6 +52,7 @@ This software needs this packages to run:
 * python == 2.7
 * python-all-dev (for eventlet/greenlet install/make)
 * python-setuptools (to execute the setup.py file)
+* couchdbkit
 
 3.2. Install
 ------------

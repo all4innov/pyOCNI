@@ -31,7 +31,9 @@ setup(name='pyocni',
           'pesto',
           'eventlet',
           'sphinx',
-          'ZODB3'
+          'ZODB3',
+          'couchdb',
+          'couchdbkit'
           #'pack>=0.97',
           #'pack'
       ],
