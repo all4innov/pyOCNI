@@ -32,12 +32,15 @@ import commands
 logger = config.logger
 
 
+
 class backend(object):
     '''
 
     A simple and empty backend
 
     '''
+
+    local_identifier = 'a'
 
     def create(self, entity):
         '''

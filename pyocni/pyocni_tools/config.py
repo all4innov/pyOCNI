@@ -20,8 +20,9 @@ Created on Feb 25, 2011
 
 @author: Houssem Medhioub, Providence Salumu Munga
 @contact: houssem.medhioub@it-sudparis.eu
+@author: Bilel Msekni (Database configuration)
 @organization: Institut Telecom - Telecom SudParis
-@version: 0.1.1
+@version: 0.2
 @license: LGPL - Lesser General Public License
 
 """
@@ -44,3 +45,13 @@ logger = logging.getLogger("OCCILogging")
 config = ConfigObj(get_absolute_path_from_relative_path("../occi_server.conf"))
 OCNI_IP = config['OCNI_IP']
 OCNI_PORT = config['OCNI_PORT']
+
+# Loading the DB server configuration file
+DB_config = ConfigObj(get_absolute_path_from_relative_path("../couchdb_server.conf"))
+DB_IP = DB_config['CouchDB_IP']
+DB_PORT = DB_config['CouchDB_PORT']
+Kind_DB = DB_config['CouchDB_Kind']
+Action_DB = DB_config['CouchDB_Action']
+Mixin_DB = DB_config['CouchDB_Mixin']
+Resource_DB = DB_config['CouchDB_Resource']
+Link_DB = DB_config['CouchDB_Link']

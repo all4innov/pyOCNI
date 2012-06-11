@@ -504,6 +504,10 @@ class ocni_server(object):
     app.add_route('/{term}/', controller=operationResource)
     app.add_route('/{term}/{user}/{id}', controller=operationResource)
     app.add_route('/{term}/{user}/', controller=operationPath)
+    #app.add_route('/-/kind/', controller=a)
+    #app.add_route('/-/kind/{id}', controller=a)
+    #app.add_route('/-/mixin/', controller=b)
+    #app.add_route('/-/action/', controller=c)
 
     def run_server(self):
         """
