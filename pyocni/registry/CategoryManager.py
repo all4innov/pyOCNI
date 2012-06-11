@@ -213,8 +213,9 @@ class KindManager:
         """
         #Get the old document data from the database
         database = self.server.get_or_create_db(config.Kind_DB)
-        oldData = database.get(doc_id)
-        if oldData is not None:
+
+        if database.doc_exist(doc_id) is True:
+            oldData = database.get(doc_id)
             if oldData['Creator'] == user_id:
                 oldData_keys = oldData.keys()
                 newData_keys =  new_Data.keys()
@@ -249,7 +250,7 @@ class KindManager:
 
 
 
-    def delete_document(self,doc_id=None,user_id=None):
+    def delete_kind_document(self,doc_id=None,user_id=None):
         """
         Delete the document that is related to the id provided (Can only be done by the creator of the document)
         """
@@ -326,11 +327,10 @@ class MixinManager:
         database = self.server.get_or_create_db(config.Mixin_DB)
         #if the doc_id is specified then only one mixin will be returned if it exists
         if database.doc_exist(doc_id):
-            res =''
             elem = database.get(doc_id)
             res = elem['Description']
             logger.debug("Mixin found")
-            return res,return_code['Resource not found']
+            return res,return_code['OK']
         else:
             message = "Mixin " + str(doc_id) + " does not exist"
             logger.debug(message)
@@ -383,8 +383,9 @@ class MixinManager:
         """
         #Get the old document data from the database
         database = self.server.get_or_create_db(config.Mixin_DB)
-        oldData = database.get(doc_id)
-        if oldData is not None:
+
+        if database.doc_exist(doc_id) is True:
+            oldData = database.get(doc_id)
             if oldData['Creator'] == user_id:
                 oldData_keys = oldData.keys()
                 newData_keys =  new_Data.keys()
@@ -419,13 +420,13 @@ class MixinManager:
 
 
 
-    def delete_document(self,doc_id=None,user_id=None):
+    def delete_mixin_document(self,doc_id=None,user_id=None):
         """
         Delete the document that is related to the id provided (Can only be done by the creator of the document)
         """
-        database = self.server.get_or_create_db(config.Action_DB)
+        database = self.server.get_or_create_db(config.Mixin_DB)
         #Verify the existence of such document
-        if database.doc_exist(doc_id):
+        if database.doc_exist(doc_id) is True:
         #If so then delete
             try:
                 Data = database.get(doc_id)
@@ -556,8 +557,9 @@ class ActionManager:
         """
         #Get the old document data from the database
         database = self.server.get_or_create_db(config.Action_DB)
-        oldData = database.get(doc_id)
-        if oldData is not None:
+
+        if database.doc_exist(doc_id) is True:
+            oldData = database.get(doc_id)
             if oldData['Creator'] == user_id:
                 oldData_keys = oldData.keys()
                 newData_keys =  new_Data.keys()
@@ -592,7 +594,7 @@ class ActionManager:
 
 
 
-    def delete_document(self,doc_id=None,user_id=None):
+    def delete_action_document(self,doc_id=None,user_id=None):
         """
         Delete the document that is related to the id provided (Can only be done by the creator of the document)
         """

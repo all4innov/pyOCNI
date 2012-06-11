@@ -69,7 +69,7 @@ class KindInterface(object):
         try:
             self.manager = KindManager()
         except Exception:
-            self.res.body = "An error has occured, please check log for more details"
+            self.res.body = "An error has occurred, please check log for more details"
             self.res.status_code = return_code["Internal Server Error"]
 
     def get(self):
@@ -150,7 +150,7 @@ class KindInterface(object):
         Delete a document using the doc_id provided in the request
 
         """
-        self.res.body,self.res.status = self.manager.delete_document(self.doc_id)
+        self.res.body,self.res.status = self.manager.delete_kind_document(self.doc_id,self.user_id)
         return self.res
 
 class MixinInterface(object):
@@ -170,7 +170,7 @@ class MixinInterface(object):
         try:
             self.manager = MixinManager()
         except Exception:
-            self.res.body = "An error has occured, please check log for more details"
+            self.res.body = "An error has occurred, please check log for more details"
             self.res.status_code = return_code["Internal Server Error"]
 
     def get(self):
@@ -255,8 +255,9 @@ class MixinInterface(object):
         Delete a document using the doc_id
 
         """
-        self.res.body, self.res.status_code = self.manager.delete_document(self.doc_id)
+        self.res.body, self.res.status_code = self.manager.delete_mixin_document(self.doc_id,self.user_id)
         return self.res
+
 class ActionInterface(object):
     """
 
@@ -274,7 +275,7 @@ class ActionInterface(object):
         try:
             self.manager = ActionManager()
         except Exception:
-            self.res.body = "An error has occured, please check log for more details"
+            self.res.body = "An error has occurred, please check log for more details"
             self.res.status_code = return_code["Internal Server Error"]
 
     def get(self):
@@ -359,5 +360,5 @@ class ActionInterface(object):
         Delete a document using the doc_id
 
         """
-        self.res.body, self.res.status_code = self.manager.delete_document(self.doc_id)
+        self.res.body, self.res.status_code = self.manager.delete_action_document(self.doc_id,self.user_id)
         return self.res
