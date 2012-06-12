@@ -27,7 +27,7 @@ Created on Jun 09, 2012
 @license: LGPL - Lesser General Public License
 """
 from webob import Request,Response
-from pyocni.registry.CategoryManager import KindManager,MixinManager,ActionManager
+from pyocni.registry.categoryManager import KindManager,MixinManager,ActionManager
 try:
     import simplejson as json
 except ImportError:
@@ -224,7 +224,7 @@ class MixinInterface(object):
 
     def put(self):
         """
-        Update the document specific to the id provided with new data
+        Update the document specific to the id provided
 
         """
 

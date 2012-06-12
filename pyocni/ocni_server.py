@@ -27,7 +27,7 @@ Created on Feb 25, 2011
 """
 
 import pyocni.pyocni_tools.config as config
-import pyocni.pyocni_tools.UUID_Generator as uuid_generator
+import pyocni.pyocni_tools.uuid_Generator as uuid_generator
 from pyocni.pyocni_tools import create_new_class
 
 import  pyocni.serialization.serializer_json as json_serializer

@@ -1,3 +1,4 @@
+
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
 # Copyright (C) 2011 Houssem Medhioub - Institut Telecom
@@ -16,7 +17,7 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Created on Jun 11, 2012
+Created on Jun 12, 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
@@ -29,7 +30,7 @@ Created on Jun 11, 2012
 import StringIO
 
 from unittest import TestLoader,TextTestRunner,TestCase
-import pyocni.client.Server_Mock as server
+import pyocni.client.server_Mock as server
 import pycurl
 import time
 from multiprocessing import Process
@@ -72,13 +73,13 @@ class test_get(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_get_all_kinds(self):
+    def test_get_all_resources(self):
         """
-        Get all kinds
+        Get all resources
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -89,15 +90,15 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_kind_by_id(self):
+    def test_get_resource_by_id(self):
         """
-        get the kind specific to the id
+        Get the resource specific to the id
 
         """
-        id = '8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb'
+        id = '4acd7a21-4134-40bd-97d6-246c3102907c'
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/user_1/'+id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -108,15 +109,15 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_kind_with_wrong_id(self):
+    def test_get_resource_with_wrong_id(self):
         """
-        get a kind using a bad id
+        Get a resource using a bad id
 
         """
         id = "41005914"
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/'+id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -138,46 +139,62 @@ class test_post(TestCase):
         """
         self.body='''
 {
-    "kinds": [
-        {
-            "term": "compute",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/core#resource"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
+        "resources": [
+            {
+                "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
+                "mixins": [
+                    "http: //schemas.opennebula.org/occi/infrastructure#my_mixin",
+                    "http: //schemas.other.org/occi#my_mixin"
+                ],
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "speed": 2,
+                            "memory": 4,
+                            "cores": 2
+                        }
+                    },
+                    "org": {
+                        "other": {
+                            "occi": {
+                                "my_mixin": {
+                                    "my_attribute": "my_value"
+                                }
+                            }
                         }
                     }
-                }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-
-            ],
-            "location": "/compute/"
-        }
-    ]
+                },
+                "actions": [
+                    {
+                        "title": "Start My Server",
+                        "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                        "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                    }
+                ],
+                "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+                "title": "Compute resource",
+                "summary": "This is a compute resource",
+                "links": [
+                    {
+                        "target": "http://myservice.tld/storage/59e06cf8-f390-5093-af2e-3685be593",
+                        "kind": "http: //schemas.ogf.org/occi/infrastructure#storagelink",
+                        "attributes": {
+                            "occi": {
+                                "storagelink": {
+                                    "deviceid": "ide: 0: 1"
+                                }
+                            }
+                        },
+                        "id": "391ada15-580c-5baa-b16f-eeb35d9b1122",
+                        "title": "Mydisk"
+                    }
+                ]
+            }
+        ]
 }
+
 '''
+
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
@@ -185,11 +202,11 @@ class test_post(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_add_kind(self):
+    def test_add_resource(self):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/kind/')
+        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/resource/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.POST, 1)
@@ -212,48 +229,7 @@ class test_put(TestCase):
 {
    "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
    "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0",
-   "LastUpdate": "2012-06-09 19:03:33.321330",
-   "CreationDate": "2012-06-08 10:15:42.049834",
-   "Description": {
-       "kinds": [
-           {
-               "term": "compute",
-               "title": "Compute Resource",
-               "related": [
-                   "http://schemas.ogf.org/occi/core#resource"
-               ],
-               "actions": [
-
-               ],
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "state": {
-                               "default": "inactive",
-                               "mutable": false,
-                               "required": false,
-                               "type": "string",
-                               "pattern": "inactive|active|suspended|failed"
-                           },
-                           "hostname": {
-                               "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                               "required": false,
-                               "maximum": "255",
-                               "minimum": "1",
-                               "mutable": true,
-                               "type": "string"
-                           }
-                       }
-                   }
-               },
-               "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-               "location": "/compute/"
-           }
-       ]
-   },
-   "Creator": "user_1",
-   "Location": "/-/kind/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
-   "Type": "Kind"
+   "Linked": "from within"
 }
 '''
         time.sleep(0.5)
@@ -262,10 +238,10 @@ class test_put(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_update_kind_normal(self):
+    def test_update_resource_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/user_1/e5f1c5b8-aea7-46ff-a187-536e3cc32346')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -278,10 +254,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_update_kind_unauthorized(self):
+    def test_update_resource_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/userm/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/userm/e5f1c5b8-aea7-46ff-a187-536e3cc32346')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -294,10 +270,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_update_kind_notfound(self):
+    def test_update_resource_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/user_1/fb1cff2a-')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -323,10 +299,10 @@ class test_delete(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_delete_kind_normal(self):
+    def test_delete_resource_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/bbe47489-0011-4f34-9d84-edf007afc1d1')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/user_1/419f9c85-3bf2-4431-9b8b-46799aac3bbd')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -338,10 +314,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_delete_kind_unauthorized(self):
+    def test_delete_resource_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/userm/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/userm/2ded0294-3667-4a3e-9bb6-3ba1748001f5')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -353,10 +329,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_delete_kind_notfound(self):
+    def test_delete_resource_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/bbe47489-001')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/user_1/bbe47489-001')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')

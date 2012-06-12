@@ -33,7 +33,7 @@ try:
 except ImportError:
     import json
 from datetime import datetime
-from pyocni.pyocni_tools import UUID_Generator
+from pyocni.pyocni_tools import uuid_Generator
 from couchdbkit import *
 
 # ======================================================================================
@@ -136,7 +136,7 @@ class KindManager:
         if database.doc_exist(doc_id):
             res =''
             elem = database.get(doc_id)
-            res = elem['Description']
+            res = elem['OCCI_Description']
             logger.debug("Kind found")
             return res,return_code['OK']
         else:
@@ -167,13 +167,13 @@ class KindManager:
         Add a new kind to the database
         """
         database = self.server.get_or_create_db(config.Kind_DB)
-        doc_id = UUID_Generator.get_UUID()
+        doc_id = uuid_Generator.get_UUID()
         jData = dict()
         jData['Creator'] = creator
         jData['CreationDate'] = str(datetime.now())
         jData['LastUpdate'] = ""
         jData['Location']= "/-/kind/" + creator + "/" + str(doc_id)
-        jData['Description']= description
+        jData['OCCI_Description']= description
         jData['Type']= "Kind"
         provider = {"local":[],"remote":[]}
         jData['Provider']= provider
@@ -328,7 +328,7 @@ class MixinManager:
         #if the doc_id is specified then only one mixin will be returned if it exists
         if database.doc_exist(doc_id):
             elem = database.get(doc_id)
-            res = elem['Description']
+            res = elem['OCCI_Description']
             logger.debug("Mixin found")
             return res,return_code['OK']
         else:
@@ -359,13 +359,13 @@ class MixinManager:
         Add a new mixin to the database
         """
         database = self.server.get_or_create_db(config.Mixin_DB)
-        doc_id = UUID_Generator.get_UUID()
+        doc_id = uuid_Generator.get_UUID()
         jData = dict()
         jData['Creator'] = creator
         jData['CreationDate'] = str(datetime.now())
         jData['LastUpdate'] = ""
         jData['Location']= "/-/mixin/" + creator + "/" + str(doc_id)
-        jData['Description']= description
+        jData['OCCI_Description']= description
         jData['Type']= "Mixin"
         provider = {"local":[],"remote":[]}
         jData['Provider']= provider
@@ -501,7 +501,7 @@ class ActionManager:
         if database.doc_exist(doc_id):
             res =""
             elem = database.get(doc_id)
-            res = elem['Description']
+            res = elem['OCCI_Description']
             logger.debug("Action found")
             return res,return_code['OK']
         else:
@@ -533,13 +533,13 @@ class ActionManager:
         Add a new action to the database
         """
         database = self.server.get_or_create_db(config.Action_DB)
-        doc_id = UUID_Generator.get_UUID()
+        doc_id = uuid_Generator.get_UUID()
         jData = dict()
         jData['Creator'] = creator
         jData['CreationDate'] = str(datetime.now())
         jData['LastUpdate'] = ""
         jData['Location']= "/-/action/" + creator + "/" + str(doc_id)
-        jData['Description']= description
+        jData['OCCI_Description']= description
         jData['Type']= "Action"
         provider = {"local":[],"remote":[]}
         jData['Provider']= provider

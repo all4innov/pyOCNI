@@ -1,3 +1,5 @@
+
+
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
 # Copyright (C) 2011 Houssem Medhioub - Institut Telecom
@@ -16,20 +18,20 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Created on Jun 11, 2012
+Created on Jun 12, 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Telecom - Telecom SudParis
-@version: 0.1
+@version: 0.2
 @license: LGPL - Lesser General Public License
 """
 import StringIO
 
 from unittest import TestLoader,TextTestRunner,TestCase
-import pyocni.client.Server_Mock as server
+import pyocni.client.server_Mock as server
 import pycurl
 import time
 from multiprocessing import Process
@@ -72,13 +74,13 @@ class test_get(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_get_all_mixins(self):
+    def test_get_all_links(self):
         """
-        Get all mixins
+        Get all links
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -89,15 +91,15 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_mixin_by_id(self):
+    def test_get_link_by_id(self):
         """
-        get the mixin specific to the id
+        Get the link specific to the id
 
         """
-        id = '0fa6ec65-7f39-4b7d-9797-d53c92dff481'
+        id = '964a719d-24a4-4079-9fac-70a124e0c666'
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/user_1/'+id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -108,15 +110,15 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_mixin_with_wrong_id(self):
+    def test_get_link_with_wrong_id(self):
         """
-        get a mixin using a bad id
+        Get a link using a bad id
 
         """
         id = "41005914"
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/'+id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -136,31 +138,43 @@ class test_post(TestCase):
         """
         Set up the test environment
         """
-        self.body ='''
+        self.body='''
 {
-            "mixins": [
+            "links": [
                     {
-                    "term": "medium",
-                    "scheme": "http://example.com/template/resource#",
-                    "title": "Medium VM",
-                    "related": [
-                        "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+                    "kind": "http://schemas.ogf.org/occi/infrastructure#networkinterface",
+                    "mixins": [
+                        "http://schemas.ogf.org/occi/infrastructure/networkinterface#ipnetworkinterface"
                     ],
                     "attributes": {
                         "occi": {
-                            "compute": {
-                                "speed": {
-                                    "type": "number",
-                                    "default": 2.8
+                            "infrastructure": {
+                                "networkinterface": {
+                                    "interface": "eth0",
+                                    "mac": "00:80:41:ae:fd:7e",
+                                    "address": "192.168.0.100",
+                                    "gateway": "192.168.0.1",
+                                    "allocation": "dynamic"
                                 }
                             }
                         }
                     },
-                    "location": "/template/resource/medium/"
+                    "actions": [
+                            {
+                            "title": "Disable networkinterface",
+                            "href": "/networkinterface/22fe83ae-a20f-54fc-b436-cec85c94c5e8?action=up",
+                            "category": "http: //schemas.ogf.org/occi/infrastructure/networkinterface/action#"
+                        }
+                    ],
+                    "id": "22fe83ae-a20f-54fc-b436-cec85c94c5e8",
+                    "title": "Mynetworkinterface",
+                    "target": "http: //myservice.tld/network/b7d55bf4-7057-5113-85c8-141871bf7635",
+                    "source": "http: //myservice.tld/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29"
                 }
             ]
-}
+        }
 '''
+
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
@@ -168,11 +182,11 @@ class test_post(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_add_mixin(self):
+    def test_add_link(self):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/mixin/')
+        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/link/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.POST, 1)
@@ -191,31 +205,11 @@ class test_put(TestCase):
     def setUp(self):
         self.p = Process(target=start_server)
         self.p.start()
-        self.updated_data ='''
+        self.updated_data = '''
 {
-    "Description": {
-        "mixins": [
-            {
-                "term": "medium",
-                "scheme": "http://example.com/template/resource#",
-                "title": "Large VM",
-                "related": [
-                    "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-                ],
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "speed": {
-                                "type": "number",
-                                "default": 3
-                            }
-                        }
-                    }
-                },
-                "location": "/template/resource/medium/"
-            }
-        ]
-    }
+   "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
+   "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0",
+   "Linked": "from within"
 }
 '''
         time.sleep(0.5)
@@ -224,10 +218,10 @@ class test_put(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_update_mixin_normal(self):
+    def test_update_link_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/55fa9f11-561a-465a-a94b-f52d3b3e025e')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/user_1/964a719d-24a4-4079-9fac-70a124e0c666')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -240,10 +234,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_update_mixin_unauthorized(self):
+    def test_update_link_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/userm/0fa6ec65-7f39-4b7d-9797-d53c92dff481')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/userm/964a719d-24a4-4079-9fac-70a124e0c666')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -256,10 +250,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_update_mixin_notfound(self):
+    def test_update_link_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/user_1/fb1cff2a-')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -285,10 +279,10 @@ class test_delete(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_delete_mixin_normal(self):
+    def test_delete_link_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/d2cfc5dd-421a-46ec-86b4-7c762bd88286')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/user_1/5e0e2ac7-ddb5-4426-8258-c8a86d4d68c7')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -300,10 +294,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_delete_mixin_unauthorized(self):
+    def test_delete_link_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/userm/dac6bba4-4a38-4b10-8869-b103e04d737e')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/userm/964a719d-24a4-4079-9fac-70a124e0c666')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -315,10 +309,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_delete_mixin_notfound(self):
+    def test_delete_link_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/user_1/bbe47489-001')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -332,20 +326,18 @@ class test_delete(TestCase):
 
 if __name__ == '__main__':
 
-#    #Create the testing tools
-#    loader = TestLoader()
-#    runner = TextTestRunner(verbosity=2)
-#
-#    #Create the testing suites
-#    get_suite = loader.loadTestsFromTestCase(test_get)
-#    post_suite = loader.loadTestsFromTestCase(test_post)
-#    put_suite = loader.loadTestsFromTestCase(test_put)
-#    delete_suite = loader.loadTestsFromTestCase(test_delete)
-#
-#    #Run tests
-#    runner.run(get_suite)
-#    runner.run(post_suite)
-#    runner.run(put_suite)
-#    runner.run(delete_suite)
-    t = test_put()
-    t.test_update_mixin_normal()
+    #Create the testing tools
+    loader = TestLoader()
+    runner = TextTestRunner(verbosity=2)
+
+    #Create the testing suites
+    get_suite = loader.loadTestsFromTestCase(test_get)
+    post_suite = loader.loadTestsFromTestCase(test_post)
+    put_suite = loader.loadTestsFromTestCase(test_put)
+    delete_suite = loader.loadTestsFromTestCase(test_delete)
+
+    #Run tests
+    runner.run(get_suite)
+    runner.run(post_suite)
+    runner.run(put_suite)
+    runner.run(delete_suite)
