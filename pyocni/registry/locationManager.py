@@ -28,6 +28,7 @@ Created on Jun 12, 2012
 """
 
 import pyocni.pyocni_tools.config as config
+import pyocni.pyocni_tools.occi_Joker as joker
 try:
     import simplejson as json
 except ImportError:
@@ -174,23 +175,27 @@ class ResourceManager(object):
 
         database = self.server.get_or_create_db(config.Resource_DB)
         doc_id = uuid_Generator.get_UUID()
-        jData = dict()
-        jData['Creator'] = creator
-        jData['CreationDate'] = str(datetime.now())
-        jData['LastUpdate'] = ""
-        jData['Location']= "/-/resource/" + creator + "/" + str(doc_id)
-        jData['OCCI_Description']= description
-        jData['Type']= "Resource"
-        provider = {"local":[],"remote":[]}
-        jData['Provider']= provider
-        jData['Linked'] = ""
-        try:
-            database[doc_id] = jData
-            logger.debug("Resource document has been successfully added to database : " + jData["Location"])
-            return jData["Location"],return_code['OK']
-        except Exception as e:
-            logger.error(e.message)
-            return e.message,return_code['Internal Server Error']
+        loc, ok = joker.make_resource_location(description,doc_id,creator)
+        if ok is True:
+            jData = dict()
+            jData['Creator'] = creator
+            jData['CreationDate'] = str(datetime.now())
+            jData['LastUpdate'] = ""
+            jData['Location']= loc
+            jData['OCCI_Description']= description
+            jData['Type']= "Resource"
+            provider = {"local":[],"remote":[]}
+            jData['Provider']= provider
+            try:
+                database[doc_id] = jData
+                logger.debug("Resource document has been successfully added to database : " + loc)
+                return loc,return_code['OK']
+            except Exception as e:
+                logger.error(e.message)
+                return e.message,return_code['Internal Server Error']
+        else:
+            logger.error(loc)
+            return loc,return_code['Internal Server Error']
 
     def update_resource(self,doc_id=None,user_id=None,new_Data=None):
         """
@@ -358,23 +363,27 @@ class LinkManager(object):
 
         database = self.server.get_or_create_db(config.Link_DB)
         doc_id = uuid_Generator.get_UUID()
-        jData = dict()
-        jData['Creator'] = creator
-        jData['CreationDate'] = str(datetime.now())
-        jData['LastUpdate'] = ""
-        jData['Location']= "/-/resource/" + creator + "/" + str(doc_id)
-        jData['OCCI_Description']= description
-        jData['Type']= "Link"
-        provider = {"local":[],"remote":[]}
-        jData['Provider']= provider
-        jData['Linked'] = ""
-        try:
-            database[doc_id] = jData
-            logger.debug("Link document has been successfully added to database : " + jData["Location"])
-            return jData["Location"],return_code['OK']
-        except Exception as e:
-            logger.error(e.message)
-            return e.message,return_code['Internal Server Error']
+        loc, ok = joker.make_link_location(description,doc_id,creator)
+        if ok is True:
+            jData = dict()
+            jData['Creator'] = creator
+            jData['CreationDate'] = str(datetime.now())
+            jData['LastUpdate'] = ""
+            jData['Location']= loc
+            jData['OCCI_Description']= description
+            jData['Type']= "Link"
+            provider = {"local":[],"remote":[]}
+            jData['Provider']= provider
+            try:
+                database[doc_id] = jData
+                logger.debug("Link document has been successfully added to database : " + loc)
+                return loc,return_code['OK']
+            except Exception as e:
+                logger.error(e.message)
+                return e.message,return_code['Internal Server Error']
+        else:
+            logger.error(loc)
+            return loc,return_code['Internal Server Error']
 
     def update_link(self,doc_id=None,user_id=None,new_Data=None):
         """

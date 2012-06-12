@@ -28,6 +28,7 @@ Created on May 29, 2012
 """
 
 import pyocni.pyocni_tools.config as config
+import pyocni.pyocni_tools.occi_Joker as joker
 try:
     import simplejson as json
 except ImportError:
@@ -88,7 +89,7 @@ def purgeCategoryDBs():
 class KindManager:
     """
 
-        Kind records management on couch database
+        Managemer for Kind documents on couch database
 
     """
 
@@ -107,7 +108,7 @@ class KindManager:
 
     def add_design_kind_docs_to_db(self):
         """
-        Add admin design documents to database.
+        Add kind design documents to database.
         """
         design_doc = {
             "_id": "_design/get_kind",
@@ -129,24 +130,28 @@ class KindManager:
 
     def get_kind_by_id(self,doc_id=None):
         """
-        returns the document matching the id provided in the request
+        Returns the kind document matching the id provided
+        Args:
+            @param doc_id: id of the kind document to retrieve
+            @return : <dic> OCCI kind description contained inside of the kind document
         """
         database = self.server.get_or_create_db(config.Kind_DB)
-        #if the doc_id is specified then only one kind will be returned if it exists
+        #if the doc_id is specified then only one kind document will be returned if it exists
         if database.doc_exist(doc_id):
-            res =''
             elem = database.get(doc_id)
             res = elem['OCCI_Description']
-            logger.debug("Kind found")
+            logger.debug("Kind document found")
             return res,return_code['OK']
         else:
-            message = "Kind " + str(doc_id) + " does not exist"
+            message = "Kind document " + str(doc_id) + " does not exist"
             logger.debug(message)
             return message,return_code['Resource not found']
 
     def get_all_kinds(self):
         """
-        Returns all documents stored in database
+        Returns all kind documents stored in database
+        Args:
+            @return : <dict> All OCCI kind descriptions contained inside kind documents stored in the database
         """
         database = self.server.get_or_create_db(config.Kind_DB)
         query = database.view('/get_kind/all')
@@ -155,7 +160,7 @@ class KindManager:
         try:
             for elem in query:
                 var.append(elem['value'])
-            logger.debug("Kinds found")
+            logger.debug("Kind documents found")
             return var,return_code['OK']
         except Exception as e:
             logger.error(e.message)
@@ -165,51 +170,42 @@ class KindManager:
 
         """
         Add a new kind to the database
+        Args:
+            @param creator: the id of the issuer of the creation request
+            @param description: OCCI kind description
         """
         database = self.server.get_or_create_db(config.Kind_DB)
         doc_id = uuid_Generator.get_UUID()
-        jData = dict()
-        jData['Creator'] = creator
-        jData['CreationDate'] = str(datetime.now())
-        jData['LastUpdate'] = ""
-        jData['Location']= "/-/kind/" + creator + "/" + str(doc_id)
-        jData['OCCI_Description']= description
-        jData['Type']= "Kind"
-        provider = {"local":[],"remote":[]}
-        jData['Provider']= provider
-        try:
-            database[doc_id] = jData
-            logger.debug("Document has been successfully added to database : " + jData["Location"])
-            return jData["Location"],return_code['OK']
-        except Exception as e:
-            logger.error(e.message)
-            return e.message,return_code['Internal Server Error']
 
-#    def update_part_of_kind(self,doc_id,newData,j_oldData,newData_keys):
-#        """
-#        update only a part of the kind description (can be called only after a failed try to fully update the kind description)
-#        """
-#        database = self.server.get_or_create_db(config.Kind_DB)
-#        #Try to change parts of the kind description
-#        oldData_keys =  j_oldData['kinds'][0].keys()
-#        problems = False
-#        for key in newData_keys:
-#            try:
-#                oldData_keys.index(key)
-#                j_oldData['kinds'][0][key] = newData[key]
-#            except Exception:
-#                #Keep the record of the keys(=parts) that couldn't be updated
-#                logger.debug(key + 'could not be found')
-#                problems = True
-#        if problems:
-#            message = "Document " + str(doc_id) + " has not been totally updated. Check log for more details"
-#        else:
-#            message = "Document " + str(doc_id) + " has been updated successfully"
-#        return j_oldData,message
+        loc, ok = joker.make_kind_location(description,doc_id,creator)
+        if ok is True:
+            jData = dict()
+            jData['Creator'] = creator
+            jData['CreationDate'] = str(datetime.now())
+            jData['LastUpdate'] = ""
+            jData['Location']= loc
+            jData['OCCI_Description']= description
+            jData['Type']= "Kind"
+            provider = {"local":[],"remote":[]}
+            jData['Provider']= provider
+            try:
+                database[doc_id] = jData
+                logger.debug("Kind document has been successfully added to database : " + loc)
+                return loc,return_code['OK']
+            except Exception as e:
+                logger.error(e.message)
+                return e.message,return_code['Internal Server Error']
+        else:
+            logger.error(loc)
+            return loc,return_code['Internal Server Error']
 
     def update_kind(self,doc_id=None,user_id=None,new_Data=None):
         """
-        update all of the document description
+        Update kind document fields (can only be done by the creator of the document)
+        Args:
+            @param doc_id: the id of the kind document to update
+            @param user_id: the id of the issuer of the update request
+            @param new_Data: the data that will be used to update the kind document
         """
         #Get the old document data from the database
         database = self.server.get_or_create_db(config.Kind_DB)
@@ -220,7 +216,7 @@ class KindManager:
                 oldData_keys = oldData.keys()
                 newData_keys =  new_Data.keys()
                 problems = False
-                #Try to change the hole kind description
+                #Try to update kind document fields
                 for key in newData_keys:
                     try:
                         oldData_keys.index(key)
@@ -230,21 +226,21 @@ class KindManager:
                         logger.debug(key + "could not be found")
                     #Keep the record of the keys(=parts) that couldn't be updated
                 if problems:
-                    message = "Document " + str(doc_id) + " has not been totally updated. Check log for more details"
+                    message = "Kind document " + str(doc_id) + " has not been totally updated. Check log for more details"
                 else:
-                    message = "Document " + str(doc_id) + " has been updated successfully"
+                    message = "Kind document " + str(doc_id) + " has been updated successfully"
                 oldData['LastUpdate'] = str(datetime.now())
-                #Update the document
+                #Update the kind document
                 database.save_doc(oldData,force_update = True)
                 logger.debug(message)
                 return message,return_code['OK']
             else:
-                message= "You have no right to update this document"
+                message= "You have no right to update this kind document"
                 logger.debug(message)
                 return message,return_code['Unauthorized']
 
         else:
-            message = "Document " + str(doc_id) + "couldn\'t be found"
+            message = "Kind document " + str(doc_id) + "couldn\'t be found"
             logger.debug(message)
             return message,return_code['Resource not found']
 
@@ -252,29 +248,32 @@ class KindManager:
 
     def delete_kind_document(self,doc_id=None,user_id=None):
         """
-        Delete the document that is related to the id provided (Can only be done by the creator of the document)
+        Delete the kind document that is related to the id provided (Can only be done by the creator of the document)
+        Args:
+            @param doc_id: id of the kind document to delete
+            @param user_id: id of the issuer of the delete request
         """
         database = self.server.get_or_create_db(config.Kind_DB)
-        #Verify the existence of such document
+        #Verify the existence of such kind document
         if database.doc_exist(doc_id):
         #If so then delete
             try:
                 Data = database.get(doc_id)
                 if Data['Creator'] == user_id:
                     database.delete_doc(doc_id)
-                    message = "Document " + str(doc_id) + " has been successfully deleted "
+                    message = "Kind document " + str(doc_id) + " has been successfully deleted "
                     logger.debug(message)
                     return message,return_code['OK']
                 else:
-                    message = "You have no right to delete this document"
+                    message = "You have no right to delete this kind document"
                     logger.debug(message)
                     return message,return_code['Unauthorized']
             except Exception as e:
                 logger.debug(e.message)
                 return e.message,return_code['Internal Server Error']
         else:
-            #else reply with document not found
-            message = "Document " + str(doc_id) + " not found"
+            #else reply with kind document not found
+            message = "Kind document " + str(doc_id) + " not found"
             logger.debug(message)
             return message,return_code['Resource not found']
 
@@ -300,7 +299,7 @@ class MixinManager:
 
     def add_design_mixin_docs_to_db(self):
         """
-        Add admin design documents to database.
+        Add mixin design documents to database.
         """
         design_doc = {
             "_id": "_design/get_mixin",
@@ -322,23 +321,28 @@ class MixinManager:
 
     def get_mixin_by_id(self,doc_id=None):
         """
-        returns the mixin matching the id provided in the request
+        Returns the mixin document matching the id provided
+        Args:
+            @param doc_id: id of the mixin document to retrieve
+            @return : <dic> OCCI mixin description contained inside of the mixin document
         """
         database = self.server.get_or_create_db(config.Mixin_DB)
         #if the doc_id is specified then only one mixin will be returned if it exists
         if database.doc_exist(doc_id):
             elem = database.get(doc_id)
             res = elem['OCCI_Description']
-            logger.debug("Mixin found")
+            logger.debug("Mixin document found")
             return res,return_code['OK']
         else:
-            message = "Mixin " + str(doc_id) + " does not exist"
+            message = "Mixin document" + str(doc_id) + " does not exist"
             logger.debug(message)
             return message,return_code['Resource not found']
 
     def get_all_mixins(self):
         """
-        Returns all mixins stored in database
+        Returns all mixin documents stored in database
+        Args:
+            @return : <dict> All OCCI mixin descriptions contained inside mixin documents stored in the database
         """
         database = self.server.get_or_create_db(config.Mixin_DB)
         query = database.view('/get_mixin/all')
@@ -347,7 +351,7 @@ class MixinManager:
         try:
             for elem in query:
                 var.append(elem['value'])
-            logger.debug("Mixins found")
+            logger.debug("Mixin documents found")
             return var,return_code['OK']
         except Exception as e:
             logger.error(e.message)
@@ -357,29 +361,41 @@ class MixinManager:
 
         """
         Add a new mixin to the database
+        Args:
+            @param creator: the id of the issuer of the creation request
+            @param description: OCCI mixin description
         """
         database = self.server.get_or_create_db(config.Mixin_DB)
         doc_id = uuid_Generator.get_UUID()
-        jData = dict()
-        jData['Creator'] = creator
-        jData['CreationDate'] = str(datetime.now())
-        jData['LastUpdate'] = ""
-        jData['Location']= "/-/mixin/" + creator + "/" + str(doc_id)
-        jData['OCCI_Description']= description
-        jData['Type']= "Mixin"
-        provider = {"local":[],"remote":[]}
-        jData['Provider']= provider
-        try:
-            database[doc_id] = jData
-            logger.debug("Document has been successfully added to database : " + jData["Location"])
-            return jData["Location"],return_code['OK']
-        except Exception as e:
-            logger.error(e.message)
-            return e.message,return_code['Internal Server Error']
+        loc, ok = joker.make_mixin_location(description,doc_id,creator)
+        if ok is True:
+            jData = dict()
+            jData['Creator'] = creator
+            jData['CreationDate'] = str(datetime.now())
+            jData['LastUpdate'] = ""
+            jData['Location']= loc
+            jData['OCCI_Description']= description
+            jData['Type']= "Mixin"
+            provider = {"local":[],"remote":[]}
+            jData['Provider']= provider
+            try:
+                database[doc_id] = jData
+                logger.debug("Mixin document has been successfully added to database : " + loc)
+                return loc,return_code['OK']
+            except Exception as e:
+                logger.error(e.message)
+                return e.message,return_code['Internal Server Error']
+        else:
+            logger.error(loc)
+            return loc,return_code['Internal Server Error']
 
     def update_mixin(self,doc_id=None,user_id=None,new_Data=None):
         """
-        update all fields of the document (Can only be done by the creator of the document)
+        Update mixin document fields (can only be done by the creator of the document)
+        Args:
+            @param doc_id: the id of the mixin document to update
+            @param user_id: the id of the issuer of the update request
+            @param new_Data: the data that will be used to update the mixin document
         """
         #Get the old document data from the database
         database = self.server.get_or_create_db(config.Mixin_DB)
@@ -400,21 +416,21 @@ class MixinManager:
                         logger.debug(key + "could not be found")
                         #Keep the record of the keys(=parts) that couldn't be updated
                 if problems:
-                    message = "Document " + str(doc_id) + " has not been totally updated. Check log for more details"
+                    message = "Mixin document " + str(doc_id) + " has not been totally updated. Check log for more details"
                 else:
-                    message = "Document " + str(doc_id) + " has been updated successfully"
+                    message = "Mixin document " + str(doc_id) + " has been updated successfully"
                 oldData['LastUpdate'] = str(datetime.now())
-                #Update the document
+                #Update the mixin document
                 database.save_doc(oldData,force_update = True)
                 logger.debug(message)
                 return message,return_code['OK']
             else:
-                message= "You have no right to update this document"
+                message= "You have no right to update this mixin document"
                 logger.debug(message)
                 return message,return_code['Unauthorized']
 
         else:
-            message = "Document " + str(doc_id) + "couldn\'t be found"
+            message = "Mixin document " + str(doc_id) + "couldn\'t be found"
             logger.debug(message)
             return message,return_code['Resource not found']
 
@@ -422,21 +438,24 @@ class MixinManager:
 
     def delete_mixin_document(self,doc_id=None,user_id=None):
         """
-        Delete the document that is related to the id provided (Can only be done by the creator of the document)
+        Delete the mixin document that is related to the id provided (Can only be done by the creator of the document)
+        Args:
+            @param doc_id: id of the mixin document to delete
+            @param user_id: id of the issuer of the delete request
         """
         database = self.server.get_or_create_db(config.Mixin_DB)
-        #Verify the existence of such document
+        #Verify the existence of such mixin document
         if database.doc_exist(doc_id) is True:
         #If so then delete
             try:
                 Data = database.get(doc_id)
                 if Data['Creator'] == user_id:
                     database.delete_doc(doc_id)
-                    message = "Document " + str(doc_id) + " has been successfully deleted "
+                    message = "Mixin document " + str(doc_id) + " has been successfully deleted "
                     logger.debug(message)
                     return message,return_code['OK']
                 else:
-                    message = "You have no right to delete this document"
+                    message = "You have no right to delete this mixin document"
                     logger.debug(message)
                     return message,return_code['Unauthorized']
             except Exception as e:
@@ -444,8 +463,8 @@ class MixinManager:
                 return e.message,return_code['Internal Server Error']
 
         else:
-            #else reply with document not found
-            message = "Document " + str(doc_id) + " not found"
+            #else reply with mixin document not found
+            message = "Mixin document " + str(doc_id) + " not found"
             logger.debug(message)
             return message,return_code['Resource not found']
 
@@ -453,7 +472,7 @@ class MixinManager:
 class ActionManager:
     """
 
-    Action records management on couch database
+    Manager for the Action documents on couch database
 
     """
 
@@ -472,7 +491,7 @@ class ActionManager:
 
     def add_design_action_docs_to_db(self):
         """
-        Add admin design documents to database.
+        Add action design documents to database.
         """
         design_doc = {
             "_id": "_design/get_action",
@@ -494,7 +513,10 @@ class ActionManager:
 
     def get_action_by_id(self,doc_id=None):
         """
-        returns the action matching the id provided in the request
+        Returns the action document matching the id provided
+        Args:
+            @param doc_id: id of the action document to retrieve
+            @return : <dic> OCCI action description contained inside of the action document
         """
         database = self.server.get_or_create_db(config.Action_DB)
         #if the doc_id is specified then only one action will be returned if it exists
@@ -502,16 +524,18 @@ class ActionManager:
             res =""
             elem = database.get(doc_id)
             res = elem['OCCI_Description']
-            logger.debug("Action found")
+            logger.debug("Action document found")
             return res,return_code['OK']
         else:
-            message = "Action " + str(doc_id) + " does not exist"
+            message = "Action document " + str(doc_id) + " does not exist"
             logger.debug(message)
             return message,return_code['Resource not found']
 
     def get_all_actions(self):
         """
-        Returns all actions stored in database
+        Returns all action documents stored in database
+        Args:
+            @return : <dict> All OCCI action descriptions contained inside action documents stored in the database
         """
         database = self.server.get_or_create_db(config.Action_DB)
         query = database.view('/get_action/all')
@@ -520,7 +544,7 @@ class ActionManager:
         try:
             for elem in query:
                 var.append(elem['value'])
-            logger.debug("Actions found")
+            logger.debug("Action documents found")
             return var,return_code['OK']
         except Exception as e:
             logger.error(e.message)
@@ -531,29 +555,41 @@ class ActionManager:
 
         """
         Add a new action to the database
+        Args:
+            @param creator: the id of the issuer of the creation request
+            @param description: OCCI action description
         """
         database = self.server.get_or_create_db(config.Action_DB)
         doc_id = uuid_Generator.get_UUID()
-        jData = dict()
-        jData['Creator'] = creator
-        jData['CreationDate'] = str(datetime.now())
-        jData['LastUpdate'] = ""
-        jData['Location']= "/-/action/" + creator + "/" + str(doc_id)
-        jData['OCCI_Description']= description
-        jData['Type']= "Action"
-        provider = {"local":[],"remote":[]}
-        jData['Provider']= provider
-        try:
-            database[doc_id] = jData
-            logger.debug("Document has been successfully added to database : " + jData["Location"])
-            return jData["Location"],return_code['OK']
-        except Exception as e:
-            logger.error(e.message)
-            return e.message,return_code['Internal Server Error']
+        loc, ok = joker.make_action_location(description,doc_id,creator)
+        if ok is True:
+            jData = dict()
+            jData['Creator'] = creator
+            jData['CreationDate'] = str(datetime.now())
+            jData['LastUpdate'] = ""
+            jData['Location']= loc
+            jData['OCCI_Description']= description
+            jData['Type']= "Action"
+            provider = {"local":[],"remote":[]}
+            jData['Provider']= provider
+            try:
+                database[doc_id] = jData
+                logger.debug("Action document has been successfully added to database : " + loc)
+                return loc,return_code['OK']
+            except Exception as e:
+                logger.error(e.message)
+                return e.message,return_code['Internal Server Error']
+        else:
+            logger.error(loc)
+            return loc,return_code['Internal Server Error']
 
     def update_action(self,doc_id=None,user_id=None,new_Data=None):
         """
-        update all fields of the document (Can only be done by the creator of the document)
+        Update action document fields (can only be done by the creator of the document)
+        Args:
+            @param doc_id: the id of the action document to update
+            @param user_id: the id of the issuer of the update request
+            @param new_Data: the data that will be used to update the action document
         """
         #Get the old document data from the database
         database = self.server.get_or_create_db(config.Action_DB)
@@ -574,21 +610,21 @@ class ActionManager:
                         logger.debug(key + "could not be found")
                         #Keep the record of the keys(=parts) that couldn't be updated
                 if problems:
-                    message = "Document " + str(doc_id) + " has not been totally updated. Check log for more details"
+                    message = "Action document " + str(doc_id) + " has not been totally updated. Check log for more details"
                 else:
-                    message = "Document " + str(doc_id) + " has been updated successfully"
+                    message = "Action document " + str(doc_id) + " has been updated successfully"
                 oldData['LastUpdate'] = str(datetime.now())
                 #Update the document
                 database.save_doc(oldData,force_update = True)
                 logger.debug(message)
                 return message,return_code['OK']
             else:
-                message= "You have no right to update this document"
+                message= "You have no right to update this action document"
                 logger.debug(message)
                 return message,return_code['Unauthorized']
 
         else:
-            message = "Document " + str(doc_id) + "couldn\'t be found"
+            message = "Action document " + str(doc_id) + "couldn\'t be found"
             logger.debug(message)
             return message,return_code['Resource not found']
 
@@ -596,28 +632,31 @@ class ActionManager:
 
     def delete_action_document(self,doc_id=None,user_id=None):
         """
-        Delete the document that is related to the id provided (Can only be done by the creator of the document)
+        Delete the action document that is related to the id provided (Can only be done by the creator of the document)
+        Args:
+            @param doc_id: id of the action document to delete
+            @param user_id: id of the issuer of the delete request
         """
         database = self.server.get_or_create_db(config.Action_DB)
-        #Verify the existence of such document
+        #Verify the existence of such action document
         if database.doc_exist(doc_id):
         #If so then delete
             try:
                 Data = database.get(doc_id)
                 if Data['Creator'] == user_id:
                     database.delete_doc(doc_id)
-                    message = "Document " + str(doc_id) + " has been successfully deleted "
+                    message = "Action document " + str(doc_id) + " has been successfully deleted "
                     logger.debug(message)
                     return message,return_code['OK']
                 else:
-                    message = "You have no right to delete this document"
+                    message = "You have no right to delete this action document"
                     logger.debug(message)
                     return message,return_code['Unauthorized']
             except Exception as e:
                 logger.error(e.message)
                 return e.message,return_code['Internal Server Error']
         else:
-            #else reply with document not found
-            message = "Document " + str(doc_id) + " not found"
+            #else reply with action document not found
+            message = "Action document " + str(doc_id) + " not found"
             logger.debug(message)
             return message,return_code['Resource not found']

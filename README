@@ -62,6 +62,7 @@ sudo python setup.py install
 ------------------
 Logger configuration:  OCCILogging.conf
 Server configuration: occi_server.conf
+CouchDB configuration: couchdb_server.conf
 
 3.4. Server running
 -------------------
@@ -70,54 +71,102 @@ python start.py
 -----------------------------------------------------------------------------
 4. HowTo use (examples. The json files are at the end of this README)
 -----------------------------------------------------------------------------
-Retrieval of all registered Kinds and Mixins:
+
+In order to use PyOCNI, you must respect certain rules :
+
+1- All data must follow the JSON format declared by OCCI [occi+json], any detected conflict will cancel the request.
+2- Kinds, Mixins and Actions can be created, read, updated or deleted (CRUD) on the fly.
+3- Kinds, Mixins and Actions can be read and created by anyone but updated and deleted by only their creator
+4- Resources and Links can be created, read, updated or deleted(CRUD) on the fly.
+5- Resources and Links can be read and created by anyone but updated and deleted by only their creator
+6- Kinds, Mixins, Actions, Resources and Links have their  own distinct storage format (see below)
+7- The new data provided in an update request must be sent in consistency with the raw format
+8- An update request is done through the update of the fields mentioned in the DocumentSkeleton (see below)
+
+These are some commands that you can use with PyOCNI
+__________________________________________________________________________________________________________________
+
+Retrieval of all registered Kinds, Mixins and Actions:
+
 curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/-/
 __________________________________________________________________________________________________________________
 
-Creation of Resource instance (compute)
-curl -X POST -d@post_compute.json -H 'content-type: application/json:occi' -v http://localhost:8090/compute/
+Create a Kind
+curl -X POST -d@post_kind.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/
 
-Creation of Resource instance (network) with ipnetwork mixin
-curl -X POST -d@post_network_ipnetwork.json -H 'content-type: application/json:occi' -v http://localhost:8090/network/
+Get a kind
+curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
 
-Creation of Resource instance (CloNeNode)
-curl -X POST -d@post_clonenode.json -H 'content-type: application/json:occi' -v http://localhost:8090/clonenode/
+Update a Kind
+curl -X PUT -d@up_kind.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
 
-Creation of Resource instance (CloNeNode) with openFlow Mixin
-curl -X POST -d@post_clonenode_openflow.json -H 'content-type: application/json:occi' -v http://localhost:8090/clonenode/
+Delete a Kind
+curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
 
-Creation of Resource instance (CloNeNode) with libnetvirt Mixin
-curl -X POST -d@post_clonenode_libnetvirt.json -H 'content-type: application/json:occi' -v http://localhost:8090/clonenode/
-
-Creation of Resource instance (CloNeLink) with l3vpn Mixin
-curl -X POST -d@post_clonelink_l3vpn.json -H 'content-type: application/json:occi' -v http://localhost:8090/CloNeLink/
 __________________________________________________________________________________________________________________
 
-Retrieval of Resource instance (Compute)
-curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/compute/user1/compute1
-
-Retrieval of Resource instance (CloNeNode) with OpenFlow Mixin
-curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/CloNeNode/user1/CloNeNode2
-
-Retrieval of Resource instance (CloNeLink) with l3vpn Mixin
-curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/CloNeLink/user1/CloNeLink1
-
-Retrieval of all resource instance below a path
-curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/CloNeNode/user1/
 __________________________________________________________________________________________________________________
 
-UPDATE of Resource instance (CloNeLink) with l3vpn Mixin
-curl -X PUT -d@post_clonelink_l3vpn.json -H 'accept: application/json:occi' -v http://localhost:8090/CloNeLink/user1/CloNeLink1
+Create a Mixin
+curl -X POST -d@post_mixin.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/
 
-UPDATE of Resource instance (CloNeNode) with libnetvirt Mixin
-curl -X PUT -d@post_clonenode_libnetvirt.json -H 'accept: application/json:occi' -v http://localhost:8090/clonenode/user1/CloNeNodeGreen
+Get a Mixin
+curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+
+Update a mixin
+curl -X PUT -d@up_mixin.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+
+Delete a mixin
+curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+
 __________________________________________________________________________________________________________________
 
-Delete of Resource instance (CloNeLink) with l3vpn Mixin
-curl -X DELETE -H 'accept: application/json:occi' -v http://localhost:8090/CloNeLink/user1/CloNeLink1
+__________________________________________________________________________________________________________________
 
-Delete of Resource instance (CloNeNode) with libnetvirt Mixin
-curl -X DELETE -H 'accept: application/json:occi' -v http://localhost:8090/clonenode/user1/CloNeNodeGreen
+Create an Action
+curl -X POST -d@post_action.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/
+
+Get an Action
+curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
+
+Update an Action
+curl -X PUT -d@up_action.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
+
+Delete an Action
+curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
+
+__________________________________________________________________________________________________________________
+
+__________________________________________________________________________________________________________________
+
+Create a Resource
+curl -X POST -d@post_resource.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/
+
+Get a Resource
+curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/{user-id}/{resource-id}
+
+Update a Resource
+curl -X PUT -d@up_resource.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/{user-id}/{resource-id}
+
+Delete a Resource
+curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/{user-id}/{resource-id}
+
+__________________________________________________________________________________________________________________
+
+__________________________________________________________________________________________________________________
+
+Create a Link
+curl -X POST -d@post_link.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/
+
+Get a Link
+curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}
+
+Update a Link
+curl -X PUT -d@up_link.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}
+
+Delete a link
+curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}
+
 -----------------------------------------------------------------------------
 5. For developers
 -----------------------------------------------------------------------------
@@ -174,258 +223,313 @@ Some of pyocni's needs might be:
 10. json files to execute the HowTo use examples
 -----------------------------------------------------------------------------
 
-post_compute.json
+post_kind.json
 -----------------
-    {
-        "kind": {
-            "term": "compute",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure",
-            "class": "kind"
-        },
-        "occi.core.id": "compute1000",
-        "occi.core.title": "compute1000 created by Houssem",
-        "occi.core.summary": "a summary of Compute 1 resource",
-        "mixins": [ ],
-        "links": ["a", "b"],
-        "attributes": {
-            "occi.compute.architecture": "x86",
-            "occi.compute.state": "active",
-            "occi.compute.speed": 1.0,
-            "occi.compute.memory": 512,
-            "occi.compute.cores": 1,
-            "occi.compute.hostname": "compute10"
-        }
-    }
 
-post_network_ipnetwork.json
----------------------------
-    {
-        "kind": {
-            "term": "network",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure",
-            "class": "kind"
-        },
-        "occi.core.id": "network1",
-        "occi.core.title": "network1 created by Houssem",
-        "occi.core.summary": "a summary of Network 1 resource",
-        "mixins": [
-            {
-            "term": "ipnetwork",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/network",
-            "class": "mixin"
-            }
-        ],
-        "links": [],
-        "attributes": {
-            "occi.network.vlan": "10",
-            "occi.network.label": "dmz",
-            "occi.network.state": "active",
-            "occi.network.address": "192.168.1.1",
-            "occi.network.gateway": "192.168.1.1",
-            "occi.network.allocation": "dynamic"
-        }
-    }
-
-post_clonenode.json
--------------------
-    {
-        "kind": {
-            "term": "CloNeNode",
-            "scheme": "http://schemas.ogf.org/occi/ocni",
-            "class": "kind"
-        },
-        "occi.core.id": "CloNeNode1",
-        "occi.core.title": "CloNeNode1",
-        "occi.core.summary": "CloNeNode created by Houssem",
-        "mixins": [
-        ],
-        "links": ["a", "b"],
-        "attributes": {
-            "ocni.clonenode.availability":[
-                {
-                    "ocni.availability.start":"08:00",
-                    "ocni.availability.end":"12:30"
-                },
-                {
-                    "ocni.availability.start":"14:00",
-                    "ocni.availability.end":"18:00"
-                }
-            ],
-            "ocni.clonenode.location": "EU",
-            "ocni.clonenode.state": "active"
-        }
-    }
-
-post_clonenode_openflow.json
-----------------------------
-    {
-        "kind": {
-            "term": "CloNeNode",
-            "scheme": "http://schemas.ogf.org/occi/ocni",
-            "class": "kind"
-        },
-        "occi.core.id": "CloNeNode2",
-        "occi.core.title": "CloNeNode2",
-        "occi.core.summary": "CloNeNode with openflow mixin created by Houssem",
-        "mixins": [
-            {
-                "term": "OpenFlowCloNeNode",
-                "scheme": "http://schemas.ogf.org/occi/ocni",
-                "class": "mixin"
-            }
-        ],
-        "links": [],
-        "attributes": {
-            "ocni.clonenode.availability":[
-                {
-                    "ocni.availability.start":"08:00",
-                    "ocni.availability.end":"12:30"
-                },
-                {
-                    "ocni.availability.start":"14:00",
-                    "ocni.availability.end":"18:00"
-                }
-            ],
-            "ocni.clonenode.location": "EU",
-            "ocni.clonenode.state": "active",
-            "ocni.openflowclonenode.datapath_id" : "0x004E46324304",
-            "ocni.openflowclonenode.ports" : ["6632","245"],
-            "ocni.openflowclonenode.of_controller" : ["192.168.10.2","192.168.10.2"],
-            "ocni.openflowclonenode.of_controller_port" : "6633"
-        }
-    }
-
-post_clonelink_l3vpn.json
--------------------------
-    {
-       "kind":{
-          "term":"CloNeLink",
-          "scheme":"http://schemas.ogf.org/occi/ocni",
-          "class":"kind"
-       },
-       "occi.core.id":"CloNeLink1",
-       "occi.core.title":"CloNeLink1",
-       "occi.core.summary":"CloNeLink with l3vpn mixin",
-       "mixins":[
-          {
-             "term":"L3VPN",
-             "scheme":"http://schemas.ogf.org/occi/ocni",
-             "class":"mixin"
-          }
-       ],
-       "links":[
-
-       ],
-       "attributes":{
-          "ocni.clonelink.availability":[
-             {
-                "ocni.availability.start":"08:00",
-                "ocni.availability.end":"12:30"
-             },
-             {
-                "ocni.availability.start":"14:00",
-                "ocni.availability.end":"18:00"
-             }
-          ],
-          "ocni.clonelink.state":"active",
-          "ocni.clonelink.bandwidth":"100Mbps",
-          "ocni.clonelink.latency":"100ms",
-          "ocni.clonelink.jitter":"",
-          "ocni.clonelink.loss":"0.01%",
-          "ocni.clonelink.routing_scheme":"unicast",
-          "ocni.l3vpn.infrastructure_request_id":"2222",
-          "ocni.l3vpn.customer_id":"0987",
-          "ocni.l3vpn.service_type":{
-             "ocni.l3vpn.service_type.type":"CaaS",
-             "ocni.l3vpn.service_type.layer":"L2",
-             "ocni.l3vpn.service_type.class_of_service":"guaranteed"
-          },
-          "ocni.l3vpn.service_description":[
-             {
-                "ocni.l3vpn.service_description.endpoint_id":"0987",
-                "ocni.l3vpn.service_description.in_bandwidth":"100Mbps",
-                "ocni.l3vpn.service_description.out_bandwidth":"100Mbps",
-                "ocni.l3vpn.service_description.max_in_bandwidth":"120Mbps",
-                "ocni.l3vpn.service_description.max_out_bandwidth":"120Mbps",
-                "ocni.l3vpn.service_description.latency":"100ms",
-                "ocni.l3vpn.service_description.max_latency":"200ms"
-             },
-             {
-                "ocni.l3vpn.service_description.endpoint_id":"1001",
-                "ocni.l3vpn.service_description.in_bandwidth":"100Mbps",
-                "ocni.l3vpn.service_description.out_bandwidth":"100Mbps",
-                "ocni.l3vpn.service_description.max_in_bandwidth":"120Mbps",
-                "ocni.l3vpn.service_description.max_out_bandwidth":"120Mbps",
-                "ocni.l3vpn.service_description.latency":"100ms",
-                "ocni.l3vpn.service_description.max_latency":"200ms"
-             }
-          ],
-          "ocni.l3vpn.elastisity":{
-             "ocni.l3vpn.elastisity.supported":"yes",
-             "ocni.l3vpn.elastisity.reconfiguration_time":"120s"
-          },
-          "ocni.l3vpn.scalability":{
-             "ocni.l3vpn.scalability.supported":"yes",
-             "ocni.l3vpn.scalability.setup_time":"10s"
-          }
-       }
-    }
-
-post_clonenode_libnetvirt.json
---------------------
 {
-        "kind": {
-            "term": "CloNeNode",
-            "scheme": "http://schemas.ogf.org/occi/ocni",
-            "class": "kind"
-        },
-        "occi.core.id": "CloNeNodeGreen",
-        "occi.core.title": "Clone node for libnetvirt",
-        "occi.core.summary": "CloNeNode with libnetvirt mixin created by Daniel",
-        "mixins": [
-            {
-                "term": "libnetvirt",
-                "scheme": "http://schemas.ogf.org/occi/ocni",
-                "class": "mixin"
-            }
-        ],
-        "links": [],
-        "attributes": {
-            "ocni.clonenode.availability":[
-                {
-                    "ocni.availability.start":"08:00",
-                    "ocni.availability.end":"12:30"
-                },
-                {
-                    "ocni.availability.start":"14:00",
-                    "ocni.availability.end":"18:00"
+    "kinds": [
+        {
+            "term": "compute",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+            "title": "Compute Resource",
+            "related": [
+                "http://schemas.ogf.org/occi/core#resource"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "hostname": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                            "minimum": "1",
+                            "maximum": "255"
+                        },
+                        "state": {
+                            "mutable": false,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "inactive|active|suspended|failed",
+                            "default": "inactive"
+                        }
+                    }
                 }
+            },
+            "actions": [
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
+
             ],
-            "ocni.clonenode.location": "EU",
-            "ocni.clonenode.state": "active",
-            "ocni.libnetvirt.uuid" : "1",
-            "ocni.libnetvirt.endpoint" : [
-		{
-	            "ocni.libnetvirt.endpoint.uuid" : "12",
-	            "ocni.libnetvirt.endpoint.swid" : "1",
-		    "ocni.libnetvirt.endpoint.port" : "2"
-		},
-		{
-		    "ocni.libnetvirt.endpoint.uuid" : "21",
-		    "ocni.libnetvirt.endpoint.swid" : "2",
-		    "ocni.libnetvirt.endpoint.port" : "2",
-		    "ocni.libnetvirt.endpoint.vlan" : "10"
-		},
-		{
-		    "ocni.libnetvirt.endpoint.uuid" : "41",
-		    "ocni.libnetvirt.endpoint.swid" : "4",
-		    "ocni.libnetvirt.endpoint.port" : "1",
-		    "ocni.libnetvirt.endpoint.vlan" : "20"
-		}
-            ],
-            "ocni.libnetvirt.of_controller" : "192.168.56.1",
-            "ocni.libnetvirt.of_controller_port" : "2000",
-            "ocni.libnetvirt.constraint" : []
+            "location": "/compute/"
         }
+    ]
 }
 
+up_kind.json
+-----------------
+{
+
+   "Description": {
+       "kinds": [
+           {
+               "term": "compute",
+               "title": "Compute Resource",
+               "related": [
+                   "http://schemas.ogf.org/occi/core#resource"
+               ],
+               "actions": [
+
+               ],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "state": {
+                               "default": "inactive",
+                               "mutable": false,
+                               "required": false,
+                               "type": "string",
+                               "pattern": "inactive|active|suspended|failed"
+                           },
+                           "hostname": {
+                               "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                               "required": false,
+                               "maximum": "255",
+                               "minimum": "1",
+                               "mutable": true,
+                               "type": "string"
+                           }
+                       }
+                   }
+               },
+               "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+               "location": "/compute/"
+           }
+       ]
+   },
+   "Creator": "user_2",
+}
+
+post_mixin.json
+-----------------
+{
+            "mixins": [
+                    {
+                    "term": "medium",
+                    "scheme": "http://example.com/template/resource#",
+                    "title": "Medium VM",
+                    "related": [
+                        "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+                    ],
+                    "attributes": {
+                        "occi": {
+                            "compute": {
+                                "speed": {
+                                    "type": "number",
+                                    "default": 2.8
+                                }
+                            }
+                        }
+                    },
+                    "location": "/template/resource/medium/"
+                }
+            ]
+}
+
+up_mixin.json
+-----------------
+{
+    "Description": {
+        "mixins": [
+            {
+                "term": "medium",
+                "scheme": "http://example.com/template/resource#",
+                "title": "Large VM",
+                "related": [
+                    "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+                ],
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "speed": {
+                                "type": "number",
+                                "default": 3
+                            }
+                        }
+                    }
+                },
+                "location": "/template/resource/medium/"
+            }
+        ]
+    }
+}
+post_action.json
+-----------------
+{
+            "actions": [
+                    {
+                    "term": "stop",
+                    "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                    "title": "Stop Compute instance",
+                    "attributes": {
+                        "method": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "graceful|acpioff|poweroff",
+                            "default": "poweroff"
+                        }
+                    }
+                }
+            ]
+}
+
+up_action.json
+-----------------
+{
+    "Description": {
+        "actions": [
+            {
+                "attributes": {
+                    "method": {
+                        "default": "poweroff",
+                        "mutable": true,
+                        "required": false,
+                        "type": "string",
+                        "pattern": "graceful|acpioff|poweroff"
+                    }
+                },
+                "term": "start",
+                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                "title": "start Compute instance"
+            }
+        ]
+    }
+}
+
+post_resource.json
+-----------------
+{
+        "resources": [
+            {
+                "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
+                "mixins": [
+                    "http: //schemas.opennebula.org/occi/infrastructure#my_mixin",
+                    "http: //schemas.other.org/occi#my_mixin"
+                ],
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "speed": 2,
+                            "memory": 4,
+                            "cores": 2
+                        }
+                    },
+                    "org": {
+                        "other": {
+                            "occi": {
+                                "my_mixin": {
+                                    "my_attribute": "my_value"
+                                }
+                            }
+                        }
+                    }
+                },
+                "actions": [
+                    {
+                        "title": "Start My Server",
+                        "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                        "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                    }
+                ],
+                "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+                "title": "Compute resource",
+                "summary": "This is a compute resource",
+                "links": [
+                    {
+                        "target": "http://myservice.tld/storage/59e06cf8-f390-5093-af2e-3685be593",
+                        "kind": "http: //schemas.ogf.org/occi/infrastructure#storagelink",
+                        "attributes": {
+                            "occi": {
+                                "storagelink": {
+                                    "deviceid": "ide: 0: 1"
+                                }
+                            }
+                        },
+                        "id": "391ada15-580c-5baa-b16f-eeb35d9b1122",
+                        "title": "Mydisk"
+                    }
+                ]
+            }
+        ]
+}
+up_resource.json
+-----------------
+{
+   "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
+   "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0",
+
+}
+
+post_link.json
+-----------------
+{
+            "links": [
+                    {
+                    "kind": "http://schemas.ogf.org/occi/infrastructure#networkinterface",
+                    "mixins": [
+                        "http://schemas.ogf.org/occi/infrastructure/networkinterface#ipnetworkinterface"
+                    ],
+                    "attributes": {
+                        "occi": {
+                            "infrastructure": {
+                                "networkinterface": {
+                                    "interface": "eth0",
+                                    "mac": "00:80:41:ae:fd:7e",
+                                    "address": "192.168.0.100",
+                                    "gateway": "192.168.0.1",
+                                    "allocation": "dynamic"
+                                }
+                            }
+                        }
+                    },
+                    "actions": [
+                            {
+                            "title": "Disable networkinterface",
+                            "href": "/networkinterface/22fe83ae-a20f-54fc-b436-cec85c94c5e8?action=up",
+                            "category": "http: //schemas.ogf.org/occi/infrastructure/networkinterface/action#"
+                        }
+                    ],
+                    "id": "22fe83ae-a20f-54fc-b436-cec85c94c5e8",
+                    "title": "Mynetworkinterface",
+                    "target": "http: //myservice.tld/network/b7d55bf4-7057-5113-85c8-141871bf7635",
+                    "source": "http: //myservice.tld/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29"
+                }
+            ]
+        }
+up_link.json
+-----------------
+{
+   "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
+   "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0",
+
+}
+
+DocumentSkeleton
+-------------------
+
+{
+    "_id": "id value",
+    "_rev": "rev value",
+    "LastUpdate": "datetime",
+    "CreationDate": "datetime",
+    "OCCI_Description": {occi+json},
+    "Creator": "creator login",
+    "Location": "path to the document",
+    "Provider": {
+        "remote": [],
+        "local": []
+    },
+    "Type": "Type of the OCCI description"
+}
