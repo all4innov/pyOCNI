@@ -175,7 +175,7 @@ class ResourceManager(object):
 
         database = self.server.get_or_create_db(config.Resource_DB)
         doc_id = uuid_Generator.get_UUID()
-        loc, ok = joker.make_resource_location(description,doc_id,creator)
+        ok, loc = joker.make_resource_location(description,doc_id,creator)
         if ok is True:
             jData = dict()
             jData['Creator'] = creator
@@ -363,7 +363,7 @@ class LinkManager(object):
 
         database = self.server.get_or_create_db(config.Link_DB)
         doc_id = uuid_Generator.get_UUID()
-        loc, ok = joker.make_link_location(description,doc_id,creator)
+        ok, loc = joker.make_link_location(description,doc_id,creator)
         if ok is True:
             jData = dict()
             jData['Creator'] = creator

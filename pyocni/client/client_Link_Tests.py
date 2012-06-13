@@ -208,7 +208,7 @@ class test_put(TestCase):
         self.updated_data = '''
 {
    "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
-   "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0",
+   "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0"
 
 }
 '''

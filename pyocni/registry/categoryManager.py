@@ -177,7 +177,8 @@ class KindManager:
         database = self.server.get_or_create_db(config.Kind_DB)
         doc_id = uuid_Generator.get_UUID()
 
-        loc, ok = joker.make_kind_location(description,doc_id,creator)
+        ok, loc = joker.make_kind_location(description,doc_id,creator)
+        print ('make kind location done')
         if ok is True:
             jData = dict()
             jData['Creator'] = creator
@@ -367,7 +368,7 @@ class MixinManager:
         """
         database = self.server.get_or_create_db(config.Mixin_DB)
         doc_id = uuid_Generator.get_UUID()
-        loc, ok = joker.make_mixin_location(description,doc_id,creator)
+        ok, loc = joker.make_mixin_location(description,doc_id,creator)
         if ok is True:
             jData = dict()
             jData['Creator'] = creator
@@ -561,7 +562,7 @@ class ActionManager:
         """
         database = self.server.get_or_create_db(config.Action_DB)
         doc_id = uuid_Generator.get_UUID()
-        loc, ok = joker.make_action_location(description,doc_id,creator)
+        ok,loc = joker.make_action_location(description,doc_id,creator)
         if ok is True:
             jData = dict()
             jData['Creator'] = creator

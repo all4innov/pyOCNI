@@ -63,10 +63,10 @@ def make_kind_location(occi_description, uuid,user_id):
     try:
         kind_term = occi_description['kinds'][0]['term']
     except Exception as e:
-        return e.message
+        return False, e.message
 
     kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-/" + kind_term + "/" + user_id + "/" + uuid
-    return kind_location
+    return True, kind_location
 
 def make_mixin_location(occi_description, uuid,user_id):
     """
@@ -130,7 +130,7 @@ def make_link_location(occi_description, uuid,user_id):
         @return :<string> Location of the link
     """
     try:
-        link_term = occi_description['link'][0]['kind']
+        link_term = occi_description['links'][0]['kind']
         link_term = link_term.split('#')[1]
     except Exception as e:
         return False,e.message
