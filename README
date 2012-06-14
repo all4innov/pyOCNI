@@ -1,11 +1,13 @@
 pyocni README
--------------
+=============
 
 Copyright (C) Houssem Medhioub <houssem.medhioub@it-sudparis.eu>
+Copyright (C) Bilel Msekni >bilel.msekni@telecom-sudparis.eu>
 Redistribution of this software is permitted under the terms of the LGPL License
 
 Table of Contents
------------------
+=================
+
 0. What is it?
 1. The Latest Version
 2. API Documentation
@@ -22,15 +24,15 @@ Table of Contents
 9. Todo
 10. json files to execute the HowTo use examples
 
------------------------------------------------------------------------------
+
 0. What is it?
------------------------------------------------------------------------------
+==============
 
 PyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI with a JSON serialization and a cloud networking extension
 
------------------------------------------------------------------------------
+
 1. The Latest Version
------------------------------------------------------------------------------
+=====================
 
 version 0.2
 11 Jan 2012
@@ -61,7 +63,7 @@ sudo python setup.py install
 3.3. Configuration
 ------------------
 Logger configuration:  OCCILogging.conf
-Server configuration: occi_server.conf
+Server configuration:  occi_server.conf
 CouchDB configuration: couchdb_server.conf
 
 3.4. Server running
@@ -79,7 +81,7 @@ In order to use PyOCNI, you must respect certain rules :
 3- Kinds, Mixins and Actions can be read and created by anyone but updated and deleted by only their creator
 4- Resources and Links can be created, read, updated or deleted(CRUD) on the fly.
 5- Resources and Links can be read and created by anyone but updated and deleted by only their creator
-6- Kinds, Mixins, Actions, Resources and Links have their  own distinct storage format (see below)
+6- Kinds, Mixins, Actions, Resources and Links have their own distinct storage format (see below)
 7- The new data provided in an update request must be sent in consistency with the raw format
 8- An update request is done through the update of the fields mentioned in the DocumentSkeleton (see below)
 
