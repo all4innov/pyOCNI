@@ -38,14 +38,16 @@ Table of Contents
 0. What is it?
 ==============
 
-PyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI with a JSON serialization and a cloud networking extension
+PyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI with a JSON serialization and a cloud networking extension.
 
 
 1. The Latest Version
 =====================
 
 version 0.2
+
 11 Jan 2012
+
 status: Still an ongoing work
 
 
@@ -61,7 +63,7 @@ PyOCNI/pyocni/doc/index.html
 -----------------
 This software needs this packages to run:
 
-* python == 2.7
+* python <= 2.7
 * python-all-dev (for eventlet/greenlet install/make)
 * python-setuptools (to execute the setup.py file)
 * couchdbkit
@@ -72,11 +74,10 @@ sudo python setup.py install
 
 3.3. Configuration
 ------------------
-Logger configuration:  OCCILogging.conf
 
-Server configuration:  occi_server.conf
-
-CouchDB configuration: couchdb_server.conf
+* Logger configuration:  OCCILogging.conf
+* Server configuration:  occi_server.conf
+* CouchDB configuration: couchdb_server.conf
 
 3.4. Server running
 -------------------
