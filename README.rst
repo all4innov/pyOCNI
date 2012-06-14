@@ -7,7 +7,8 @@
 Developers
 ==========
 
-Copyright (C) Houssem Medhioub <houssem.medhioub@it-sudparis.eu> \\
+Copyright (C) Houssem Medhioub <houssem.medhioub@it-sudparis.eu>
+
 Copyright (C) Bilel Msekni >bilel.msekni@telecom-sudparis.eu>
 
 Redistribution of this software is permitted under the terms of the LGPL License
@@ -53,13 +54,13 @@ status: Still an ongoing work
 the api documentation are available through this html file:
 PyOCNI/pyocni/doc/index.html
 
-
 3. Installation
 ===============
 
 3.1. Requirements
 -----------------
 This software needs this packages to run:
+
 * python == 2.7
 * python-all-dev (for eventlet/greenlet install/make)
 * python-setuptools (to execute the setup.py file)
@@ -71,8 +72,10 @@ sudo python setup.py install
 
 3.3. Configuration
 ------------------
-Logger configuration: OCCILogging.conf
-Server configuration: occi_server.conf
+Logger configuration:  OCCILogging.conf
+
+Server configuration:  occi_server.conf
+
 CouchDB configuration: couchdb_server.conf
 
 3.4. Server running
