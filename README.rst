@@ -89,13 +89,13 @@ python start.py
 
 In order to use PyOCNI, you must respect certain rules :
 
-1. All data must follow the JSON format declared by OCCI [occi+json], any detected conflict will cancel the request.
-2. Kinds, Mixins and Actions can be created, read, updated or deleted (CRUD) on the fly.
-3. Kinds, Mixins and Actions can be read and created by anyone but updated and deleted by only their creator
-4. Resources and Links can be created, read, updated or deleted(CRUD) on the fly.
-5. Resources and Links can be read and created by anyone but updated and deleted by only their creator
-6. Kinds, Mixins, Actions, Resources and Links have their own distinct storage format (see below)
-7. The new data provided in an update request must be sent in consistency with the raw format
+#. All data must follow the JSON format declared by OCCI [occi+json], any detected conflict will cancel the request.
+#. Kinds, Mixins and Actions can be created, read, updated or deleted (CRUD) on the fly.
+#. Kinds, Mixins and Actions can be read and created by anyone but updated and deleted by only their creator
+#. Resources and Links can be created, read, updated or deleted(CRUD) on the fly.
+#. Resources and Links can be read and created by anyone but updated and deleted by only their creator
+#. Kinds, Mixins, Actions, Resources and Links have their own distinct storage format (see below)
+#. The new data provided in an update request must be sent in consistency with the raw format
 #. An update request is done through the update of the fields mentioned in the DocumentSkeleton (see below)
 
 These are some commands that you can use with PyOCNI
