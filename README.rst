@@ -70,7 +70,9 @@ This software needs this packages to run:
 
 3.2. Install
 ------------
-sudo python setup.py install
+::
+
+   sudo python setup.py install
 
 3.3. Configuration
 ------------------
@@ -81,8 +83,9 @@ sudo python setup.py install
 
 3.4. Server running
 -------------------
-python start.py
+::
 
+   python start.py
 
 4. HowTo use (examples. The json files are at the end of this README)
 =====================================================================
@@ -284,3 +287,45 @@ Some of pyocni's needs might be:
 10. json files to execute the HowTo use examples
 ================================================
 
+* post_kind.json
+::
+
+   {
+       "kinds": [
+           {
+               "term": "compute",
+               "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+               "title": "Compute Resource",
+               "related": [
+                   "http://schemas.ogf.org/occi/core#resource"
+               ],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "hostname": {
+                               "mutable": true,
+                               "required": false,
+                               "type": "string",
+                               "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                               "minimum": "1",
+                               "maximum": "255"
+                           },
+                           "state": {
+                               "mutable": false,
+                               "required": false,
+                               "type": "string",
+                               "pattern": "inactive|active|suspended|failed",
+                               "default": "inactive"
+                           }
+                       }
+                   }
+               },
+               "actions": [
+                   "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                   "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
+                   "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
+               ],
+               "location": "/compute/"
+           }
+       ]
+   }
