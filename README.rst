@@ -243,7 +243,7 @@ If you want export the use of your service through OCCI, two parts should be dev
 
 ::
 
-  Copyright (C) 2011 Houssem Medhioub - Institut Telecom
+  Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
 
   This library is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
@@ -257,4 +257,30 @@ If you want export the use of your service through OCCI, two parts should be dev
 
   You should have received a copy of the GNU Lesser General Public License
   along with this library. If not, see <http://www.gnu.org/licenses/>.
+
+7. Contacts
+===========
+
+Houssem Medhioub: houssem.medhioub@it-sudparis.eu
+
+Bilel Msekni: bilel.msekni@telecom-sudparis.eu
+
+8. Acknowledgment
+=================
+This work has been supported by:
+
+* SAIL project (IST 7th Framework Programme Integrated Project) [http://sail-project.eu/]
+* CompatibleOne Project (French FUI project) [http://compatibleone.org/]
+
+
+9. Todo
+=======
+This release of pyocni is experimental.
+
+Some of pyocni's needs might be:
+
+*
+
+10. json files to execute the HowTo use examples
+================================================
 
