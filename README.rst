@@ -103,5 +103,6 @@ These are some commands that you can use with PyOCNI
 __________________________________________________________________________________________________________________
 
 Retrieval of all registered Kinds, Mixins and Actions:
+::
 
    curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/-/
