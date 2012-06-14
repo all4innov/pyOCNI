@@ -112,7 +112,7 @@ class ResourceManager(object):
             "type": "DesignDoc",
             "views": {
                 "all": {
-                    "map": "(function(doc) { emit(doc._id, doc.Description) });"
+                    "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
                 }
             }
 
@@ -214,16 +214,21 @@ class ResourceManager(object):
                 oldData_keys = oldData.keys()
                 newData_keys =  new_Data.keys()
                 problems = False
-                #Update only the fields that exist in the new data
                 for key in newData_keys:
                     try:
-                        oldData_keys.index(key)
-                        oldData[key] = new_Data[key]
+                        #OCCI_Description field will be treated separately
+                        if key == "OCCI_Description":
+                            old_descrip = oldData[key]['resources'][0]
+                            new_descrip = new_Data[key]['resources'][0]
+                            problems,oldData[key]['resources'][0] = joker.update_occi_description(old_descrip,new_descrip)
+                        else:
+                            oldData_keys.index(key)
+                            oldData[key] = new_Data[key]
                     except Exception:
                         problems = True
-                        logger.debug(key + " could not be found")
-                        #Keep the record of the keys(=parts) that couldn't be updated
-                if problems:
+                        logger.debug(key + "could not be found")
+                        #Keep the record of the keys(=parts) that couldn't be update
+                if problems is True:
                     message = "Resource document " + str(doc_id) + " has not been totally updated. Check log for more details"
                 else:
                     message = "Resource document " + str(doc_id) + " has been updated successfully"
@@ -300,7 +305,7 @@ class LinkManager(object):
             "type": "DesignDoc",
             "views": {
                 "all": {
-                    "map": "(function(doc) { emit(doc._id, doc.Description) });"
+                    "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
                 }
             }
 
@@ -402,15 +407,20 @@ class LinkManager(object):
                 oldData_keys = oldData.keys()
                 newData_keys =  new_Data.keys()
                 problems = False
-                #Update only the fields that exist in the new data
                 for key in newData_keys:
                     try:
-                        oldData_keys.index(key)
-                        oldData[key] = new_Data[key]
+                        #OCCI_Description field will be treated separately
+                        if key == "OCCI_Description":
+                            old_descrip = oldData[key]['links'][0]
+                            new_descrip = new_Data[key]['links'][0]
+                            problems,oldData[key]['links'][0] = joker.update_occi_description(old_descrip,new_descrip)
+                        else:
+                            oldData_keys.index(key)
+                            oldData[key] = new_Data[key]
                     except Exception:
                         problems = True
-                        logger.debug(key + " could not be found")
-                        #Keep the record of the keys(=parts) that couldn't be updated
+                        logger.debug(key + "could not be found")
+                        #Keep the record of the keys(=parts) that couldn't be update
                 if problems:
                     message = "Link document " + str(doc_id) + " has not been totally updated. Check log for more details"
                 else:

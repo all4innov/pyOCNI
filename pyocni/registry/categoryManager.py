@@ -36,7 +36,7 @@ except ImportError:
 from datetime import datetime
 from pyocni.pyocni_tools import uuid_Generator
 from couchdbkit import *
-
+from pprint import *
 # ======================================================================================
 # HTTP Return Codes
 # ======================================================================================
@@ -89,7 +89,7 @@ def purgeCategoryDBs():
 class KindManager:
     """
 
-        Managemer for Kind documents on couch database
+        Manager for Kind documents on couch database
 
     """
 
@@ -116,7 +116,7 @@ class KindManager:
             "type": "DesignDoc",
             "views": {
                 "all": {
-                    "map": "(function(doc) { emit(doc._id, doc.Description) });"
+                    "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
                 }
             }
 
@@ -178,7 +178,6 @@ class KindManager:
         doc_id = uuid_Generator.get_UUID()
 
         ok, loc = joker.make_kind_location(description,doc_id,creator)
-        print ('make kind location done')
         if ok is True:
             jData = dict()
             jData['Creator'] = creator
@@ -220,13 +219,19 @@ class KindManager:
                 #Try to update kind document fields
                 for key in newData_keys:
                     try:
-                        oldData_keys.index(key)
-                        oldData[key] = new_Data[key]
+                        #OCCI_Description field will be treated separately
+                        if key == "OCCI_Description":
+                            old_descrip = oldData[key]['kinds'][0]
+                            new_descrip = new_Data[key]['kinds'][0]
+                            problems,oldData[key]['kinds'][0] = joker.update_occi_description(old_descrip,new_descrip)
+                        else:
+                            oldData_keys.index(key)
+                            oldData[key] = new_Data[key]
                     except Exception:
                         problems = True
                         logger.debug(key + "could not be found")
                     #Keep the record of the keys(=parts) that couldn't be updated
-                if problems:
+                if problems is True:
                     message = "Kind document " + str(doc_id) + " has not been totally updated. Check log for more details"
                 else:
                     message = "Kind document " + str(doc_id) + " has been updated successfully"
@@ -308,7 +313,7 @@ class MixinManager:
             "type": "DesignDoc",
             "views": {
                 "all": {
-                    "map": "(function(doc) { emit(doc._id, doc.Description) });"
+                    "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
                 }
             }
 
@@ -410,13 +415,19 @@ class MixinManager:
                 #Update only the fields that exist in the new data
                 for key in newData_keys:
                     try:
-                        oldData_keys.index(key)
-                        oldData[key] = new_Data[key]
+                        #OCCI_Description field will be treated separately
+                        if key == "OCCI_Description":
+                            old_descrip = oldData[key]['mixins'][0]
+                            new_descrip = new_Data[key]['mixins'][0]
+                            problems,oldData[key]['mixins'][0] = joker.update_occi_description(old_descrip,new_descrip)
+                        else:
+                            oldData_keys.index(key)
+                            oldData[key] = new_Data[key]
                     except Exception:
                         problems = True
                         logger.debug(key + "could not be found")
                         #Keep the record of the keys(=parts) that couldn't be updated
-                if problems:
+                if problems is True:
                     message = "Mixin document " + str(doc_id) + " has not been totally updated. Check log for more details"
                 else:
                     message = "Mixin document " + str(doc_id) + " has been updated successfully"
@@ -500,7 +511,7 @@ class ActionManager:
             "type": "DesignDoc",
             "views": {
                 "all": {
-                    "map": "(function(doc) { emit(doc._id, doc.Description) });"
+                    "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
                 }
             }
 
@@ -604,13 +615,19 @@ class ActionManager:
                 #Update only the fields that exist in the new data
                 for key in newData_keys:
                     try:
-                        oldData_keys.index(key)
-                        oldData[key] = new_Data[key]
+                        #OCCI_Description field will be treated separately
+                        if key == "OCCI_Description":
+                            old_descrip = oldData[key]['actions'][0]
+                            new_descrip = new_Data[key]['actions'][0]
+                            problems,oldData[key]['actions'][0] = joker.update_occi_description(old_descrip,new_descrip)
+                        else:
+                            oldData_keys.index(key)
+                            oldData[key] = new_Data[key]
                     except Exception:
                         problems = True
                         logger.debug(key + "could not be found")
-                        #Keep the record of the keys(=parts) that couldn't be updated
-                if problems:
+                        #Keep the record of the keys(=parts) that couldn't be update
+                if problems is True:
                     message = "Action document " + str(doc_id) + " has not been totally updated. Check log for more details"
                 else:
                     message = "Action document " + str(doc_id) + " has been updated successfully"

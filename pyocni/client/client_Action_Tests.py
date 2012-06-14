@@ -26,13 +26,15 @@ Created on Jun 11, 2012
 @version: 0.2
 @license: LGPL - Lesser General Public License
 """
-import StringIO
 
+from multiprocessing import Process
 from unittest import TestLoader,TextTestRunner,TestCase
+from couchdbkit import *
+import pyocni.pyocni_tools.config as config
 import pyocni.client.server_Mock as server
 import pycurl
 import time
-from multiprocessing import Process
+import StringIO
 
 # ======================================================================================
 # HTTP Return Codes
@@ -54,7 +56,21 @@ return_code = {'OK': 200,
 def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
-
+def get_me_an_id():
+    try:
+        DB_server_IP = config.DB_IP
+        DB_server_PORT = config.DB_PORT
+        server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
+        db = server.get_or_create_db(config.Action_DB)
+    except Exception:
+        raise Exception("Database is unreachable")
+    res = db.all_docs()
+    if res is None:
+        raise Exception('Database is empty')
+    else:
+        for re in res:
+            if re['id'][0] != "_":
+                return re['id']
 class test_get(TestCase):
     """
     Tests GET request scenarios
@@ -64,7 +80,10 @@ class test_get(TestCase):
         """
         Set up the test environment
         """
-
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
@@ -94,10 +113,9 @@ class test_get(TestCase):
         get the action specific to the id
 
         """
-        id = '1591d88e-91fe-405d-a1b0-b82c15c4aec0'
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -186,6 +204,10 @@ class test_put(TestCase):
     def setUp(self):
         self.p = Process(target=start_server)
         self.p.start()
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
         time.sleep(0.5)
         self.updated_data ='''
 {
@@ -216,7 +238,7 @@ class test_put(TestCase):
     def test_update_action_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/6bebe042-4e3e-40de-9c21-bdc34d400358')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -232,7 +254,7 @@ class test_put(TestCase):
     def test_update_action_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/userm/6bebe042-4e3e-40de-9c21-bdc34d400358')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/userm/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -268,6 +290,10 @@ class test_delete(TestCase):
     def setUp(self):
         self.p = Process(target=start_server)
         self.p.start()
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
         time.sleep(0.5)
 
 
@@ -277,7 +303,7 @@ class test_delete(TestCase):
     def test_delete_action_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/163d14f3-c648-456e-9b4a-f1b26590c0c2')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -292,7 +318,7 @@ class test_delete(TestCase):
     def test_delete_action_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/userm/6bebe042-4e3e-40de-9c21-bdc34d400358')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/userm/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')

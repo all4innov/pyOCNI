@@ -92,13 +92,13 @@ curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/-/
 __________________________________________________________________________________________________________________
 
 Create a Kind
-curl -X POST -d@post_kind.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/
+curl -X POST -d@post_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v 'http://localhost:8090/-/kind/'
 
 Get a kind
 curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
 
 Update a Kind
-curl -X PUT -d@up_kind.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
+curl -X PUT -d@up_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/kind/{user-id}/{kind-id}
 
 Delete a Kind
 curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
@@ -108,13 +108,13 @@ ________________________________________________________________________________
 __________________________________________________________________________________________________________________
 
 Create a Mixin
-curl -X POST -d@post_mixin.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/
+curl -X POST -d@post_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/mixin/
 
 Get a Mixin
 curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
 
 Update a mixin
-curl -X PUT -d@up_mixin.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+curl -X PUT -d@up_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
 
 Delete a mixin
 curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
@@ -124,13 +124,13 @@ ________________________________________________________________________________
 __________________________________________________________________________________________________________________
 
 Create an Action
-curl -X POST -d@post_action.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/
+curl -X POST -d@post_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/action/
 
 Get an Action
 curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
 
 Update an Action
-curl -X PUT -d@up_action.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
+curl -X PUT -d@up_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/action/{user-id}/{action-id}
 
 Delete an Action
 curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
@@ -140,13 +140,13 @@ ________________________________________________________________________________
 __________________________________________________________________________________________________________________
 
 Create a Resource
-curl -X POST -d@post_resource.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/
+curl -X POST -d@post_resource.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/resource/
 
 Get a Resource
 curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/{user-id}/{resource-id}
 
 Update a Resource
-curl -X PUT -d@up_resource.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/{user-id}/{resource-id}
+curl -X PUT -d@up_resource.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/resource/{user-id}/{resource-id}
 
 Delete a Resource
 curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/{user-id}/{resource-id}
@@ -156,13 +156,13 @@ ________________________________________________________________________________
 __________________________________________________________________________________________________________________
 
 Create a Link
-curl -X POST -d@post_link.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/
+curl -X POST -d@post_link.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/link/
 
 Get a Link
 curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}
 
 Update a Link
-curl -X PUT -d@up_link.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}
+curl -X PUT -d@up_link.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/link/{user-id}/{link-id}
 
 Delete a link
 curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}

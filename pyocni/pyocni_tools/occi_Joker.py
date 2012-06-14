@@ -27,29 +27,32 @@ Created on Jun 12, 2012
 @license: LGPL - Lesser General Public License
 
 """
+from pprint import pprint
 import pyocni.pyocni_tools.config as config
+# getting the Logger
+logger = config.logger
 
-def update_part_of_kind(doc_id,newData,j_oldData,newData_keys):
+def update_occi_description(oldData,newData):
     """
-    update only a part of the kind description (can be called only after a failed try to fully update the kind description)
+    Update only a part of the occi description
+    Args:
+        @param newData: The new OCCI description
+        @param oldData: The old OCCI description
     """
 
-    #Try to change parts of the kind description
-    oldData_keys =  j_oldData['kinds'][0].keys()
+    #Try to get the keys from occi description dictionary
+    oldData_keys = oldData.keys()
+    newData_keys = newData.keys()
     problems = False
     for key in newData_keys:
         try:
             oldData_keys.index(key)
-            j_oldData['kinds'][0][key] = newData[key]
+            oldData[key] = newData[key]
         except Exception:
             #Keep the record of the keys(=parts) that couldn't be updated
-
+            logger.debug(key + "could not be found")
             problems = True
-    if problems:
-        message = "Document " + str(doc_id) + " has not been totally updated. Check log for more details"
-    else:
-        message = "Document " + str(doc_id) + " has been updated successfully"
-    return j_oldData,message
+    return problems,oldData
 
 def make_kind_location(occi_description, uuid,user_id):
     """
