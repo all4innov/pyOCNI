@@ -1,5 +1,8 @@
-pyocni README
-=============
+==========================================================
+ pyocni - PyOCNI (Python Open Cloud Networking Interface)
+==========================================================
+
+:Version: 0.2
 
 Copyright (C) Houssem Medhioub <houssem.medhioub@it-sudparis.eu>
 Copyright (C) Bilel Msekni >bilel.msekni@telecom-sudparis.eu>
@@ -38,15 +41,15 @@ version 0.2
 11 Jan 2012
 status: Still an ongoing work
 
------------------------------------------------------------------------------
+
 2. API Documentation
------------------------------------------------------------------------------
+====================
 the api documentation are available through this html file:
  PyOCNI/pyocni/doc/index.html
 
------------------------------------------------------------------------------
+
 3. Installation
------------------------------------------------------------------------------
+===============
 
 3.1. Requirements
 -----------------
@@ -70,9 +73,9 @@ CouchDB configuration: couchdb_server.conf
 -------------------
 python start.py
 
------------------------------------------------------------------------------
+
 4. HowTo use (examples. The json files are at the end of this README)
------------------------------------------------------------------------------
+=====================================================================
 
 In order to use PyOCNI, you must respect certain rules :
 
@@ -169,17 +172,17 @@ curl -X PUT -d@up_link.json -H 'content-type: application/occi+json' --user user
 Delete a link
 curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}
 
------------------------------------------------------------------------------
+
 5. For developers
------------------------------------------------------------------------------
+=================
 
 If you want export the use of your service through OCCI, two parts should be developped:
 (1) the definition of the mixin with the list of attributes
 (2) implementation of the specific service backend (CRUD operations)
 
------------------------------------------------------------------------------
+
 6. Licensing
------------------------------------------------------------------------------
+============
 
 Copyright (C) 2011 Houssem Medhioub - Institut Telecom
 
@@ -196,37 +199,35 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
------------------------------------------------------------------------------
+
 7. Contacts
------------------------------------------------------------------------------
+===========
 
 Houssem Medhioub:
 houssem.medhioub@it-sudparis.eu
 
------------------------------------------------------------------------------
+
 8. Acknowledgment
------------------------------------------------------------------------------
+=================
 This work has been supported by:
      SAIL project (IST 7th Framework Programme Integrated Project) [http://sail-project.eu/]
      CompatibleOne Project (French FUI project) [http://compatibleone.org/]
 
 
 
------------------------------------------------------------------------------
 9. Todo
------------------------------------------------------------------------------
+=======
 This release of pyocni is experimental.
 
 Some of pyocni's needs might be:
 
   - 
 
------------------------------------------------------------------------------
 10. json files to execute the HowTo use examples
------------------------------------------------------------------------------
+================================================
 
 post_kind.json
------------------
+---------------
 
 {
     "kinds": [
@@ -270,7 +271,7 @@ post_kind.json
 }
 
 up_kind.json
------------------
+-------------
 {
 
    "Description": {
@@ -314,7 +315,7 @@ up_kind.json
 }
 
 post_mixin.json
------------------
+----------------
 {
             "mixins": [
                     {
@@ -340,7 +341,7 @@ post_mixin.json
 }
 
 up_mixin.json
------------------
+---------------
 {
     "Description": {
         "mixins": [
@@ -388,7 +389,7 @@ post_action.json
 }
 
 up_action.json
------------------
+---------------
 {
     "Description": {
         "actions": [
@@ -411,7 +412,7 @@ up_action.json
 }
 
 post_resource.json
------------------
+------------------
 {
         "resources": [
             {
@@ -475,7 +476,7 @@ up_resource.json
 }
 
 post_link.json
------------------
+--------------
 {
             "links": [
                     {
@@ -511,7 +512,7 @@ post_link.json
             ]
         }
 up_link.json
------------------
+------------
 {
    "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
    "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0",
@@ -519,7 +520,7 @@ up_link.json
 }
 
 DocumentSkeleton
--------------------
+-----------------
 
 {
     "_id": "id value",
