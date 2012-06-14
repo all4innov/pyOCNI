@@ -210,23 +210,19 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________________________________________
 
-* Create a Link
-::
+* Create a Link::
 
    curl -X POST -d@post_link.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/link/
 
-* Get a Link
-::
+* Get a Link::
 
    curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}
 
-* Update a Link
-::
+* Update a Link::
 
    curl -X PUT -d@up_link.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/link/{user-id}/{link-id}
 
-* Delete a link
-::
+* Delete a link::
 
    curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}
 
