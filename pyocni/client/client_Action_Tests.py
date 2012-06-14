@@ -23,16 +23,18 @@ Created on Jun 11, 2012
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Telecom - Telecom SudParis
-@version: 0.1
+@version: 0.2
 @license: LGPL - Lesser General Public License
 """
-import StringIO
 
+from multiprocessing import Process
 from unittest import TestLoader,TextTestRunner,TestCase
-import pyocni.client.Server_Mock as server
+from couchdbkit import *
+import pyocni.pyocni_tools.config as config
+import pyocni.client.server_Mock as server
 import pycurl
 import time
-from multiprocessing import Process
+import StringIO
 
 # ======================================================================================
 # HTTP Return Codes
@@ -54,7 +56,21 @@ return_code = {'OK': 200,
 def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
-
+def get_me_an_id():
+    try:
+        DB_server_IP = config.DB_IP
+        DB_server_PORT = config.DB_PORT
+        server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
+        db = server.get_or_create_db(config.Action_DB)
+    except Exception:
+        raise Exception("Database is unreachable")
+    res = db.all_docs()
+    if res is None:
+        raise Exception('Database is empty')
+    else:
+        for re in res:
+            if re['id'][0] != "_":
+                return re['id']
 class test_get(TestCase):
     """
     Tests GET request scenarios
@@ -64,7 +80,10 @@ class test_get(TestCase):
         """
         Set up the test environment
         """
-
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
@@ -72,13 +91,13 @@ class test_get(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_get_all_mixins(self):
+    def test_get_all_actions(self):
         """
-        Get all mixins
+        Get all actions
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -89,15 +108,14 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_mixin_by_id(self):
+    def test_get_action_by_id(self):
         """
-        get the mixin specific to the id
+        get the action specific to the id
 
         """
-        id = '0fa6ec65-7f39-4b7d-9797-d53c92dff481'
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -108,15 +126,15 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_mixin_with_wrong_id(self):
+    def test_get_action_with_wrong_id(self):
         """
-        get a mixin using a bad id
+        get an action using a bad id
 
         """
         id = "41005914"
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/'+id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -136,30 +154,25 @@ class test_post(TestCase):
         """
         Set up the test environment
         """
-        self.body ='''
+        self.body='''
 {
-            "mixins": [
+            "actions": [
                     {
-                    "term": "medium",
-                    "scheme": "http://example.com/template/resource#",
-                    "title": "Medium VM",
-                    "related": [
-                        "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-                    ],
+                    "term": "stop",
+                    "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                    "title": "Stop Compute instance",
                     "attributes": {
-                        "occi": {
-                            "compute": {
-                                "speed": {
-                                    "type": "number",
-                                    "default": 2.8
-                                }
-                            }
+                        "method": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "graceful|acpioff|poweroff",
+                            "default": "poweroff"
                         }
-                    },
-                    "location": "/template/resource/medium/"
+                    }
                 }
             ]
-}
+        }
 '''
         self.p = Process(target = start_server)
         self.p.start()
@@ -168,11 +181,11 @@ class test_post(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_add_mixin(self):
+    def test_add_action(self):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/mixin/')
+        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/action/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.POST, 1)
@@ -191,43 +204,41 @@ class test_put(TestCase):
     def setUp(self):
         self.p = Process(target=start_server)
         self.p.start()
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
+        time.sleep(0.5)
         self.updated_data ='''
 {
     "Description": {
-        "mixins": [
+        "actions": [
             {
-                "term": "medium",
-                "scheme": "http://example.com/template/resource#",
-                "title": "Large VM",
-                "related": [
-                    "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-                ],
                 "attributes": {
-                    "occi": {
-                        "compute": {
-                            "speed": {
-                                "type": "number",
-                                "default": 3
-                            }
-                        }
+                    "method": {
+                        "default": "poweroff",
+                        "mutable": true,
+                        "required": false,
+                        "type": "string",
+                        "pattern": "graceful|acpioff|poweroff"
                     }
                 },
-                "location": "/template/resource/medium/"
+                "term": "start",
+                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                "title": "start Compute instance"
             }
         ]
     }
 }
 '''
-        time.sleep(0.5)
-
 
     def tearDown(self):
         self.p.terminate()
 
-    def test_update_mixin_normal(self):
+    def test_update_action_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/55fa9f11-561a-465a-a94b-f52d3b3e025e')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -240,10 +251,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_update_mixin_unauthorized(self):
+    def test_update_action_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/userm/0fa6ec65-7f39-4b7d-9797-d53c92dff481')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/userm/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -256,10 +267,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_update_mixin_notfound(self):
+    def test_update_action_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/ab50-0e340bce9cc2')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -279,16 +290,20 @@ class test_delete(TestCase):
     def setUp(self):
         self.p = Process(target=start_server)
         self.p.start()
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
         time.sleep(0.5)
 
 
     def tearDown(self):
         self.p.terminate()
 
-    def test_delete_mixin_normal(self):
+    def test_delete_action_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/d2cfc5dd-421a-46ec-86b4-7c762bd88286')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -300,10 +315,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_delete_mixin_unauthorized(self):
+    def test_delete_action_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/userm/dac6bba4-4a38-4b10-8869-b103e04d737e')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/userm/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -315,10 +330,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_delete_mixin_notfound(self):
+    def test_delete_action_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/bbe47489-001')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -332,20 +347,18 @@ class test_delete(TestCase):
 
 if __name__ == '__main__':
 
-#    #Create the testing tools
-#    loader = TestLoader()
-#    runner = TextTestRunner(verbosity=2)
-#
-#    #Create the testing suites
-#    get_suite = loader.loadTestsFromTestCase(test_get)
-#    post_suite = loader.loadTestsFromTestCase(test_post)
-#    put_suite = loader.loadTestsFromTestCase(test_put)
-#    delete_suite = loader.loadTestsFromTestCase(test_delete)
-#
-#    #Run tests
-#    runner.run(get_suite)
-#    runner.run(post_suite)
-#    runner.run(put_suite)
-#    runner.run(delete_suite)
-    t = test_put()
-    t.test_update_mixin_normal()
+    #Create the testing tools
+    loader = TestLoader()
+    runner = TextTestRunner(verbosity=2)
+
+    #Create the testing suites
+    get_suite = loader.loadTestsFromTestCase(test_get)
+    post_suite = loader.loadTestsFromTestCase(test_post)
+    put_suite = loader.loadTestsFromTestCase(test_put)
+    delete_suite = loader.loadTestsFromTestCase(test_delete)
+
+    #Run tests
+    runner.run(get_suite)
+    runner.run(post_suite)
+    runner.run(put_suite)
+    runner.run(delete_suite)
