@@ -4,6 +4,8 @@
 
 :Version: 0.2
 
+Developers
+==========
 Copyright (C) Houssem Medhioub <houssem.medhioub@it-sudparis.eu>
 Copyright (C) Bilel Msekni >bilel.msekni@telecom-sudparis.eu>
 Redistribution of this software is permitted under the terms of the LGPL License
