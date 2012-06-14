@@ -102,7 +102,31 @@ These are some commands that you can use with PyOCNI
 
 __________________________________________________________________________________________________________________
 
-Retrieval of all registered Kinds, Mixins and Actions:
+* Retrieval of all registered Kinds, Mixins and Actions:
 ::
 
    curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/-/
+
+_________________________________________________________________________________________________________________
+
+* Create a Kind
+::
+
+   curl -X POST -d@post_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v 'http://localhost:8090/-/kind/'
+
+* Get a kind
+::
+
+   curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
+
+* Update a Kind
+::
+
+   curl -X PUT -d@up_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/kind/{user-id}/{kind-id}
+
+* Delete a Kind
+::
+
+   curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
+
+__________________________________________________________________________________________________________________
