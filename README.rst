@@ -349,3 +349,233 @@ Some of pyocni's needs might be:
        "Creator": "user_2"
    }
 
+* post_mixin.json::
+
+   {
+       "mixins": [
+           {
+               "term": "medium",
+               "scheme": "http://example.com/template/resource#",
+               "title": "Medium VM",
+               "related": [
+                   "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+               ],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "speed": {
+                               "type": "number",
+                               "default": 2.8
+                           }
+                       }
+                   }
+               },
+               "location": "/template/resource/medium/"
+           }
+       ]
+   }
+
+* up_mixin.json::
+
+   {
+       "Description": {
+           "mixins": [
+               {
+                   "term": "medium",
+                   "scheme": "http://example.com/template/resource#",
+                   "title": "Large VM",
+                   "related": [
+                       "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+                   ],
+                   "attributes": {
+                       "occi": {
+                           "compute": {
+                               "speed": {
+                                   "type": "number",
+                                   "default": 3
+                               }
+                           }
+                       }
+                   },
+                   "location": "/template/resource/medium/"
+               }
+           ]
+       }
+   }
+
+* post_action.json::
+
+   {
+       "actions": [
+           {
+               "term": "stop",
+               "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+               "title": "Stop Compute instance",
+               "attributes": {
+                   "method": {
+                       "mutable": true,
+                       "required": false,
+                       "type": "string",
+                       "pattern": "graceful|acpioff|poweroff",
+                       "default": "poweroff"
+                   }
+               }
+           }
+       ]
+   }
+
+* up_action.json::
+
+   {
+       "Description": {
+           "actions": [
+               {
+                   "attributes": {
+                       "method": {
+                           "default": "poweroff",
+                           "mutable": true,
+                           "required": false,
+                           "type": "string",
+                           "pattern": "graceful|acpioff|poweroff"
+                       }
+                   },
+                   "term": "start",
+                   "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                   "title": "start Compute instance"
+               }
+           ]
+       }
+   }
+
+* post_resource.json::
+
+   {
+       "resources": [
+           {
+               "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
+               "mixins": [
+                   "http: //schemas.opennebula.org/occi/infrastructure#my_mixin",
+                   "http: //schemas.other.org/occi#my_mixin"
+               ],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "speed": 2,
+                           "memory": 4,
+                           "cores": 2
+                       }
+                   },
+                   "org": {
+                       "other": {
+                           "occi": {
+                               "my_mixin": {
+                                   "my_attribute": "my_value"
+                               }
+                           }
+                       }
+                   }
+               },
+               "actions": [
+                   {
+                       "title": "Start My Server",
+                       "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                       "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                   }
+               ],
+               "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+               "title": "Compute resource",
+               "summary": "This is a compute resource",
+               "links": [
+                   {
+                       "target": "http://myservice.tld/storage/59e06cf8-f390-5093-af2e-3685be593",
+                       "kind": "http: //schemas.ogf.org/occi/infrastructure#storagelink",
+                       "attributes": {
+                           "occi": {
+                               "storagelink": {
+                                   "deviceid": "ide: 0: 1"
+                               }
+                           }
+                       },
+                       "id": "391ada15-580c-5baa-b16f-eeb35d9b1122",
+                       "title": "Mydisk"
+                   }
+               ]
+           }
+       ]
+   }
+
+* up_resource.json::
+
+   {
+       "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
+       "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0"
+
+   }
+
+* post_link.json::
+
+   {
+       "links": [
+           {
+               "kind": "http://schemas.ogf.org/occi/infrastructure#networkinterface",
+               "mixins": [
+                   "http://schemas.ogf.org/occi/infrastructure/networkinterface#ipnetworkinterface"
+               ],
+               "attributes": {
+                   "occi": {
+                       "infrastructure": {
+                           "networkinterface": {
+                               "interface": "eth0",
+                               "mac": "00:80:41:ae:fd:7e",
+                               "address": "192.168.0.100",
+                               "gateway": "192.168.0.1",
+                               "allocation": "dynamic"
+                           }
+                       }
+                   }
+               },
+               "actions": [
+                   {
+                       "title": "Disable networkinterface",
+                       "href": "/networkinterface/22fe83ae-a20f-54fc-b436-cec85c94c5e8?action=up",
+                       "category": "http: //schemas.ogf.org/occi/infrastructure/networkinterface/action#"
+                   }
+               ],
+               "id": "22fe83ae-a20f-54fc-b436-cec85c94c5e8",
+               "title": "Mynetworkinterface",
+               "target": "http: //myservice.tld/network/b7d55bf4-7057-5113-85c8-141871bf7635",
+               "source": "http: //myservice.tld/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29"
+           }
+       ]
+   }
+
+* up_link.json::
+
+   {
+       "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
+       "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0"
+   }
+
+* DocumentSkeleton::
+
+   {
+       "_id": "id value",
+       "_rev": "rev value",
+       "LastUpdate": "datetime",
+       "CreationDate": "datetime",
+       "OCCI_Description": {
+           occi+json
+       },
+       "Creator": "creator login",
+       "Location": "path to the document",
+       "Provider": {
+           "remote": [
+
+           ],
+           "local": [
+
+           ]
+       },
+       "Type": "Type of the OCCI description"
+   }
+
