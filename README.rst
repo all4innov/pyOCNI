@@ -329,3 +329,45 @@ Some of pyocni's needs might be:
            }
        ]
    }
+
+* up_kind.json::
+
+   {
+       "Description": {
+           "kinds": [
+               {
+                   "term": "compute",
+                   "title": "Compute Resource",
+                   "related": [
+                       "http://schemas.ogf.org/occi/core#resource"
+                   ],
+                   "actions": [],
+                   "attributes": {
+                       "occi": {
+                           "compute": {
+                               "state": {
+                                   "default": "inactive",
+                                   "mutable": false,
+                                   "required": false,
+                                   "type": "string",
+                                   "pattern": "inactive|active|suspended|failed"
+                               },
+                               "hostname": {
+                                   "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                                   "required": false,
+                                   "maximum": "255",
+                                   "minimum": "1",
+                                   "mutable": true,
+                                   "type": "string"
+                               }
+                           }
+                       }
+                   },
+                   "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                   "location": "/compute/"
+               }
+           ]
+       },
+       "Creator": "user_2"
+   }
+
