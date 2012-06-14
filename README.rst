@@ -2,7 +2,7 @@
  PyOCNI - Python Open Cloud Networking Interface
 ==========================================================
 
-:Version: 0.2
+:Version: 0.3
 
 Developers
 ==========
@@ -44,7 +44,7 @@ PyOCNI (Python Open Cloud Networking Interface): A Python implementation of an e
 1. The Latest Version
 =====================
 
-version 0.2
+version 0.3
 
 11 Jan 2012
 

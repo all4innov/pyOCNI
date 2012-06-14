@@ -23,6 +23,6 @@ Created on Jun 09, 2012
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
-@version: 0.2
+@version: 0.3
 @license: LGPL - Lesser General Public License
 """

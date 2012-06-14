@@ -24,7 +24,7 @@ Created on Nov 10, 2011
 @author: Daniel Turull (for libnetvirt mixin)
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
-@version: 0.1.2
+@version: 0.3
 @license: LGPL - Lesser General Public License
 """
 
