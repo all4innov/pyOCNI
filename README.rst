@@ -105,8 +105,7 @@ These are some commands that you can use with PyOCNI
 
 __________________________________________________________________________________________________________________
 
-* Retrieval of all registered Kinds, Mixins and Actions:
-::
+* Retrieval of all registered Kinds, Mixins and Actions::
 
    curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/-/
 
@@ -114,23 +113,19 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________________________________________
 
-* Create a Kind
-::
+* Create a Kind::
 
    curl -X POST -d@post_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v 'http://localhost:8090/-/kind/'
 
-* Get a kind
-::
+* Get a kind::
 
    curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
 
-* Update a Kind
-::
+* Update a Kind::
 
    curl -X PUT -d@up_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/kind/{user-id}/{kind-id}
 
-* Delete a Kind
-::
+* Delete a Kind::
 
    curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
 
@@ -138,23 +133,19 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________________________________________
 
-* Create a Mixin
-::
+* Create a Mixin::
 
    curl -X POST -d@post_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/mixin/
 
-* Get a Mixin
-::
+* Get a Mixin::
 
    curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
 
-* Update a mixin
-::
+* Update a mixin::
 
    curl -X PUT -d@up_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
 
-* Delete a mixin
-::
+* Delete a mixin::
 
    curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
 
@@ -162,23 +153,19 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________________________________________
 
-* Create an Action
-::
+* Create an Action::
 
    curl -X POST -d@post_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/action/
 
-* Get an Action
-::
+* Get an Action::
 
    curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
 
-* Update an Action
-::
+* Update an Action::
 
    curl -X PUT -d@up_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/action/{user-id}/{action-id}
 
-* Delete an Action
-::
+* Delete an Action::
 
    curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
 
@@ -186,23 +173,19 @@ ________________________________________________________________________________
 
 __________________________________________________________________________________________________________________
 
-* Create a Resource
-::
+* Create a Resource::
 
    curl -X POST -d@post_resource.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/resource/
 
-* Get a Resource
-::
+* Get a Resource::
 
    curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/{user-id}/{resource-id}
 
-* Update a Resource
-::
+* Update a Resource::
 
    curl -X PUT -d@up_resource.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/resource/{user-id}/{resource-id}
 
-* Delete a Resource
-::
+* Delete a Resource::
 
    curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/{user-id}/{resource-id}
 
@@ -218,11 +201,11 @@ ________________________________________________________________________________
 
    curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}
 
-* Update a Link:
+* Update a Link::
 
    curl -X PUT -d@up_link.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/link/{user-id}/{link-id}
 
-* Delete a link
+* Delete a link::
 
    curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/link/{user-id}/{link-id}
 
@@ -283,8 +266,7 @@ Some of pyocni's needs might be:
 10. json files to execute the HowTo use examples
 ================================================
 
-* post_kind.json
-::
+* post_kind.json::
 
    {
        "kinds": [
