@@ -349,9 +349,6 @@ Some of pyocni's needs might be:
        "Creator": "user_2"
    }
 
-dddd
-
-
 * post_mixin.json::
 
    {
