@@ -152,3 +152,49 @@ ________________________________________________________________________________
    curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
 
 __________________________________________________________________________________________________________________
+
+* Create an Action
+::
+
+   curl -X POST -d@post_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/action/
+
+* Get an Action
+::
+
+   curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
+
+* Update an Action
+::
+
+   curl -X PUT -d@up_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/action/{user-id}/{action-id}
+
+* Delete an Action
+::
+
+   curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
+
+__________________________________________________________________________________________________________________
+
+__________________________________________________________________________________________________________________
+
+* Create a Resource
+::
+
+   curl -X POST -d@post_resource.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/resource/
+
+* Get a Resource
+::
+
+   curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/{user-id}/{resource-id}
+
+* Update a Resource
+::
+
+   curl -X PUT -d@up_resource.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/resource/{user-id}/{resource-id}
+
+* Delete a Resource
+::
+
+   curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/resource/{user-id}/{resource-id}
+
+__________________________________________________________________________________________________________________
