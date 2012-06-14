@@ -1,6 +1,6 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-# Copyright (C) 2011 Houssem Medhioub - Institut Telecom
+# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -21,7 +21,7 @@ Created on Feb 25, 2011
 @author: Houssem Medhioub, Providence Salumu Munga
 @contact: houssem.medhioub@it-sudparis.eu
 @author: Bilel Msekni (Database configuration)
-@organization: Institut Telecom - Telecom SudParis
+@organization: Institut Mines-Telecom - Telecom SudParis
 @version: 0.2
 @license: LGPL - Lesser General Public License
 
