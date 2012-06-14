@@ -4,8 +4,8 @@
 
 :Version: 0.2
 
-Developers
-==========
+h1. Developers
+
 
 | Line block
 | New line and we are still on
