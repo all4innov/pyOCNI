@@ -130,3 +130,25 @@ ________________________________________________________________________________
    curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
 
 __________________________________________________________________________________________________________________
+
+* Create a Mixin
+::
+
+   curl -X POST -d@post_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/mixin/
+
+* Get a Mixin
+::
+
+   curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+
+* Update a mixin
+::
+
+   curl -X PUT -d@up_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+
+* Delete a mixin
+::
+
+   curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+
+__________________________________________________________________________________________________________________
