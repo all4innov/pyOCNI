@@ -27,11 +27,12 @@ Created on Jun 01, 2012
 @version: 1.0
 @license: LGPL - Lesser General Public License
 """
-from pyocni.CRUD_Interfaces.CategoryInterfaces import KindInterface,MixinInterface,ActionInterface
+from pyocni.crud_Interfaces.categoryInterfaces import KindInterface,MixinInterface,ActionInterface
+from pyocni.crud_Interfaces.locationInterfaces import ResourceInterface,LinkInterface
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.DoItYourselfWebOb as url_mapper
 import eventlet
-from pyocni.registry import CategoryManager,LocationManager
+from pyocni.registry import categoryManager,locationManager
 from eventlet import wsgi
 from pyocni.registry.registry import backend_registry, serialization_registry
 from pyocni.pyocni_tools import ask_user_details as shell_ask
@@ -96,6 +97,8 @@ class ocni_server(object):
     operationKind = url_mapper.rest_controller(KindInterface)
     operationMixin = url_mapper.rest_controller(MixinInterface)
     operationAction = url_mapper.rest_controller(ActionInterface)
+    operationResource = url_mapper.rest_controller(ResourceInterface)
+    operationLink = url_mapper.rest_controller(LinkInterface)
 
     app = url_mapper.Router()
 
@@ -107,6 +110,11 @@ class ocni_server(object):
     app.add_route('/-/mixin/{user_id}/{doc_id}',controller=operationMixin)
     app.add_route('/-/action/',controller = operationAction)
     app.add_route('/-/action/{user_id}/{doc_id}',controller=operationAction)
+    app.add_route('/-/resource/',controller=operationResource)
+    app.add_route('/-/resource/{user_id}/{doc_id}',controller=operationResource)
+    app.add_route('/-/link/',controller= operationLink)
+    app.add_route('/-/link/{user_id}/{doc_id}',controller=operationLink)
+
     def run_server(self):
         """
 
@@ -116,8 +124,8 @@ class ocni_server(object):
         result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
                                              "   Do you want to purge all databases (DB  reinitialization)?", "no")
         if result == 'yes':
-            LocationManager.purgeLocationDBs()
-            CategoryManager.purgeCategoryDBs()
+            locationManager.purgeLocationDBs()
+            categoryManager.purgeCategoryDBs()
 
         print ("\n______________________________________________________________________________________\n"
                "The OCNI server is running at: " + config.OCNI_IP + ":"+config.OCNI_PORT)
