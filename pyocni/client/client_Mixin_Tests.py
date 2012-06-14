@@ -23,16 +23,18 @@ Created on Jun 11, 2012
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Telecom - Telecom SudParis
-@version: 0.2
+@version: 0.1
 @license: LGPL - Lesser General Public License
 """
-import StringIO
 
+from multiprocessing import Process
 from unittest import TestLoader,TextTestRunner,TestCase
-import pyocni.client.Server_Mock as server
+from couchdbkit import *
+import pyocni.pyocni_tools.config as config
+import pyocni.client.server_Mock as server
 import pycurl
 import time
-from multiprocessing import Process
+import StringIO
 
 # ======================================================================================
 # HTTP Return Codes
@@ -54,6 +56,21 @@ return_code = {'OK': 200,
 def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
+def get_me_an_id():
+    try:
+        DB_server_IP = config.DB_IP
+        DB_server_PORT = config.DB_PORT
+        server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
+        db = server.get_or_create_db(config.Mixin_DB)
+    except Exception:
+        raise Exception("Database is unreachable")
+    res = db.all_docs()
+    if res is None:
+        raise Exception('Database is empty')
+    else:
+        for re in res:
+            if re['id'][0] != "_":
+                return re['id']
 
 class test_get(TestCase):
     """
@@ -68,17 +85,21 @@ class test_get(TestCase):
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
 
     def tearDown(self):
         self.p.terminate()
 
-    def test_get_all_kinds(self):
+    def test_get_all_mixins(self):
         """
-        Get all kinds
+        Get all mixins
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -89,15 +110,15 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_kind_by_id(self):
+    def test_get_mixin_by_id(self):
         """
-        get the kind specific to the id
+        get the mixin specific to the id
 
         """
-        id = '8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb'
+
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/' + self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -108,15 +129,15 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_kind_with_wrong_id(self):
+    def test_get_mixin_with_wrong_id(self):
         """
-        get a kind using a bad id
+        get a mixin using a bad id
 
         """
         id = "41005914"
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/'+id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -136,46 +157,29 @@ class test_post(TestCase):
         """
         Set up the test environment
         """
-        self.body='''
+        self.body ='''
 {
-    "kinds": [
-        {
-            "term": "compute",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/core#resource"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
+            "mixins": [
+                    {
+                    "term": "medium",
+                    "scheme": "http://example.com/template/resource#",
+                    "title": "Medium VM",
+                    "related": [
+                        "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+                    ],
+                    "attributes": {
+                        "occi": {
+                            "compute": {
+                                "speed": {
+                                    "type": "number",
+                                    "default": 2.8
+                                }
+                            }
                         }
-                    }
+                    },
+                    "location": "/template/resource/medium/"
                 }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-
-            ],
-            "location": "/compute/"
-        }
-    ]
+            ]
 }
 '''
         self.p = Process(target = start_server)
@@ -185,11 +189,11 @@ class test_post(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_add_kind(self):
+    def test_add_mixin(self):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/kind/')
+        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/mixin/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.POST, 1)
@@ -208,52 +212,35 @@ class test_put(TestCase):
     def setUp(self):
         self.p = Process(target=start_server)
         self.p.start()
-        self.updated_data = '''
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
+        self.updated_data ='''
 {
-   "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
-   "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0",
-   "LastUpdate": "2012-06-09 19:03:33.321330",
-   "CreationDate": "2012-06-08 10:15:42.049834",
-   "Description": {
-       "kinds": [
-           {
-               "term": "compute",
-               "title": "Compute Resource",
-               "related": [
-                   "http://schemas.ogf.org/occi/core#resource"
-               ],
-               "actions": [
-
-               ],
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "state": {
-                               "default": "inactive",
-                               "mutable": false,
-                               "required": false,
-                               "type": "string",
-                               "pattern": "inactive|active|suspended|failed"
-                           },
-                           "hostname": {
-                               "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                               "required": false,
-                               "maximum": "255",
-                               "minimum": "1",
-                               "mutable": true,
-                               "type": "string"
-                           }
-                       }
-                   }
-               },
-               "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-               "location": "/compute/"
-           }
-       ]
-   },
-   "Creator": "user_1",
-   "Location": "/-/kind/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
-   "Type": "Kind"
+    "Description": {
+        "mixins": [
+            {
+                "term": "medium",
+                "scheme": "http://example.com/template/resource#",
+                "title": "Large VM",
+                "related": [
+                    "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+                ],
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "speed": {
+                                "type": "number",
+                                "default": 3
+                            }
+                        }
+                    }
+                },
+                "location": "/template/resource/medium/"
+            }
+        ]
+    }
 }
 '''
         time.sleep(0.5)
@@ -262,10 +249,10 @@ class test_put(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_update_kind_normal(self):
+    def test_update_mixin_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -278,10 +265,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_update_kind_unauthorized(self):
+    def test_update_mixin_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/userm/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/userm/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -294,10 +281,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_update_kind_notfound(self):
+    def test_update_mixin_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/fb1cff2a-641c-47b2-ab50-0e340bce9cc2')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/fb1cff2a-641c-47b2-ab50-cc2')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -317,31 +304,20 @@ class test_delete(TestCase):
     def setUp(self):
         self.p = Process(target=start_server)
         self.p.start()
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
         time.sleep(0.5)
 
 
     def tearDown(self):
         self.p.terminate()
 
-    def test_delete_kind_normal(self):
+    def test_delete_mixin_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/bbe47489-0011-4f34-9d84-edf007afc1d1')
-        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
-        c.setopt(pycurl.USERPWD, 'user_1:password')
-        storage = StringIO.StringIO()
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
-        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
-
-    def test_delete_kind_unauthorized(self):
-
-        c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/userm/8b2d9f37-2ca8-41c6-ae6d-d93c7ba2cacb')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/userm/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -353,10 +329,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_delete_kind_notfound(self):
+    def test_delete_mixin_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/bbe47489-001')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/fb1cff2a-641c-47b2-ab50-0')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -367,6 +343,21 @@ class test_delete(TestCase):
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Resource not found'])
+
+    def test_delete_mixin_normal(self):
+
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/'+self.id)
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        storage = StringIO.StringIO()
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
 if __name__ == '__main__':
 

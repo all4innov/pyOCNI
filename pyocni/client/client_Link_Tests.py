@@ -1,3 +1,5 @@
+
+
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
 # Copyright (C) 2011 Houssem Medhioub - Institut Telecom
@@ -16,7 +18,7 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Created on Jun 11, 2012
+Created on Jun 12, 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
@@ -26,13 +28,15 @@ Created on Jun 11, 2012
 @version: 0.2
 @license: LGPL - Lesser General Public License
 """
-import StringIO
 
+from multiprocessing import Process
 from unittest import TestLoader,TextTestRunner,TestCase
-import pyocni.client.Server_Mock as server
+from couchdbkit import *
+import pyocni.pyocni_tools.config as config
+import pyocni.client.server_Mock as server
 import pycurl
 import time
-from multiprocessing import Process
+import StringIO
 
 # ======================================================================================
 # HTTP Return Codes
@@ -55,6 +59,22 @@ def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
 
+def get_me_an_id():
+    try:
+        DB_server_IP = config.DB_IP
+        DB_server_PORT = config.DB_PORT
+        server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
+        db = server.get_or_create_db(config.Link_DB)
+    except Exception:
+        raise Exception("Database is unreachable")
+    res = db.all_docs()
+    if res is None:
+        raise Exception('Database is empty')
+    else:
+        for re in res:
+            if re['id'][0] != "_":
+                return re['id']
+
 class test_get(TestCase):
     """
     Tests GET request scenarios
@@ -67,18 +87,22 @@ class test_get(TestCase):
 
         self.p = Process(target = start_server)
         self.p.start()
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
         time.sleep(0.5)
 
     def tearDown(self):
         self.p.terminate()
 
-    def test_get_all_actions(self):
+    def test_get_all_links(self):
         """
-        Get all actions
+        Get all links
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -89,15 +113,14 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_action_by_id(self):
+    def test_get_link_by_id(self):
         """
-        get the action specific to the id
+        Get the link specific to the id
 
         """
-        id = '6bebe042-4e3e-40de-9c21-bdc34d400358'
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/user_1/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -108,15 +131,15 @@ class test_get(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_get_action_with_wrong_id(self):
+    def test_get_link_with_wrong_id(self):
         """
-        get an action using a bad id
+        Get a link using a bad id
 
         """
         id = "41005914"
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/'+id)
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/'+id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -138,24 +161,41 @@ class test_post(TestCase):
         """
         self.body='''
 {
-            "actions": [
+            "links": [
                     {
-                    "term": "stop",
-                    "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-                    "title": "Stop Compute instance",
+                    "kind": "http://schemas.ogf.org/occi/infrastructure#networkinterface",
+                    "mixins": [
+                        "http://schemas.ogf.org/occi/infrastructure/networkinterface#ipnetworkinterface"
+                    ],
                     "attributes": {
-                        "method": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "graceful|acpioff|poweroff",
-                            "default": "poweroff"
+                        "occi": {
+                            "infrastructure": {
+                                "networkinterface": {
+                                    "interface": "eth0",
+                                    "mac": "00:80:41:ae:fd:7e",
+                                    "address": "192.168.0.100",
+                                    "gateway": "192.168.0.1",
+                                    "allocation": "dynamic"
+                                }
+                            }
                         }
-                    }
+                    },
+                    "actions": [
+                            {
+                            "title": "Disable networkinterface",
+                            "href": "/networkinterface/22fe83ae-a20f-54fc-b436-cec85c94c5e8?action=up",
+                            "category": "http: //schemas.ogf.org/occi/infrastructure/networkinterface/action#"
+                        }
+                    ],
+                    "id": "22fe83ae-a20f-54fc-b436-cec85c94c5e8",
+                    "title": "Mynetworkinterface",
+                    "target": "http: //myservice.tld/network/b7d55bf4-7057-5113-85c8-141871bf7635",
+                    "source": "http: //myservice.tld/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29"
                 }
             ]
         }
 '''
+
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
@@ -163,11 +203,11 @@ class test_post(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_add_action(self):
+    def test_add_link(self):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/action/')
+        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/link/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.POST, 1)
@@ -186,37 +226,27 @@ class test_put(TestCase):
     def setUp(self):
         self.p = Process(target=start_server)
         self.p.start()
-        time.sleep(0.5)
-        self.updated_data ='''
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
+        self.updated_data = '''
 {
-    "Description": {
-        "actions": [
-            {
-                "attributes": {
-                    "method": {
-                        "default": "poweroff",
-                        "mutable": true,
-                        "required": false,
-                        "type": "string",
-                        "pattern": "graceful|acpioff|poweroff"
-                    }
-                },
-                "term": "start",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-                "title": "start Compute instance"
-            }
-        ]
-    }
+   "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
+   "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0"
+
 }
 '''
+        time.sleep(0.5)
+
 
     def tearDown(self):
         self.p.terminate()
 
-    def test_update_action_normal(self):
+    def test_update_link_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/6bebe042-4e3e-40de-9c21-bdc34d400358')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/user_1/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -229,10 +259,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_update_action_unauthorized(self):
+    def test_update_link_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/userm/6bebe042-4e3e-40de-9c21-bdc34d400358')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/userm/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -245,10 +275,10 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_update_action_notfound(self):
+    def test_update_link_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/ab50-0e340bce9cc2')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/user_1/fb1cff2a-')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
@@ -268,16 +298,20 @@ class test_delete(TestCase):
     def setUp(self):
         self.p = Process(target=start_server)
         self.p.start()
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
         time.sleep(0.5)
 
 
     def tearDown(self):
         self.p.terminate()
 
-    def test_delete_action_normal(self):
+    def test_delete_link_normal(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/163d14f3-c648-456e-9b4a-f1b26590c0c2')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/user_1/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -289,10 +323,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_delete_action_unauthorized(self):
+    def test_delete_link_unauthorized(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/userm/6bebe042-4e3e-40de-9c21-bdc34d400358')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/userm/'+self.id)
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -304,10 +338,10 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_delete_action_notfound(self):
+    def test_delete_link_notfound(self):
 
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/action/user_1/bbe47489-001')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/link/user_1/bbe47489-001')
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
