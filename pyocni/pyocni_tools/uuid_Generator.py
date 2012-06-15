@@ -21,7 +21,7 @@ Created on May 29, 2012
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
-@version: 0.1
+@version: 0.3
 @license: LGPL - Lesser General Public License
 """
 
