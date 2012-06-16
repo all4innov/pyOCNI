@@ -66,7 +66,7 @@ This software needs this packages to run:
 * python <= 2.7
 * python-all-dev (for eventlet/greenlet install/make)
 * python-setuptools (to execute the setup.py file)
-* couchdbkit
+* couchdb
 
 3.2. Install
 ------------
@@ -123,7 +123,7 @@ ________________________________________________________________________________
 
 * Update a Kind::
 
-   curl -X PUT -d@up_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/kind/{user-id}/{kind-id}
+   curl -X PUT -d@update_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/kind/{user-id}/{kind-id}
 
 * Delete a Kind::
 
@@ -143,7 +143,7 @@ ________________________________________________________________________________
 
 * Update a mixin::
 
-   curl -X PUT -d@up_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+   curl -X PUT -d@update_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
 
 * Delete a mixin::
 
@@ -163,7 +163,7 @@ ________________________________________________________________________________
 
 * Update an Action::
 
-   curl -X PUT -d@up_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/action/{user-id}/{action-id}
+   curl -X PUT -d@update_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/action/{user-id}/{action-id}
 
 * Delete an Action::
 
@@ -183,7 +183,7 @@ ________________________________________________________________________________
 
 * Update a Resource::
 
-   curl -X PUT -d@up_resource.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/resource/{user-id}/{resource-id}
+   curl -X PUT -d@update_resource.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/resource/{user-id}/{resource-id}
 
 * Delete a Resource::
 
@@ -203,7 +203,7 @@ ________________________________________________________________________________
 
 * Update a Link::
 
-   curl -X PUT -d@up_link.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/link/{user-id}/{link-id}
+   curl -X PUT -d@update_link.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/link/{user-id}/{link-id}
 
 * Delete a link::
 
@@ -266,7 +266,7 @@ Some of pyocni's needs might be:
 10. json files to execute the HowTo use examples
 ================================================
 
-* post_kind.json::
+* post_kinds.json::
 
    {
        "kinds": [
@@ -308,7 +308,7 @@ Some of pyocni's needs might be:
        ]
    }
 
-* up_kind.json::
+* update_kind.json::
 
    {
        "Description": {
@@ -349,7 +349,7 @@ Some of pyocni's needs might be:
        "Creator": "user_2"
    }
 
-* post_mixin.json::
+* post_mixins.json::
 
    {
        "mixins": [
@@ -375,7 +375,7 @@ Some of pyocni's needs might be:
        ]
    }
 
-* up_mixin.json::
+* update_mixin.json::
 
    {
        "Description": {
@@ -403,7 +403,7 @@ Some of pyocni's needs might be:
        }
    }
 
-* post_action.json::
+* post_actions.json::
 
    {
        "actions": [
@@ -424,7 +424,7 @@ Some of pyocni's needs might be:
        ]
    }
 
-* up_action.json::
+* update_action.json::
 
    {
        "Description": {
@@ -447,7 +447,7 @@ Some of pyocni's needs might be:
        }
    }
 
-* post_resource.json::
+* post_resources.json::
 
    {
        "resources": [
@@ -504,7 +504,7 @@ Some of pyocni's needs might be:
        ]
    }
 
-* up_resource.json::
+* update_resource.json::
 
    {
        "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
@@ -512,7 +512,7 @@ Some of pyocni's needs might be:
 
    }
 
-* post_link.json::
+* post_links.json::
 
    {
        "links": [
@@ -549,7 +549,7 @@ Some of pyocni's needs might be:
        ]
    }
 
-* up_link.json::
+* update_link.json::
 
    {
        "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
@@ -564,7 +564,6 @@ Some of pyocni's needs might be:
        "LastUpdate": "datetime",
        "CreationDate": "datetime",
        "OCCI_Description": {
-           occi+json
        },
        "Creator": "creator login",
        "Location": "path to the document",

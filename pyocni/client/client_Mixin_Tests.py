@@ -1,6 +1,6 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
+# Copyright (C) 2012 Bilel Msekni - Institut Mines-Telecom
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -161,7 +161,32 @@ class test_post(TestCase):
 {
             "mixins": [
                     {
-                    "term": "medium",
+                    "term": "medium100",
+                    "scheme": "http://example.com/template/resource#",
+                    "title": "Medium VM",
+                    "related": [
+                        "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+                    ],
+                    "attributes": {
+                        "occi": {
+                            "compute": {
+                                "speed": {
+                                    "type": "number",
+                                    "default": 2.8
+                                }
+                            }
+                        }
+                    },
+                    "location": "/template/resource/medium/"
+                }
+            ]
+}
+'''
+        self.repbody ='''
+{
+            "mixins": [
+                    {
+                    "term": "medium100",
                     "scheme": "http://example.com/template/resource#",
                     "title": "Medium VM",
                     "related": [
@@ -205,6 +230,22 @@ class test_post(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
+    def test_add_replicated_mixin(self):
+
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/mixin/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.POST, 1)
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,self.repbody)
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Conflict'])
+
 class test_put(TestCase):
     """
     Tests the put request scenarios
@@ -218,7 +259,7 @@ class test_put(TestCase):
             print e.message
         self.updated_data ='''
 {
-    "Description": {
+
         "mixins": [
             {
                 "term": "medium",
@@ -240,8 +281,17 @@ class test_put(TestCase):
                 "location": "/template/resource/medium/"
             }
         ]
-    }
+
 }
+'''
+        self.updated_provider ='''
+{
+        "Provider": {
+            "remote": ["holo"
+            ],
+            "local": ["molo"
+            ]
+}       }
 '''
         time.sleep(0.5)
 
@@ -296,6 +346,55 @@ class test_put(TestCase):
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Resource not found'])
+
+    def test_update_mixin_Provider_normal(self):
+
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/'+self.id)
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,self.updated_provider)
+        storage = StringIO.StringIO()
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
+
+    def test_update_mixin_Provider_unauthorized(self):
+
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/userm/'+self.id)
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,self.updated_provider)
+        storage = StringIO.StringIO()
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
+
+    def test_update_mixin_Provider_notfound(self):
+
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/user_1/47b2-ab50-0e340bce9cc2')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,self.updated_provider)
+        storage = StringIO.StringIO()
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Resource not found'])
+
 
 class test_delete(TestCase):
     """

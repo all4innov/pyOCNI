@@ -1,6 +1,6 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
+# Copyright (C) 2012 Bilel Msekni - Institut Mines-Telecom
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -56,6 +56,7 @@ return_code = {'OK': 200,
 def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
+
 def get_me_an_id():
     try:
         DB_server_IP = config.DB_IP
@@ -156,11 +157,89 @@ class test_post(TestCase):
         """
         Set up the test environment
         """
-        self.body='''
+        self.repbody='''
 {
     "kinds": [
         {
             "term": "compute",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+            "title": "Compute Resource",
+            "related": [
+                "http://schemas.ogf.org/occi/core#resource"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "hostname": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                            "minimum": "1",
+                            "maximum": "255"
+                        },
+                        "state": {
+                            "mutable": false,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "inactive|active|suspended|failed",
+                            "default": "inactive"
+                        }
+                    }
+                }
+            },
+            "actions": [
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
+
+            ],
+            "location": "/compute/"
+        }
+    ]
+}
+'''
+        self.body='''
+{
+    "kinds": [
+        {
+            "term": "compute1",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+            "title": "Compute Resource",
+            "related": [
+                "http://schemas.ogf.org/occi/core#resource"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "hostname": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                            "minimum": "1",
+                            "maximum": "255"
+                        },
+                        "state": {
+                            "mutable": false,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "inactive|active|suspended|failed",
+                            "default": "inactive"
+                        }
+                    }
+                }
+            },
+            "actions": [
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
+
+            ],
+            "location": "/compute/"
+        },
+         {
+            "term": "compute2",
             "scheme": "http://schemas.ogf.org/occi/infrastructure#",
             "title": "Compute Resource",
             "related": [
@@ -221,6 +300,22 @@ class test_post(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
+    def test_add_replicated_kind(self):
+
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL, 'http://127.0.0.1:8090/-/kind/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.POST, 1)
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,self.repbody)
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Conflict'])
+
 class test_put(TestCase):
     """
     Tests the put request scenarios
@@ -235,23 +330,27 @@ class test_put(TestCase):
         time.sleep(0.5)
         self.updated_data = '''
 {
-
-   "OCCI_Description": {
        "kinds": [
            {
                "term": "hhh, it was updated"
            }
        ]
-   }
 }
 '''
-
-
+        self.updated_provider ='''
+{
+        "Provider": {
+            "remote": ["holo"
+            ],
+            "local": ["molo"
+            ]
+}       }
+'''
 
     def tearDown(self):
         self.p.terminate()
 
-    def test_update_kind_normal(self):
+    def test_update_OCCI_Description_kind_normal(self):
 
         c = pycurl.Curl()
         c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/'+self.id)
@@ -267,7 +366,7 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
-    def test_update_kind_unauthorized(self):
+    def test_update_OCCI_Description_kind_unauthorized(self):
 
         c = pycurl.Curl()
         c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/userm/'+self.id)
@@ -283,7 +382,7 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
 
-    def test_update_kind_notfound(self):
+    def test_update_OCCI_Description_kind_notfound(self):
 
         c = pycurl.Curl()
         c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/47b2-ab50-0e340bce9cc2')
@@ -292,6 +391,54 @@ class test_put(TestCase):
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(pycurl.POSTFIELDS,self.updated_data)
+        storage = StringIO.StringIO()
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Resource not found'])
+
+    def test_update_kind_Provider_normal(self):
+
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/'+self.id)
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,self.updated_provider)
+        storage = StringIO.StringIO()
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
+
+    def test_update_kind_Provider_unauthorized(self):
+
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/userm/'+self.id)
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,self.updated_provider)
+        storage = StringIO.StringIO()
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Unauthorized'])
+
+    def test_update_kind_Provider_notfound(self):
+
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/kind/user_1/47b2-ab50-0e340bce9cc2')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,self.updated_provider)
         storage = StringIO.StringIO()
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

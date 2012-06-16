@@ -1,6 +1,6 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
+# Copyright (C) 2012 Bilel Msekni - Institut Mines-Telecom
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -38,6 +38,7 @@ def update_occi_description(oldData,newData):
     Args:
         @param newData: The new OCCI description
         @param oldData: The old OCCI description
+        @return : Updated data and a boolean (false if all fields are updated, true if there were some un-updated fields)
     """
 
     #Try to get the keys from occi description dictionary
@@ -50,9 +51,27 @@ def update_occi_description(oldData,newData):
             oldData[key] = newData[key]
         except Exception:
             #Keep the record of the keys(=parts) that couldn't be updated
-            logger.debug(key + "could not be found")
+            logger.debug(key + " could not be found")
             problems = True
+
     return problems,oldData
+
+def get_description_id(occi_description):
+    """
+    Retrieve the ID (proof of uniqueness) from the occi description
+    Args:
+        @param occi_description: OCCI description
+        @return : ID of the OCCI description
+    """
+    try:
+        #retrieve the term and scheme from the occi description
+       desc_term = occi_description['term']
+       desc_scheme = occi_description['scheme']
+    except Exception as e:
+        return False, e.message
+    #Concatenate the term and scheme to get the ID of the description
+    res = desc_scheme+desc_term
+    return True,res
 
 def make_kind_location(occi_description, uuid,user_id):
     """
@@ -64,11 +83,11 @@ def make_kind_location(occi_description, uuid,user_id):
         @return :<string> Location of the kind
     """
     try:
-        kind_term = occi_description['kinds'][0]['term']
+        kind_loc = occi_description['location']
     except Exception as e:
         return False, e.message
 
-    kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-/" + kind_term + "/" + user_id + "/" + uuid
+    kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + kind_loc + user_id + "/" + uuid
     return True, kind_location
 
 def make_mixin_location(occi_description, uuid,user_id):
@@ -81,11 +100,11 @@ def make_mixin_location(occi_description, uuid,user_id):
         @return :<string> Location of the mixin
     """
     try:
-        mixin_term = occi_description['mixins'][0]['term']
+        mixin_loc = occi_description['location']
     except Exception as e:
         return False,e.message
 
-    mixin_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-/" + mixin_term + "/" + user_id + "/" + uuid
+    mixin_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + mixin_loc + user_id + "/" + uuid
     return True, mixin_location
 
 def make_action_location(occi_description, uuid,user_id):
@@ -98,7 +117,7 @@ def make_action_location(occi_description, uuid,user_id):
         @return :<string> Location of the action
     """
     try:
-        action_term = occi_description['actions'][0]['term']
+        action_term = occi_description['term']
     except Exception as e:
         return False,e.message
 

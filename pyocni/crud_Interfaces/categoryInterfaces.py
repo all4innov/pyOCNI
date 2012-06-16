@@ -79,17 +79,17 @@ class KindInterface(object):
         """
         #if the doc_id is specified then only one kind will be returned if it exists
         if self.doc_id is not None:
-            var,self.res.status = self.manager.get_kind_by_id(self.doc_id)
-            self.res.body = json.dumps(var)
+            var,self.res.status_code = self.manager.get_kind_by_id(self.doc_id)
+            self.res.body = '\n====================\n'.join(var)
             #No doc_id specified, all kinds will be returned
         else:
-            var,self.res.status = self.manager.get_all_kinds()
-            self.res.body = json.dumps(var)
+            var,self.res.status_code = self.manager.get_all_kinds()
+            self.res.body = '\n====================\n'.join(var)
         return self.res
 
     def post(self):
         """
-        Create a new kind document in the database
+        Create new kind documents in the database
 
         """
 
@@ -115,7 +115,8 @@ class KindInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        self.res.body,self.res.status = self.manager.register_kind(user_id,jBody)
+        mylist,self.res.status_code = self.manager.register_kinds(user_id,jBody)
+        self.res.body = '\n'.join(mylist)
         return self.res
 
     def put(self):
@@ -141,7 +142,7 @@ class KindInterface(object):
             return self.res
         #Get the new data from the request
         j_newData = json.loads(self.req.body)
-        self.res.body,self.res.status = self.manager.update_kind(self.doc_id,self.user_id,j_newData)
+        self.res.body,self.res.status_code = self.manager.update_kind(self.doc_id,self.user_id,j_newData)
         return self.res
 
     def delete(self):
@@ -150,7 +151,7 @@ class KindInterface(object):
         Delete a document using the doc_id provided in the request
 
         """
-        self.res.body,self.res.status = self.manager.delete_kind_document(self.doc_id,self.user_id)
+        self.res.body,self.res.status_code = self.manager.delete_kind_document(self.doc_id,self.user_id)
         return self.res
 
 class MixinInterface(object):
@@ -180,12 +181,12 @@ class MixinInterface(object):
         """
         #if the doc_id is specified then only one mixin will be returned if it exists
         if self.doc_id is not None:
-            var,self.res.status = self.manager.get_mixin_by_id(self.doc_id)
-            self.res.body = json.dumps(var)
+            var,self.res.status_code = self.manager.get_mixin_by_id(self.doc_id)
+            self.res.body = '\n====================\n'.join(var)
             #No doc_id specified, all mixins will be returned
         else:
-            var,self.res.status = self.manager.get_all_mixins()
-            self.res.body = json.dumps(var)
+            var,self.res.status_code = self.manager.get_all_mixins()
+            self.res.body = '\n====================\n'.join(var)
         return self.res
 
     def post(self):
@@ -218,8 +219,8 @@ class MixinInterface(object):
         jBody = json.loads(self.req.body)
         #add the JSON data to database
 
-        self.res.body,self.res.status = self.manager.register_mixin(user_id,jBody)
-
+        mylist,self.res.status_code = self.manager.register_mixins(user_id,jBody)
+        self.res.body = '\n'.join(mylist)
         return self.res
 
     def put(self):
@@ -285,12 +286,12 @@ class ActionInterface(object):
         """
         #if the doc_id is specified then only one action will be returned if it exists
         if self.doc_id is not None:
-            var,self.res.status = self.manager.get_action_by_id(self.doc_id)
-            self.res.body = json.dumps(var)
+            var,self.res.status_code = self.manager.get_action_by_id(self.doc_id)
+            self.res.body = '\n====================\n'.join(var)
             #No doc_id specified, all actions will be returned
         else:
-            var,self.res.status = self.manager.get_all_actions()
-            self.res.body = json.dumps(var)
+            var,self.res.status_code = self.manager.get_all_actions()
+            self.res.body = '\n====================\n'.join(var)
         return self.res
 
     def post(self):
@@ -323,8 +324,8 @@ class ActionInterface(object):
         jBody = json.loads(self.req.body)
         #add the JSON data to database
 
-        self.res.body,self.res.status = self.manager.register_action(user_id,jBody)
-
+        mylist,self.res.status_code = self.manager.register_actions(user_id,jBody)
+        self.res.body = '\n'.join(mylist)
         return self.res
 
     def put(self):

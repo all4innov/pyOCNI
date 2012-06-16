@@ -72,13 +72,13 @@ def purgeLocationDBs():
     except Exception:
         logger.error("Database is unreachable")
     try:
-        server.flush(config.Resource_DB)
+        server.get_db(config.Resource_DB).flush()
 
     except Exception:
         logger.debug("No DB named: '" + config.Resource_DB + "' to delete")
         server.create_db(config.Resource_DB)
     try:
-        server.flush(config.Link_DB)
+        server.get_db(config.Link_DB).flush()
     except Exception:
         logger.debug("No DB named: '" + config.Link_DB + "' to delete")
         server.create_db(config.Link_DB)
