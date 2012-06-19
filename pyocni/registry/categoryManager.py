@@ -115,6 +115,9 @@ class KindManager:
                 },
                 "by_occi_id": {
                     "map": "(function(doc) { emit (doc.OCCI_ID, doc.Creator) });"
+                },
+                "by_occi_location": {
+                    "map": "(function(doc) { emit (doc.OCCI_Location, doc._id) });"
                 }
 
             }
@@ -184,50 +187,67 @@ class KindManager:
             @param creator: the id of the issuer of the creation request
             @param descriptions: OCCI kind descriptions
         """
+
         database = self.server.get_or_create_db(config.Kind_DB)
         self.add_design_kind_docs_to_db()
+        manager_a = ActionManager()
+        actions_data,ok = manager_a.get_all_actions()
+
+        db_data = list()
         loc_res = list()
-        for desc in descriptions['kinds']:
-            res_code = return_code['OK']
-            ok, occi_id = joker.get_description_id(desc)
-            if ok is True:
-                query = database.view('/get_kind/by_occi_id',key = occi_id)
+        query = database.view('/get_kind/all')
+        res_code = return_code['OK']
+        for q in query:
+            db_data.append(q['value'])
+        for desc in descriptions:
+            ok,occi_id = joker.get_description_id(desc)
+            query = database.view('/get_action/by_occi_id',key = occi_id)
+            if query.count() is 0:
+                ok,occi_loc = joker.make_mixin_location(desc)
+                query = database.view('/get_action/by_occi_location',key = occi_loc)
                 if query.count() is 0:
-                    doc_id = uuid_Generator.get_UUID()
-                    ok, loc = joker.make_kind_location(doc_id,creator)
+                    ok = joker.verify_exist_relaters(desc,db_data)
                     if ok is True:
-                        jData = dict()
-                        jData['Creator'] = creator
-                        jData['CreationDate'] = str(datetime.now())
-                        jData['LastUpdate'] = ""
-                        jData['Location']= loc
-                        jData['OCCI_Description']= desc
-                        jData['OCCI_ID'] = occi_id
-                        jData['Type']= "Kind"
-                        provider = {"local":[],"remote":[]}
-                        jData['Provider']= provider
-                        try:
-                            database[doc_id] = jData
-                            message = "Kind document has been successfully added to database : " + loc
-                            logger.debug(message)
+                        ok = joker.verify_exist_actions(desc,actions_data)
+                        if ok is True:
+                            doc_id = uuid_Generator.get_UUID()
+                            jData = dict()
+                            jData['Creator'] = creator
+                            jData['CreationDate'] = str(datetime.now())
+                            jData['LastUpdate'] = ""
+                            ok,loc = joker.make_kind_location(desc)
+                            jData['Location']= loc
+                            jData['OCCI_Description']= desc
+                            ok, occi_id =joker.get_description_id(desc)
+                            jData['OCCI_ID'] = occi_id
+                            jData['Type']= "Kind"
+                            jData['Provider']= {"local":[],"remote":[]}
+                            try:
+                                database[doc_id] = jData
+                                message = "Kind document has been successfully added to database : " + loc
+                                logger.debug(message)
+                                loc_res.append(message)
+                            except Exception as e:
+                                logger.error(e.message)
+                                loc_res.append(e.message)
+                                res_code = return_code['Internal Server Error']
+                        else:
+                            message = "Missing action description, Kind will not be created. Check log for more details"
+                            logger.error(message)
                             loc_res.append(message)
-                        except Exception as e:
-                            logger.error(e.message)
-                            loc_res.append(e.message)
-                            res_code = return_code['Internal Server Error']
                     else:
-                        logger.error(loc)
-                        loc_res.append(loc)
-                        res_code = return_code['Bad Request']
+                        message = "Missing related kind description, Kind will not be created. Check log for more details"
+                        logger.error(message)
+                        loc_res.append(message)
                 else:
-                    message = "Kind description already exists in document " + query.first()['id']
+                    message = "Location conflict with document " + query.first()['id']+", kind will not be created. "
                     logger.error(message)
                     loc_res.append(message)
-                    res_code = return_code['Conflict']
             else:
-                logger.error(occi_id)
-                loc_res.append(occi_id)
-                res_code = return_code['Bad Request']
+                message = "This kind description already exists in document " +query.first()['id']
+                logger.error(message)
+                loc_res.append(message)
+
         return loc_res,res_code
 
     def update_kind(self,doc_id,user_id,new_description):
@@ -361,8 +381,12 @@ class KindManager:
                 query = database.view('/get_kind/by_occi_id',key = occi_id)
                 if query.count() is not 0:
                     if query.first()['value'] == user_id:
-                        database.delete_doc(query.first()['id'])
-                        message += "\nKind document " + occi_id + " has been successfully deleted " + return_code['OK']
+                        ok = joker.get_resources_belonging_to_kind(desc)
+                        if ok is True:
+                            database.delete_doc(query.first()['id'])
+                            message += "\nKind document " + occi_id + " has been successfully deleted " + return_code['OK']
+                        else:
+                            message += "\nUnable to delete because this kind document " + occi_id + " has resources depending on it. " + return_code['Forbidden']
                     else:
                         message += "\nYou have no right to delete this kind document " + occi_id + " " + return_code['Forbidden']
 
@@ -402,6 +426,9 @@ class MixinManager:
                 },
                 "by_occi_id": {
                     "map": "(function(doc) { emit (doc.OCCI_ID, doc.Creator) });"
+                },
+                "by_occi_location": {
+                    "map": "(function(doc) { emit (doc.OCCI_Location, doc._id) });"
                 }
             }
 
@@ -472,73 +499,65 @@ class MixinManager:
         """
         database = self.server.get_or_create_db(config.Mixin_DB)
         self.add_design_mixin_docs_to_db()
+        manager_a = ActionManager()
+        actions_data,ok = manager_a.get_all_actions()
+        db_data = list()
         loc_res = list()
-        for desc in descriptions['mixins']:
-            res_code = return_code['OK']
-            ok, occi_id = joker.get_description_id(desc)
-            if ok is True:
-                query = database.view('/get_mixin/by_id',key = occi_id)
+        res_code = return_code['OK']
+        query = database.view('/get_mixin/all')
+        for q in query:
+            db_data.append(q['value'])
+        for desc in descriptions:
+            ok,occi_id = joker.get_description_id(desc)
+            query = database.view('/get_action/by_occi_id',key = occi_id)
+            if query.count() is 0:
+                ok,occi_loc = joker.make_mixin_location(desc)
+                query = database.view('/get_action/by_occi_location',key = occi_loc)
                 if query.count() is 0:
-
-                    doc_id = uuid_Generator.get_UUID()
-                    ok, loc = joker.make_mixin_location(desc)
+                    ok = joker.verify_exist_relaters(desc,db_data)
                     if ok is True:
-                        jData = dict()
-                        jData['Creator'] = creator
-                        jData['CreationDate'] = str(datetime.now())
-                        jData['LastUpdate'] = ""
-                        jData['OCCI_Location']= loc
-                        jData['OCCI_Description']= desc
-                        jData['OCCI_ID'] = occi_id
-                        jData['Type']= "Mixin"
-                        provider = {"local":[],"remote":[]}
-                        jData['Provider']= provider
-                        try:
-                            database[doc_id] = jData
-                            message = "Mixin document has been successfully added to database : " + loc
-                            logger.debug(message)
+                        ok = joker.verify_exist_actions(desc,actions_data)
+                        if ok is True:
+                            doc_id = uuid_Generator.get_UUID()
+                            jData = dict()
+                            jData['Creator'] = creator
+                            jData['CreationDate'] = str(datetime.now())
+                            jData['LastUpdate'] = ""
+                            ok,loc = joker.make_mixin_location(desc)
+                            jData['OCCI_Location']= loc
+                            jData['OCCI_Description']= desc
+                            ok, occi_id =joker.get_description_id(desc)
+                            jData['OCCI_ID'] = occi_id
+                            jData['Type']= "Mixin"
+                            try:
+                                database[doc_id] = jData
+                                message = "Mixin document has been successfully added to database : " + loc
+                                logger.debug(message)
+                                loc_res.append(message)
+                            except Exception as e:
+                                logger.error(e.message)
+                                loc_res.append(e.message)
+                                res_code = return_code['Internal Server Error']
+                        else:
+                            message = "Missing action description, mixin will not be created. Check log for more details"
+                            logger.error(message)
                             loc_res.append(message)
-                        except Exception as e:
-                            logger.error(e.message)
-                            loc_res.append(e.message)
-                            res_code = return_code['Internal Server Error']
                     else:
-                        logger.error(loc)
-                        loc_res.append(loc)
-                        res_code = return_code['Bad Request']
+                        message = "Missing related mixin description, mixin will not be created. Check log for more details"
+                        logger.error(message)
+                        loc_res.append(message)
                 else:
-                    message = "Mixin description already exists in document " + query.first()['id']
+                    message = "Location conflict with document " + query.first()['id']+", mixin will not be created."
                     logger.error(message)
                     loc_res.append(message)
-                    res_code = return_code['Conflict']
             else:
-                logger.error(occi_id)
-                loc_res.append(occi_id)
-                res_code = return_code['Bad Request']
+                message = "This mixin description already exists in document " +query.first()['id']
+                logger.error(message)
+                loc_res.append(message)
+
         return loc_res,res_code
 
-    def update_mixin(self,doc_id,user_id,new_description):
-        """
-        Channel the update request to the right method
 
-        """
-
-        data_keys = new_description.keys()
-        try:
-            data_keys.index('Provider')
-            logger.debug("Provider update request : OK")
-            mesg,resp_code = self.update_mixin_provider(doc_id,user_id,new_description)
-            return mesg,resp_code
-        except Exception:
-            try:
-                data_keys.index('mixins')
-                logger.debug("OCCI description update request : OK")
-                mesg,resp_code = self.update_OCCI_mixin_description(doc_id,user_id,new_description)
-                return mesg, resp_code
-            except Exception as e:
-                mesg = "Unknown data keys " + e.message
-                logger.debug(mesg)
-                return mesg,return_code['Internal Server Error']
 
     def update_OCCI_mixin_description(self,doc_id,user_id,new_description):
         """
@@ -586,49 +605,7 @@ class MixinManager:
             logger.debug(message)
             return message,return_code['Resource not found']
 
-    def update_mixin_provider(self,doc_id=None,user_id=None,new_Data=None):
-        """
-        Update mixin document provider field (can only be done by the creator of the document)
-        Args:
-            @param doc_id: the id of the mixin document to update
-            @param user_id: the id of the issuer of the update request
-            @param new_Data: the data that will be used to update the mixin document
-        """
-        #Get the old document data from the database
-        database = self.server.get_or_create_db(config.Mixin_DB)
-        if database.doc_exist(doc_id) is True:
-            oldData = database.get(doc_id)
-            if oldData['Creator'] == user_id:
-                oldData_keys = oldData['Provider'].keys()
-                newData_keys =  new_Data['Provider'].keys()
-                problems = False
-                #Try to update mixin document provider field
-                for key in newData_keys:
-                    try:
-                        oldData_keys.index(key)
-                        oldData['Provider'][key] = new_Data['Provider'][key]
-                    except Exception:
-                        problems = True
-                        logger.debug(key + " could not be found")
-                        #Keep the record of the keys(=parts) that couldn't be updated
-                if problems is True:
-                    message = "Mixin document " + str(doc_id) + " has not been totally updated. Check log for more details"
-                else:
-                    message = "Mixin document " + str(doc_id) + " has been updated successfully"
-                oldData['LastUpdate'] = str(datetime.now())
-                #Update the mixin document
-                database.save_doc(oldData,force_update = True)
-                logger.debug(message)
-                return message,return_code['OK']
-            else:
-                message= "You have no right to update this mixin document"
-                logger.debug(message)
-                return message,return_code['Unauthorized']
 
-        else:
-            message = "Mixin document " + str(doc_id) + "couldn\'t be found"
-            logger.debug(message)
-            return message,return_code['Resource not found']
 
 
 
@@ -760,72 +737,40 @@ class ActionManager:
         database = self.server.get_or_create_db(config.Action_DB)
         self.add_design_action_docs_to_db()
         loc_res = list()
-        for desc in descriptions['actions']:
-            res_code = return_code['OK']
-            ok, occi_id = joker.get_description_id(desc)
-            if ok is True:
-                query = database.view('/get_action/by_id',key = occi_id)
-                if query.count() is 0:
 
-                    doc_id = uuid_Generator.get_UUID()
-                    ok, loc = joker.make_action_location(doc_id,creator)
-                    if ok is True:
-                        jData = dict()
-                        jData['Creator'] = creator
-                        jData['CreationDate'] = str(datetime.now())
-                        jData['LastUpdate'] = ""
-                        jData['Location']= loc
-                        jData['OCCI_Description']= desc
-                        jData['OCCI_ID'] = occi_id
-                        jData['Type']= "Action"
-                        provider = {"local":[],"remote":[]}
-                        jData['Provider']= provider
-                        try:
-                            database[doc_id] = jData
-                            message = "Action document has been successfully added to database : " + loc
-                            logger.debug(message)
-                            loc_res.append(message)
-                        except Exception as e:
-                            logger.error(e.message)
-                            loc_res.append(e.message)
-                            res_code = return_code['Internal Server Error']
-                    else:
-                        logger.error(loc)
-                        loc_res.append(loc)
-                        res_code = return_code['Bad Request']
-                else:
-                    message = "Action description already exists in document " + query.first()['id']
-                    logger.error(message)
+        res_code = return_code['OK']
+        for desc in descriptions:
+            ok,occi_id = joker.get_description_id(desc)
+            query = database.view('/get_action/by_occi_id',key = occi_id)
+            if query.count() is 0:
+                doc_id = uuid_Generator.get_UUID()
+                jData = dict()
+                jData['Creator'] = creator
+                jData['CreationDate'] = str(datetime.now())
+                jData['LastUpdate'] = ""
+                ok,loc = joker.make_action_location(desc)
+                jData['OCCI_Location']= loc
+                jData['OCCI_Description']= desc
+                jData['OCCI_ID'] = occi_id
+                jData['Type']= "Action"
+                try:
+                    database[doc_id] = jData
+                    message = "Action document has been successfully added to database : " + loc
+                    logger.debug(message)
                     loc_res.append(message)
-                    res_code = return_code['Conflict']
+                except Exception as e:
+                    logger.error(e.message)
+                    loc_res.append(e.message)
+                    res_code = return_code['Internal Server Error']
+
             else:
-                logger.error(occi_id)
-                loc_res.append(occi_id)
-                res_code = return_code['Bad Request']
+                message = "This action description is not unique. Check log for more details"
+                logger.error(message)
+                loc_res.append(message)
+
         return loc_res,res_code
 
-    def update_action(self,doc_id,user_id,new_description):
-        """
-        Channel the update request to the right method
 
-        """
-
-        data_keys = new_description.keys()
-        try:
-            data_keys.index('Provider')
-            logger.debug("Provider update request : OK")
-            mesg,resp_code = self.update_action_provider(doc_id,user_id,new_description)
-            return mesg,resp_code
-        except Exception:
-            try:
-                data_keys.index('actions')
-                logger.debug("OCCI description update request : OK")
-                mesg,resp_code = self.update_OCCI_action_description(doc_id,user_id,new_description)
-                return mesg, resp_code
-            except Exception as e:
-                mesg = "Unknown data keys " + e.message
-                logger.debug(mesg)
-                return mesg,return_code['Internal Server Error']
 
     def update_OCCI_action_description(self,doc_id,user_id,new_description):
         """
@@ -873,82 +818,36 @@ class ActionManager:
             logger.debug(message)
             return message,return_code['Resource not found']
 
-    def update_action_provider(self,doc_id=None,user_id=None,new_Data=None):
+    def delete_action_document(self,doc_id=None,user_id=None):
         """
-        Update action document provider field (can only be done by the creator of the document)
+        Delete the action document that is related to the id provided (Can only be done by the creator of the document)
         Args:
-            @param doc_id: the id of the action document to update
-            @param user_id: the id of the issuer of the update request
-            @param new_Data: the data that will be used to update the action document
+            @param doc_id: id of the action document to delete
+            @param user_id: id of the issuer of the delete request
         """
-        #Get the old document data from the database
         database = self.server.get_or_create_db(config.Action_DB)
-        if database.doc_exist(doc_id) is True:
-            oldData = database.get(doc_id)
-            if oldData['Creator'] == user_id:
-                oldData_keys = oldData['Provider'].keys()
-                newData_keys =  new_Data['Provider'].keys()
-                problems = False
-                #Try to update action document provider field
-                for key in newData_keys:
-                    try:
-                        oldData_keys.index(key)
-                        oldData['Provider'][key] = new_Data['Provider'][key]
-                    except Exception:
-                        problems = True
-                        logger.debug(key + " could not be found")
-                        #Keep the record of the keys(=parts) that couldn't be updated
-                if problems is True:
-                    message = "Action document " + str(doc_id) + " has not been totally updated. Check log for more details"
+        #Verify the existence of such action document
+        if database.doc_exist(doc_id):
+        #If so then delete
+            try:
+                Data = database.get(doc_id)
+                if Data['Creator'] == user_id:
+                    database.delete_doc(doc_id)
+                    message = "Action document " + str(doc_id) + " has been successfully deleted "
+                    logger.debug(message)
+                    return message,return_code['OK']
                 else:
-                    message = "Action document " + str(doc_id) + " has been updated successfully"
-                oldData['LastUpdate'] = str(datetime.now())
-                #Update the action document
-                database.save_doc(oldData,force_update = True)
-                logger.debug(message)
-                return message,return_code['OK']
-            else:
-                message= "You have no right to update this action document"
-                logger.debug(message)
-                return message,return_code['Unauthorized']
-
+                    message = "You have no right to delete this action document"
+                    logger.debug(message)
+                    return message,return_code['Unauthorized']
+            except Exception as e:
+                logger.debug(e.message)
+                return e.message,return_code['Internal Server Error']
         else:
-            message = "Action document " + str(doc_id) + "couldn\'t be found"
+            #else reply with action document not found
+            message = "Action document " + str(doc_id) + " not found"
             logger.debug(message)
             return message,return_code['Resource not found']
-
-
-
-#    def delete_action_document(self,doc_id=None,user_id=None):
-#        """
-#        Delete the action document that is related to the id provided (Can only be done by the creator of the document)
-#        Args:
-#            @param doc_id: id of the action document to delete
-#            @param user_id: id of the issuer of the delete request
-#        """
-#        database = self.server.get_or_create_db(config.Action_DB)
-#        #Verify the existence of such action document
-#        if database.doc_exist(doc_id):
-#        #If so then delete
-#            try:
-#                Data = database.get(doc_id)
-#                if Data['Creator'] == user_id:
-#                    database.delete_doc(doc_id)
-#                    message = "Action document " + str(doc_id) + " has been successfully deleted "
-#                    logger.debug(message)
-#                    return message,return_code['OK']
-#                else:
-#                    message = "You have no right to delete this action document"
-#                    logger.debug(message)
-#                    return message,return_code['Unauthorized']
-#            except Exception as e:
-#                logger.debug(e.message)
-#                return e.message,return_code['Internal Server Error']
-#        else:
-#            #else reply with action document not found
-#            message = "Action document " + str(doc_id) + " not found"
-#            logger.debug(message)
-#            return message,return_code['Resource not found']
 
 class CategoryManager:
     """
@@ -1000,7 +899,7 @@ class CategoryManager:
         result_3 = '\n========= Actions : ===========\n'
         result_3 += '\n========= Action : ===========\n'.join(mesg_3)
         register = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
-        return register
+        return result_1
 
     def channel_get_all_categories(self):
         """
@@ -1072,15 +971,15 @@ class CategoryManager:
 
         """
         data_keys = jreq.keys()
-#        mesg_1 = ""
+        mesg_1 = ""
         mesg_2 = ""
-#        mesg_3 = ""
-#        try:
-#            data_keys.index('kinds')
-#            logger.debug("Kinds delete request : channeled")
-#            mesg_1,resp_code = self.manager_k.delete_kind_documents(user_id,jreq['kinds'])
-#        except Exception as e:
-#            logger.debug(e.message)
+        mesg_3 = ""
+        try:
+            data_keys.index('kinds')
+            logger.debug("Kinds delete request : channeled")
+            mesg_1,resp_code = self.manager_k.delete_kind_documents(user_id,jreq['kinds'])
+        except Exception as e:
+            logger.debug(e.message)
 
         try:
             data_keys.index('mixins')
@@ -1089,21 +988,20 @@ class CategoryManager:
         except Exception as e:
             logger.debug(e.message)
 
-#        try:
-#            data_keys.index('actions')
-#            logger.debug("Actions delete request : channeled")
-#            mesg_3,resp_code = self.manager_a.delete_action_documents(user_id,jreq['actions'])
-#        except Exception as e:
-#            logger.debug(e.message)
+        try:
+            data_keys.index('actions')
+            logger.debug("Actions delete request : channeled")
+            mesg_3,resp_code = self.manager_a.delete_action_documents(user_id,jreq['actions'])
+        except Exception as e:
+            logger.debug(e.message)
 
-#        result_1 = '\n========= Kinds : ===========\n'
-#        result_1 += '\n========= Kind : ===========\n'.join(mesg_1)
+        result_1 = '\n========= Kinds : ===========\n'
+        result_1 += '\n========= Kind : ===========\n'.join(mesg_1)
         result_2 = '\n========= Mixins : ===========\n'
         result_2 += '\n========= Mixin : ===========\n'.join(mesg_2)
-#        result_3 = '\n========= Actions : ===========\n'
-#        result_3 += '\n========= Action : ===========\n'.join(mesg_3)
-#        register = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
-        register = result_2  + "\n\n"
+        result_3 = '\n========= Actions : ===========\n'
+        result_3 += '\n========= Action : ===========\n'.join(mesg_3)
+        register = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
         return register
 
 

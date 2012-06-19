@@ -27,7 +27,6 @@ Created on Jun 12, 2012
 @license: LGPL - Lesser General Public License
 
 """
-from pprint import pprint
 import pyocni.pyocni_tools.config as config
 # getting the Logger
 logger = config.logger
@@ -101,10 +100,71 @@ def filter_occi_description(description,filter):
 
 def dissociate_resource_from_mixin(mix_desc):
     """
-    Dessociates a resource from a mixin upon the deletion of a mixin
+    Dissociates a resource from a mixin upon the deletion of a mixin
     Args:
         @param mix_desc: OCCI description of the mixin
     """
+def get_resources_belonging_to_kind(kind_desc):
+    """
+    Verifies if there are resources of this kind description
+    Args:
+        @param kind_desc: OCCI kind description of the kind
+
+    """
+
+
+def verify_exist_relaters(description,db_data):
+    """
+    Verify the existence of the related kinds or mixins
+    Args:
+        @param description: OCCI description to test the existence of the related urls
+        @param db_data: Data already stored in database
+    """
+    try:
+        relaters = description['related']
+    except Exception as e:
+        logger.debug(e.message)
+        return True
+
+    list_occi_id = list()
+    for data in db_data:
+        ok,id = get_description_id(data)
+        if ok is True:
+            list_occi_id.append(id)
+
+    try:
+        for related in relaters:
+            list_occi_id.index(related)
+    except Exception as e:
+        logger.error(e.message)
+        return False
+
+    return True
+
+def verify_exist_actions(description,actions_data):
+    """
+
+    """
+    try:
+        actions = description['actions']
+    except Exception as e:
+        logger.debug(e.message)
+        return True
+
+    list_occi_id = list()
+    for data in actions_data:
+        ok,id = get_description_id(data)
+        if ok is True:
+            list_occi_id.append(id)
+
+    for action in actions:
+        try:
+            list_occi_id.index(action)
+        except Exception as e:
+            logger.error(e.message)
+            return False
+
+
 
 
 def make_kind_location(occi_description):
@@ -116,7 +176,7 @@ def make_kind_location(occi_description):
     """
     try:
         loc = occi_description['location']
-        kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-/" + loc + "/"
+        kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + loc
     except Exception as e:
         return False, e.message
     return True, kind_location

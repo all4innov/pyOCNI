@@ -72,7 +72,76 @@ def get_me_an_id():
         for re in res:
             if re['id'][0] != "_":
                 return re['id']
+to_register ="""
+    {
+    "kinds": [
+{
+            "term": "compute013",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure8#",
+            "title": "Compute Resource",
+            "related": [
+                "http://schemas.ogf.org/occi/core#resource"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "hostname": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                            "minimum": "1",
+                            "maximum": "255"
+                        },
+                        "state": {
+                            "mutable": false,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "inactive|active|suspended|failed",
+                            "default": "inactive"
+                        }
+                    }
+                }
+            },
+            "actions": [
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
+            ],
+            "location": "/compute013/"
+        }
+    ,
+    {
+            "term": "resource",
+            "scheme": "http://schemas.ogf.org/occi/core#",
+            "title": "Compute Resource",
 
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "hostname": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                            "minimum": "1",
+                            "maximum": "255"
+                        },
+                        "state": {
+                            "mutable": false,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "inactive|active|suspended|failed",
+                            "default": "inactive"
+                        }
+                    }
+                }
+            },
+            "location": "/resource/"
+        }
+    ]
+}
+"""
 
 terms='''
 {
@@ -478,7 +547,80 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Resource not found'])
 
+    def test_delete_mixin(self):
+        """
+        delete a mixin
+        """
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
+        c.setopt(pycurl.POSTFIELDS,to_delete)
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 
+
+    def test_delete_mixin_not_found(self):
+        """
+        delete a un-existent mixin
+        """
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
+        c.setopt(pycurl.POSTFIELDS,to_delete_no)
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Resource not found'])
+
+class test_post(TestCase):
+    """
+    Tests POST request scenarios
+    """
+    def setUp(self):
+
+        """
+        Set up the test environment
+        """
+        self.p = Process(target = start_server)
+        self.p.start()
+        try:
+            self.id = get_me_an_id()
+        except Exception as e:
+            print e.message
+        time.sleep(0.5)
+
+    def tearDown(self):
+        self.p.terminate()
+
+    def test_register_categories(self):
+        """
+        register kind, mixins or actions
+        """
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'POST')
+        c.setopt(pycurl.POSTFIELDS,to_register)
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
 if __name__ == '__main__':
 
     #Create the testing tools
@@ -488,7 +630,9 @@ if __name__ == '__main__':
     #Create the testing suites
     get_suite = loader.loadTestsFromTestCase(test_get)
     delete_suite = loader.loadTestsFromTestCase(test_delete)
+    post_suite = loader.loadTestsFromTestCase(test_post)
 
     #Run tests
     runner.run(get_suite)
+    runner.run(post_suite)
     runner.run(delete_suite)

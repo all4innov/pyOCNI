@@ -53,7 +53,7 @@ return_code = {'OK': 200,
                'Not Implemented': 501,
                'Service Unavailable': 503}
 
-class QueryInterface(object):
+class PathInterface(object):
     """
 
         CRUD operation on kinds, mixins and actions
