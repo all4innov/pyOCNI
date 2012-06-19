@@ -73,55 +73,84 @@ def get_description_id(occi_description):
     res = desc_scheme+desc_term
     return True,res
 
-def make_kind_location(occi_description, uuid,user_id):
+def filter_occi_description(description,filter):
     """
-    Creates the location of the Kind from the occi kind description
+    Checks if the occi description meets the filter values
     Args:
-        @param occi_description: OCCI kind description
-        @param uuid: UUID of the kind document containing the kind description
-        @param user_id: ID of kind document administrator
+        @param description: The OCCI description
+        @param filter: The filter description
+        @return : Updated  a boolean (false if no match, true if there is a match)
+    """
+
+    #Try to get the keys from filter dictionary
+
+    filter_keys = filter.keys()
+    match = True
+    for key in filter_keys:
+        try:
+            if description[key] != filter[key]:
+                match = False
+                return match
+        except Exception:
+            #Keep the record of the keys(=parts) that couldn't be updated
+            logger.debug(key + " could not be found")
+            match = False
+            return match
+
+    return match
+
+def dissociate_resource_from_mixin(mix_desc):
+    """
+    Dessociates a resource from a mixin upon the deletion of a mixin
+    Args:
+        @param mix_desc: OCCI description of the mixin
+    """
+
+
+def make_kind_location(occi_description):
+    """
+    Creates the location of the kind using the occi_description
+    Args:
+        @param occi_description: the occi description of the kind
         @return :<string> Location of the kind
     """
     try:
-        kind_loc = occi_description['location']
+        loc = occi_description['location']
+        kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-/" + loc + "/"
     except Exception as e:
         return False, e.message
-
-    kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + kind_loc + user_id + "/" + uuid
     return True, kind_location
 
-def make_mixin_location(occi_description, uuid,user_id):
+def make_mixin_location( occi_description):
     """
-    Creates the location of the mixin from the occi mixin description
+    Creates the location of the mixin using the occi_description
     Args:
-        @param occi_description: OCCI mixin description
-        @param uuid: UUID of the mixin document containing the mixin description
-        @param user_id: ID of mixin document administrator
+        @param occi_description: the occi description of the mixin
         @return :<string> Location of the mixin
     """
     try:
-        mixin_loc = occi_description['location']
+        loc = occi_description['location']
+        mixin_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-/" + loc +"/"
     except Exception as e:
         return False,e.message
 
-    mixin_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + mixin_loc + user_id + "/" + uuid
+
     return True, mixin_location
 
-def make_action_location(occi_description, uuid,user_id):
+def make_action_location( uuid,user_id):
     """
-    Creates the location of the action from the occi action description
+    Creates the location of the action using the uuid and the user_id
     Args:
-        @param occi_description: OCCI action description
         @param uuid: UUID of the action document containing the action description
         @param user_id: ID of action document administrator
         @return :<string> Location of the action
     """
     try:
-        action_term = occi_description['term']
+        action_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-/action/" + user_id + "/" + uuid
     except Exception as e:
         return False,e.message
 
-    action_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-/" + action_term + "/" + user_id + "/" + uuid
+
     return True, action_location
 
 def make_resource_location(occi_description, uuid,user_id):

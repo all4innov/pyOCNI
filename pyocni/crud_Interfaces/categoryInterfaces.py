@@ -174,6 +174,7 @@ class MixinInterface(object):
             self.res.body = "An error has occurred, please check log for more details"
             self.res.status_code = return_code["Internal Server Error"]
 
+
     def get(self):
 
         """
@@ -260,6 +261,111 @@ class MixinInterface(object):
         return self.res
 
 class ActionInterface(object):
+    """
+
+        CRUD operation on actions
+
+    """
+    def __init__(self,req, doc_id=None,user_id=None):
+
+        self.req = req
+        self.doc_id=doc_id
+        self.user_id=user_id
+        self.res = Response()
+        self.res.content_type = req.accept
+        self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
+        try:
+            self.manager = ActionManager()
+        except Exception:
+            self.res.body = "An error has occurred, please check log for more details"
+            self.res.status_code = return_code["Internal Server Error"]
+
+    def get(self):
+
+        """
+        Retrieval of all registered actions or just one action
+        """
+        #if the doc_id is specified then only one action will be returned if it exists
+        if self.doc_id is not None:
+            var,self.res.status_code = self.manager.get_action_by_id(self.doc_id)
+            self.res.body = '\n====================\n'.join(var)
+            #No doc_id specified, all actions will be returned
+        else:
+            var,self.res.status_code = self.manager.get_all_actions()
+            self.res.body = '\n====================\n'.join(var)
+        return self.res
+
+    def post(self):
+
+        """
+        Create a new action document in the database
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi:json":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+        jBody = json.loads(self.req.body)
+        #add the JSON data to database
+
+        mylist,self.res.status_code = self.manager.register_actions(user_id,jBody)
+        self.res.body = '\n'.join(mylist)
+        return self.res
+
+    def put(self):
+        """
+        Update the document specific to the id provided with new data
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/occi:json":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+            #Get the new data from the request
+        j_newData = json.loads(self.req.body)
+
+        self.res.body, self.res.status_code = self.manager.update_action(self.doc_id,self.user_id,j_newData)
+        return self.res
+
+    def delete(self):
+        """
+
+        Delete a document using the doc_id
+
+        """
+        self.res.body, self.res.status_code = self.manager.delete_action_document(self.doc_id,self.user_id)
+        return self.res
+
+class CategoryInterface(object):
     """
 
         CRUD operation on actions

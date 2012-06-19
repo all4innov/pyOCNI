@@ -85,9 +85,9 @@ def purgeLocationDBs():
 
 
 
-class ResourceManager(object):
+class EntityManager(object):
     """
-    Manager of resource documents in the couch database.
+    Manager of resource and link documents in the couch database.
     """
 
     def __init__(self):
@@ -97,17 +97,14 @@ class ResourceManager(object):
         except Exception:
             logger.error("Database is unreachable")
             raise Exception("Database is unreachable")
-        try:
-            self.add_design_resource_docs_to_db()
-        except Exception as e:
-            logger.debug(e.message)
+
 
     def add_design_resource_docs_to_db(self):
         """
         Add resource design documents to database.
         """
         design_doc = {
-            "_id": "_design/get_resource",
+            "_id": "_design/get_entity",
             "language": "javascript",
             "type": "DesignDoc",
             "views": {
@@ -117,18 +114,18 @@ class ResourceManager(object):
             }
 
         }
-        database = self.server.get_or_create_db(config.Resource_DB)
+        database = self.server.get_or_create_db(config.Entity_DB)
         if database.doc_exist(design_doc['_id']):
             pass
         else:
             database.save_doc(design_doc)
 
-    def get_resource_by_id(self,doc_id=None):
+    def get_entity_by_id(self,doc_id=None):
 
         """
-        Returns the OCCI resource description contained inside the resource document matching the doc_id provided
+        Returns the OCCI entity description contained inside the entity document matching the doc_id provided
         Args:
-            @param doc_id: id of the resource document to be retrieved
+            @param doc_id: id of the entity document to be retrieved
             @return : <dict> OCCI description of the resource
 
         """
@@ -164,16 +161,20 @@ class ResourceManager(object):
             logger.error(e.message)
             return e.message,return_code['Internal Server Error']
 
-    def register_resource(self,creator,description):
+    def register_entities(self,creator,term,description):
 
         """
-        Add a new resource to the database
+        Add a new entity to the database
         Args:
-            @param creator: the user who created this new resource
-            @param description: the OCCI description of the new resource
+            @param creator: the user who created this new entity
+            @param description: the OCCI description of the new entity
         """
 
-        database = self.server.get_or_create_db(config.Resource_DB)
+        database = self.server.get_or_create_db(config.Entity_DB)
+        self.add_design_resource_docs_to_db()
+        description = description.keys(0)
+        for desc in description:
+            pass
         doc_id = uuid_Generator.get_UUID()
         ok, loc = joker.make_resource_location(description,doc_id,creator)
         if ok is True:

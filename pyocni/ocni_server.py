@@ -27,8 +27,9 @@ Created on Jun 01, 2012
 @version: 1.0
 @license: LGPL - Lesser General Public License
 """
-from pyocni.crud_Interfaces.categoryInterfaces import KindInterface,MixinInterface,ActionInterface
-from pyocni.crud_Interfaces.locationInterfaces import ResourceInterface,LinkInterface
+from pyocni.crud_Interfaces.categoryInterfaces import KindInterface,MixinInterface,ActionInterface,CategoryInterface
+from pyocni.crud_Interfaces.locationInterfaces import EntityInterface,LinkInterface
+from pyocni.crud_Interfaces.queryInterface import QueryInterface
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.DoItYourselfWebOb as url_mapper
 import eventlet
@@ -97,23 +98,27 @@ class ocni_server(object):
     operationKind = url_mapper.rest_controller(KindInterface)
     operationMixin = url_mapper.rest_controller(MixinInterface)
     operationAction = url_mapper.rest_controller(ActionInterface)
-    operationResource = url_mapper.rest_controller(ResourceInterface)
+    operationEntity = url_mapper.rest_controller(EntityInterface)
     operationLink = url_mapper.rest_controller(LinkInterface)
+    operationQuery = url_mapper.rest_controller(QueryInterface)
+    operationCategory = url_mapper.rest_controller(CategoryInterface)
 
     app = url_mapper.Router()
 
     #===== Kind Routes =====
-
+    app.add_route('/-/',controller=operationQuery)
+    app.add_route('/-/{location}/',controller=operationCategory)
     app.add_route('/-/kind/',controller=operationKind)
     app.add_route('/-/kind/{user_id}/{doc_id}',controller=operationKind)
     app.add_route('/-/mixin/',controller = operationMixin)
     app.add_route('/-/mixin/{user_id}/{doc_id}',controller=operationMixin)
     app.add_route('/-/action/',controller = operationAction)
     app.add_route('/-/action/{user_id}/{doc_id}',controller=operationAction)
-    app.add_route('/-/resource/',controller=operationResource)
-    app.add_route('/-/resource/{user_id}/{doc_id}',controller=operationResource)
-    app.add_route('/-/link/',controller= operationLink)
-    app.add_route('/-/link/{user_id}/{doc_id}',controller=operationLink)
+    app.add_route('/{term}/',controller=operationEntity)
+    app.add_route('/{term}/{user_id}/{doc_id}',controller=operationEntity)
+    app.add_route('/{term}/{user_id}/',controller=operationEntity)
+#    app.add_route('/-/link/',controller= operationLink)
+#    app.add_route('/-/link/{user_id}/{doc_id}',controller=operationLink)
 
     def run_server(self):
         """

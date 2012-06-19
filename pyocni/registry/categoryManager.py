@@ -113,9 +113,10 @@ class KindManager:
                 "all": {
                     "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
                 },
-                "by_id": {
-                    "map": "(function(doc) { emit (doc.OCCI_ID, doc._id) });"
+                "by_occi_id": {
+                    "map": "(function(doc) { emit (doc.OCCI_ID, doc.Creator) });"
                 }
+
             }
 
         }
@@ -125,24 +126,34 @@ class KindManager:
             database.save_doc(design_doc)
 
 
-    def get_kind_by_id(self,doc_id=None):
+    def get_filtered_kinds(self,jfilters=None):
         """
-        Returns the kind document matching the id provided
+        Returns kind documents matching the filter provided
         Args:
-            @param doc_id: id of the kind document to retrieve
-            @return : <dic> OCCI kind description contained inside of the kind document
+            @param jfilters: description of the kind document to retrieve
+            @return : <list> OCCI kind description contained inside of the kind document
         """
         database = self.server.get_or_create_db(config.Kind_DB)
-        #if the doc_id is specified then only one kind document will be returned if it exists
-        if database.doc_exist(doc_id):
-            elem = database.get(doc_id)
-            res = json.dumps(elem['OCCI_Description'])
-            logger.debug("Kind document found")
-            return res,return_code['OK']
-        else:
-            message = "Kind document " + str(doc_id) + " does not exist"
-            logger.debug(message)
-            return message,return_code['Resource not found']
+        #if the there are many kind filters, any kind matching just one filter will be returned
+        self.add_design_kind_docs_to_db()
+        query = database.view('/get_kind/all')
+        var = list()
+        #Extract kind descriptions from the dictionary
+        try:
+            for elem in query:
+                for jfilter in jfilters:
+                    ok = joker.filter_occi_description(elem['value'],jfilter)
+                    if ok is True:
+                        str_value = json.dumps(elem['value'])
+                        var.append(str_value)
+                        logger.debug("Kind documents found")
+                    else:
+                        message = "No kind document matches the requirements"
+                        logger.debug(message)
+            return var,return_code['OK']
+        except Exception as e:
+            logger.error(e.message)
+            return e.message,return_code['Internal Server Error']
 
     def get_all_kinds(self):
         """
@@ -180,11 +191,10 @@ class KindManager:
             res_code = return_code['OK']
             ok, occi_id = joker.get_description_id(desc)
             if ok is True:
-                query = database.view('/get_kind/by_id',key = occi_id)
+                query = database.view('/get_kind/by_occi_id',key = occi_id)
                 if query.count() is 0:
-
                     doc_id = uuid_Generator.get_UUID()
-                    ok, loc = joker.make_kind_location(desc,doc_id,creator)
+                    ok, loc = joker.make_kind_location(doc_id,creator)
                     if ok is True:
                         jData = dict()
                         jData['Creator'] = creator
@@ -265,7 +275,6 @@ class KindManager:
                     if query.count() is 0:
                         oldData['OCCI_ID'] = occi_id
                         oldData['OCCI_Description'] = occi_description
-                        ok, oldData['Location'] = joker.make_kind_location(occi_description,doc_id,user_id)
                         if problems is True:
                             message = "Kind OCCI description " + str(doc_id) + " has not been totally updated. Check log for more details"
                         else:
@@ -336,36 +345,32 @@ class KindManager:
 
 
 
-    def delete_kind_document(self,doc_id=None,user_id=None):
+    def delete_kind_documents(self,description=None,user_id=None):
         """
-        Delete the kind document that is related to the id provided (Can only be done by the creator of the document)
+        Delete kind documents that is related to the scheme + term contained in the description provided
         Args:
-            @param doc_id: id of the kind document to delete
+            @param description: OCCI description of the kind document to delete
             @param user_id: id of the issuer of the delete request
         """
         database = self.server.get_or_create_db(config.Kind_DB)
+        message = ""
         #Verify the existence of such kind document
-        if database.doc_exist(doc_id):
-        #If so then delete
-            try:
-                Data = database.get(doc_id)
-                if Data['Creator'] == user_id:
-                    database.delete_doc(doc_id)
-                    message = "Kind document " + str(doc_id) + " has been successfully deleted "
-                    logger.debug(message)
-                    return message,return_code['OK']
+        for desc in description:
+            ok, occi_id = joker.get_description_id(desc)
+            if ok is True:
+                query = database.view('/get_kind/by_occi_id',key = occi_id)
+                if query.count() is not 0:
+                    if query.first()['value'] == user_id:
+                        database.delete_doc(query.first()['id'])
+                        message += "\nKind document " + occi_id + " has been successfully deleted " + return_code['OK']
+                    else:
+                        message += "\nYou have no right to delete this kind document " + occi_id + " " + return_code['Forbidden']
+
                 else:
-                    message = "You have no right to delete this kind document"
-                    logger.debug(message)
-                    return message,return_code['Unauthorized']
-            except Exception as e:
-                logger.debug(e.message)
-                return e.message,return_code['Internal Server Error']
-        else:
-            #else reply with kind document not found
-            message = "Kind document " + str(doc_id) + " not found"
-            logger.debug(message)
-            return message,return_code['Resource not found']
+                    message += "\nKind document " + occi_id + " does not exist " + return_code['Resource not found']
+        logger.debug(message)
+        return message,return_code['OK']
+
 
 class MixinManager:
     """
@@ -395,8 +400,8 @@ class MixinManager:
                 "all": {
                     "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
                 },
-                "by_id": {
-                    "map": "(function(doc) { emit (doc.OCCI_ID, doc._id) });"
+                "by_occi_id": {
+                    "map": "(function(doc) { emit (doc.OCCI_ID, doc.Creator) });"
                 }
             }
 
@@ -407,24 +412,34 @@ class MixinManager:
             database.save_doc(design_doc)
 
 
-    def get_mixin_by_id(self,doc_id=None):
+    def get_filtered_mixins(self,jfilters=None):
         """
-        Returns the mixin document matching the id provided
+        Returns mixin documents matching the filter provided
         Args:
-            @param doc_id: id of the mixin document to retrieve
-            @return : <dic> OCCI mixin description contained inside of the mixin document
+            @param jfilters: description of the mixin document to retrieve
+            @return : <list> OCCI mixin description contained inside of the mixin document
         """
         database = self.server.get_or_create_db(config.Mixin_DB)
-        #if the doc_id is specified then only one mixin document will be returned if it exists
-        if database.doc_exist(doc_id):
-            elem = database.get(doc_id)
-            res = json.dumps(elem['OCCI_Description'])
-            logger.debug("Mixin document found")
-            return res,return_code['OK']
-        else:
-            message = "Mixin document " + str(doc_id) + " does not exist"
-            logger.debug(message)
-            return message,return_code['Resource not found']
+        #if the there are many mixin filters, any mixin matching just one filter will be returned
+        self.add_design_mixin_docs_to_db()
+        query = database.view('/get_mixin/all')
+        var = list()
+        #Extract mixin descriptions from the dictionary
+        try:
+            for elem in query:
+                for jfilter in jfilters:
+                    ok = joker.filter_occi_description(elem['value'],jfilter)
+                    if ok is True:
+                        str_value = json.dumps(elem['value'])
+                        var.append(str_value)
+                        logger.debug("Mixin documents found")
+                    else:
+                        message = "No mixin document matches the requirements"
+                        logger.debug(message)
+            return var,return_code['OK']
+        except Exception as e:
+            logger.error(e.message)
+            return e.message,return_code['Internal Server Error']
 
     def get_all_mixins(self):
         """
@@ -466,13 +481,13 @@ class MixinManager:
                 if query.count() is 0:
 
                     doc_id = uuid_Generator.get_UUID()
-                    ok, loc = joker.make_mixin_location(desc,doc_id,creator)
+                    ok, loc = joker.make_mixin_location(desc)
                     if ok is True:
                         jData = dict()
                         jData['Creator'] = creator
                         jData['CreationDate'] = str(datetime.now())
                         jData['LastUpdate'] = ""
-                        jData['Location']= loc
+                        jData['OCCI_Location']= loc
                         jData['OCCI_Description']= desc
                         jData['OCCI_ID'] = occi_id
                         jData['Type']= "Mixin"
@@ -547,7 +562,6 @@ class MixinManager:
                     if query.count() is 0:
                         oldData['OCCI_ID'] = occi_id
                         oldData['OCCI_Description'] = occi_description
-                        ok, oldData['Location'] = joker.make_mixin_location(occi_description,doc_id,user_id)
                         if problems is True:
                             message = "Mixin OCCI description " + str(doc_id) + " has not been totally updated. Check log for more details"
                         else:
@@ -618,36 +632,33 @@ class MixinManager:
 
 
 
-    def delete_mixin_document(self,doc_id=None,user_id=None):
+    def delete_mixin_documents(self,description=None,user_id=None):
         """
-        Delete the mixin document that is related to the id provided (Can only be done by the creator of the document)
+        Delete mixin documents that is related to the scheme + term contained in the description provided
         Args:
-            @param doc_id: id of the mixin document to delete
+            @param description: OCCI description of the mixin document to delete
             @param user_id: id of the issuer of the delete request
         """
         database = self.server.get_or_create_db(config.Mixin_DB)
+        message = ""
         #Verify the existence of such mixin document
-        if database.doc_exist(doc_id):
-        #If so then delete
-            try:
-                Data = database.get(doc_id)
-                if Data['Creator'] == user_id:
-                    database.delete_doc(doc_id)
-                    message = "Mixin document " + str(doc_id) + " has been successfully deleted "
-                    logger.debug(message)
-                    return message,return_code['OK']
+        for desc in description:
+            ok, occi_id = joker.get_description_id(desc)
+            if ok is True:
+                query = database.view('/get_kind/by_occi_id',key = occi_id)
+                if query.count() is not 0:
+                    if query.first()['value'] == user_id:
+                        database.delete_doc(query.first()['id'])
+                        joker.dissociate_resource_from_mixin()
+                        message += "\nMixin document " + occi_id + " has been successfully deleted " + return_code['OK']
+                    else:
+                        message += "\nYou have no right to delete this mixin document " + occi_id + " " + return_code['Forbidden']
+
                 else:
-                    message = "You have no right to delete this mixin document"
-                    logger.debug(message)
-                    return message,return_code['Unauthorized']
-            except Exception as e:
-                logger.debug(e.message)
-                return e.message,return_code['Internal Server Error']
-        else:
-            #else reply with mixin document not found
-            message = "Mixin document " + str(doc_id) + " not found"
-            logger.debug(message)
-            return message,return_code['Resource not found']
+                    message += "\nMixin document " + occi_id + " does not exist " + return_code['Resource not found']
+        logger.debug(message)
+        return message,return_code['OK']
+
 class ActionManager:
     """
 
@@ -688,24 +699,34 @@ class ActionManager:
             database.save_doc(design_doc)
 
 
-    def get_action_by_id(self,doc_id=None):
+    def get_filtered_actions(self,jfilters=None):
         """
-        Returns the action document matching the id provided
+        Returns action documents matching the filter provided
         Args:
-            @param doc_id: id of the action document to retrieve
-            @return : <dic> OCCI action description contained inside of the action document
+            @param jfilters: description of the action document to retrieve
+            @return : <list> OCCI action description contained inside of the action document
         """
         database = self.server.get_or_create_db(config.Action_DB)
-        #if the doc_id is specified then only one action document will be returned if it exists
-        if database.doc_exist(doc_id):
-            elem = database.get(doc_id)
-            res = json.dumps(elem['OCCI_Description'])
-            logger.debug("Action document found")
-            return res,return_code['OK']
-        else:
-            message = "Action document " + str(doc_id) + " does not exist"
-            logger.debug(message)
-            return message,return_code['Resource not found']
+        #if the there are many action filters, any action matching just one filter will be returned
+        self.add_design_action_docs_to_db()
+        query = database.view('/get_action/all')
+        var = list()
+        #Extract action descriptions from the dictionary
+        try:
+            for elem in query:
+                for jfilter in jfilters:
+                    ok = joker.filter_occi_description(elem['value'],jfilter)
+                    if ok is True:
+                        str_value = json.dumps(elem['value'])
+                        var.append(str_value)
+                        logger.debug("Action documents found")
+                    else:
+                        message = "No action document matches the requirements"
+                        logger.debug(message)
+            return var,return_code['OK']
+        except Exception as e:
+            logger.error(e.message)
+            return e.message,return_code['Internal Server Error']
 
     def get_all_actions(self):
         """
@@ -747,7 +768,7 @@ class ActionManager:
                 if query.count() is 0:
 
                     doc_id = uuid_Generator.get_UUID()
-                    ok, loc = joker.make_action_location(desc,doc_id,creator)
+                    ok, loc = joker.make_action_location(doc_id,creator)
                     if ok is True:
                         jData = dict()
                         jData['Creator'] = creator
@@ -828,7 +849,6 @@ class ActionManager:
                     if query.count() is 0:
                         oldData['OCCI_ID'] = occi_id
                         oldData['OCCI_Description'] = occi_description
-                        ok, oldData['Location'] = joker.make_action_location(occi_description,doc_id,user_id)
                         if problems is True:
                             message = "Action OCCI description " + str(doc_id) + " has not been totally updated. Check log for more details"
                         else:
@@ -899,203 +919,6 @@ class ActionManager:
 
 
 
-    def delete_action_document(self,doc_id=None,user_id=None):
-        """
-        Delete the action document that is related to the id provided (Can only be done by the creator of the document)
-        Args:
-            @param doc_id: id of the action document to delete
-            @param user_id: id of the issuer of the delete request
-        """
-        database = self.server.get_or_create_db(config.Action_DB)
-        #Verify the existence of such action document
-        if database.doc_exist(doc_id):
-        #If so then delete
-            try:
-                Data = database.get(doc_id)
-                if Data['Creator'] == user_id:
-                    database.delete_doc(doc_id)
-                    message = "Action document " + str(doc_id) + " has been successfully deleted "
-                    logger.debug(message)
-                    return message,return_code['OK']
-                else:
-                    message = "You have no right to delete this action document"
-                    logger.debug(message)
-                    return message,return_code['Unauthorized']
-            except Exception as e:
-                logger.debug(e.message)
-                return e.message,return_code['Internal Server Error']
-        else:
-            #else reply with action document not found
-            message = "Action document " + str(doc_id) + " not found"
-            logger.debug(message)
-            return message,return_code['Resource not found']
-#class ActionManager:
-#    """
-#
-#    Manager for the Action documents on couch database
-#
-#    """
-#
-#    def __init__(self):
-#
-#        try:
-#            self.server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
-#        except Exception:
-#            logger.error("Database is unreachable")
-#            raise Exception("Database is unreachable")
-#        try:
-#            self.add_design_action_docs_to_db()
-#        except Exception as e:
-#            logger.debug(e.message)
-#
-#
-#    def add_design_action_docs_to_db(self):
-#        """
-#        Add action design documents to database.
-#        """
-#        design_doc = {
-#            "_id": "_design/get_action",
-#            "language": "javascript",
-#            "type": "DesignDoc",
-#            "views": {
-#                "all": {
-#                    "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
-#                }
-#            }
-#
-#        }
-#        database = self.server.get_or_create_db(config.Action_DB)
-#        if database.doc_exist(design_doc['_id']):
-#            pass
-#        else:
-#            database.save_doc(design_doc)
-#
-#
-#    def get_action_by_id(self,doc_id=None):
-#        """
-#        Returns the action document matching the id provided
-#        Args:
-#            @param doc_id: id of the action document to retrieve
-#            @return : <dic> OCCI action description contained inside of the action document
-#        """
-#        database = self.server.get_or_create_db(config.Action_DB)
-#        #if the doc_id is specified then only one action will be returned if it exists
-#        if database.doc_exist(doc_id):
-#            res =""
-#            elem = database.get(doc_id)
-#            res = elem['OCCI_Description']
-#            logger.debug("Action document found")
-#            return res,return_code['OK']
-#        else:
-#            message = "Action document " + str(doc_id) + " does not exist"
-#            logger.debug(message)
-#            return message,return_code['Resource not found']
-#
-#    def get_all_actions(self):
-#        """
-#        Returns all action documents stored in database
-#        Args:
-#            @return : <dict> All OCCI action descriptions contained inside action documents stored in the database
-#        """
-#        database = self.server.get_or_create_db(config.Action_DB)
-#        query = database.view('/get_action/all')
-#        var = list()
-#        #Extract action descriptions from the dictionary
-#        try:
-#            for elem in query:
-#                var.append(elem['value'])
-#            logger.debug("Action documents found")
-#            return var,return_code['OK']
-#        except Exception as e:
-#            logger.error(e.message)
-#            return e.message, return_code['Internal Server Error']
-#
-#
-#    def register_action(self,creator,description):
-#
-#        """
-#        Add a new action to the database
-#        Args:
-#            @param creator: the id of the issuer of the creation request
-#            @param description: OCCI action description
-#        """
-#        database = self.server.get_or_create_db(config.Action_DB)
-#        doc_id = uuid_Generator.get_UUID()
-#        ok,loc = joker.make_action_location(description,doc_id,creator)
-#        if ok is True:
-#            jData = dict()
-#            jData['Creator'] = creator
-#            jData['CreationDate'] = str(datetime.now())
-#            jData['LastUpdate'] = ""
-#            jData['Location']= loc
-#            jData['OCCI_Description']= description
-#            jData['Type']= "Action"
-#            provider = {"local":[],"remote":[]}
-#            jData['Provider']= provider
-#            try:
-#                database[doc_id] = jData
-#                logger.debug("Action document has been successfully added to database : " + loc)
-#                return loc,return_code['OK']
-#            except Exception as e:
-#                logger.error(e.message)
-#                return e.message,return_code['Internal Server Error']
-#        else:
-#            logger.error(loc)
-#            return loc,return_code['Internal Server Error']
-#
-#    def update_action(self,doc_id=None,user_id=None,new_Data=None):
-#        """
-#        Update action document fields (can only be done by the creator of the document)
-#        Args:
-#            @param doc_id: the id of the action document to update
-#            @param user_id: the id of the issuer of the update request
-#            @param new_Data: the data that will be used to update the action document
-#        """
-#        #Get the old document data from the database
-#        database = self.server.get_or_create_db(config.Action_DB)
-#
-#        if database.doc_exist(doc_id) is True:
-#            oldData = database.get(doc_id)
-#            if oldData['Creator'] == user_id:
-#                oldData_keys = oldData.keys()
-#                newData_keys =  new_Data.keys()
-#                problems = False
-#                #Update only the fields that exist in the new data
-#                for key in newData_keys:
-#                    try:
-#                        #OCCI_Description field will be treated separately
-#                        if key == "OCCI_Description":
-#                            old_descrip = oldData[key]['actions'][0]
-#                            new_descrip = new_Data[key]['actions'][0]
-#                            problems,oldData[key]['actions'][0] = joker.update_occi_description(old_descrip,new_descrip)
-#                        else:
-#                            oldData_keys.index(key)
-#                            oldData[key] = new_Data[key]
-#                    except Exception:
-#                        problems = True
-#                        logger.debug(key + "could not be found")
-#                        #Keep the record of the keys(=parts) that couldn't be update
-#                if problems is True:
-#                    message = "Action document " + str(doc_id) + " has not been totally updated. Check log for more details"
-#                else:
-#                    message = "Action document " + str(doc_id) + " has been updated successfully"
-#                oldData['LastUpdate'] = str(datetime.now())
-#                #Update the document
-#                database.save_doc(oldData,force_update = True)
-#                logger.debug(message)
-#                return message,return_code['OK']
-#            else:
-#                message= "You have no right to update this action document"
-#                logger.debug(message)
-#                return message,return_code['Unauthorized']
-#
-#        else:
-#            message = "Action document " + str(doc_id) + "couldn\'t be found"
-#            logger.debug(message)
-#            return message,return_code['Resource not found']
-#
-#
-#
 #    def delete_action_document(self,doc_id=None,user_id=None):
 #        """
 #        Delete the action document that is related to the id provided (Can only be done by the creator of the document)
@@ -1119,10 +942,168 @@ class ActionManager:
 #                    logger.debug(message)
 #                    return message,return_code['Unauthorized']
 #            except Exception as e:
-#                logger.error(e.message)
+#                logger.debug(e.message)
 #                return e.message,return_code['Internal Server Error']
 #        else:
 #            #else reply with action document not found
 #            message = "Action document " + str(doc_id) + " not found"
 #            logger.debug(message)
 #            return message,return_code['Resource not found']
+
+class CategoryManager:
+    """
+
+        Channel requests to their appropriate target : Kinds, Mixins and Actions
+
+    """
+
+    def __init__(self):
+
+        self.manager_k = KindManager()
+        self.manager_m = MixinManager()
+        self.manager_a = ActionManager()
+
+    def channel_register_categories(self,user_id,jreq):
+        """
+        Channel the post request to the right method
+
+        """
+        mesg_1 = ""
+        mesg_2 = ""
+        mesg_3 = ""
+        data_keys = jreq.keys()
+        try:
+            data_keys.index('kinds')
+            logger.debug("Kinds post request : channeled")
+            mesg_1,resp_code = self.manager_k.register_kinds(user_id,jreq['kinds'])
+        except Exception as e:
+            logger.debug(e.message)
+
+        try:
+            data_keys.index('mixins')
+            logger.debug("Mixins post request : channeled")
+            mesg_2,resp_code = self.manager_m.register_mixins(user_id,jreq['mixins'])
+        except Exception as e:
+            logger.debug(e.message)
+
+        try:
+            data_keys.index('actions')
+            logger.debug("Actions post request : channeled")
+            mesg_3,resp_code = self.manager_a.register_actions(user_id,jreq['actions'])
+        except Exception as e:
+            logger.debug(e.message)
+
+        result_1 = '\n========= Kinds : ===========\n'
+        result_1 += '\n========= Kind : ===========\n'.join(mesg_1)
+        result_2 = '\n========= Mixins : ===========\n'
+        result_2 += '\n========= Mixin : ===========\n'.join(mesg_2)
+        result_3 = '\n========= Actions : ===========\n'
+        result_3 += '\n========= Action : ===========\n'.join(mesg_3)
+        register = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
+        return register
+
+    def channel_get_all_categories(self):
+        """
+        Retrieve all categories to show the server's capacity
+
+        """
+        #get all kinds
+        result_1 = '\n========= Kind : ===========\n'
+        var,status_code_1 = self.manager_k.get_all_kinds()
+        result_1 += '\n========= Kind : ===========\n'.join(var)
+
+        #get all mixins
+        result_2 = '\n========== Mixin : ==========\n'
+        var,status_code_2 = self.manager_m.get_all_mixins()
+        result_2 += '\n========== Mixin : ==========\n'.join(var)
+
+        #get all actions
+        result_3 = '\n========== Action : ==========\n'
+        var,status_code_3 = self.manager_a.get_all_actions()
+        result_3 += '\n========== Action : ==========\n'.join(var)
+
+        capacities = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
+
+        return capacities
+
+    def channel_get_filtered_categories(self,jreq):
+        """
+        Channel the post request to the right method
+
+        """
+        mesg_1 = ""
+        mesg_2 = ""
+        mesg_3 = ""
+        data_keys = jreq.keys()
+        try:
+            data_keys.index('kinds')
+            logger.debug("Kinds filter get request : channeled")
+            mesg_1,resp_code = self.manager_k.get_filtered_kinds(jreq['kinds'])
+        except Exception as e:
+            logger.debug(e.message)
+
+        try:
+            data_keys.index('mixins')
+            logger.debug("Mixins filter get request : channeled")
+            mesg_2,resp_code = self.manager_m.get_filtered_mixins(jreq['mixins'])
+        except Exception as e:
+            logger.debug(e.message)
+
+        try:
+            data_keys.index('actions')
+            logger.debug("Actions filter get : channeled")
+            mesg_3,resp_code = self.manager_a.get_filtered_actions(jreq['actions'])
+        except Exception as e:
+            logger.debug(e.message)
+
+        result_1 = '\n========= Kinds : ===========\n'
+        result_1 += '\n========= Kind : ===========\n'.join(mesg_1)
+        result_2 = '\n========= Mixins : ===========\n'
+        result_2 += '\n========= Mixin : ===========\n'.join(mesg_2)
+        result_3 = '\n========= Actions : ===========\n'
+        result_3 += '\n========= Action : ===========\n'.join(mesg_3)
+        capacities = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
+
+        return capacities
+
+    def channel_delete_categories(self,jreq,user_id):
+        """
+        Channel the delete request to the right method
+
+        """
+        data_keys = jreq.keys()
+#        mesg_1 = ""
+        mesg_2 = ""
+#        mesg_3 = ""
+#        try:
+#            data_keys.index('kinds')
+#            logger.debug("Kinds delete request : channeled")
+#            mesg_1,resp_code = self.manager_k.delete_kind_documents(user_id,jreq['kinds'])
+#        except Exception as e:
+#            logger.debug(e.message)
+
+        try:
+            data_keys.index('mixins')
+            logger.debug("Mixins delete request : channeled")
+            mesg_2,resp_code = self.manager_m.delete_mixin_documents(user_id,jreq['mixins'])
+        except Exception as e:
+            logger.debug(e.message)
+
+#        try:
+#            data_keys.index('actions')
+#            logger.debug("Actions delete request : channeled")
+#            mesg_3,resp_code = self.manager_a.delete_action_documents(user_id,jreq['actions'])
+#        except Exception as e:
+#            logger.debug(e.message)
+
+#        result_1 = '\n========= Kinds : ===========\n'
+#        result_1 += '\n========= Kind : ===========\n'.join(mesg_1)
+        result_2 = '\n========= Mixins : ===========\n'
+        result_2 += '\n========= Mixin : ===========\n'.join(mesg_2)
+#        result_3 = '\n========= Actions : ===========\n'
+#        result_3 += '\n========= Action : ===========\n'.join(mesg_3)
+#        register = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
+        register = result_2  + "\n\n"
+        return register
+
+
