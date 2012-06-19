@@ -92,7 +92,7 @@ class QueryInterface(object):
 
         """
 
-        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+        #Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
 
         if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
             # Solution To adopt : Validate HTTP then convert to JSON
@@ -123,12 +123,12 @@ class QueryInterface(object):
 
         """
 
-        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+        #Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
 
         if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
             # Solution To adopt : Validate HTTP then convert to JSON
             pass
-        elif self.req.content_type == "application/occi:json":
+        elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
             pass
         elif self.req.content_type == "application/occi+json":
