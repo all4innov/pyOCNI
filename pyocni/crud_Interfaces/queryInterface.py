@@ -35,23 +35,7 @@ except ImportError:
     import json
 
 import base64
-
-# ======================================================================================
-# HTTP Return Codes
-# ======================================================================================
-return_code = {'OK': 200,
-               'Accepted': 202,
-               'Bad Request': 400,
-               'Unauthorized': 401,
-               'Forbidden': 403,
-               'Resource not found': 404,
-               'Method Not Allowed': 405,
-               'Conflict': 409,
-               'Gone': 410,
-               'Unsupported Media Type': 415,
-               'Internal Server Error': 500,
-               'Not Implemented': 501,
-               'Service Unavailable': 503}
+from pyocni.pyocni_tools.config import return_code
 
 class QueryInterface(object):
     """
@@ -140,7 +124,7 @@ class QueryInterface(object):
             return self.res
             #Get the new data from the request
         j_newData = json.loads(self.req.body)
-        self.res.body,self.res.status_code = self.manager.update_kind(self.doc_id,self.user_id,j_newData)
+        self.res.body,self.res.status_code = self.manager.channel_update_categories(self.user_id,j_newData)
         return self.res
 
     def delete(self):

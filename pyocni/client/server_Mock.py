@@ -121,12 +121,12 @@ class ocni_server(object):
 #            locationManager.purgeLocationDBs()
 #            categoryManager.purgeCategoryDBs()
 #
-#        print ("\n______________________________________________________________________________________\n"
-#               "The OCNI server is running at: " + config.OCNI_IP + ":"+config.OCNI_PORT)
-#        wsgi.server(eventlet.listen((config.OCNI_IP, int(config.OCNI_PORT))), self.app)
-#
-#        print ("\n______________________________________________________________________________________\n"
-#               "Closing correctly 'locations' and 'objects' Databases: ")
+        print ("\n______________________________________________________________________________________\n"
+               "The OCNI server is running at: " + config.OCNI_IP + ":"+config.OCNI_PORT)
+        wsgi.server(eventlet.listen((config.OCNI_IP, int(config.OCNI_PORT))), self.app)
+
+        print ("\n______________________________________________________________________________________\n"
+               "Closing correctly 'locations' and 'objects' Databases: ")
 
 
 

@@ -27,8 +27,7 @@ Created on Jun 19, 2012
 @license: LGPL - Lesser General Public License
 """
 from multiprocessing import Process
-from couchdbkit import *
-import pyocni.pyocni_tools.config as config
+from pyocni.pyocni_tools.config import return_code
 from unittest import TestLoader,TextTestRunner,TestCase
 import pyocni.client.server_Mock as server
 import pycurl
@@ -36,48 +35,101 @@ import time
 import StringIO
 
 
-# ======================================================================================
-# HTTP Return Codes
-# ======================================================================================
-return_code = {'OK': 200,
-               'Accepted': 202,
-               'Bad Request': 400,
-               'Unauthorized': 401,
-               'Forbidden': 403,
-               'Resource not found': 404,
-               'Method Not Allowed': 405,
-               'Conflict': 409,
-               'Gone': 410,
-               'Unsupported Media Type': 415,
-               'Internal Server Error': 500,
-               'Not Implemented': 501,
-               'Service Unavailable': 503}
-
 def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
 
-def get_me_an_id():
-    try:
-        DB_server_IP = config.DB_IP
-        DB_server_PORT = config.DB_PORT
-        server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
-        db = server.get_or_create_db(config.Kind_DB)
-    except Exception:
-        raise Exception("Database is unreachable")
-    res = db.all_docs()
-    if res is None:
-        raise Exception('Database is empty')
-    else:
-        for re in res:
-            if re['id'][0] != "_":
-                return re['id']
 to_register ="""
-    {
-    "kinds": [
 {
-            "term": "compute013",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure8#",
+    "actions": [
+        {
+            "term": "restart",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Stop Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpioff|poweroff",
+                    "default": "poweroff"
+                }
+            }
+        },
+        {
+            "term": "stop",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Stop Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpioff|poweroff",
+                    "default": "poweroff"
+                }
+            }
+        },
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Stop Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpioff|poweroff",
+                    "default": "poweroff"
+                }
+            }
+        },
+        {
+            "term": "stop",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Stop Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpioff|poweroff",
+                    "default": "poweroff"
+                }
+            }
+        }
+    ],
+    "kinds": [
+        {
+            "term": "resource",
+            "scheme": "http://schemas.ogf.org/occi/core#",
+            "title": "Compute Resource",
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "hostname": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                            "minimum": "1",
+                            "maximum": "255"
+                        },
+                        "state": {
+                            "mutable": false,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "inactive|active|suspended|failed",
+                            "default": "inactive"
+                        }
+                    }
+                }
+            },
+            "location": "/resource/"
+        },
+        {
+            "term": "storage",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#resource",
             "title": "Compute Resource",
             "related": [
                 "http://schemas.ogf.org/occi/core#resource"
@@ -108,14 +160,53 @@ to_register ="""
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
             ],
-            "location": "/compute013/"
+            "location": "/storage/"
         }
-    ,
-    {
-            "term": "resource",
-            "scheme": "http://schemas.ogf.org/occi/core#",
+    ],
+    "mixins": [
+        {
+            "term": "resource_tpl",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+            "title": "Medium VM",
+            "related": [],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "speed": {
+                            "type": "number",
+                            "default": 2.8
+                        }
+                    }
+                }
+            },
+            "location": "/template/resource/resource_tpl/"
+        },
+        {
+            "term": "medium",
+            "scheme": "http://example.com/template/resource#",
+            "title": "Medium VM",
+            "related": [
+                "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "speed": {
+                            "type": "number",
+                            "default": 2.8
+                        }
+                    }
+                }
+            },
+            "location": "/template/resource/medium2/"
+        },
+        {
+            "term": "mixin",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
             "title": "Compute Resource",
-
+            "related": [
+                "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+            ],
             "attributes": {
                 "occi": {
                     "compute": {
@@ -137,11 +228,17 @@ to_register ="""
                     }
                 }
             },
-            "location": "/resource/"
+            "actions": [
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
+            ],
+            "location": "/mixin/"
         }
     ]
 }
 """
+
 
 terms='''
 {
@@ -428,10 +525,6 @@ class test_get(TestCase):
         """
         self.p = Process(target = start_server)
         self.p.start()
-        try:
-            self.id = get_me_an_id()
-        except Exception as e:
-            print e.message
         time.sleep(0.5)
 
     def tearDown(self):
@@ -464,7 +557,7 @@ class test_get(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
-        c.setopt(pycurl.POSTFIELDS,terms)
+        c.setopt(pycurl.POSTFIELDS,to_register)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -501,10 +594,6 @@ class test_delete(TestCase):
         """
         self.p = Process(target = start_server)
         self.p.start()
-        try:
-            self.id = get_me_an_id()
-        except Exception as e:
-            print e.message
         time.sleep(0.5)
 
     def tearDown(self):
@@ -520,7 +609,7 @@ class test_delete(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
-        c.setopt(pycurl.POSTFIELDS,to_delete)
+        c.setopt(pycurl.POSTFIELDS,to_register)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -547,42 +636,6 @@ class test_delete(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
         self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Resource not found'])
 
-    def test_delete_mixin(self):
-        """
-        delete a mixin
-        """
-        storage = StringIO.StringIO()
-        c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
-        c.setopt(pycurl.POSTFIELDS,to_delete)
-        c.setopt(pycurl.USERPWD, 'user_1:password')
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
-        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['OK'])
-
-
-    def test_delete_mixin_not_found(self):
-        """
-        delete a un-existent mixin
-        """
-        storage = StringIO.StringIO()
-        c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
-        c.setopt(pycurl.POSTFIELDS,to_delete_no)
-        c.setopt(pycurl.USERPWD, 'user_1:password')
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
-        self.assertEqual(c.getinfo(pycurl.HTTP_CODE),return_code['Resource not found'])
 
 class test_post(TestCase):
     """
@@ -595,10 +648,6 @@ class test_post(TestCase):
         """
         self.p = Process(target = start_server)
         self.p.start()
-        try:
-            self.id = get_me_an_id()
-        except Exception as e:
-            print e.message
         time.sleep(0.5)
 
     def tearDown(self):

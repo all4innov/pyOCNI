@@ -50,7 +50,7 @@ def update_occi_description(oldData,newData):
             oldData[key] = newData[key]
         except Exception:
             #Keep the record of the keys(=parts) that couldn't be updated
-            logger.debug(key + " could not be found")
+            logger.debug("update description : " + key + " could not be found")
             problems = True
 
     return problems,oldData
@@ -67,10 +67,11 @@ def get_description_id(occi_description):
        desc_term = occi_description['term']
        desc_scheme = occi_description['scheme']
     except Exception as e:
-        return False, e.message
+        logger.error("description ID: " + e.message)
+        return  None
     #Concatenate the term and scheme to get the ID of the description
     res = desc_scheme+desc_term
-    return True,res
+    return res
 
 def filter_occi_description(description,filter):
     """
@@ -84,26 +85,24 @@ def filter_occi_description(description,filter):
     #Try to get the keys from filter dictionary
 
     filter_keys = filter.keys()
-    match = True
     for key in filter_keys:
         try:
             if description[key] != filter[key]:
-                match = False
-                return match
+                return False
         except Exception:
             #Keep the record of the keys(=parts) that couldn't be updated
-            logger.debug(key + " could not be found")
-            match = False
-            return match
+            logger.debug("filter description : "+ key + " could not be found")
+            return False
 
-    return match
+    return True
 
-def dissociate_resource_from_mixin(mix_desc):
+def dissociate_resource_from_mixin(occi_id):
     """
     Dissociates a resource from a mixin upon the deletion of a mixin
     Args:
         @param mix_desc: OCCI description of the mixin
     """
+    return True
 def get_resources_belonging_to_kind(kind_desc):
     """
     Verifies if there are resources of this kind description
@@ -111,6 +110,7 @@ def get_resources_belonging_to_kind(kind_desc):
         @param kind_desc: OCCI kind description of the kind
 
     """
+    return True
 
 
 def verify_exist_relaters(description,db_data):
@@ -123,20 +123,21 @@ def verify_exist_relaters(description,db_data):
     try:
         relaters = description['related']
     except Exception as e:
-        logger.debug(e.message)
+        logger.debug(" exist relaters : " + e.message)
+        return True
+    if not relaters:
         return True
 
     list_occi_id = list()
     for data in db_data:
-        ok,id = get_description_id(data)
-        if ok is True:
-            list_occi_id.append(id)
+        id = get_description_id(data)
+        list_occi_id.append(id)
 
     try:
         for related in relaters:
             list_occi_id.index(related)
     except Exception as e:
-        logger.error(e.message)
+        logger.error(" exist relaters : " + e.message)
         return False
 
     return True
@@ -148,21 +149,24 @@ def verify_exist_actions(description,actions_data):
     try:
         actions = description['actions']
     except Exception as e:
-        logger.debug(e.message)
+        logger.debug("exist actions " + e.message)
+        return True
+    if not actions:
         return True
 
     list_occi_id = list()
     for data in actions_data:
-        ok,id = get_description_id(data)
-        if ok is True:
-            list_occi_id.append(id)
+        id = get_description_id(data)
+        list_occi_id.append(id)
+
 
     for action in actions:
         try:
             list_occi_id.index(action)
         except Exception as e:
-            logger.error(e.message)
+            logger.error(" exist actions : " + e.message)
             return False
+    return True
 
 
 
@@ -178,10 +182,11 @@ def make_kind_location(occi_description):
         loc = occi_description['location']
         kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + loc
     except Exception as e:
-        return False, e.message
-    return True, kind_location
+        logger.error("kind location : " + e.message )
+        return  None
+    return kind_location
 
-def make_mixin_location( occi_description):
+def make_mixin_location(occi_description):
     """
     Creates the location of the mixin using the occi_description
     Args:
@@ -190,28 +195,11 @@ def make_mixin_location( occi_description):
     """
     try:
         loc = occi_description['location']
-        mixin_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-/" + loc +"/"
+        mixin_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + loc
     except Exception as e:
-        return False,e.message
-
-
-    return True, mixin_location
-
-def make_action_location( uuid,user_id):
-    """
-    Creates the location of the action using the uuid and the user_id
-    Args:
-        @param uuid: UUID of the action document containing the action description
-        @param user_id: ID of action document administrator
-        @return :<string> Location of the action
-    """
-    try:
-        action_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-/action/" + user_id + "/" + uuid
-    except Exception as e:
-        return False,e.message
-
-
-    return True, action_location
+        logger.error("mixin location : " + e.message )
+        return None
+    return  mixin_location
 
 def make_resource_location(occi_description, uuid,user_id):
     """
