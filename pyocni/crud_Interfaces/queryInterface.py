@@ -43,11 +43,9 @@ class QueryInterface(object):
         CRUD operation on kinds, mixins and actions
 
     """
-    def __init__(self,req, doc_id=None,user_id=None):
+    def __init__(self,req):
 
         self.req = req
-        self.doc_id=doc_id
-        self.user_id=user_id
         self.res = Response()
         self.res.content_type = req.accept
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
@@ -62,6 +60,22 @@ class QueryInterface(object):
         """
         Retrieval of all registered Kinds, mixins and actions
         """
+        #Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/json:occi":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
         if self.req.body == "":
             self.res = self.manager.channel_get_all_categories()
         else:
@@ -122,9 +136,13 @@ class QueryInterface(object):
             self.res.status_code = return_code["Unsupported Media Type"]
             self.res.body = self.req.content_type + " is an unknown request content type"
             return self.res
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
             #Get the new data from the request
         j_newData = json.loads(self.req.body)
-        self.res.body,self.res.status_code = self.manager.channel_update_categories(self.user_id,j_newData)
+        self.res.body = self.manager.channel_update_categories(user_id,j_newData)
         return self.res
 
     def delete(self):
@@ -133,6 +151,21 @@ class QueryInterface(object):
         Delete a category document using the data provided in the request
 
         """
+        #Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/json:occi":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
         #Decode authorization header to get the user_id
         var,user_id = self.req.authorization
         user_id = base64.decodestring(user_id)

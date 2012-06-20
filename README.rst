@@ -93,13 +93,11 @@ This software needs this packages to run:
 In order to use PyOCNI, you must respect certain rules :
 
 #. All data must follow the JSON format declared by OCCI [occi+json], any detected conflict will cancel the request.
-#. Kinds, Mixins and Actions can be created, read, updated or deleted (CRUD) on the fly.
+#. Kinds, Mixins and Actions can be created, retrieved, updated or deleted (CRUD) on the fly.
 #. Kinds, Mixins and Actions can be read and created by anyone but updated and deleted by only their creator
-#. Resources and Links can be created, read, updated or deleted(CRUD) on the fly.
-#. Resources and Links can be read and created by anyone but updated and deleted by only their creator
-#. Kinds, Mixins, Actions, Resources and Links have their own distinct storage format (see below)
-#. The new data provided in an update request must be sent in consistency with the raw format
-#. An update request is done through the update of the fields mentioned in the DocumentSkeleton (see below)
+#. Scheme + Term = OCCI_ID : unique identifier of the OCCI (Kind/Mixin/Action) description
+#. PyOCNI_Server_Address + Location : OCCI_Location of (Kind/Mixin) description
+
 
 These are some commands that you can use with PyOCNI
 
@@ -107,7 +105,7 @@ ________________________________________________________________________________
 
 * Retrieval of all registered Kinds, Mixins and Actions::
 
-   curl -X GET -H 'accept: application/json:occi' -v http://localhost:8090/-/
+   curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
 __________________________________________________________________________________________________________________
 
@@ -115,19 +113,19 @@ ________________________________________________________________________________
 
 * Create a Kind::
 
-   curl -X POST -d@post_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v 'http://localhost:8090/-/kind/'
+   curl -X POST -d@post_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v 'http://localhost:8090/-/'
 
 * Get a kind::
 
-   curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
+   curl -X GET -d@get_kind.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/
 
 * Update a Kind::
 
-   curl -X PUT -d@update_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/kind/{user-id}/{kind-id}
+   curl -X PUT -d@update_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
 * Delete a Kind::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/kind/{user-id}/{kind-id}
+   curl -X DELETE -d@delete_kind -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
 __________________________________________________________________________________________________________________
 
@@ -135,19 +133,19 @@ ________________________________________________________________________________
 
 * Create a Mixin::
 
-   curl -X POST -d@post_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/mixin/
+   curl -X POST -d@post_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
 * Get a Mixin::
 
-   curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+   curl -X GET -d@get_mixin -H 'content-type: application/occi+json' -v http://localhost:8090/-/
 
-* Update a mixin::
+* Update a Mixin::
 
-   curl -X PUT -d@update_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+   curl -X PUT -d@update_mixin.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
-* Delete a mixin::
+* Delete a Mixin::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/mixin/{user-id}/{mixin-id}
+   curl -X DELETE -d@delete_mixin -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
 __________________________________________________________________________________________________________________
 
@@ -155,19 +153,19 @@ ________________________________________________________________________________
 
 * Create an Action::
 
-   curl -X POST -d@post_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/action/
+   curl -X POST -d@post_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
 * Get an Action::
 
-   curl -X GET -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
+   curl -X GET -d@get_action -H 'content-type: application/occi+json' -v http://localhost:8090/-/
 
 * Update an Action::
 
-   curl -X PUT -d@update_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/action/{user-id}/{action-id}
+   curl -X PUT -d@update_action.json -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
 * Delete an Action::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -v http://localhost:8090/-/action/{user-id}/{action-id}
+   curl -X DELETE -d@delete_action -H 'content-type: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
 __________________________________________________________________________________________________________________
 

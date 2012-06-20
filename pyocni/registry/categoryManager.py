@@ -26,9 +26,10 @@ Created on May 29, 2012
 @version: 0.3
 @license: LGPL - Lesser General Public License
 """
-
+from exceptions import ValueError
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.occi_Joker as joker
+import pyocni.pyocni_tools.couchdbdoc_Joker as doc_Joker
 try:
     import simplejson as json
 except ImportError:
@@ -230,118 +231,105 @@ class KindManager:
 
         return loc_res,res_code
 
-    def update_kind(self,doc_id,user_id,new_description):
-        """
-        Channel the update request to the right method
 
+    def update_OCCI_kind_descriptions(self,user_id,data):
         """
-
-        data_keys = new_description.keys()
-        try:
-            data_keys.index('Provider')
-            logger.debug("Provider update request : OK")
-            mesg,resp_code = self.update_kind_provider(doc_id,user_id,new_description)
-            return mesg,resp_code
-        except Exception:
-            try:
-                data_keys.index('kinds')
-                logger.debug("OCCI description update request : OK")
-                mesg,resp_code = self.update_OCCI_kind_description(doc_id,user_id,new_description)
-                return mesg, resp_code
-            except Exception as e:
-                mesg = "Unknown data keys " + e.message
-                logger.debug(mesg)
-                return mesg,return_code['Internal Server Error']
-
-    def update_OCCI_kind_description(self,doc_id,user_id,new_description):
-        """
-        Updates the OCCI description field of the kind which document id is equal to doc_id (Can only be done by the creator of the kind document)
+        Updates the OCCI description field of the kind which document OCCI_ID is equal to OCCI_ID contained in data
+        (Can only be done by the creator of the kind document)
         Args:
-            @param doc_id: ID of the kind document to update
             @param user_id: ID of the creator of the kind document
-            @param new_description: The new OCCI kind description
+            @param data: Data containing the OCCI ID of the kind and the new OCCI kind description
             @return : <string>, return_code
         """
         database = self.server.get_or_create_db(config.Kind_DB)
-        if database.doc_exist(doc_id) is True:
-            oldData = database.get(doc_id)
-            if oldData['Creator'] == user_id:
-                old_description = oldData['OCCI_Description']
-                new_description = new_description['kinds'][0]
-                problems,occi_description= joker.update_occi_description(old_description,new_description)
-                ok,occi_id = joker.get_description_id(occi_description)
-                if ok is True:
-                    query = database.view('/get_kind/by_id',key = occi_id)
-                    if query.count() is 0:
-                        oldData['OCCI_ID'] = occi_id
+        self.add_design_kind_docs_to_db()
+        events = list()
+        resp_code = return_code['OK']
+        for desc in data:
+            old_occi_id = desc['OCCI_ID']
+            query = database.view('/get_kind/by_occi_id',key = old_occi_id)
+            if query.count() is 1:
+                if query.first()['value'] == user_id:
+                    new_occi_id = joker.get_description_id(desc['kind'])
+                    query_n = database.view('/get_kind/by_occi_id',key = new_occi_id)
+                    if query_n.count() <=1:
+                        oldData = database.get(query.first()['id'])
+                        old_description = oldData['OCCI_Description']
+                        problems,occi_description= joker.update_occi_description(old_description,desc['kind'])
                         oldData['OCCI_Description'] = occi_description
+                        oldData['OCCI_ID'] = new_occi_id
                         if problems is True:
-                            message = "Kind OCCI description " + str(doc_id) + " has not been totally updated. Check log for more details"
+                            message = "Kind OCCI description " + old_occi_id + " has not been totally updated. Check log for more details"
+                            resp_code = return_code['OK, but there were some problems']
                         else:
-                            message = "Kind OCCI description " + str(doc_id) + " has been updated successfully"
+                            message = "Kind OCCI description " + old_occi_id + " has been updated successfully"
                         oldData['LastUpdate'] = str(datetime.now())
                         #Update the kind document
                         database.save_doc(oldData,force_update = True)
-                        logger.debug(message)
-                        return message,return_code['OK']
+                        events.append(message)
+                        logger.debug("Update kind OCCI des : " +message)
                     else:
-                        message = "Kind description already exists in document " + query.first()['id']
-                        logger.error(message)
-                        return message,return_code['Conflict']
+                        message = "New kind OCCI ID conflict with document " + new_occi_id + " ," +return_code['Conflict']
+                        logger.error("Update kind OCCI des : " + message)
+                        events.append(message)
+                        resp_code = return_code['OK, but there were some problems']
+
+                else:
+                    message= "You have no right to update this kind document ," + return_code['Forbidden']
+                    logger.error("Update kind OCCI des : " +message)
+                    events.append(message)
+                    resp_code = return_code['OK, but there were some problems']
 
             else:
-                message= "You have no right to update this kind document"
-                logger.debug(message)
-                return message,return_code['Unauthorized']
+                message = "Kind document " + old_occi_id + " couldn\'t be found ," + return_code['Not Found']
+                logger.error(message)
+                events.append(message)
+                resp_code = return_code['OK, but there were some problems']
+        return events,resp_code
 
-        else:
-            message = "Kind document " + str(doc_id) + "couldn\'t be found"
-            logger.debug(message)
-            return message,return_code['Resource not found']
-
-    def update_kind_provider(self,doc_id=None,user_id=None,new_Data=None):
+    def update_kind_providers(self,user_id=None,new_Data=None):
         """
-        Update kind document provider field (can only be done by the creator of the document)
+        Update kind documents provider field (can only be done by the creator of the document)
         Args:
-            @param doc_id: the id of the kind document to update
             @param user_id: the id of the issuer of the update request
             @param new_Data: the data that will be used to update the kind document
         """
         #Get the old document data from the database
         database = self.server.get_or_create_db(config.Kind_DB)
-        if database.doc_exist(doc_id) is True:
-            oldData = database.get(doc_id)
-            if oldData['Creator'] == user_id:
-                oldData_keys = oldData['Provider'].keys()
-                newData_keys =  new_Data['Provider'].keys()
-                problems = False
-                #Try to update kind document provider field
-                for key in newData_keys:
-                    try:
-                        oldData_keys.index(key)
-                        oldData['Provider'][key] = new_Data['Provider'][key]
-                    except Exception:
-                        problems = True
-                        logger.debug(key + " could not be found")
-                    #Keep the record of the keys(=parts) that couldn't be updated
-                if problems is True:
-                    message = "Kind document " + str(doc_id) + " has not been totally updated. Check log for more details"
-                else:
-                    message = "Kind document " + str(doc_id) + " has been updated successfully"
-                oldData['LastUpdate'] = str(datetime.now())
-                #Update the kind document
-                database.save_doc(oldData,force_update = True)
-                logger.debug(message)
-                return message,return_code['OK']
-            else:
-                message= "You have no right to update this kind document"
-                logger.debug(message)
-                return message,return_code['Unauthorized']
+        self.add_design_kind_docs_to_db()
+        message = list()
+        resp_code = return_code['OK']
+        for desc in new_Data:
+            occi_id = desc['OCCI_ID']
+            query = database.view('/get_kind/by_occi_id',key = occi_id)
+            if query.count() is not 0:
+                if query.first()['value'] == user_id:
+                    old_data = database.get(query.first()['id'])
+                    old_data['Provider'],problems = doc_Joker.update_kind_provider(old_data['Provider'],desc['Provider'])
+                    if problems is True:
+                        event = "Kind document " + occi_id + " has not been totally updated. Check log for more details, " + return_code['OK']
+                        resp_code = return_code['OK, but there were some problems']
+                    else:
+                        event = "Kind document " + occi_id + " has been updated successfully, " + return_code['OK, but there were some problems']
 
-        else:
-            message = "Kind document " + str(doc_id) + "couldn\'t be found"
-            logger.debug(message)
-            return message,return_code['Resource not found']
+                    old_data['LastUpdate'] = str(datetime.now())
+                    #Update the kind document
+                    database.save_doc(old_data,force_update = True)
+                    message.append(event)
+                    logger.debug(event)
+                else:
+                    event = "You have no right to update this kind document, " + return_code['Forbidden']
+                    message.append(event)
+                    logger.error(event)
+                    resp_code = return_code['OK, but there were some problems']
+
+
+            else:
+                event = "Kind document " + occi_id + "couldn\'t be found, " + return_code['Not Found']
+                logger.error(event)
+                message.append(event)
+                resp_code = return_code['OK, but there were some problems']
+        return message,resp_code
 
 
 
@@ -552,51 +540,61 @@ class MixinManager:
 
 
 
-    def update_OCCI_mixin_description(self,doc_id,user_id,new_description):
+    def update_OCCI_mixin_descriptions(self,user_id,data):
         """
-        Updates the OCCI description field of the mixin which document id is equal to doc_id (Can only be done by the creator of the mixin document)
+        Updates the OCCI description field of the mixin which document OCCI_ID is equal to OCCI_ID contained in data
+        (Can only be done by the creator of the mixin document)
         Args:
-            @param doc_id: ID of the mixin document to update
             @param user_id: ID of the creator of the mixin document
-            @param new_description: The new OCCI mixin description
+            @param data: Data containing the OCCI ID of the mixin and the new OCCI mixin description
             @return : <string>, return_code
         """
         database = self.server.get_or_create_db(config.Mixin_DB)
-        if database.doc_exist(doc_id) is True:
-            oldData = database.get(doc_id)
-            if oldData['Creator'] == user_id:
-                old_description = oldData['OCCI_Description']
-                new_description = new_description['mixins'][0]
-                problems,occi_description= joker.update_occi_description(old_description,new_description)
-                ok,occi_id = joker.get_description_id(occi_description)
-                if ok is True:
-                    query = database.view('/get_mixin/by_id',key = occi_id)
-                    if query.count() is 0:
-                        oldData['OCCI_ID'] = occi_id
+        self.add_design_mixin_docs_to_db()
+        events = list()
+        resp_code = return_code['OK']
+        for desc in data:
+            old_occi_id = desc['OCCI_ID']
+            query = database.view('/get_mixin/by_occi_id',key = old_occi_id)
+            if query.count() is 1:
+                if query.first()['value'] == user_id:
+                    new_occi_id = joker.get_description_id(desc['mixin'])
+                    query_n = database.view('/get_mixin/by_occi_id',key = new_occi_id)
+                    if query_n.count() <=1:
+                        oldData = database.get(query.first()['id'])
+                        old_description = oldData['OCCI_Description']
+                        problems,occi_description= joker.update_occi_description(old_description,desc['mixin'])
                         oldData['OCCI_Description'] = occi_description
+                        oldData['OCCI_ID'] = new_occi_id
                         if problems is True:
-                            message = "Mixin OCCI description " + str(doc_id) + " has not been totally updated. Check log for more details"
+                            message = "Mixin OCCI description " + old_occi_id + " has not been totally updated. Check log for more details"
+                            resp_code = return_code['OK, but there were some problems']
                         else:
-                            message = "Mixin OCCI description " + str(doc_id) + " has been updated successfully"
+                            message = "Mixin OCCI description " + old_occi_id + " has been updated successfully"
                         oldData['LastUpdate'] = str(datetime.now())
                         #Update the mixin document
                         database.save_doc(oldData,force_update = True)
-                        logger.debug(message)
-                        return message,return_code['OK']
+                        events.append(message)
+                        logger.debug("Update mixin OCCI des : " +message)
                     else:
-                        message = "Mixin description already exists in document " + query.first()['id']
-                        logger.error(message)
-                        return message,return_code['Conflict']
+                        message = "New mixin OCCI ID conflict with document " + new_occi_id + " ," +return_code['Conflict']
+                        logger.error("Update mixin OCCI des : " + message)
+                        events.append(message)
+                        resp_code = return_code['OK, but there were some problems']
+
+                else:
+                    message= "You have no right to update this mixin document ," + return_code['Forbidden']
+                    logger.error("Update mixin OCCI des : " +message)
+                    events.append(message)
+                    resp_code = return_code['OK, but there were some problems']
 
             else:
-                message= "You have no right to update this mixin document"
-                logger.debug(message)
-                return message,return_code['Unauthorized']
+                message = "Mixin document " + old_occi_id + " couldn\'t be found ," + return_code['Not Found']
+                logger.error(message)
+                events.append(message)
+                resp_code = return_code['OK, but there were some problems']
+        return events,resp_code
 
-        else:
-            message = "Mixin document " + str(doc_id) + "couldn\'t be found"
-            logger.debug(message)
-            return message,return_code['Resource not found']
 
 
 
@@ -768,52 +766,60 @@ class ActionManager:
 
 
 
-    def update_OCCI_action_description(self,doc_id,user_id,new_description):
+    def update_OCCI_action_descriptions(self,user_id,data):
         """
-        Updates the OCCI description field of the action which document id is equal to doc_id (Can only be done by the creator of the action document)
+        Updates the OCCI description field of the action which document OCCI_ID is equal to OCCI_ID contained in data
+        (Can only be done by the creator of the action document)
         Args:
-            @param doc_id: ID of the action document to update
             @param user_id: ID of the creator of the action document
-            @param new_description: The new OCCI action description
+            @param data: Data containing the OCCI ID of the action and the new OCCI action description
             @return : <string>, return_code
         """
         database = self.server.get_or_create_db(config.Action_DB)
         self.add_design_action_docs_to_db()
-        if database.doc_exist(doc_id) is True:
-            oldData = database.get(doc_id)
-            if oldData['Creator'] == user_id:
-                old_description = oldData['OCCI_Description']
-                new_description = new_description['actions'][0]
-                problems,occi_description= joker.update_occi_description(old_description,new_description)
-                ok,occi_id = joker.get_description_id(occi_description)
-                if ok is True:
-                    query = database.view('/get_action/by_id',key = occi_id)
-                    if query.count() is 0:
-                        oldData['OCCI_ID'] = occi_id
+        events = list()
+        resp_code = return_code['OK']
+        for desc in data:
+            old_occi_id = desc['OCCI_ID']
+            query = database.view('/get_action/by_occi_id',key = old_occi_id)
+            if query.count() is 1:
+                if query.first()['value'] == user_id:
+                    new_occi_id = joker.get_description_id(desc['action'])
+                    query_n = database.view('/get_action/by_occi_id',key = new_occi_id)
+                    if query_n.count() <=1:
+                        oldData = database.get(query.first()['id'])
+                        old_description = oldData['OCCI_Description']
+                        problems,occi_description= joker.update_occi_description(old_description,desc['action'])
                         oldData['OCCI_Description'] = occi_description
+                        oldData['OCCI_ID'] = new_occi_id
                         if problems is True:
-                            message = "Action OCCI description " + str(doc_id) + " has not been totally updated. Check log for more details"
+                            message = "Action OCCI description " + old_occi_id + " has not been totally updated. Check log for more details"
+                            resp_code = return_code['OK, but there were some problems']
                         else:
-                            message = "Action OCCI description " + str(doc_id) + " has been updated successfully"
+                            message = "Action OCCI description " + old_occi_id + " has been updated successfully"
                         oldData['LastUpdate'] = str(datetime.now())
-                        #Update the action document
+                        #Update the mixin document
                         database.save_doc(oldData,force_update = True)
-                        logger.debug(message)
-                        return message,return_code['OK']
+                        events.append(message)
+                        logger.debug("Update action OCCI des : " +message)
                     else:
-                        message = "Action description already exists in document " + query.first()['id']
-                        logger.error(message)
-                        return message,return_code['Conflict']
+                        message = "New action OCCI ID conflict with document " + new_occi_id + " ," +return_code['Conflict']
+                        logger.error("Update action OCCI des : " + message)
+                        events.append(message)
+                        resp_code = return_code['OK, but there were some problems']
+
+                else:
+                    message= "You have no right to update this action document ," + return_code['Forbidden']
+                    logger.error("Update action OCCI des : " +message)
+                    events.append(message)
+                    resp_code = return_code['OK, but there were some problems']
 
             else:
-                message= "You have no right to update this action document"
-                logger.debug(message)
-                return message,return_code['Unauthorized']
-
-        else:
-            message = "Action document " + str(doc_id) + "couldn\'t be found"
-            logger.debug(message)
-            return message,return_code['Resource not found']
+                message = "Action document " + old_occi_id + " couldn\'t be found ," + return_code['Not Found']
+                logger.error(message)
+                events.append(message)
+                resp_code = return_code['OK, but there were some problems']
+        return events,resp_code
 
     def delete_action_documents(self,description=None,user_id=None):
         """
@@ -852,7 +858,7 @@ class ActionManager:
 class CategoryManager:
     """
 
-        Channel requests to their appropriate target : Kinds, Mixins and Actions
+        Channel requests to their appropriate targets : Kinds, Mixins and Actions
 
     """
 
@@ -864,7 +870,7 @@ class CategoryManager:
 
     def channel_register_categories(self,user_id,jreq):
         """
-        Channel the post request to the right method
+        Channel the post request to the right methods
 
         """
         mesg_1 = ""
@@ -939,7 +945,7 @@ class CategoryManager:
 
     def channel_get_filtered_categories(self,jreq):
         """
-        Channel the post request to the right method
+        Channel the post request to the right methods
 
         """
         mesg_1 = ""
@@ -988,7 +994,7 @@ class CategoryManager:
 
     def channel_delete_categories(self,jreq,user_id):
         """
-        Channel the delete request to the right method
+        Channel the delete request to the right methods
 
         """
         data_keys = jreq.keys()
@@ -1026,3 +1032,52 @@ class CategoryManager:
         return register
 
 
+    def channel_update_categories(self,user_id,j_newData):
+        """
+        Channel the PUT requests to their right methods
+        """
+        mesg_1 = ""
+        mesg_2 = ""
+        mesg_3 = ""
+        mesg_4 = ""
+        data_keys = j_newData.keys()
+        try:
+            data_keys.index('actions')
+            logger.debug("Actions put request : channeled")
+            mesg_3,resp_code = self.manager_a.update_OCCI_action_descriptions(user_id,j_newData['actions'])
+        except Exception as e:
+            logger.error("ch update categories : " + e.message)
+
+        try:
+            data_keys.index('kinds')
+            logger.debug("Kinds put request : channeled")
+            mesg_1,resp_code = self.manager_k.update_OCCI_kind_descriptions(user_id,j_newData['kinds'])
+        except Exception as e:
+            logger.error("ch update categories : " + e.message)
+        try:
+            data_keys.index('providers')
+            logger.debug("Providers put request : channeled")
+            mesg_4,resp_code = self.manager_k.update_kind_providers(user_id,j_newData['providers'])
+        except Exception as e:
+            logger.error("ch update categories : " + e.message)
+
+        try:
+            data_keys.index('mixins')
+            logger.debug("Mixins put request : channeled")
+            mesg_2,resp_code = self.manager_m.update_OCCI_mixin_descriptions(user_id,j_newData['mixins'])
+        except Exception as e:
+            logger.error("ch update categories : " + e.message)
+
+
+
+        result_1 = '\n========= Kinds : ===========\n'
+        result_1 += '\n========= Kind : ===========\n'.join(mesg_1)
+        result_2 = '\n========= Mixins : ===========\n'
+        result_2 += '\n========= Mixin : ===========\n'.join(mesg_2)
+        result_3 = '\n========= Actions : ===========\n'
+        result_3 += '\n========= Action : ===========\n'.join(mesg_3)
+        result_4 = '\n========= Providers : ===========\n'
+        result_4 += '\n========= Providers : ===========\n'.join(mesg_4)
+
+        register = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n" + result_4 + "\n\n"
+        return register
