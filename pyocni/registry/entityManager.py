@@ -63,7 +63,7 @@ logger = config.logger
 DB_server_IP = config.DB_IP
 DB_server_PORT = config.DB_PORT
 
-def purgeLocationDBs():
+def purgeEntityDBs():
     """
     Delete resource and link databases
     """
@@ -85,7 +85,7 @@ def purgeLocationDBs():
 
 
 
-class EntityManager(object):
+class ResourceManager(object):
     """
     Manager of resource and link documents in the couch database.
     """

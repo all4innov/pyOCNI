@@ -26,7 +26,7 @@ Created on May 29, 2012
 @version: 0.3
 @license: LGPL - Lesser General Public License
 """
-from exceptions import ValueError
+
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.occi_Joker as joker
 import pyocni.pyocni_tools.couchdbdoc_Joker as doc_Joker
@@ -258,6 +258,7 @@ class KindManager:
                         problems,occi_description= joker.update_occi_description(old_description,desc['kind'])
                         oldData['OCCI_Description'] = occi_description
                         oldData['OCCI_ID'] = new_occi_id
+                        oldData['OCCI_Location'] = joker.make_kind_location(desc['kind'])
                         if problems is True:
                             message = "Kind OCCI description " + old_occi_id + " has not been totally updated. Check log for more details"
                             resp_code = return_code['OK, but there were some problems']
@@ -375,6 +376,22 @@ class KindManager:
 
 
         return message,res_code
+
+    def verify_kind_location(self,location):
+        """
+        Verify the existence of a kind with such location
+        Args:
+            @param location: location of kind
+        """
+        kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + location
+        self.add_design_kind_docs_to_db()
+        database = self.server.get_or_create_db(config.Kind_DB)
+        query = database.view('/get_kind/by_occi_location',key = kind_location)
+        if query.count() is 0:
+            return False
+        else:
+            return True
+
 
 
 class MixinManager:
@@ -566,6 +583,7 @@ class MixinManager:
                         problems,occi_description= joker.update_occi_description(old_description,desc['mixin'])
                         oldData['OCCI_Description'] = occi_description
                         oldData['OCCI_ID'] = new_occi_id
+                        oldData['OCCI_Location'] = joker.make_kind_location(desc['kind'])
                         if problems is True:
                             message = "Mixin OCCI description " + old_occi_id + " has not been totally updated. Check log for more details"
                             resp_code = return_code['OK, but there were some problems']
@@ -633,6 +651,21 @@ class MixinManager:
                 message.append(event)
                 resp_code = return_code['OK, but there were some problems']
         return message,resp_code
+
+    def verify_mixin_location(self,location):
+        """
+        Verify the existence of a mixin with such location
+        Args:
+            @param location: location of mixin
+        """
+        mixin_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + location
+        self.add_design_mixin_docs_to_db()
+        database = self.server.get_or_create_db(config.Mixin_DB)
+        query = database.view('/get_kind/by_occi_location',key = mixin_location)
+        if query.count() is 0:
+            return False
+        else:
+            return True
 
 class ActionManager:
     """
@@ -871,6 +904,9 @@ class CategoryManager:
     def channel_register_categories(self,user_id,jreq):
         """
         Channel the post request to the right methods
+        Args:
+            @param user_id: ID of the issuer of the post request
+            @param jreq: Body content of the post request
 
         """
         mesg_1 = ""
@@ -946,6 +982,8 @@ class CategoryManager:
     def channel_get_filtered_categories(self,jreq):
         """
         Channel the post request to the right methods
+        Args:
+            @param jreq: Body content of the post request
 
         """
         mesg_1 = ""
@@ -995,6 +1033,9 @@ class CategoryManager:
     def channel_delete_categories(self,jreq,user_id):
         """
         Channel the delete request to the right methods
+        Args:
+            @param user_id: ID of the issuer of the post request
+            @param jreq: Body content of the post request
 
         """
         data_keys = jreq.keys()
@@ -1035,6 +1076,9 @@ class CategoryManager:
     def channel_update_categories(self,user_id,j_newData):
         """
         Channel the PUT requests to their right methods
+        Args:
+            @param user_id: ID of the issuer of the post request
+            @param jreq: Body content of the post request
         """
         mesg_1 = ""
         mesg_2 = ""
