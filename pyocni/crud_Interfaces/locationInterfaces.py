@@ -28,7 +28,7 @@ Created on Jun 09, 2012
 """
 
 from webob import Request,Response
-from pyocni.registry.locationManager import ResourceManager, LinkManager
+from pyocni.registry.locationManager import EntityManager, LinkManager
 try:
     import simplejson as json
 except ImportError:
@@ -53,22 +53,23 @@ return_code = {'OK': 200,
                'Not Implemented': 501,
                'Service Unavailable': 503}
 
-class ResourceInterface(object):
+class EntityInterface(object):
     """
 
         CRUD operation on resources
 
     """
-    def __init__(self,req, doc_id=None,user_id=None):
+    def __init__(self,req,term=None,doc_id=None,user_id=None):
 
         self.req = req
+        self.term = term
         self.doc_id=doc_id
         self.user_id=user_id
         self.res = Response()
         self.res.content_type = req.accept
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
         try:
-            self.manager = ResourceManager()
+            self.manager = EntityManager()
         except Exception:
             self.res.body = "An error has occurred, please check log for more details"
             self.res.status_code = return_code["Internal Server Error"]
@@ -76,7 +77,7 @@ class ResourceInterface(object):
     def get(self):
 
         """
-        Retrieval of all registered resources or just one resource
+        Retrieval of all registered entities or just one entity
         """
         #if the doc_id is specified then only one resource will be returned if it exists
 
@@ -100,7 +101,7 @@ class ResourceInterface(object):
         if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
             # Solution To adopt : Validate HTTP then convert to JSON
             pass
-        elif self.req.content_type == "application/occi:json":
+        elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
             pass
         elif self.req.content_type == "application/occi+json":
@@ -117,7 +118,7 @@ class ResourceInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        self.res.body,self.res.status = self.manager.register_resource(user_id,jBody)
+        self.res.body,self.res.status = self.manager.register_entities(user_id,term,jBody)
         return self.res
 
     def put(self):
