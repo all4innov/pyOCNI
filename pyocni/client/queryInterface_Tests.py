@@ -684,7 +684,7 @@ class test_delete(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_delete_mixin(self):
+    def test_delete_categories(self):
         """
         delete a mixin
         """
