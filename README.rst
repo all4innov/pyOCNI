@@ -131,7 +131,7 @@ ________________________________________________________________________________
 
    curl -X POST -d@post_kind.json -H 'content-type: application/occi+json' --user user_1:pass -v 'http://localhost:8090/-/'
 
-* Get a kind::
+* Get a Kind::
 
    curl -X GET -d@get_kind.json -H 'content-type: application/occi+json' -v http://localhost:8090/-/
 
@@ -282,155 +282,9 @@ Some of pyocni's needs might be:
 
 * filter_categories.json::
 
-{
-    "actions": [
-        {
-            "term": "start",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-            "title": "Stop Compute instance",
-            "attributes": {
-                "method": {
-                    "mutable": true,
-                    "required": false,
-                    "type": "string",
-                    "pattern": "graceful|acpioff|poweroff",
-                    "default": "poweroff"
-                }
-            }
-        }
-    ],
-    "kinds": [
-        {
-            "term": "storage",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
-                        }
-                    }
-                }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-            ],
-            "location": "/storage/"
-        }
-    ],
-    "mixins": [
-        {
-            "term": "resource_tpl",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Medium VM",
-            "related": [],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": {
-                            "type": "number",
-                            "default": 2.8
-                        }
-                    }
-                }
-            },
-            "location": "/template/resource/resource_tpl/"
-        }
-    ]
-}
-
-* post_categories.json::
-
-{
-    "actions": [
-        {
-            "term": "start",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-            "title": "Stop Compute instance",
-            "attributes": {
-                "method": {
-                    "mutable": true,
-                    "required": false,
-                    "type": "string",
-                    "pattern": "graceful|acpioff|poweroff",
-                    "default": "poweroff"
-                }
-            }
-        }
-    ],
-    "kinds": [
-        {
-            "term": "storage",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
-                        }
-                    }
-                }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-            ],
-            "location": "/storage/"
-        }
-    ],
-    "mixins": [
-        {
-            "term": "resource_tpl",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Medium VM",
-            "related": [],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": {
-                            "type": "number",
-                            "default": 2.8
-                        }
-                    }
-                }
-            },
-            "location": "/template/resource/resource_tpl/"
-        }
-    ]
-}
-
-* put_categories.json::
-
-{
-    "actions": [
-        {
-            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-            "action": {
+    {
+        "actions": [
+            {
                 "term": "start",
                 "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
                 "title": "Stop Compute instance",
@@ -444,12 +298,9 @@ Some of pyocni's needs might be:
                     }
                 }
             }
-        }
-    ],
-    "kinds": [
-        {
-            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#storage",
-            "kind": {
+        ],
+        "kinds": [
+            {
                 "term": "storage",
                 "scheme": "http://schemas.ogf.org/occi/infrastructure#",
                 "title": "Compute Resource",
@@ -479,12 +330,9 @@ Some of pyocni's needs might be:
                 ],
                 "location": "/storage/"
             }
-        }
-    ],
-    "mixins": [
-        {
-            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#resource_tpl",
-            "mixin": {
+        ],
+        "mixins": [
+            {
                 "term": "resource_tpl",
                 "scheme": "http://schemas.ogf.org/occi/infrastructure#",
                 "title": "Medium VM",
@@ -501,32 +349,184 @@ Some of pyocni's needs might be:
                 },
                 "location": "/template/resource/resource_tpl/"
             }
-        }
-    ]
-}
+        ]
+    }
+
+* post_categories.json::
+
+    {
+        "actions": [
+            {
+                "term": "start",
+                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                "title": "Stop Compute instance",
+                "attributes": {
+                    "method": {
+                        "mutable": true,
+                        "required": false,
+                        "type": "string",
+                        "pattern": "graceful|acpioff|poweroff",
+                        "default": "poweroff"
+                    }
+                }
+            }
+        ],
+        "kinds": [
+            {
+                "term": "storage",
+                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                "title": "Compute Resource",
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "hostname": {
+                                "mutable": true,
+                                "required": false,
+                                "type": "string",
+                                "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                                "minimum": "1",
+                                "maximum": "255"
+                            },
+                            "state": {
+                                "mutable": false,
+                                "required": false,
+                                "type": "string",
+                                "pattern": "inactive|active|suspended|failed",
+                                "default": "inactive"
+                            }
+                        }
+                    }
+                },
+                "actions": [
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                ],
+                "location": "/storage/"
+            }
+        ],
+        "mixins": [
+            {
+                "term": "resource_tpl",
+                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                "title": "Medium VM",
+                "related": [],
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "speed": {
+                                "type": "number",
+                                "default": 2.8
+                            }
+                        }
+                    }
+                },
+                "location": "/template/resource/resource_tpl/"
+            }
+        ]
+    }
+
+* put_categories.json::
+
+    {
+        "actions": [
+            {
+                "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                "action": {
+                    "term": "start",
+                    "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                    "title": "Stop Compute instance",
+                    "attributes": {
+                        "method": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "graceful|acpioff|poweroff",
+                            "default": "poweroff"
+                        }
+                    }
+                }
+            }
+        ],
+        "kinds": [
+            {
+                "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#storage",
+                "kind": {
+                    "term": "storage",
+                    "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                    "title": "Compute Resource",
+                    "attributes": {
+                        "occi": {
+                            "compute": {
+                                "hostname": {
+                                    "mutable": true,
+                                    "required": false,
+                                    "type": "string",
+                                    "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                                    "minimum": "1",
+                                    "maximum": "255"
+                                },
+                                "state": {
+                                    "mutable": false,
+                                    "required": false,
+                                    "type": "string",
+                                    "pattern": "inactive|active|suspended|failed",
+                                    "default": "inactive"
+                                }
+                            }
+                        }
+                    },
+                    "actions": [
+                        "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                    ],
+                    "location": "/storage/"
+                }
+            }
+        ],
+        "mixins": [
+            {
+                "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#resource_tpl",
+                "mixin": {
+                    "term": "resource_tpl",
+                    "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                    "title": "Medium VM",
+                    "related": [],
+                    "attributes": {
+                        "occi": {
+                            "compute": {
+                                "speed": {
+                                    "type": "number",
+                                    "default": 2.8
+                                }
+                            }
+                        }
+                    },
+                    "location": "/template/resource/resource_tpl/"
+                }
+            }
+        ]
+    }
 
 * delete_categories.json::
 
-{
-    "actions": [
-        {
-            "term": "start",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
-        }
-    ],
-    "kinds": [
-        {
-            "term": "storage",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#"
-        }
-    ],
-    "mixins": [
-        {
-            "term": "resource_tpl",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#"
-        }
-    ]
-}
+    {
+        "actions": [
+            {
+                "term": "start",
+                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
+            }
+        ],
+        "kinds": [
+            {
+                "term": "storage",
+                "scheme": "http://schemas.ogf.org/occi/infrastructure#"
+            }
+        ],
+        "mixins": [
+            {
+                "term": "resource_tpl",
+                "scheme": "http://schemas.ogf.org/occi/infrastructure#"
+            }
+        ]
+    }
 
 * post_kinds.json::
 
