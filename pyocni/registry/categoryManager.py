@@ -388,6 +388,20 @@ class KindManager:
         database = self.server.get_or_create_db(config.Kind_DB)
         query = database.view('/get_kind/by_occi_location',key = kind_location)
         if query.count() is 0:
+            return False,None
+        else:
+            return True,query.first()['value']
+
+    def verify_exist_kind(self,kind_occi_id):
+        """
+        Verify the existence of a kind with such an OCCI ID
+        Args:
+            @param kind_occi_id: Kind OCCI ID to be checked
+        """
+        self.add_design_kind_docs_to_db()
+        database = self.server.get_or_create_db(config.Kind_DB)
+        query = database.view('/get_kind/by_occi_id',key = kind_occi_id)
+        if query.count() is 0:
             return False
         else:
             return True
@@ -661,11 +675,35 @@ class MixinManager:
         mixin_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + location
         self.add_design_mixin_docs_to_db()
         database = self.server.get_or_create_db(config.Mixin_DB)
-        query = database.view('/get_kind/by_occi_location',key = mixin_location)
+        query = database.view('/get_mixin/by_occi_location',key = mixin_location)
         if query.count() is 0:
-            return False
+            return False,None
         else:
-            return True
+            return True,query.first()['value']
+
+    def verify_exist_mixins(self,mixins_id_list,creator):
+        """
+        Verfiy the existence of mixins using the mixins OCCI ID provided
+        Args:
+            @param mixins_id_list: List containing the ids of mixins that need to verify its existence
+            @param creator: Issuer of the verify of existence of mixins
+        """
+        self.add_design_mixin_docs_to_db()
+        database = self.server.get_or_create_db(config.Mixin_DB)
+        to_register = list()
+        for mixin_id in mixins_id_list:
+            if type(mixin_id) is dict:
+                logger.debug("Exist actions : this is a mixin description")
+                to_register.append(mixin_id)
+            else:
+                query = database.view('/get_mixin/by_occi_id',key = mixin_id )
+                if query.count() is 0:
+                    logger.error("Exist actions : No match to mixin " + mixin_id)
+                    return False
+                logger.error("Exist actions : Mixin " + mixin_id + " verified ")
+        #Verification of the response code upon register mixins is not done, Do it at your own risk
+        self.register_mixins(creator,to_register)
+        return True
 
 class ActionManager:
     """
@@ -886,6 +924,32 @@ class ActionManager:
                 message.append(event)
                 resp_code = return_code['OK, but there were some problems']
         return message,resp_code
+
+    def verify_exist_actions(self,actions_id_list,creator):
+        """
+        Verfiy the existence of actions using the actions OCCI ID provided
+        Args:
+            @param actions_id_list: List containing the ids of actions that need to verify its existence
+            @param creator: Issuer of the verify of existence of actions
+        """
+        self.add_design_action_docs_to_db()
+        database = self.server.get_or_create_db(config.Action_DB)
+        to_register = list()
+        for action_id in actions_id_list:
+            try:
+                action_id.index('category')
+                query = database.view('/get_action/by_occi_id',key = action_id['category'])
+                if query.count() is 0:
+                    logger.error("Exist actions : action " + action_id['category'] + " does not exist")
+                    return False
+                logger.debug("Exist actions : action " + action_id['category'] + "existence verified ")
+            except Exception:
+                logger.debug("Exist actions : This is an action description ")
+                to_register.append(action_id)
+
+        #Verification of the response code upon register actions is not done, Do it at your own risk
+        self.register_actions(creator,to_register)
+        return True
 
 
 class CategoryManager:

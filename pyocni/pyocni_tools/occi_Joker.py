@@ -201,38 +201,28 @@ def make_mixin_location(occi_description):
         return None
     return  mixin_location
 
-def make_resource_location(occi_description, uuid,user_id):
+def make_resource_location(user_id,kind_loc, uuid):
     """
     Creates the location of the resource from the occi resource description
     Args:
-        @param occi_description: OCCI resource description
-        @param uuid: UUID of the resource document containing the resource description
-        @param user_id: ID of resource document administrator
+        @param kind_loc: Kind OCCI location to which this resource instance belongs to
+        @param uuid: UUID of the resource contained in the resource description
+        @param user_id: ID creator of the resource instance
         @return :<string> Location of the resource
     """
-    try:
-        resource_term = occi_description['resources'][0]['kind']
-        resource_term = resource_term.split('#')[1]
-    except Exception as e:
-        return False,e.message
 
-    resource_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + resource_term + "/" + user_id + "/" + uuid
-    return True, resource_location
+    resource_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + user_id + kind_loc + uuid
+    return resource_location
 
-def make_link_location(occi_description, uuid,user_id):
+def make_link_location(user_id,kind_loc, uuid):
     """
-    Creates the location of the link from the occi link description
+    Creates the location of the resource from the occi resource description
     Args:
-        @param occi_description: OCCI link description
-        @param uuid: UUID of the link document containing the link description
-        @param user_id: ID of link document administrator
-        @return :<string> Location of the link
+        @param kind_loc: Kind OCCI location to which this resource instance belongs to
+        @param uuid: UUID of the resource contained in the resource description
+        @param user_id: ID creator of the resource instance
+        @return :<string> Location of the resource
     """
-    try:
-        link_term = occi_description['links'][0]['kind']
-        link_term = link_term.split('#')[1]
-    except Exception as e:
-        return False,e.message
 
-    link_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + link_term + "/" + user_id + "/" + uuid
-    return True, link_location
+    link_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + user_id + kind_loc + uuid
+    return link_location

@@ -28,13 +28,14 @@ Created on Jun 21, 2012
 """
 
 import pyocni.pyocni_tools.config as config
-from pyocni.registry.categoryManager import KindManager,MixinManager
 import pyocni.pyocni_tools.occi_Joker as joker
 import pyocni.pyocni_tools.couchdbdoc_Joker as doc_Joker
 try:
     import simplejson as json
 except ImportError:
     import json
+from pyocni.registry.entityManager import ResourceManager,LinkManager
+from pyocni.registry.categoryManager import KindManager,MixinManager
 from datetime import datetime
 from pyocni.pyocni_tools import uuid_Generator
 from couchdbkit import *
@@ -56,6 +57,8 @@ class PathManager(object):
     def __init__(self):
         self.manager_k = KindManager()
         self.manager_m = MixinManager()
+        self.manager_r = ResourceManager()
+        self.manager_l = LinkManager()
 
     def channel_post_path(self,user_id,jreq,location):
         """
@@ -65,14 +68,29 @@ class PathManager(object):
             @param jreq: Body content of the post request
             @param location: Address to which this post request was sent
         """
+        mesg_1 = ""
+        mesg_2 = ""
         #Verify if this is a kind location
-        ok_k = self.manager_k.verify_kind_location(location)
+        ok_k,occi_id_k = self.manager_k.verify_kind_location(location)
         #if yes : call the ResourceManager to create a new resource instance
         if ok_k is True:
-            logger.debug("Post path : Post on kind path channeled")
+
+            try:
+                jreq.index('resources')
+                logger.debug("Post path : Post on kind path to create a new resource channeled")
+                mesg_1 = self.manager_r.register_resources(user_id,jreq['resources'],location,occi_id_k)
+            except Exception as e:
+                logger.error("Post path : " +e.message)
+            try:
+                jreq.index('links')
+                logger.debug("Post path : Post on kind path to create a new link channeled")
+                mesg_2 = self.manager_l.register_links(user_id,jreq['links'],location,occi_id_k)
+            except Exception as e:
+                logger.error("Post path : " +e.message)
+
         else:
         #if no : verify if this is a mixin location
-            ok_m = self.manager_m.verify_mixin_location(location)
+            ok_m,occi_id_m = self.manager_m.verify_mixin_location(location)
             if ok_m is True:
                 #if yes: call the ResourceManager to attach this mixin to resources
                 logger.debug("Post path : Post on mixin path channeled")
