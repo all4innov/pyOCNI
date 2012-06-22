@@ -55,3 +55,24 @@ Action_DB = DB_config['CouchDB_Action']
 Mixin_DB = DB_config['CouchDB_Mixin']
 Resource_DB = DB_config['CouchDB_Resource']
 Link_DB = DB_config['CouchDB_Link']
+
+# ======================================================================================
+# HTTP Return Codes
+# ======================================================================================
+return_code = {'OK': "200",
+               'OK, and location returned': "201",
+               'Accepted': "202",
+               'OK, but no content returned': "204",
+               'OK, but there were some problems': "205",
+               'Bad Request': "400",
+               'Unauthorized': "401",
+               'Forbidden': "403",
+               'Not Found': "404",
+               'Method Not Allowed': "405",
+               'Not Acceptable': "406",
+               'Conflict': "409",
+               'Gone': "410",
+               'Unsupported Media Type': "415",
+               'Internal Server Error': "500",
+               'Not Implemented': "501",
+               'Service Unavailable': "503"}
