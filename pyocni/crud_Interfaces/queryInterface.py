@@ -77,10 +77,11 @@ class QueryInterface(object):
             return self.res
 
         if self.req.body == "":
-            self.res = self.manager.channel_get_all_categories()
+            var = self.manager.channel_get_all_categories()
         else:
             jreq = json.loads(self.req.body)
-            self.res = self.manager.channel_get_filtered_categories(jreq)
+            var = self.manager.channel_get_filtered_categories(jreq)
+        self.res.body = json.dumps(var)
 
         return self.res
 
@@ -112,7 +113,8 @@ class QueryInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        self.res.body = self.manager.channel_register_categories(user_id,jBody)
+        var = self.manager.channel_register_categories(user_id,jBody)
+        self.res.body = json.dumps(var)
         return self.res
 
     def put(self):
@@ -140,9 +142,10 @@ class QueryInterface(object):
         var,user_id = self.req.authorization
         user_id = base64.decodestring(user_id)
         user_id = user_id.split(':')[0]
-            #Get the new data from the request
+        #Get the new data from the request
         j_newData = json.loads(self.req.body)
-        self.res.body = self.manager.channel_update_categories(user_id,j_newData)
+        var = self.manager.channel_update_categories(user_id,j_newData)
+        self.res.body = json.dumps(var)
         return self.res
 
     def delete(self):
@@ -171,5 +174,6 @@ class QueryInterface(object):
         user_id = base64.decodestring(user_id)
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
-        self.res.body= self.manager.channel_delete_categories(jBody,user_id)
+        var= self.manager.channel_delete_categories(jBody,user_id)
+        self.res.body = json.dumps(var)
         return self.res

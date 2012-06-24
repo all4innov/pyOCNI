@@ -157,7 +157,7 @@ class KindManager:
         try:
             for elem in query:
                 var.append(elem['value'])
-            logger.debug("Kind documents found")
+                logger.debug("Kind document found")
             return var,return_code['OK']
         except Exception as e:
             logger.error("all kind : " + e.message)
@@ -201,30 +201,30 @@ class KindManager:
                             jData['Provider']= {"local":[],"remote":[]}
                             try:
                                 database[doc_id] = jData
-                                message = "Kind document has been successfully added to database : " + occi_loc + ", " +return_code['OK']
+                                message = "Kind document has been successfully added to database : " + occi_loc + ", " +str(return_code['OK'])
                                 logger.debug("Register kind : " + message)
-                                loc_res.append(message)
+                                loc_res.append(occi_loc)
                             except Exception as e:
                                 logger.error("Register Kind : " + e.message)
                                 loc_res.append("An error has occurred, please check log for more details")
                                 res_code = return_code['Internal Server Error']
                         else:
-                            message = "Missing action description, Kind will not be created. Check log for more details" + ", " +return_code['Not Found']
+                            message = "Missing action description, Kind will not be created. Check log for more details" + ", " +str(return_code['Not Found'])
                             logger.error("Register kind : " + message)
                             loc_res.append(message)
                             res_code = return_code['OK, but there were some problems']
                     else:
-                        message = "Missing related kind description, Kind will not be created. Check log for more details" ", " +return_code['Not Found']
+                        message = "Missing related kind description, Kind will not be created. Check log for more details" ", " +str(return_code['Not Found'])
                         logger.error("Register kind : " + message)
                         loc_res.append(message)
                         res_code = return_code['OK, but there were some problems']
                 else:
-                    message = "Location conflict with document " + query.first()['value']+", kind will not be created. " + ", " +return_code['Conflict']
+                    message = "Location conflict with document " + query.first()['value']+", kind will not be created. " + ", " +str(return_code['Conflict'])
                     logger.error("Register kind : " + message)
                     loc_res.append(message)
                     res_code = return_code['OK, but there were some problems']
             else:
-                message = "This kind description already exists in document " +occi_id + ", " +return_code['Conflict']
+                message = "This kind description already exists in document " +occi_id + ", " +str(return_code['Conflict'])
                 logger.error("Register kind : " + message)
                 loc_res.append(message)
                 res_code = return_code['OK, but there were some problems']
@@ -270,19 +270,19 @@ class KindManager:
                         events.append(message)
                         logger.debug("Update kind OCCI des : " +message)
                     else:
-                        message = "New kind OCCI ID conflict with document " + new_occi_id + " ," +return_code['Conflict']
+                        message = "New kind OCCI ID conflict with document " + new_occi_id + " ," +str(return_code['Conflict'])
                         logger.error("Update kind OCCI des : " + message)
                         events.append(message)
                         resp_code = return_code['OK, but there were some problems']
 
                 else:
-                    message= "You have no right to update this kind document ," + return_code['Forbidden']
+                    message= "You have no right to update this kind document ," + str(return_code['Forbidden'])
                     logger.error("Update kind OCCI des : " +message)
                     events.append(message)
                     resp_code = return_code['OK, but there were some problems']
 
             else:
-                message = "Kind document " + old_occi_id + " couldn\'t be found ," + return_code['Not Found']
+                message = "Kind document " + old_occi_id + " couldn\'t be found ," + str(return_code['Not Found'])
                 logger.error(message)
                 events.append(message)
                 resp_code = return_code['OK, but there were some problems']
@@ -308,10 +308,10 @@ class KindManager:
                     old_data = database.get(query.first()['id'])
                     old_data['Provider'],problems = doc_Joker.update_kind_provider(old_data['Provider'],desc['Provider'])
                     if problems is True:
-                        event = "Kind document " + occi_id + " has not been totally updated. Check log for more details, " + return_code['OK']
+                        event = "Kind document " + occi_id + " has not been totally updated. Check log for more details, " + str(return_code['OK'])
                         resp_code = return_code['OK, but there were some problems']
                     else:
-                        event = "Kind document " + occi_id + " has been updated successfully, " + return_code['OK, but there were some problems']
+                        event = "Kind document " + occi_id + " has been updated successfully, " + str(return_code['OK, but there were some problems'])
 
                     old_data['LastUpdate'] = str(datetime.now())
                     #Update the kind document
@@ -319,14 +319,14 @@ class KindManager:
                     message.append(event)
                     logger.debug(event)
                 else:
-                    event = "You have no right to update this kind document, " + return_code['Forbidden']
+                    event = "You have no right to update this kind document, " + str(return_code['Forbidden'])
                     message.append(event)
                     logger.error(event)
                     resp_code = return_code['OK, but there were some problems']
 
 
             else:
-                event = "Kind document " + occi_id + "couldn\'t be found, " + return_code['Not Found']
+                event = "Kind document " + occi_id + "couldn\'t be found, " + str(return_code['Not Found'])
                 logger.error(event)
                 message.append(event)
                 resp_code = return_code['OK, but there were some problems']
@@ -354,22 +354,22 @@ class KindManager:
                     ok = joker.get_resources_belonging_to_kind(desc)
                     if ok is True:
                         database.delete_doc(query.first()['id'])
-                        event = "\nKind document " + occi_id + " has been successfully deleted " + ", " +return_code['OK']
+                        event = "Kind document " + occi_id + " has been successfully deleted " + ", " +str(return_code['OK'])
                         logger.debug("Delete kind : " + event)
                         message.append(event)
                     else:
-                        event = "\nUnable to delete because this kind document " + occi_id + " has resources depending on it. " + ", " +return_code['Unauthorized']
+                        event = "Unable to delete because this kind document " + occi_id + " has resources depending on it. " + ", " +str(return_code['Unauthorized'])
                         logger.error("Delete kind : " + event)
                         message.append(event)
                         res_code = return_code['OK, but there were some problems']
                 else:
-                    event = "\nYou have no right to delete this kind document " + occi_id + ", " +return_code['Unauthorized']
+                    event = "You have no right to delete this kind document " + occi_id + ", " + str(return_code['Unauthorized'])
                     logger.error("Delete kind : " + event)
                     message.append(event)
                     res_code = return_code['OK, but there were some problems']
 
             else:
-                event = "\nKind document " + occi_id + " does not exist " + ", " +return_code['Not Found']
+                event = "Kind document " + occi_id + " does not exist " + ", " +str(return_code['Not Found'])
                 logger.error("Delete kind : " + event)
                 message.append(event)
                 res_code = return_code['OK, but there were some problems']
@@ -388,6 +388,7 @@ class KindManager:
         database = self.server.get_or_create_db(config.Kind_DB)
         query = database.view('/get_kind/by_occi_location',key = kind_location)
         if query.count() is 0:
+            logger.debug("Kind with kind location = " + kind_location + " not found")
             return False,None
         else:
             return True,query.first()['value']
@@ -402,6 +403,7 @@ class KindManager:
         database = self.server.get_or_create_db(config.Kind_DB)
         query = database.view('/get_kind/by_occi_id',key = kind_occi_id)
         if query.count() is 0:
+            logger.debug("Kind with kind OCCI ID = " + kind_occi_id + " not found")
             return False
         else:
             return True
@@ -493,7 +495,7 @@ class MixinManager:
         try:
             for elem in query:
                 var.append(elem['value'])
-            logger.debug("Mixin documents found")
+                logger.debug("Mixin document found")
             return var,return_code['OK']
         except Exception as e:
             logger.error("All mixin : " + e.message)
@@ -539,30 +541,30 @@ class MixinManager:
                             jData['Type']= "Mixin"
                             try:
                                 database[doc_id] = jData
-                                message = "Mixin document has been successfully added to database : " + occi_loc + ", " +return_code['OK']
+                                message = "Mixin document has been successfully added to database : " + occi_loc + ", " +str(return_code['OK'])
                                 logger.debug("Register mixin : " + message)
-                                loc_res.append(message)
+                                loc_res.append(occi_loc)
                             except Exception as e:
                                 logger.error("Register mixin : " + e.message)
                                 loc_res.append("An error has occured, please check log for more details")
                                 res_code = return_code['Internal Server Error']
                         else:
-                            message = "Missing action description, mixin will not be created. Check log for more details" + ", " +return_code['Not Found']
+                            message = "Missing action description, mixin will not be created. Check log for more details" + ", " +str(return_code['Not Found'])
                             logger.error("Register mixin : " + message)
                             loc_res.append(message)
                             res_code = return_code['OK, but there were some problems']
                     else:
-                        message = "Missing related mixin description, mixin will not be created. Check log for more details" + ", " +return_code['Not Found']
+                        message = "Missing related mixin description, mixin will not be created. Check log for more details" + ", " +str(return_code['Not Found'])
                         logger.error("Register mixin : " + message)
                         loc_res.append(message)
                         res_code = return_code['OK, but there were some problems']
                 else:
-                    message = "Location conflict with document " + query.first()['value']+", mixin will not be created" + ", " +return_code['Conflict']
+                    message = "Location conflict with document " + query.first()['value']+", mixin will not be created" + ", " +str(return_code['Conflict'])
                     logger.error("Register mixin : " + message)
                     loc_res.append(message)
                     res_code = return_code['OK, but there were some problems']
             else:
-                message = "This mixin description already exists in document " +occi_id + ", " +return_code['Conflict']
+                message = "This mixin description already exists in document " +occi_id + ", " +str(return_code['Conflict'])
                 logger.error("Register mixin : " + message)
                 loc_res.append(message)
                 res_code = return_code['OK, but there were some problems']
@@ -609,19 +611,19 @@ class MixinManager:
                         events.append(message)
                         logger.debug("Update mixin OCCI des : " +message)
                     else:
-                        message = "New mixin OCCI ID conflict with document " + new_occi_id + " ," +return_code['Conflict']
+                        message = "New mixin OCCI ID conflict with document " + new_occi_id + " ," +str(return_code['Conflict'])
                         logger.error("Update mixin OCCI des : " + message)
                         events.append(message)
                         resp_code = return_code['OK, but there were some problems']
 
                 else:
-                    message= "You have no right to update this mixin document ," + return_code['Forbidden']
+                    message= "You have no right to update this mixin document ," + str(return_code['Forbidden'])
                     logger.error("Update mixin OCCI des : " +message)
                     events.append(message)
                     resp_code = return_code['OK, but there were some problems']
 
             else:
-                message = "Mixin document " + old_occi_id + " couldn\'t be found ," + return_code['Not Found']
+                message = "Mixin document " + old_occi_id + " couldn\'t be found ," + str(return_code['Not Found'])
                 logger.error(message)
                 events.append(message)
                 resp_code = return_code['OK, but there were some problems']
@@ -651,16 +653,16 @@ class MixinManager:
                 if query.first()['value'] == user_id:
                     database.delete_doc(query.first()['id'])
                     joker.dissociate_resource_from_mixin(occi_id)
-                    event = "\nMixin document " + occi_id + " has been successfully deleted " + return_code['OK']
+                    event = "Mixin document " + occi_id + " has been successfully deleted " + str(return_code['OK'])
                     logger.debug("Delete mixin : "+ event)
                     message.append(event)
                 else:
-                    event = "\nYou have no right to delete this mixin document " + occi_id + " " + return_code['Forbidden']
+                    event = "You have no right to delete this mixin document " + occi_id + " " + str(return_code['Forbidden'])
                     logger.error("Delete mixin : "+ event)
                     message.append(event)
                     resp_code = return_code['OK, but there were some problems']
             else:
-                event = "\nMixin document " + occi_id + " does not exist " + return_code['Not Found']
+                event = "Mixin document " + occi_id + " does not exist " + str(return_code['Not Found'])
                 logger.error("Delete mixin : "+ event)
                 message.append(event)
                 resp_code = return_code['OK, but there were some problems']
@@ -677,33 +679,30 @@ class MixinManager:
         database = self.server.get_or_create_db(config.Mixin_DB)
         query = database.view('/get_mixin/by_occi_location',key = mixin_location)
         if query.count() is 0:
+            logger.debug("Mixin with mixin location = " + mixin_location + " not found")
             return False,None
         else:
             return True,query.first()['value']
 
     def verify_exist_mixins(self,mixins_id_list,creator):
         """
-        Verfiy the existence of mixins using the mixins OCCI ID provided
+        Verfiy the existence of mixins using the mixins OCCI ID provided and returns only the existing ones
         Args:
             @param mixins_id_list: List containing the ids of mixins that need to verify its existence
             @param creator: Issuer of the verify of existence of mixins
         """
         self.add_design_mixin_docs_to_db()
         database = self.server.get_or_create_db(config.Mixin_DB)
-        to_register = list()
+        exists = list()
         for mixin_id in mixins_id_list:
-            if type(mixin_id) is dict:
-                logger.debug("Exist actions : this is a mixin description")
-                to_register.append(mixin_id)
+            query = database.view('/get_mixin/by_occi_id',key = mixin_id )
+            if query.count() is 0:
+                logger.error("Exist mixins : No match to mixin " + mixin_id)
             else:
-                query = database.view('/get_mixin/by_occi_id',key = mixin_id )
-                if query.count() is 0:
-                    logger.error("Exist actions : No match to mixin " + mixin_id)
-                    return False
-                logger.error("Exist actions : Mixin " + mixin_id + " verified ")
-        #Verification of the response code upon register mixins is not done, Do it at your own risk
-        self.register_mixins(creator,to_register)
-        return True
+                exists.append(mixin_id)
+                logger.error("Exist mixins : Mixin " + mixin_id + " verified ")
+
+        return exists
 
 class ActionManager:
     """
@@ -787,7 +786,7 @@ class ActionManager:
         try:
             for elem in query:
                 var.append(elem['value'])
-            logger.debug("Filter all : Action documents found")
+                logger.debug("Filter all : Action document found")
             return var,return_code['OK']
         except Exception as e:
             logger.error(" Filter all actions : " +e.message)
@@ -820,15 +819,15 @@ class ActionManager:
                 jData['Type']= "Action"
                 try:
                     database[doc_id] = jData
-                    message = "Action document has been successfully added to database " + return_code['OK']
+                    message = "Action document has been successfully added to database " + str(return_code['OK'])
                     logger.debug("Register actions : " + message)
-                    loc_res.append(message)
+                    loc_res.append(occi_id)
                 except Exception as e:
                     logger.error("Register actions : " + e.message)
                     loc_res.append("An error has occurred, please check log for more details.")
                     res_code = return_code['Internal Server Error']
             else:
-                message = "This action description is not unique. Check log for more details " + return_code['Conflict']
+                message = "This action description is not unique. Check log for more details " + str(return_code['Conflict'])
                 logger.error("Register actions : " + message)
                 loc_res.append(message)
                 res_code = return_code['OK, but there were some problems']
@@ -874,19 +873,19 @@ class ActionManager:
                         events.append(message)
                         logger.debug("Update action OCCI des : " +message)
                     else:
-                        message = "New action OCCI ID conflict with document " + new_occi_id + " ," +return_code['Conflict']
+                        message = "New action OCCI ID conflict with document " + new_occi_id + " ," +str(return_code['Conflict'])
                         logger.error("Update action OCCI des : " + message)
                         events.append(message)
                         resp_code = return_code['OK, but there were some problems']
 
                 else:
-                    message= "You have no right to update this action document ," + return_code['Forbidden']
+                    message= "You have no right to update this action document ," + str(return_code['Forbidden'])
                     logger.error("Update action OCCI des : " +message)
                     events.append(message)
                     resp_code = return_code['OK, but there were some problems']
 
             else:
-                message = "Action document " + old_occi_id + " couldn\'t be found ," + return_code['Not Found']
+                message = "Action document " + old_occi_id + " couldn\'t be found ," + str(return_code['Not Found'])
                 logger.error(message)
                 events.append(message)
                 resp_code = return_code['OK, but there were some problems']
@@ -910,16 +909,16 @@ class ActionManager:
             if query.count() is not 0:
                 if query.first()['value'] == user_id:
                     database.delete_doc(query.first()['id'])
-                    event = "\nAction document " + occi_id + " has been successfully deleted " + return_code['OK']
+                    event = "Action document " + occi_id + " has been successfully deleted " + str(return_code['OK'])
                     logger.debug("Delete actions : "+ event)
                     message.append(event)
                 else:
-                    event = "\nYou have no right to delete this action document " + occi_id + " " + return_code['Forbidden']
+                    event = "You have no right to delete this action document " + occi_id + " " + str(return_code['Forbidden'])
                     logger.error("Delete action : "+ event)
                     message.append(event)
                     resp_code = return_code['OK, but there were some problems']
             else:
-                event = "\nAction document " + occi_id + " does not exist " + return_code['Not Found']
+                event = "Action document " + occi_id + " does not exist " + str(return_code['Not Found'])
                 logger.error("Delete action : "+ event)
                 message.append(event)
                 resp_code = return_code['OK, but there were some problems']
@@ -927,29 +926,27 @@ class ActionManager:
 
     def verify_exist_actions(self,actions_id_list,creator):
         """
-        Verfiy the existence of actions using the actions OCCI ID provided
+        Verfiy the existence of actions using the actions OCCI ID provided and returns only the existing ones
         Args:
             @param actions_id_list: List containing the ids of actions that need to verify its existence
             @param creator: Issuer of the verify of existence of actions
         """
         self.add_design_action_docs_to_db()
         database = self.server.get_or_create_db(config.Action_DB)
-        to_register = list()
+        exists = list()
         for action_id in actions_id_list:
             try:
                 action_id.index('category')
                 query = database.view('/get_action/by_occi_id',key = action_id['category'])
                 if query.count() is 0:
                     logger.error("Exist actions : action " + action_id['category'] + " does not exist")
-                    return False
-                logger.debug("Exist actions : action " + action_id['category'] + "existence verified ")
-            except Exception:
-                logger.debug("Exist actions : This is an action description ")
-                to_register.append(action_id)
+                else:
+                    logger.debug("Exist actions : action " + action_id['category'] + "existence verified ")
+                    exists.append(action_id)
+            except Exception as e:
+                logger.error("Exist actions : " +e.message)
 
-        #Verification of the response code upon register actions is not done, Do it at your own risk
-        self.register_actions(creator,to_register)
-        return True
+        return exists
 
 
 class CategoryManager:
@@ -973,9 +970,6 @@ class CategoryManager:
             @param jreq: Body content of the post request
 
         """
-        mesg_1 = ""
-        mesg_2 = ""
-        mesg_3 = ""
         data_keys = jreq.keys()
         try:
             data_keys.index('actions')
@@ -983,6 +977,7 @@ class CategoryManager:
             mesg_3,resp_code = self.manager_a.register_actions(user_id,jreq['actions'])
         except Exception as e:
             logger.error("ch register categories : " + e.message)
+            mesg_3 = ""
 
         try:
             data_keys.index('kinds')
@@ -990,25 +985,17 @@ class CategoryManager:
             mesg_1,resp_code = self.manager_k.register_kinds(user_id,jreq['kinds'])
         except Exception as e:
             logger.error("ch register categories : " + e.message)
-
+            mesg_1 = ""
         try:
             data_keys.index('mixins')
             logger.debug("Mixins post request : channeled")
             mesg_2,resp_code = self.manager_m.register_mixins(user_id,jreq['mixins'])
         except Exception as e:
             logger.error("ch register categories : " + e.message)
+            mesg_2 = ""
 
-
-
-        result_1 = '\n========= Kinds : ===========\n'
-        result_1 += '\n========= Kind : ===========\n'.join(mesg_1)
-        result_2 = '\n========= Mixins : ===========\n'
-        result_2 += '\n========= Mixin : ===========\n'.join(mesg_2)
-        result_3 = '\n========= Actions : ===========\n'
-        result_3 += '\n========= Action : ===========\n'.join(mesg_3)
-
-        register = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
-        return register
+        result = {'kinds': mesg_1, 'mixins': mesg_2, 'actions': mesg_3}
+        return result
 
     def channel_get_all_categories(self):
         """
@@ -1016,32 +1003,17 @@ class CategoryManager:
 
         """
         #get all kinds
-        result_1 = '\n========= Kind : ===========\n'
-        var,status_code_1 = self.manager_k.get_all_kinds()
-        str_var = list()
-        for v in var:
-            str_var.append(json.dumps(v))
-        result_1 += '\n========= Kind : ===========\n'.join(str_var)
+        mesg_1,status_code_1 = self.manager_k.get_all_kinds()
 
         #get all mixins
-        result_2 = '\n========== Mixin : ==========\n'
-        var,status_code_2 = self.manager_m.get_all_mixins()
-        str_var = list()
-        for v in var:
-            str_var.append(json.dumps(v))
-        result_2 += '\n========== Mixin : ==========\n'.join(str_var)
+        mesg_2,status_code_2 = self.manager_m.get_all_mixins()
 
         #get all actions
-        result_3 = '\n========== Action : ==========\n'
-        var,status_code_3 = self.manager_a.get_all_actions()
-        str_var = list()
-        for v in var:
-            str_var.append(json.dumps(v))
-        result_3 += '\n========== Action : ==========\n'.join(str_var)
+        mesg_3,status_code_3 = self.manager_a.get_all_actions()
 
-        capacities = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
+        result = {'kinds': mesg_1, 'mixins': mesg_2, 'actions': mesg_3}
 
-        return capacities
+        return result
 
     def channel_get_filtered_categories(self,jreq):
         """
@@ -1050,9 +1022,7 @@ class CategoryManager:
             @param jreq: Body content of the post request
 
         """
-        mesg_1 = ""
-        mesg_2 = ""
-        mesg_3 = ""
+
         data_keys = jreq.keys()
         try:
             data_keys.index('kinds')
@@ -1060,6 +1030,7 @@ class CategoryManager:
             mesg_1,resp_code = self.manager_k.get_filtered_kinds(jreq['kinds'])
         except Exception as e:
             logger.debug("ch get filter : " + e.message)
+            mesg_1 = ""
 
         try:
             data_keys.index('mixins')
@@ -1067,6 +1038,7 @@ class CategoryManager:
             mesg_2,resp_code = self.manager_m.get_filtered_mixins(jreq['mixins'])
         except Exception as e:
             logger.debug("ch get filter : " + e.message)
+            mesg_2 = ""
 
         try:
             data_keys.index('actions')
@@ -1074,25 +1046,11 @@ class CategoryManager:
             mesg_3,resp_code = self.manager_a.get_filtered_actions(jreq['actions'])
         except Exception as e:
             logger.debug("ch get filter : " + e.message)
+            mesg_3 = ""
 
-        result_1 = '\n========= Kinds : ===========\n'
-        str_var = list()
-        for v in mesg_1:
-            str_var.append(json.dumps(v))
-        result_1 += '\n========= Kind : ===========\n'.join(str_var)
-        result_2 = '\n========= Mixins : ===========\n'
-        str_var = list()
-        for v in mesg_2:
-            str_var.append(json.dumps(v))
-        result_2 += '\n========= Mixin : ===========\n'.join(str_var)
-        result_3 = '\n========= Actions : ===========\n'
-        str_var = list()
-        for v in mesg_3:
-            str_var.append(json.dumps(v))
-        result_3 += '\n========= Action : ===========\n'.join(str_var)
-        capacities = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
+        result = {'kinds': mesg_1, 'mixins': mesg_2, 'actions': mesg_3}
 
-        return capacities
+        return result
 
     def channel_delete_categories(self,jreq,user_id):
         """
@@ -1103,15 +1061,13 @@ class CategoryManager:
 
         """
         data_keys = jreq.keys()
-        mesg_1 = ""
-        mesg_2 = ""
-        mesg_3 = ""
         try:
             data_keys.index('kinds')
             logger.debug("Kinds delete request : channeled")
             mesg_1,resp_code = self.manager_k.delete_kind_documents(jreq['kinds'],user_id)
         except Exception as e:
             logger.error("ch delete filter : " +e.message)
+            mesg_1=""
 
         try:
             data_keys.index('mixins')
@@ -1119,6 +1075,7 @@ class CategoryManager:
             mesg_2,resp_code = self.manager_m.delete_mixin_documents(jreq['mixins'],user_id)
         except Exception as e:
             logger.error("ch delete filter : " +e.message)
+            mesg_2=""
 
         try:
             data_keys.index('actions')
@@ -1126,15 +1083,10 @@ class CategoryManager:
             mesg_3,resp_code = self.manager_a.delete_action_documents(jreq['actions'],user_id)
         except Exception as e:
             logger.error("ch delete filter : " +e.message)
+            mesg_3 = ""
 
-        result_1 = '\n========= Kinds : ===========\n'
-        result_1 += '\n========= Kind : ===========\n'.join(mesg_1)
-        result_2 = '\n========= Mixins : ===========\n'
-        result_2 += '\n========= Mixin : ===========\n'.join(mesg_2)
-        result_3 = '\n========= Actions : ===========\n'
-        result_3 += '\n========= Action : ===========\n'.join(mesg_3)
-        register = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n"
-        return register
+        result = {'kinds': mesg_1, 'mixins': mesg_2, 'actions': mesg_3}
+        return result
 
 
     def channel_update_categories(self,user_id,j_newData):
@@ -1142,12 +1094,9 @@ class CategoryManager:
         Channel the PUT requests to their right methods
         Args:
             @param user_id: ID of the issuer of the post request
-            @param jreq: Body content of the post request
+            @param j_newData: Body content of the post request
         """
-        mesg_1 = ""
-        mesg_2 = ""
-        mesg_3 = ""
-        mesg_4 = ""
+
         data_keys = j_newData.keys()
         try:
             data_keys.index('actions')
@@ -1155,6 +1104,7 @@ class CategoryManager:
             mesg_3,resp_code = self.manager_a.update_OCCI_action_descriptions(user_id,j_newData['actions'])
         except Exception as e:
             logger.error("ch update categories : " + e.message)
+            mesg_3=""
 
         try:
             data_keys.index('kinds')
@@ -1162,12 +1112,14 @@ class CategoryManager:
             mesg_1,resp_code = self.manager_k.update_OCCI_kind_descriptions(user_id,j_newData['kinds'])
         except Exception as e:
             logger.error("ch update categories : " + e.message)
+            mesg_1=""
         try:
             data_keys.index('providers')
             logger.debug("Providers put request : channeled")
             mesg_4,resp_code = self.manager_k.update_kind_providers(user_id,j_newData['providers'])
         except Exception as e:
             logger.error("ch update categories : " + e.message)
+            mesg_4=""
 
         try:
             data_keys.index('mixins')
@@ -1175,17 +1127,10 @@ class CategoryManager:
             mesg_2,resp_code = self.manager_m.update_OCCI_mixin_descriptions(user_id,j_newData['mixins'])
         except Exception as e:
             logger.error("ch update categories : " + e.message)
+            mesg_2=""
 
 
 
-        result_1 = '\n========= Kinds : ===========\n'
-        result_1 += '\n========= Kind : ===========\n'.join(mesg_1)
-        result_2 = '\n========= Mixins : ===========\n'
-        result_2 += '\n========= Mixin : ===========\n'.join(mesg_2)
-        result_3 = '\n========= Actions : ===========\n'
-        result_3 += '\n========= Action : ===========\n'.join(mesg_3)
-        result_4 = '\n========= Providers : ===========\n'
-        result_4 += '\n========= Providers : ===========\n'.join(mesg_4)
+        result = {'kinds': mesg_1, 'provider':mesg_4, 'mixins': mesg_2, 'actions': mesg_3}
 
-        register = result_1 + "\n\n" + result_2 + "\n\n" + result_3 + "\n\n" + result_4 + "\n\n"
-        return register
+        return result

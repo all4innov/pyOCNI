@@ -68,8 +68,7 @@ class PathManager(object):
             @param jreq: Body content of the post request
             @param location: Address to which this post request was sent
         """
-        mesg_1 = ""
-        mesg_2 = ""
+
         #Verify if this is a kind location
         ok_k,occi_id_k = self.manager_k.verify_kind_location(location)
         #if yes : call the ResourceManager to create a new resource instance
@@ -84,7 +83,7 @@ class PathManager(object):
             try:
                 jreq.index('links')
                 logger.debug("Post path : Post on kind path to create a new link channeled")
-                mesg_2 = self.manager_l.register_links(user_id,jreq['links'],location,occi_id_k)
+                mesg_2 = self.manager_l.register_links_explicit(user_id,jreq['links'],location,occi_id_k)
             except Exception as e:
                 logger.error("Post path : " +e.message)
 
