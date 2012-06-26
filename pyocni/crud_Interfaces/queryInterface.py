@@ -77,12 +77,12 @@ class QueryInterface(object):
             return self.res
 
         if self.req.body == "":
-            var = self.manager.channel_get_all_categories()
+            var,self.res.status_code = self.manager.channel_get_all_categories()
         else:
             jreq = json.loads(self.req.body)
-            var = self.manager.channel_get_filtered_categories(jreq)
-        self.res.body = json.dumps(var)
+            var,self.res.status_code = self.manager.channel_get_filtered_categories(jreq)
 
+        self.res.body = json.dumps(var)
         return self.res
 
     def post(self):
@@ -113,8 +113,7 @@ class QueryInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        var = self.manager.channel_register_categories(user_id,jBody)
-        self.res.body = json.dumps(var)
+        self.res.body,self.res.status_code = self.manager.channel_register_categories(user_id,jBody)
         return self.res
 
     def put(self):
@@ -174,6 +173,6 @@ class QueryInterface(object):
         user_id = base64.decodestring(user_id)
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
-        var= self.manager.channel_delete_categories(jBody,user_id)
-        self.res.body = json.dumps(var)
+        self.res.body,self.res.status_code= self.manager.channel_delete_categories(jBody,user_id)
+
         return self.res

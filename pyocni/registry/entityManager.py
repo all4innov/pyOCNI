@@ -344,11 +344,19 @@ class ResourceManager(object):
             pass
         else:
             database.save_doc(design_doc)
-
+    def associate_resources_to_mixin(self,creator,occi_description,occi_mixin_location,occi_mixin_id):
+        """
+        Associate resources to mixin
+        Args:
+            @param creator: Issuer of the association request
+            @param occi_description: Resource description
+            @param occi_mixin_id: id of the mixin
+            @param occi_mixin_location: location of the mixin
+        """
     def register_links_implicit(self,creator,occi_descriptions,source):
 
         """
-        Add new links to the database ( Called only during the creation of a new resource instance)
+        Add new links to the database (Called only during the creation of a new resource instance)
         Args:
             @param creator: the user who created this new link
             @param occi_descriptions: the OCCI description of the new link
@@ -356,7 +364,6 @@ class ResourceManager(object):
 
         database = self.server.get_or_create_db(config.Link_DB)
         self.add_design_link_docs_to_db()
-        problems = False
         loc_res=list()
         for desc in occi_descriptions:
             ok_k= self.manager_k.verify_exist_kind(desc['kind'])
@@ -414,7 +421,9 @@ class LinkManager(object):
             logger.error("Database is unreachable")
             raise Exception("Database is unreachable")
         self.manager_k = KindManager()
-
+        self.manager_a = ActionManager()
+        self.manager_m = MixinManager()
+        self.manager_r = ResourceManager()
     def add_design_link_docs_to_db(self):
         """
         Add link design documents to database.
@@ -509,6 +518,62 @@ class LinkManager(object):
             @param kind_occi_location: Location of the kind to which belong these links
             @param kind_occi_id: OCCI ID of the kind to which belong these links
         """
+        database = self.server.get_or_create_db(config.Link_DB)
+        self.add_design_link_docs_to_db()
+        loc_res = list()
+        for desc in occi_descriptions:
+            #Verify if the kind to which this request is sent is the same as the one in the link description
+            if desc['kind'] == kind_occi_id:
+                ok_target = self.manager_r.verify_exist_resource(desc['target'])
+                if ok_target is True:
+                    ok_source = self.manager_r.verify_exist_resource(desc['source'])
+                    if ok_source is True:
+                        try:
+                            desc.index['actions']
+                            existing_actions = self.manager_a.verify_exist_actions(desc['actions'],creator)
+                            ok_a = desc['actions'].__len__() is existing_actions.__len__()
+                        except Exception as e:
+                            logger.debug("Register resources : " + e.message)
+                            ok_a = True
+
+                        if ok_a is False:
+                            desc['actions'] = existing_actions
+                            logger.debug("Problem in Actions description, check logs for more details")
+                        try:
+                            desc.index['mixins']
+                            existing_mixins = self.manager_m.verify_exist_mixins(desc['mixins'],creator)
+                            ok_m = desc['mixins'].__len__() is existing_mixins.__len__()
+                        except Exception as e:
+                            logger.debug("Register resources : " + e.message)
+                            ok_m = True
+
+                        if ok_m is False:
+                            desc['mixins'] = existing_mixins
+                            logger.debug("Problem in Mixins description, check logs for more details")
+                        loc = joker.make_link_location(creator,kind_occi_location,desc['id'])
+
+                        doc_id = uuid_Generator.get_UUID()
+                        jData = dict()
+                        jData['Creator'] = creator
+                        jData['CreationDate'] = str(datetime.now())
+                        jData['LastUpdate'] = ""
+                        jData['OCCI_Location']= loc
+                        jData['OCCI_Description']= desc
+                        jData['Type']= "Link"
+                        try:
+                            database[doc_id] = jData
+                            mesg = loc
+                            logger.debug("Register links : " + mesg)
+
+                        except Exception as e:
+                            mesg = "An error has occurred, please check log for more details"
+                            logger.error("Register links : " + e.message)
+
+            else:
+                mesg = "Kind description and kind location don't match, please check logs for more details"
+                logger.error("Register links : " + mesg)
+            loc_res.append(mesg)
+        return loc_res
 
 #    def update_link(self,doc_id=None,user_id=None,new_Data=None):
 #        """
@@ -590,10 +655,32 @@ class LinkManager(object):
 #            message = "Link document " + str(doc_id) + " not found"
 #            logger.debug(message)
 #            return message,return_code['Resource not found']
+    def associate_links_to_mixin(self,creator,occi_description,occi_mixin_location,occi_mixin_id):
+        """
+        Associate resources to mixin
+        Args:
+            @param creator: Issuer of the association request
+            @param occi_description: link description
+            @param occi_mixin_id: id of the mixin
+            @param occi_mixin_location: location of the mixin
+        """
 
 
+def dissociate_resource_from_mixin(occi_id):
+    """
+    Dissociates a resource from a mixin upon the deletion of a mixin
+    Args:
+        @param mix_desc: OCCI description of the mixin
+    """
+    return True
+def get_resources_belonging_to_kind(kind_desc):
+    """
+    Verifies if there are resources of this kind description
+    Args:
+        @param kind_desc: OCCI kind description of the kind
 
-
+    """
+    return True
 
 
 
