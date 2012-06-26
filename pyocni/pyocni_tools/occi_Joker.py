@@ -43,17 +43,23 @@ def update_occi_description(oldData,newData):
     #Try to get the keys from occi description dictionary
     oldData_keys = oldData.keys()
     newData_keys = newData.keys()
-    problems = False
+    forbidden_keys = ["term","scheme","location"]
     for key in newData_keys:
         try:
-            oldData_keys.index(key)
-            oldData[key] = newData[key]
+            forbidden_keys.index(key)
+            if oldData[key] != newData[key]:
+                logger.debug("update description : " + key + " is forbidden to change")
+                return True,None
         except Exception:
-            #Keep the record of the keys(=parts) that couldn't be updated
-            logger.debug("update description : " + key + " could not be found")
-            problems = True
+            try:
+                oldData_keys.index(key)
+                oldData[key] = newData[key]
+            except Exception:
+                #Keep the record of the keys(=parts) that couldn't be updated
+                logger.debug("update description : " + key + " could not be found")
+                return True,None
 
-    return problems,oldData
+    return False,oldData
 
 def get_description_id(occi_description):
     """
@@ -85,9 +91,11 @@ def filter_occi_description(description,filter):
     #Try to get the keys from filter dictionary
 
     filter_keys = filter.keys()
+    desc_keys = description.keys()
     for key in filter_keys:
         try:
-            if description[key] != filter[key]:
+            desc_keys.index(key)
+            if description[key]!= filter[key]:
                 return False
         except Exception:
             #Keep the record of the keys(=parts) that couldn't be updated

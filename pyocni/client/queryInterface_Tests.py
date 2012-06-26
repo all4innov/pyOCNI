@@ -245,10 +245,10 @@ providers ="""
 {"providers": [
         {
         "Provider": {
-            "local": [],
-            "remote": []
+            "local": ["Houssem"],
+            "remote": ["Bilel"]
         },
-        "OCCI_ID": "http://schemas.ogf.org/occi/core#resource"
+        "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#resourcestorage"
     }
 ]
 }"""
@@ -401,7 +401,7 @@ class test_put(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
-        c.setopt(pycurl.POSTFIELDS,providers)
+        c.setopt(pycurl.POSTFIELDS,kinds_indep)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

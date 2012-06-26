@@ -209,7 +209,7 @@ class KindManager:
             old_doc = joker.extract_doc(occi_id,db_data)
             if old_doc is not None:
                 if user_id == old_doc['Creator']:
-                    problems,provider_description= doc_Joker.update_kind_provider(old_doc['Provider'],desc['Provider'])
+                    provider_description,problems= doc_Joker.update_kind_provider(old_doc['Provider'],desc['Provider'])
                     if problems is True:
                         message = "Kind provider description " + occi_id + " has not been totally updated."
                         logger.error("Kind provider description update " + message)
@@ -219,14 +219,14 @@ class KindManager:
                         old_doc['Provider'] = provider_description
                         old_doc['LastUpdate'] = str(datetime.now())
                         to_update.append(old_doc)
-                        logger.debug("Update kind OCCI description : " + message)
+                        logger.debug("Update kind provider description : " + message)
                 else:
                     message = "You have no right to update this kind document " + occi_id
-                    logger.error("Update kind OCCI des : " + message)
+                    logger.error("Update kind provider des : " + message)
                     return list(),return_code['Forbidden']
             else:
                 message = "Kind document " + occi_id + " couldn\'t be found "
-                logger.error("Update kind OCCI des : " + message)
+                logger.error("Update kind provider des : " + message)
                 return list(),return_code['Not Found']
         return to_update,resp_code
 
