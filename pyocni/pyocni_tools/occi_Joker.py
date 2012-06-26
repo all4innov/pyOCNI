@@ -43,17 +43,23 @@ def update_occi_description(oldData,newData):
     #Try to get the keys from occi description dictionary
     oldData_keys = oldData.keys()
     newData_keys = newData.keys()
-    problems = False
+    forbidden_keys = ["term","scheme","location"]
     for key in newData_keys:
         try:
-            oldData_keys.index(key)
-            oldData[key] = newData[key]
+            forbidden_keys.index(key)
+            if oldData[key] != newData[key]:
+                logger.debug("update description : " + key + " is forbidden to change")
+                return True,None
         except Exception:
-            #Keep the record of the keys(=parts) that couldn't be updated
-            logger.debug("update description : " + key + " could not be found")
-            problems = True
+            try:
+                oldData_keys.index(key)
+                oldData[key] = newData[key]
+            except Exception:
+                #Keep the record of the keys(=parts) that couldn't be updated
+                logger.debug("update description : " + key + " could not be found")
+                return True,None
 
-    return problems,oldData
+    return False,oldData
 
 def get_description_id(occi_description):
     """
@@ -85,9 +91,11 @@ def filter_occi_description(description,filter):
     #Try to get the keys from filter dictionary
 
     filter_keys = filter.keys()
+    desc_keys = description.keys()
     for key in filter_keys:
         try:
-            if description[key] != filter[key]:
+            desc_keys.index(key)
+            if description[key]!= filter[key]:
                 return False
         except Exception:
             #Keep the record of the keys(=parts) that couldn't be updated
@@ -96,21 +104,7 @@ def filter_occi_description(description,filter):
 
     return True
 
-def dissociate_resource_from_mixin(occi_id):
-    """
-    Dissociates a resource from a mixin upon the deletion of a mixin
-    Args:
-        @param mix_desc: OCCI description of the mixin
-    """
-    return True
-def get_resources_belonging_to_kind(kind_desc):
-    """
-    Verifies if there are resources of this kind description
-    Args:
-        @param kind_desc: OCCI kind description of the kind
 
-    """
-    return True
 
 
 def verify_exist_relaters(description,db_data):
@@ -128,14 +122,9 @@ def verify_exist_relaters(description,db_data):
     if not relaters:
         return True
 
-    list_occi_id = list()
-    for data in db_data:
-        id = get_description_id(data)
-        list_occi_id.append(id)
-
     try:
         for related in relaters:
-            list_occi_id.index(related)
+            db_data.index(related)
     except Exception as e:
         logger.error(" exist relaters : " + e.message)
         return False
@@ -154,15 +143,9 @@ def verify_exist_actions(description,actions_data):
     if not actions:
         return True
 
-    list_occi_id = list()
-    for data in actions_data:
-        id = get_description_id(data)
-        list_occi_id.append(id)
-
-
     for action in actions:
         try:
-            list_occi_id.index(action)
+            actions_data.index(action)
         except Exception as e:
             logger.error(" exist actions : " + e.message)
             return False
@@ -171,68 +154,86 @@ def verify_exist_actions(description,actions_data):
 
 
 
-def make_kind_location(occi_description):
+def make_entity_location(occi_description):
     """
-    Creates the location of the kind using the occi_description
+    Creates the location of the kind or mixin using the occi_description
     Args:
-        @param occi_description: the occi description of the kind
-        @return :<string> Location of the kind
+        @param occi_description: the occi description of the kind or mixin
+        @return :<string> Location of the kind or mixin
     """
     try:
         loc = occi_description['location']
-        kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + loc
+        entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + loc
     except Exception as e:
-        logger.error("kind location : " + e.message )
+        logger.error("Entity location : " + e.message )
         return  None
-    return kind_location
+    return entity_location
 
-def make_mixin_location(occi_description):
-    """
-    Creates the location of the mixin using the occi_description
-    Args:
-        @param occi_description: the occi description of the mixin
-        @return :<string> Location of the mixin
-    """
-    try:
-        loc = occi_description['location']
-        mixin_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + loc
-    except Exception as e:
-        logger.error("mixin location : " + e.message )
-        return None
-    return  mixin_location
-
-def make_resource_location(occi_description, uuid,user_id):
+def make_resource_location(user_id,kind_loc, uuid):
     """
     Creates the location of the resource from the occi resource description
     Args:
-        @param occi_description: OCCI resource description
-        @param uuid: UUID of the resource document containing the resource description
-        @param user_id: ID of resource document administrator
+        @param kind_loc: Kind OCCI location to which this resource instance belongs to
+        @param uuid: UUID of the resource contained in the resource description
+        @param user_id: ID creator of the resource instance
         @return :<string> Location of the resource
     """
-    try:
-        resource_term = occi_description['resources'][0]['kind']
-        resource_term = resource_term.split('#')[1]
-    except Exception as e:
-        return False,e.message
 
-    resource_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + resource_term + "/" + user_id + "/" + uuid
-    return True, resource_location
+    resource_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + user_id + kind_loc + uuid
+    return resource_location
 
-def make_link_location(occi_description, uuid,user_id):
+def make_link_location(user_id,kind_loc, uuid):
     """
     Creates the location of the link from the occi link description
     Args:
-        @param occi_description: OCCI link description
-        @param uuid: UUID of the link document containing the link description
-        @param user_id: ID of link document administrator
-        @return :<string> Location of the link
+        @param kind_loc: Kind OCCI location to which this resource instance belongs to
+        @param uuid: UUID of the resource contained in the resource description
+        @param user_id: ID creator of the resource instance
+        @return :<string> Location of the resource
+    """
+
+    link_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + user_id + kind_loc + uuid
+    return link_location
+
+
+def verify_occi_uniqueness(occi_term, db_categories):
+    """
+    Verifies the uniqueness of the occi_term
+    Args:
+        @param occi_term: OCCI term to verify its uniqueness
+        @param db_categories: Collection of OCCI IDs
     """
     try:
-        link_term = occi_description['links'][0]['kind']
-        link_term = link_term.split('#')[1]
+        db_categories.index(occi_term)
+        return False
     except Exception as e:
-        return False,e.message
+        logger.debug("Uniqueness : " + e.message )
+        return True
 
-    link_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + link_term + "/" + user_id + "/" + uuid
-    return True, link_location
+def verify_exist_occi_id_creator(occi_id,creator,db_data):
+    """
+    Verify the existence of a document with such an OCCI ID  and creator in db_data
+    Args:
+        @param occi_id: OCCI ID to be checked
+        @param creator: creator of the document
+        @param db_data: Data to search in
+    """
+    for data in db_data:
+        if data['OCCI_ID'] == occi_id and data['Creator'] == creator:
+            return {"_id" : data['_id'],"_rev" : data['_rev']}
+    return None
+
+
+def extract_doc(occi_id, db_data):
+    """
+    Extracts the document corresponding to the OCCI ID from the data provided
+    Args:
+        @param occi_id: OCCI ID
+        @param db_data: Data containing docs
+    """
+    for data in db_data:
+        if data['OCCI_ID'] == occi_id:
+            logger.debug("Document " + occi_id + " is found")
+            return data['Doc']
+    logger.error("Document " + occi_id + "couldn't be found")
+    return None

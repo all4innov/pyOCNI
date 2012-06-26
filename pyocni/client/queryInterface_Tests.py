@@ -39,7 +39,7 @@ def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
 
-to_register ="""
+actions ="""
 {
     "actions": [
         {
@@ -83,27 +83,16 @@ to_register ="""
                     "default": "poweroff"
                 }
             }
-        },
-        {
-            "term": "stop",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-            "title": "Stop Compute instance",
-            "attributes": {
-                "method": {
-                    "mutable": true,
-                    "required": false,
-                    "type": "string",
-                    "pattern": "graceful|acpioff|poweroff",
-                    "default": "poweroff"
-                }
-            }
         }
-    ],
-    "kinds": [
+    ]
+}
+"""
+kinds_indep="""
+{"kinds": [
         {
             "term": "resource",
             "scheme": "http://schemas.ogf.org/occi/core#",
-            "title": "Compute Resource",
+            "title": "Compute Bilel",
             "attributes": {
                 "occi": {
                     "compute": {
@@ -113,7 +102,7 @@ to_register ="""
                             "type": "string",
                             "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
                             "minimum": "1",
-                            "maximum": "255"
+                            "maximum": "2550"
                         },
                         "state": {
                             "mutable": false,
@@ -126,7 +115,13 @@ to_register ="""
                 }
             },
             "location": "/resource/"
-        },
+        }
+    ]
+    }
+"""
+kinds_dep = """
+{
+    "kinds": [
         {
             "term": "storage",
             "scheme": "http://schemas.ogf.org/occi/infrastructure#resource",
@@ -162,12 +157,14 @@ to_register ="""
             ],
             "location": "/storage/"
         }
-    ],
-    "mixins": [
+    ]
+}"""
+mixins = """
+{"mixins": [
         {
             "term": "resource_tpl",
             "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Medium VM",
+            "title": "Big Bad VM",
             "related": [],
             "attributes": {
                 "occi": {
@@ -180,7 +177,13 @@ to_register ="""
                 }
             },
             "location": "/template/resource/resource_tpl/"
-        },
+        }
+    ]
+}
+"""
+mixins_dep = """
+{
+    "mixins": [
         {
             "term": "medium",
             "scheme": "http://example.com/template/resource#",
@@ -237,368 +240,20 @@ to_register ="""
         }
     ]
 }
-"""
-
-
-terms='''
-{
-    "kinds": [
+        """
+providers ="""
+{"providers": [
         {
-            "term": "compute13",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/core#resource"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
-                        }
-                    }
-                }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-
-            ],
-            "location": "/compute/"
+        "Provider": {
+            "local": ["Houssem"],
+            "remote": ["Bilel"]
         },
-         {
-            "term": "compute221",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/core#resource"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
-                        }
-                    }
-                }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-
-            ],
-            "location": "/compute/"
-        }
-    ],
-    "mixins": [
-                    {
-                    "term": "medium100",
-                    "scheme": "http://example.com/template/resource#",
-                    "title": "Medium VM",
-                    "related": [
-                        "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-                    ],
-                    "attributes": {
-                        "occi": {
-                            "compute": {
-                                "speed": {
-                                    "type": "number",
-                                    "default": 2.8
-                                }
-                            }
-                        }
-                    },
-                    "location": "/template/resource/medium/"
-                }
-            ],
-    "actions": [
-                    {
-                    "term": "stop123",
-                    "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-                    "title": "Stop Compute instance",
-                    "attributes": {
-                        "method": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "graceful|acpioff|poweroff",
-                            "default": "poweroff"
-                        }
-                    }
-                }
-            ]
-}
-'''
-terms_no='''
-{
-    "kinds": [
-        {
-            "term": "compyute13",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/core#resource"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
-                        }
-                    }
-                }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-
-            ],
-            "location": "/compute/"
-        },
-         {
-            "term": "comnpute221",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/core#resource"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
-                        }
-                    }
-                }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-
-            ],
-            "location": "/compute/"
-        }
-    ],
-    "mixins": [
-                    {
-                    "term": "mediu8m100",
-                    "scheme": "http://example.com/template/resource#",
-                    "title": "Medium VM",
-                    "related": [
-                        "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-                    ],
-                    "attributes": {
-                        "occi": {
-                            "compute": {
-                                "speed": {
-                                    "type": "number",
-                                    "default": 2.8
-                                }
-                            }
-                        }
-                    },
-                    "location": "/template/resource/medium/"
-                }
-            ],
-    "actions": [
-                    {
-                    "term": "stogp123",
-                    "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-                    "title": "Stop Compute instance",
-                    "attributes": {
-                        "method": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "graceful|acpioff|poweroff",
-                            "default": "poweroff"
-                        }
-                    }
-                }
-            ]
-}
-'''
-to_delete ="""
-{"mixins": [
-        {
-        "term": "medium100",
-        "scheme": "http://example.com/template/resource#",
-        "title": "Medium VM",
-        "related": [
-            "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-        ],
-        "attributes": {
-            "occi": {
-                "compute": {
-                    "speed": {
-                        "type": "number",
-                        "default": 2.8
-                    }
-                }
-            }
-        },
-        "location": "/template/resource/medium/"
+        "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#resourcestorage"
     }
-]}"""
-to_delete_no ="""
-{"mixins": [
-        {
-        "term": "me0dium100",
-        "scheme": "http://example.com/template/resource#",
-        "title": "Medium VM",
-        "related": [
-            "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-        ],
-        "attributes": {
-            "occi": {
-                "compute": {
-                    "speed": {
-                        "type": "number",
-                        "default": 2.8
-                    }
-                }
-            }
-        },
-        "location": "/template/resource/medium/"
-    }
-]}"""
-to_update ="""
- {
-    "kinds": [
-        {
-            "OCCI_ID": "http://schemas.ogf.org/occi/core#resource",
-            "kind": {
-                "term": "resource",
-                "scheme": "http://schemas.ogf.org/occi/core#",
-                "title": "Compute Resource",
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "hostname": {
-                                "mutable": true,
-                                "required": false,
-                                "type": "string",
-                                "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                                "minimum": "1",
-                                "maximum": "255"
-                            },
-                            "state": {
-                                "mutable": false,
-                                "required": false,
-                                "type": "string",
-                                "pattern": "inactive|active|suspended|failed",
-                                "default": "inactive"
-                            }
-                        }
-                    }
-                },
-                "location": "/resource/"
-            }
-        }
-    ],
-    "actions": [
-        {
-            "action": {
-                "term": "restart",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-                "title": "Stop Compute instance",
-                "attributes": {
-                    "method": {
-                        "mutable": true,
-                        "required": false,
-                        "type": "string",
-                        "pattern": "graceful|acpioff|poweroff",
-                        "default": "poweroff"
-                    }
-                }
-            },
-            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-        }
-    ],
-    "mixins": [
-        {
-            "mixin": {
-                "term": "resource_tpl",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-                "title": "Medium VM",
-                "related": [],
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "speed": {
-                                "type": "number",
-                                "default": 2.8
-                            }
-                        }
-                    }
-                },
-                "location": "/template/resource/resource_tpl/"
-            },
-            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-        }
-    ],
-    "providers": [
-        {
-            "Provider": {
-                "local": [],
-                "remote": []
-            },
-            "OCCI_ID": "http://schemas.ogf.org/occi/core#resource"
-        }
-    ]
+]
 }"""
+
+
 class test_get(TestCase):
     """
     Tests GET request scenarios
@@ -642,25 +297,7 @@ class test_get(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
-        c.setopt(pycurl.POSTFIELDS,to_register)
-        c.setopt(pycurl.USERPWD, 'user_1:password')
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
-
-
-    def test_get_filter_categories_not_found(self):
-        """
-        get all categories matching the terms contained in the request
-        """
-        storage = StringIO.StringIO()
-        c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
-        c.setopt(pycurl.POSTFIELDS,terms_no)
+        c.setopt(pycurl.POSTFIELDS,mixins)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -694,31 +331,13 @@ class test_delete(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
-        c.setopt(pycurl.POSTFIELDS,to_register)
+        c.setopt(pycurl.POSTFIELDS,mixins)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
 
-
-
-    def test_delete_mixin_not_found(self):
-        """
-        delete a un-existent mixin
-        """
-        storage = StringIO.StringIO()
-        c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
-        c.setopt(pycurl.POSTFIELDS,to_delete_no)
-        c.setopt(pycurl.USERPWD, 'user_1:password')
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
 
 
 
@@ -748,7 +367,7 @@ class test_post(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
-        c.setopt(pycurl.POSTFIELDS,to_register)
+        c.setopt(pycurl.POSTFIELDS,kinds_indep)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -782,7 +401,7 @@ class test_put(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
-        c.setopt(pycurl.POSTFIELDS,to_update)
+        c.setopt(pycurl.POSTFIELDS,kinds_indep)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

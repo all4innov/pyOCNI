@@ -27,13 +27,13 @@ Created on Jun 01, 2012
 @version: 1.0
 @license: LGPL - Lesser General Public License
 """
-from pyocni.crud_Interfaces.resourceInterface import ResourceInterface
+from pyocni.crud_Interfaces.entityInterface import EntityInterface
 from pyocni.crud_Interfaces.pathInterface import PathInterface
 from pyocni.crud_Interfaces.queryInterface import QueryInterface
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.DoItYourselfWebOb as url_mapper
 import eventlet
-from pyocni.registry import categoryManager,locationManager
+from pyocni.registry import categoryManager,entityManager
 from eventlet import wsgi
 from pyocni.registry.registry import backend_registry, serialization_registry
 from pyocni.pyocni_tools import ask_user_details as shell_ask
@@ -98,15 +98,14 @@ class ocni_server(object):
 
     operationPath = url_mapper.rest_controller(PathInterface)
     operationQuery = url_mapper.rest_controller(QueryInterface)
-    operationResource = url_mapper.rest_controller(ResourceInterface)
+    operationEntity = url_mapper.rest_controller(EntityInterface)
 
     app = url_mapper.Router()
 
-    #===== Kind Routes =====
     app.add_route('/-/',controller=operationQuery)
-    app.add_route('/{term}/',controller=operationResource)
-    app.add_route('/{term}/{user_id}/',controller=operationPath)
-    app.add_route('/{term}/{user_id}/{doc_id}',controller=operationResource)
+    app.add_route('/{location}/',controller=operationPath)
+    app.add_route('/{location}/{user_id}/',controller=operationPath)
+    app.add_route('/{location}/{user_id}/{ins_id}',controller=operationEntity)
 
 
     def run_server(self):
@@ -118,7 +117,7 @@ class ocni_server(object):
         result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
                                              "   Do you want to purge all databases (DB  reinitialization)?", "no")
         if result == 'yes':
-            locationManager.purgeLocationDBs()
+            entityManager.purgeEntityDBs()
             categoryManager.purgeCategoryDBs()
 
         print ("\n______________________________________________________________________________________\n"

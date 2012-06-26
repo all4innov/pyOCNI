@@ -16,7 +16,7 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Created on Jun 19, 2012
+Created on Jun 21, 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
@@ -53,7 +53,7 @@ return_code = {'OK': 200,
                'Not Implemented': 501,
                'Service Unavailable': 503}
 
-class ResourceInterface(object):
+class EntityInterface(object):
     """
 
         CRUD operation on kinds, mixins and actions

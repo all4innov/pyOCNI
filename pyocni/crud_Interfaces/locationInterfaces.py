@@ -28,7 +28,7 @@ Created on Jun 09, 2012
 """
 
 from webob import Request,Response
-from pyocni.registry.locationManager import EntityManager, LinkManager
+from pyocni.registry.entityManager import EntityManager, LinkManager
 try:
     import simplejson as json
 except ImportError:
