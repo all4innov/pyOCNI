@@ -80,18 +80,35 @@ class PathManager(object):
                 mesg_1 = self.manager_r.register_resources(user_id,jreq['resources'],location,occi_id_k)
             except Exception as e:
                 logger.error("Post path : " +e.message)
+                mesg_1 = ""
             try:
                 jreq.index('links')
                 logger.debug("Post path : Post on kind path to create a new link channeled")
                 mesg_2 = self.manager_l.register_links_explicit(user_id,jreq['links'],location,occi_id_k)
             except Exception as e:
                 logger.error("Post path : " +e.message)
+                mesg_2 = ""
 
         else:
         #if no : verify if this is a mixin location
             ok_m,occi_id_m = self.manager_m.verify_mixin_location(location)
             if ok_m is True:
                 #if yes: call the ResourceManager to attach this mixin to resources
+                try:
+                    jreq.index('resources')
+                    logger.debug("Post path : Post on kind path to create a new resource channeled")
+                    self.manager_r.associate_resources_to_mixin(user_id,jreq['resources'],location,occi_id_m)
+                except Exception as e:
+                    logger.error("Post path : " +e.message)
+                    mesg_1 = ""
+                try:
+                    jreq.index('links')
+                    logger.debug("Post path : Post on kind path to create a new link channeled")
+                    mesg_2 = self.manager_l.associate_links_to_mixin(user_id,jreq['links'],location,occi_id_m)
+                except Exception as e:
+                    logger.error("Post path : " +e.message)
+                    mesg_2 = ""
+
                 logger.debug("Post path : Post on mixin path channeled")
             else:
                 logger.error("Post path : Unknown location")
