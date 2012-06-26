@@ -16,7 +16,7 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Created on Jun 19, 2012
+Created on Jun 21, 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
@@ -28,7 +28,8 @@ Created on Jun 19, 2012
 """
 
 from webob import Response
-from pyocni.registry.categoryManager import CategoryManager
+from pyocni.registry.pathManager import PathManager
+from pyocni.pyocni_tools.config import return_code
 try:
     import simplejson as json
 except ImportError:
@@ -36,22 +37,6 @@ except ImportError:
 
 import base64
 
-# ======================================================================================
-# HTTP Return Codes
-# ======================================================================================
-return_code = {'OK': 200,
-               'Accepted': 202,
-               'Bad Request': 400,
-               'Unauthorized': 401,
-               'Forbidden': 403,
-               'Resource not found': 404,
-               'Method Not Allowed': 405,
-               'Conflict': 409,
-               'Gone': 410,
-               'Unsupported Media Type': 415,
-               'Internal Server Error': 500,
-               'Not Implemented': 501,
-               'Service Unavailable': 503}
 
 class PathInterface(object):
     """
@@ -59,16 +44,15 @@ class PathInterface(object):
         CRUD operation on kinds, mixins and actions
 
     """
-    def __init__(self,req, doc_id=None,user_id=None):
+    def __init__(self,req,location):
 
         self.req = req
-        self.doc_id=doc_id
-        self.user_id=user_id
+        self.location=location
         self.res = Response()
         self.res.content_type = req.accept
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
         try:
-            self.manager = CategoryManager()
+            self.manager = PathManager()
         except Exception:
             self.res.body = "An error has occurred, please check log for more details"
             self.res.status_code = return_code["Internal Server Error"]
@@ -88,7 +72,7 @@ class PathInterface(object):
 
     def post(self):
         """
-        Create new mixin or kind or action document in the database
+        Create a new entity instance or attach resource instance to a mixin database
 
         """
 
@@ -114,7 +98,7 @@ class PathInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        self.res.body = self.manager.channel_register_categories(user_id,jBody)
+        self.res.body = self.manager.channel_post_path(user_id,jBody,self.location)
         return self.res
 
     def put(self):

@@ -43,7 +43,6 @@ def update_kind_provider(old_provider,new_provider):
     #Try to get the keys from occi description dictionary
     oldData_keys = old_provider.keys()
     newData_keys = new_provider.keys()
-    problems = False
     for key in newData_keys:
         try:
             oldData_keys.index(key)
@@ -51,6 +50,6 @@ def update_kind_provider(old_provider,new_provider):
         except Exception:
             #Keep the record of the keys(=parts) that couldn't be updated
             logger.debug("update description : " + key + " could not be found")
-            problems = True
+            return None,True
 
-    return old_provider,problems
+    return old_provider,False
