@@ -143,8 +143,7 @@ class QueryInterface(object):
         user_id = user_id.split(':')[0]
         #Get the new data from the request
         j_newData = json.loads(self.req.body)
-        var = self.manager.channel_update_categories(user_id,j_newData)
-        self.res.body = json.dumps(var)
+        self.res.body, self.res.status_code = self.manager.channel_update_categories(user_id,j_newData)
         return self.res
 
     def delete(self):

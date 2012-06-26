@@ -92,7 +92,7 @@ kinds_indep="""
         {
             "term": "resource",
             "scheme": "http://schemas.ogf.org/occi/core#",
-            "title": "Compute Resource",
+            "title": "Compute Bilel",
             "attributes": {
                 "occi": {
                     "compute": {
@@ -102,7 +102,7 @@ kinds_indep="""
                             "type": "string",
                             "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
                             "minimum": "1",
-                            "maximum": "255"
+                            "maximum": "2550"
                         },
                         "state": {
                             "mutable": false,
@@ -164,7 +164,7 @@ mixins = """
         {
             "term": "resource_tpl",
             "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Medium VM",
+            "title": "Big Bad VM",
             "related": [],
             "attributes": {
                 "occi": {
@@ -241,6 +241,17 @@ mixins_dep = """
     ]
 }
         """
+providers ="""
+{"providers": [
+        {
+        "Provider": {
+            "local": [],
+            "remote": []
+        },
+        "OCCI_ID": "http://schemas.ogf.org/occi/core#resource"
+    }
+]
+}"""
 
 
 class test_get(TestCase):
@@ -356,7 +367,7 @@ class test_post(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
-        c.setopt(pycurl.POSTFIELDS,mixins)
+        c.setopt(pycurl.POSTFIELDS,kinds_indep)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -390,7 +401,7 @@ class test_put(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
-        c.setopt(pycurl.POSTFIELDS,to_update)
+        c.setopt(pycurl.POSTFIELDS,providers)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

@@ -214,3 +214,18 @@ def verify_exist_occi_id_creator(occi_id,creator,db_data):
         if data['OCCI_ID'] == occi_id and data['Creator'] == creator:
             return {"_id" : data['_id'],"_rev" : data['_rev']}
     return None
+
+
+def extract_doc(occi_id, db_data):
+    """
+    Extracts the document corresponding to the OCCI ID from the data provided
+    Args:
+        @param occi_id: OCCI ID
+        @param db_data: Data containing docs
+    """
+    for data in db_data:
+        if data['OCCI_ID'] == occi_id:
+            logger.debug("Document " + occi_id + " is found")
+            return data['Doc']
+    logger.error("Document " + occi_id + "couldn't be found")
+    return None
