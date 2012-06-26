@@ -49,14 +49,33 @@ logger = config.logger
 DB_server_IP = config.DB_IP
 DB_server_PORT = config.DB_PORT
 
+def verify_location_type(location):
+    """
+    Verify the existence of a kind with such location
+    Args:
+        @param location: location of kind
+    """
+    kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + location
+    self.add_design_kind_docs_to_db()
+    database = self.server.get_or_create_db(config.Kind_DB)
+    query = database.view('/get_kind/by_occi_location',key = kind_location)
+    if query.count() is 0:
+        logger.debug("Kind with kind location = " + kind_location + " not found")
+        return False,None
+    else:
+        return True,query.first()['value']
+
+def associate_entities_to_mixin(user_id, param, location, db_occi_ids_locs):
+    pass
+
+
 class PathManager(object):
     """
 
     """
 
     def __init__(self):
-        self.manager_k = KindManager()
-        self.manager_m = MixinManager()
+
         self.manager_r = ResourceManager()
         self.manager_l = LinkManager()
 
@@ -68,51 +87,77 @@ class PathManager(object):
             @param jreq: Body content of the post request
             @param location: Address to which this post request was sent
         """
+        database = config.prepare_PyOCNI_db()
+        try:
+            jreq.index('resources')
+            is_kind_loc = True
+        except KeyError:
+            try:
+                jreq.index('links')
+                is_kind_loc = True
+            except KeyError:
+                jreq.index('OCCI_Location')
+                is_kind_loc = False
+        except Exception:
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
-        #Verify if this is a kind location
-        ok_k,occi_id_k = self.manager_k.verify_kind_location(location)
-        #if yes : call the ResourceManager to create a new resource instance
-        if ok_k is True:
-
+        if is_kind_loc is True:
+            try:
+                query = database.view('/get_views/occi_id_occi_location')
+            except Exception as e:
+                logger.error("Category delete : " + e.message)
+                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            db_occi_ids_locs = list()
+            for q in query:
+                db_occi_ids_locs.append({"OCCI_ID" : q['key'],"OCCI_Location":q['value']})
             try:
                 jreq.index('resources')
                 logger.debug("Post path : Post on kind path to create a new resource channeled")
-                mesg_1 = self.manager_r.register_resources(user_id,jreq['resources'],location,occi_id_k)
+                new_resources, resp_code_r = self.manager_r.register_resources(user_id,jreq['resources'],location,db_occi_ids_locs)
             except Exception as e:
                 logger.error("Post path : " +e.message)
-                mesg_1 = ""
+                new_resources = list()
+                resp_code_r = return_code['OK']
             try:
                 jreq.index('links')
                 logger.debug("Post path : Post on kind path to create a new link channeled")
-                mesg_2 = self.manager_l.register_links_explicit(user_id,jreq['links'],location,occi_id_k)
+                new_links, resp_code_l = self.manager_l.register_links_explicit(user_id,jreq['links'],location,db_occi_ids_locs)
             except Exception as e:
                 logger.error("Post path : " +e.message)
-                mesg_2 = ""
+                new_links = list()
+                resp_code_l = return_code['OK']
+            if resp_code_r is not return_code['OK'] or resp_code_l is not return_code['OK']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+            categories = new_resources + new_links
+            database.save_docs(categories,use_uuids=True, all_or_nothing=True)
+            return "",return_code['OK']
 
         else:
-        #if no : verify if this is a mixin location
-            ok_m,occi_id_m = self.manager_m.verify_mixin_location(location)
-            if ok_m is True:
-                #if yes: call the ResourceManager to attach this mixin to resources
-                try:
-                    jreq.index('resources')
-                    logger.debug("Post path : Post on kind path to create a new resource channeled")
-                    self.manager_r.associate_resources_to_mixin(user_id,jreq['resources'],location,occi_id_m)
-                except Exception as e:
-                    logger.error("Post path : " +e.message)
-                    mesg_1 = ""
-                try:
-                    jreq.index('links')
-                    logger.debug("Post path : Post on kind path to create a new link channeled")
-                    mesg_2 = self.manager_l.associate_links_to_mixin(user_id,jreq['links'],location,occi_id_m)
-                except Exception as e:
-                    logger.error("Post path : " +e.message)
-                    mesg_2 = ""
 
-                logger.debug("Post path : Post on mixin path channeled")
-            else:
-                logger.error("Post path : Unknown location")
+            try:
+                query = database.view('/get_views/occi_location_doc')
+            except Exception as e:
+                logger.error("Category delete : " + e.message)
+                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            db_occi_locs_docs = list()
+            for q in query:
+                db_occi_locs_docs.append({"OCCI_Location" : q['key'],"Doc":q['value']})
 
+            try:
+                jreq.index('OCCI_Location')
+                logger.debug("Post path : Post on kind path to create a new resource channeled")
+                updated_entities,resp_code_e = associate_entities_to_mixin(user_id,jreq['OCCI_Location'],location,db_occi_locs_docs)
+            except Exception as e:
+                logger.error("Post path : " +e.message)
+                updated_entities = list()
+                resp_code_e = return_code['OK']
+
+            if resp_code_e is not return_code['OK']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+            database.save_docs(updated_entities,force_update=True, all_or_nothing=True)
+            return "",return_code['OK']
 
     def channel_get_path(self,user_id,jreq,location):
         """

@@ -41,28 +41,6 @@ from pyocni.pyocni_tools.config import return_code
 # getting the Logger
 logger = config.logger
 
-
-# Get the database server configuration
-
-DB_server_IP = config.DB_IP
-DB_server_PORT = config.DB_PORT
-
-
-def purgeCategoryDBs():
-
-    try:
-        server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
-    except Exception:
-        logger.error("Database is unreachable")
-
-    try:
-        server.get_db(config.PyOCNI_DB).flush()
-    except Exception:
-        logger.debug("No DB named: '" + config.PyOCNI_DB + "' to delete.")
-        server.create_db(config.PyOCNI_DB)
-
-
-
 class KindManager:
     """
 
@@ -112,7 +90,7 @@ class KindManager:
             occi_id = joker.get_description_id(desc)
             ok_k = joker.verify_occi_uniqueness(occi_id,db_occi_ids)
             if ok_k is True:
-                occi_loc = joker.make_entity_location(desc)
+                occi_loc = joker.make_category_location(desc)
                 ok_loc = joker.verify_occi_uniqueness(occi_loc,db_occi_locs)
                 if ok_loc is True:
                     ok_r = joker.verify_exist_relaters(desc,db_occi_ids)
@@ -267,23 +245,6 @@ class KindManager:
         return True
 
 
-    def verify_kind_location(self,location):
-        """
-        Verify the existence of a kind with such location
-        Args:
-            @param location: location of kind
-        """
-        kind_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + location
-        self.add_design_kind_docs_to_db()
-        database = self.server.get_or_create_db(config.Kind_DB)
-        query = database.view('/get_kind/by_occi_location',key = kind_location)
-        if query.count() is 0:
-            logger.debug("Kind with kind location = " + kind_location + " not found")
-            return False,None
-        else:
-            return True,query.first()['value']
-
-
 
 class MixinManager:
     """
@@ -335,7 +296,7 @@ class MixinManager:
             occi_id = joker.get_description_id(desc)
             ok_k = joker.verify_occi_uniqueness(occi_id,db_occi_ids)
             if ok_k is True:
-                occi_loc = joker.make_entity_location(desc)
+                occi_loc = joker.make_category_location(desc)
                 ok_loc = joker.verify_occi_uniqueness(occi_loc,db_occi_locs)
                 if ok_loc is True:
                     ok_r = joker.verify_exist_relaters(desc,db_occi_ids)
@@ -444,26 +405,6 @@ class MixinManager:
                 logger.error("Delete mixin : " + event)
                 return list(), return_code['Bad Request']
         return message,res_code
-
-    def verify_mixin_location(self,location):
-        """
-        Verify the existence of a mixin with such location
-        Args:
-            @param location: location of mixin
-        """
-        mixin_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + location
-        self.add_design_mixin_docs_to_db()
-        database = self.server.get_or_create_db(config.Mixin_DB)
-        query = database.view('/get_mixin/by_occi_location',key = mixin_location)
-        if query.count() is 0:
-            logger.debug("Mixin with mixin location = " + mixin_location + " not found")
-            return False,None
-        else:
-            return True,query.first()['value']
-
-
-
-
     def dissociate_entities_belonging_to_mixin(self, occi_id, db_entities):
         return True
 
@@ -597,43 +538,6 @@ class ActionManager:
         return message,res_code
 
 
-def prepare_category_db():
-    """
-    Start the server, get the database and add Category design documents to it.
-    """
-    try:
-        server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
-    except Exception:
-        logger.error("CategoryManager : Database is unreachable")
-        raise Exception("Database is unreachable")
-    database = server.get_or_create_db(config.PyOCNI_DB)
-    design_doc = {
-        "_id": "_design/get_views",
-        "language": "javascript",
-        "type": "DesignDoc",
-        "views": {
-            "occi_id_occi_location": {
-                "map": "(function(doc){emit(doc.OCCI_ID,doc.OCCI_Location)});"
-            },
-            "type_occi_desc":{
-                "map":"(function(doc) { emit (doc.Type, doc.OCCI_Description) });"
-            },
-            "_id_rev_occi_id_creator": {
-                "map": "(function(doc) { emit (doc._id,[doc._rev,doc.OCCI_ID, doc.Creator]) });"
-            },
-            "occi_id_doc": {
-                "map": "(function(doc) { emit (doc.OCCI_ID,doc) });"
-            }
-
-        }
-
-    }
-    if database.doc_exist(design_doc['_id']):
-        pass
-    else:
-        database.save_doc(design_doc)
-    return database
-
 class CategoryManager:
     """
 
@@ -656,7 +560,7 @@ class CategoryManager:
             @param jreq: Body content of the post request
 
         """
-        database = prepare_category_db()
+        database = config.prepare_PyOCNI_db()
         query = database.view('/get_views/occi_id_occi_location')
         db_occi_ids = list()
         db_occi_locs = list()
@@ -703,7 +607,7 @@ class CategoryManager:
         Retrieve all categories to show the server's capacity
 
         """
-        database = prepare_category_db()
+        database = config.prepare_PyOCNI_db()
         db_kinds = list()
         db_mixins = list()
         db_actions = list()
@@ -732,7 +636,7 @@ class CategoryManager:
             @param jreq: Body content of the post request
 
         """
-        database = prepare_category_db()
+        database = config.prepare_PyOCNI_db()
         db_kinds = list()
         db_mixins = list()
         db_actions = list()
@@ -791,7 +695,7 @@ class CategoryManager:
             @param jreq: Body content of the post request
 
         """
-        database = prepare_category_db()
+        database = config.prepare_PyOCNI_db()
         try:
             query = database.view('/get_views/_id_rev_occi_id_creator')
         except Exception as e:
@@ -805,7 +709,7 @@ class CategoryManager:
             query = database.view('/get_views/type_occi_desc')
         except Exception as e:
             logger.error("Category delete : " + e.message)
-            return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
         db_entities = list()
         for q in query:
@@ -856,12 +760,12 @@ class CategoryManager:
             @param user_id: ID of the issuer of the post request
             @param j_newData: Body content of the post request
         """
-        database = prepare_category_db()
+        database = config.prepare_PyOCNI_db()
         try:
             query = database.view('/get_views/occi_id_doc')
         except Exception as e:
             logger.error("Category delete : " + e.message)
-            return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
         db_occi_id_doc = list()
         for q in query:
             db_occi_id_doc.append( { "OCCI_ID" : q['key'],"Doc" : q['value']})
@@ -903,7 +807,7 @@ class CategoryManager:
             resp_code_m = return_code['OK']
 
 
-        if resp_code_a is not 200 or resp_code_k is not 200 or resp_code_m is not 200:
+        if resp_code_a is not 200 or resp_code_k is not 200 or resp_code_m is not 200 or resp_code_p is not 200:
             return "An error has occurred, please check log for more details",return_code['Bad Request']
 
         categories = updated_kinds + updated_providers + updated_mixins + updated_actions

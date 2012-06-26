@@ -154,7 +154,7 @@ def verify_exist_actions(description,actions_data):
 
 
 
-def make_entity_location(occi_description):
+def make_category_location(occi_description):
     """
     Creates the location of the kind or mixin using the occi_description
     Args:

@@ -117,8 +117,7 @@ class ocni_server(object):
         result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
                                              "   Do you want to purge all databases (DB  reinitialization)?", "no")
         if result == 'yes':
-            entityManager.purgeEntityDBs()
-            categoryManager.purgeCategoryDBs()
+            config.purge_PyOCNI_db()
 
         print ("\n______________________________________________________________________________________\n"
                "The OCNI server is running at: " + config.OCNI_IP + ":"+config.OCNI_PORT)

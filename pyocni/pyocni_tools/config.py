@@ -29,7 +29,7 @@ Created on Feb 25, 2011
 
 import logging.config
 from configobj import ConfigObj
-
+from couchdbkit import *
 import os
 
 
@@ -71,3 +71,57 @@ return_code = {'OK': 200,
                'Internal Server Error': 500,
                'Not Implemented': 501,
                'Service Unavailable': 503}
+
+# ======================================================================================
+# Prepare the PyOCNI database
+# ======================================================================================
+
+def prepare_PyOCNI_db():
+    """
+    Start the server, get the database and add Category design documents to it.
+    """
+    try:
+        server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
+    except Exception:
+        logger.error("CategoryManager : Database is unreachable")
+        raise Exception("Database is unreachable")
+    database = server.get_or_create_db(PyOCNI_DB)
+    design_doc = {
+        "_id": "_design/get_views",
+        "language": "javascript",
+        "type": "DesignDoc",
+        "views": {
+            "occi_id_occi_location": {
+                "map": "(function(doc){emit(doc.OCCI_ID,doc.OCCI_Location)});"
+            },
+            "type_occi_desc":{
+                "map":"(function(doc) { emit (doc.Type, doc.OCCI_Description) });"
+            },
+            "_id_rev_occi_id_creator": {
+                "map": "(function(doc) { emit (doc._id,[doc._rev,doc.OCCI_ID, doc.Creator]) });"
+            },
+            "occi_id_doc": {
+                "map": "(function(doc) { emit (doc.OCCI_ID,doc) });"
+            },
+            "occi_location_doc": {
+                "map": "(function(doc) { emit (doc.OCCI_Location,doc) });"
+            }
+
+        }
+
+    }
+    database.save_doc(design_doc,force_update=True)
+    return database
+
+def purge_PyOCNI_db():
+
+    try:
+        server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
+    except Exception:
+        logger.error("Database is unreachable")
+
+    try:
+        server.get_db(PyOCNI_DB).flush()
+    except Exception:
+        logger.debug("No DB named: '" + PyOCNI_DB + "' to delete.")
+        server.create_db(PyOCNI_DB)
