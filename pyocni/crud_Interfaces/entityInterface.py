@@ -28,7 +28,8 @@ Created on Jun 21, 2012
 """
 
 from webob import Response
-from pyocni.registry.categoryManager import CategoryManager
+from pyocni.registry.entityManager import MultiEntityManager,SingleEntityManager
+from pyocni.pyocni_tools.config import return_code
 try:
     import simplejson as json
 except ImportError:
@@ -36,59 +37,53 @@ except ImportError:
 
 import base64
 
-# ======================================================================================
-# HTTP Return Codes
-# ======================================================================================
-return_code = {'OK': 200,
-               'Accepted': 202,
-               'Bad Request': 400,
-               'Unauthorized': 401,
-               'Forbidden': 403,
-               'Resource not found': 404,
-               'Method Not Allowed': 405,
-               'Conflict': 409,
-               'Gone': 410,
-               'Unsupported Media Type': 415,
-               'Internal Server Error': 500,
-               'Not Implemented': 501,
-               'Service Unavailable': 503}
-
-class EntityInterface(object):
+#=======================================================================================================================
+#                                           SingleEntityInterface
+#=======================================================================================================================
+class SingleEntityInterface(object):
     """
 
-        CRUD operation on kinds, mixins and actions
+        CRUD operation on resources and links
 
     """
-    def __init__(self,req, doc_id=None,user_id=None):
+    def __init__(self,req,location):
 
         self.req = req
-        self.doc_id=doc_id
-        self.user_id=user_id
+        self.location=location
         self.res = Response()
         self.res.content_type = req.accept
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
         try:
-            self.manager = CategoryManager()
+            self.manager = SingleEntityManager()
         except Exception:
             self.res.body = "An error has occurred, please check log for more details"
             self.res.status_code = return_code["Internal Server Error"]
 
-    def get(self):
 
-        """
-        Retrieval of all registered Kinds, mixins and actions
-        """
-        if self.req.body == "":
-            self.res = self.manager.channel_get_all_categories()
-        else:
-            jreq = json.loads(self.req.body)
-            self.res = self.manager.channel_get_filtered_categories(jreq)
+#=======================================================================================================================
+#                                           MultiEntityInterface
+#=======================================================================================================================
+class MultiEntityInterface(object):
+    """
+    CRUD operation on kinds, mixins and actions
+    """
+    def __init__(self,req,location):
 
-        return self.res
+        self.req = req
+        self.location=location
+        self.res = Response()
+        self.res.content_type = req.accept
+        self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
+        try:
+            self.manager = MultiEntityManager()
+        except Exception:
+            self.res.body = "An error has occurred, please check log for more details"
+            self.res.status_code = return_code["Internal Server Error"]
+
 
     def post(self):
         """
-        Create new mixin or kind or action document in the database
+        Create a new entity instance or attach resource instance to a mixin database
 
         """
 
@@ -114,45 +109,5 @@ class EntityInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        self.res.body = self.manager.channel_register_categories(user_id,jBody)
-        return self.res
-
-    def put(self):
-        """
-        Update the document specific to the id provided in the request with new data
-
-        """
-
-        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
-
-        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
-            # Solution To adopt : Validate HTTP then convert to JSON
-            pass
-        elif self.req.content_type == "application/occi:json":
-            #  Solution To adopt : Validate then convert to application/occi+json
-            pass
-        elif self.req.content_type == "application/occi+json":
-            #Validate the JSON message
-            pass
-        else:
-            self.res.status_code = return_code["Unsupported Media Type"]
-            self.res.body = self.req.content_type + " is an unknown request content type"
-            return self.res
-            #Get the new data from the request
-        j_newData = json.loads(self.req.body)
-        self.res.body,self.res.status_code = self.manager.update_kind(self.doc_id,self.user_id,j_newData)
-        return self.res
-
-    def delete(self):
-        """
-
-        Delete a category document using the data provided in the request
-
-        """
-        #Decode authorization header to get the user_id
-        var,user_id = self.req.authorization
-        user_id = base64.decodestring(user_id)
-        user_id = user_id.split(':')[0]
-        jBody = json.loads(self.req.body)
-        self.res.body= self.manager.channel_delete_categories(jBody,user_id)
+        self.res.body,self.res.status_code = self.manager.channel_post_multi(user_id,jBody,self.location)
         return self.res

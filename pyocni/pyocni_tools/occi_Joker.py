@@ -50,11 +50,11 @@ def update_occi_description(oldData,newData):
             if oldData[key] != newData[key]:
                 logger.debug("update description : " + key + " is forbidden to change")
                 return True,None
-        except Exception:
+        except ValueError:
             try:
                 oldData_keys.index(key)
                 oldData[key] = newData[key]
-            except Exception:
+            except ValueError:
                 #Keep the record of the keys(=parts) that couldn't be updated
                 logger.debug("update description : " + key + " could not be found")
                 return True,None
@@ -97,7 +97,7 @@ def filter_occi_description(description,filter):
             desc_keys.index(key)
             if description[key]!= filter[key]:
                 return False
-        except Exception:
+        except ValueError:
             #Keep the record of the keys(=parts) that couldn't be updated
             logger.debug("filter description : "+ key + " could not be found")
             return False
@@ -120,7 +120,7 @@ def verify_exist_relaters(description,db_data):
     try:
         for related in relaters:
             db_data.index(related)
-    except Exception as e:
+    except ValueError as e:
         logger.error(" exist relaters : " + e.message)
         return False
 
@@ -147,7 +147,7 @@ def verify_existences_alpha(description,db_data):
     try:
         for item in items:
             db_data.index(item)
-    except KeyError as e:
+    except ValueError as e:
         logger.error(" exist alpha : " + e.message)
         return False
 
@@ -167,7 +167,7 @@ def verify_existences_beta(occi_ids, db_occi_ids_locs):
     try:
         for occi_id in occi_ids:
             var_ids.index(occi_id)
-    except KeyError as e:
+    except ValueError as e:
         logger.debug("exist beta : " + e.message)
         return False
 
@@ -190,7 +190,7 @@ def verify_existences_delta(actions, db_occi_ids_locs):
     try:
         for action_id in var_action_ids:
             var_ids.index(action_id)
-    except KeyError as e:
+    except ValueError as e:
         logger.debug("exist delta : " + e.message)
         return False
 
@@ -209,7 +209,7 @@ def verify_existences_teta(occi_locs, db_occi_ids_locs):
     try:
         for occi_loc in occi_locs:
             var_ids.index(occi_loc)
-    except KeyError as e:
+    except ValueError as e:
         logger.debug("exist teta : " + e.message)
         return False
 
@@ -254,7 +254,7 @@ def verify_occi_uniqueness(occi_term, db_categories):
     try:
         db_categories.index(occi_term)
         return False
-    except Exception as e:
+    except ValueError as e:
         logger.debug("Uniqueness : " + e.message )
         return True
 
@@ -288,4 +288,4 @@ def extract_doc(occi_id, db_data):
 
 
 def verify_existences_kappa(param, param1, creator, db_occi_ids_locs):
-    return None
+    return False

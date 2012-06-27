@@ -29,18 +29,20 @@ Created on Jun 12, 2012
 
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.occi_Joker as joker
-from pyocni.registry.categoryManager import KindManager,MixinManager,ActionManager
 try:
     import simplejson as json
 except ImportError:
     import json
 from datetime import datetime
 from pyocni.pyocni_tools import uuid_Generator
-from couchdbkit import *
 from pyocni.pyocni_tools.config import return_code
 
 # getting the Logger
 logger = config.logger
+
+#=======================================================================================================================
+#                                           ResourceManager
+#=======================================================================================================================
 
 class ResourceManager(object):
     """
@@ -176,6 +178,10 @@ class ResourceManager(object):
         logger.debug("Internal links validated with success")
         return True,True
 
+#=======================================================================================================================
+#                                           LinkManager
+#=======================================================================================================================
+
 class LinkManager(object):
     """
     Manager of link documents in the couch database.
@@ -266,6 +272,147 @@ class LinkManager(object):
             @param occi_mixin_location: location of the mixin
         """
 
+#=======================================================================================================================
+#                                           MultiEntityManager
+#=======================================================================================================================
+
+class MultiEntityManager(object):
+    """
+
+    """
+
+    def __init__(self):
+
+        self.manager_r = ResourceManager()
+        self.manager_l = LinkManager()
+
+    def channel_post_multi(self,user_id,jreq,location):
+        """
+        Identifies the post path's goal : create a resource instance or update a mixin
+        Args:
+            @param user_id: ID of the issuer of the post request
+            @param jreq: Body content of the post request
+            @param location: Address to which this post request was sent
+        """
+        database = config.prepare_PyOCNI_db()
+
+        if jreq.has_key('resources') or jreq.has_key('links'):
+            is_kind_loc = True
+        else:
+            is_kind_loc = False
+
+        if is_kind_loc is True:
+            try:
+                query = database.view('/get_views/occi_id_occi_location')
+            except Exception as e:
+                logger.error("Category delete : " + e.message)
+                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            db_occi_ids_locs = list()
+            for q in query:
+                db_occi_ids_locs.append({"OCCI_ID" : q['key'],"OCCI_Location":q['value']})
+
+            if jreq.has_key('resources'):
+                logger.debug("Post path : Post on kind path to create a new resource channeled")
+                new_resources, resp_code_r = self.manager_r.register_resources(user_id,jreq['resources'],location,db_occi_ids_locs)
+            else:
+                new_resources = list()
+                resp_code_r = return_code['OK']
+
+            if jreq.has_key('links'):
+                logger.debug("Post path : Post on kind path to create a new link channeled")
+                new_links, resp_code_l = self.manager_l.register_links_explicit(user_id,jreq['links'],location,db_occi_ids_locs)
+            else:
+                new_links = list()
+                resp_code_l = return_code['OK']
+
+            if resp_code_r is not return_code['OK'] or resp_code_l is not return_code['OK']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+            entities = new_resources + new_links
+            database.save_docs(entities,use_uuids=True, all_or_nothing=True)
+            #return the locations of the resources
+            return "",return_code['OK']
+
+        else:
+
+            try:
+                query = database.view('/get_views/occi_location_doc')
+            except Exception as e:
+                logger.error("Category delete : " + e.message)
+                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            db_occi_locs_docs = list()
+            for q in query:
+                db_occi_locs_docs.append({"OCCI_Location" : q['key'],"Doc":q['value']})
+
+            if jreq.has_key('OCCI_Locations'):
+                logger.debug("Post path : Post on kind path to associate a mixin channeled")
+                updated_entities,resp_code_e = associate_entities_to_a_mixin(jreq['OCCI_Locations'],location,db_occi_locs_docs)
+            else:
+                updated_entities = list()
+                resp_code_e = return_code['OK']
+
+            if resp_code_e is not return_code['OK']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+            database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
+            return "",return_code['OK']
+
+#=======================================================================================================================
+#                                           SingleEntityManager
+#=======================================================================================================================
+
+class SingleEntityManager(object):
+    """
+
+    """
+
+    def __init__(self):
+
+        self.manager_r = ResourceManager()
+        self.manager_l = LinkManager()
+
+#=======================================================================================================================
+#                                           Independant Functions
+#=======================================================================================================================
+
+def associate_entities_to_a_mixin(entities_locations, location, db_occi_ids_docs):
+    """
+    Add a single mixin to entities
+    Args:
+        @param entities_locations: OCCI Location of the entities
+        @param location: location of the mixin
+        @param db_occi_ids_docs: OCCI IDs and documents of the entities already contained in the database
+    """
+    #Get the Mixin's OCCI_ID
+    mix_loc = joker.make_category_location({"location":"/"+location+"/"})
+    mix_id = None
+    to_update = list()
+    for item in db_occi_ids_docs:
+        if item['OCCI_Location'] == mix_loc and item['Doc']['Type'] == "Mixin":
+            mix_id = item['Doc']['OCCI_ID']
+        else:
+            try:
+                entities_locations.index(item['OCCI_Location'])
+                if item['Doc']['Type'] == 'Resource' or item['Doc']['Type'] == 'Link':
+                    to_update.append(item['Doc'])
+            except ValueError:
+                pass
+    if mix_id is not None:
+        for doc in to_update:
+            if doc['OCCI_Description'].has_key('mixins'):
+                try:
+                    var = doc['OCCI_Description']['mixins']
+                    var.index(mix_id)
+                except ValueError:
+                    var.append(mix_id)
+                    doc['OCCI_Description']['mixins'] = var
+            else:
+                doc['OCCI_Description']['mixins'] = [mix_id]
+        return to_update,return_code['OK']
+    else:
+        return list(),return_code['Not Found']
+
+
 
 def dissociate_resource_from_mixin(occi_id):
     """
@@ -282,6 +429,3 @@ def get_resources_belonging_to_kind(kind_desc):
 
     """
     return True
-
-
-
