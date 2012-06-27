@@ -98,7 +98,7 @@ class PathInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        self.res.body = self.manager.channel_post_path(user_id,jBody,self.location)
+        self.res.body,self.res.status_code = self.manager.channel_post_path(user_id,jBody,self.location)
         return self.res
 
     def put(self):

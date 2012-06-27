@@ -47,105 +47,79 @@ class ResourceManager(object):
     Manager of resource and link documents in the couch database.
     """
 
-    def __init__(self):
-
-        self.manager_m = MixinManager()
-        self.manager_a = ActionManager()
-        self.manager_k = KindManager()
-
-
-    def register_resources(self,creator,occi_description,occi_kind_location,occi_kind_id):
+    def register_resources(self,creator,occi_descriptions,occi_kind_location,db_occi_ids_locs):
 
         """
         Add new resources to the database
         Args:
             @param creator: the user who created these new resources
-            @param occi_description: the OCCI description of the new resources
+            @param occi_descriptions: the OCCI description of the new resources
             @param occi_kind_location: the kind location to which belong these new resources
-            @param occi_kind_id: the occi kind id of the kind to which belongs these new resources
+            @param db_occi_ids_locs: OCCI IDs and OCCI Location extracted from the database
         """
-
-        database = self.server.get_or_create_db(config.Resource_DB)
-        self.add_design_resource_docs_to_db()
         loc_res = list()
-        for desc in occi_description:
-            #Verify if the kind to which this request is sent is the same as the one in the resource description
-            if desc['kind'] == occi_kind_id:
-                try:
-                    desc.index['actions']
-                    existing_actions = self.manager_a.verify_exist_actions(desc['actions'],creator)
-                    ok_a = desc['actions'].__len__() is existing_actions.__len__()
-                except Exception as e:
-                    logger.debug("Register resources : " + e.message)
-                    ok_a = True
+        loc = joker.make_category_location({'location':"/"+occi_kind_location+"/"})
+        kind_occi_id = None
+        for elem in db_occi_ids_locs:
+            if elem['OCCI_Location'] == loc:
+                kind_occi_id = elem['OCCI_ID']
+                break
+        if kind_occi_id is not None:
+            for desc in occi_descriptions:
 
-                if ok_a is False:
-                    desc['actions'] = existing_actions
-                    logger.debug("Problem in Actions description, check logs for more details")
-                try:
-                    desc.index['mixins']
-                    existing_mixins = self.manager_m.verify_exist_mixins(desc['mixins'],creator)
-                    ok_m = desc['mixins'].__len__() is existing_mixins.__len__()
-                except Exception as e:
-                        logger.debug("Register resources : " + e.message)
-                        ok_m = True
-
-                if ok_m is False:
-                    desc['mixins'] = existing_mixins
-                    logger.debug("Problem in Mixins description, check logs for more details")
-                loc = joker.make_resource_location(creator,occi_kind_location,desc['id'])
-                try:
-                    desc.index['links']
-                    created_links = self.register_links_implicit(desc['links'],creator,loc)
-                    ok_l = created_links.__len__() is desc['links'].__len__()
-                except Exception as e:
-                    logger.debug("Register resources : " + e.message)
-                    ok_l = True
-
-                if ok_l is False:
-                    desc['links'] = created_links
-                    logger.debug("Problem in Links description, check logs for more details")
-
-
-                doc_id = uuid_Generator.get_UUID()
-                jData = dict()
-                jData['Creator'] = creator
-                jData['CreationDate'] = str(datetime.now())
-                jData['LastUpdate'] = ""
-                jData['OCCI_Location']= loc
-                jData['OCCI_Description']= desc
-                jData['Type']= "Resource"
-                try:
-                    database[doc_id] = jData
-                    mesg = loc
-                    logger.debug("Register resources : " + mesg)
-
-                except Exception as e:
-                    mesg = "An error has occurred, please check log for more details"
-                    logger.error("Register resources : " + e.message)
-
-
-            else:
-                mesg = "Kind description and kind location don't match, please check logs for more details"
-                logger.error("Register resource : " + mesg)
-            loc_res.append(mesg)
-        return loc_res
-
-    def verify_exist_resource(self,resource_loc):
-        """
-        Verifies the existence of a resource with such resource location
-        Args:
-            @param resource_loc: Location of the resource
-        """
-        self.add_design_resource_docs_to_db()
-        database = self.server.get_or_create_db(config.Resource_DB)
-        query = database.view('/get_resource/by_occi_location',key = resource_loc)
-        if query.count() is 0:
-            return False
+                #Verify if the kind to which this request is sent is the same as the one in the link description
+                if desc['kind'] == kind_occi_id:
+                    if desc.has_key('actions'):
+                        ok_a = joker.verify_existences_delta(desc['actions'],db_occi_ids_locs)
+                    else:
+                        ok_a = True
+                    if ok_a is True:
+                        if desc.has_key('mixins'):
+                            ok_m = joker.verify_existences_beta(desc['mixins'],db_occi_ids_locs)
+                        else:
+                            ok_m = True
+                        if ok_m is True:
+                            if desc.has_key('links'):
+                                ok_l,exist_links = self.verify_links_implicit(desc['links'],creator,db_occi_ids_locs)
+                            else:
+                                ok_l = True
+                                exist_links = False
+                            if ok_l is True:
+                                loc = joker.make_entity_location(creator,occi_kind_location,desc['id'])
+                                exist_same = joker.verify_existences_teta([loc],db_occi_ids_locs)
+                                if exist_same is False:
+                                    jData = dict()
+                                    jData['_id'] = uuid_Generator.get_UUID()
+                                    jData['Creator'] = creator
+                                    jData['CreationDate'] = str(datetime.now())
+                                    jData['LastUpdate'] = ""
+                                    jData['OCCI_Location']= loc
+                                    jData['OCCI_Description']= desc
+                                    jData['Type']= "Resource"
+                                    jData['Internal_Links'] = exist_links
+                                    loc_res.append(jData)
+                                else:
+                                    logger.error("Reg resource exp : Bad Resource id ")
+                                    return list(),return_code['Conflict']
+                            else:
+                                logger.error("Reg resources exp : Bad links description ")
+                                return list(),exist_links
+                        else:
+                            logger.error("Reg resources exp : Bad Mixins description ")
+                            return list(),return_code['Not Found']
+                    else:
+                        logger.error("Reg resources exp : Bad Actions description ")
+                        return list(),return_code['Not Found']
+                else:
+                    mesg = "Kind description and kind location don't match"
+                    logger.error("Reg resources exp: " + mesg)
+                    return list(),return_code['Conflict']
+            logger.debug("Reg resouces exp: Resources sent for creation")
+            return loc_res,return_code['OK']
         else:
-            return True
-
-
+            mesg = "No kind corresponding to this location was found"
+            logger.error("Reg resources exp: " + mesg)
+            return list(),return_code['Not Found']
 
     def associate_resources_to_mixin(self,creator,occi_description,occi_mixin_location,occi_mixin_id):
         """
@@ -156,74 +130,51 @@ class ResourceManager(object):
             @param occi_mixin_id: id of the mixin
             @param occi_mixin_location: location of the mixin
         """
-    def register_links_implicit(self,creator,occi_descriptions,source):
-
+    def verify_links_implicit(self,occi_descriptions,creator,db_occi_ids_locs):
         """
-        Add new links to the database (Called only during the creation of a new resource instance)
+        Checks the integrity of internal resource links (Called only during the creation of a new resource instance)
         Args:
-            @param creator: the user who created this new link
-            @param occi_descriptions: the OCCI description of the new link
+
+            @param occi_descriptions: the OCCI descriptions of new links
+            @param creator: Issuer of the request
+            @param db_occi_ids_locs: OCCI IDs and locations contained in the database
         """
 
-        database = self.server.get_or_create_db(config.Link_DB)
-        self.add_design_link_docs_to_db()
-        loc_res=list()
         for desc in occi_descriptions:
-            ok_k= self.manager_k.verify_exist_kind(desc['kind'])
+            ok_k = joker.verify_existences_beta([desc['kind']],db_occi_ids_locs)
+            #Verify if the kind to which this request is sent is the same as the one in the link description
             if ok_k is True:
-                ok_t = self.verify_exist_resource(desc['target'])
-                if ok_t is True:
-                    existing_actions = self.manager_a.verify_exist_actions(desc['actions'],creator)
-                    ok_a = existing_actions.__len__() is desc['actions'].__len__()
-                    if ok_a is False:
-                        logger.debug("Problem in Actions description, check logs for more details")
-                        desc['actions'] = existing_actions
-                    existing_mixins = self.manager_m.verify_exist_mixins(desc['mixins',creator])
-                    ok_m = existing_mixins.__len__() is desc['mixins'].__len__()
-                    if ok_m is False:
-                        logger.debug("Problem in Mixins description, check logs for more details")
-                        desc['mixins'] = existing_mixins
-                    doc_id = uuid_Generator.get_UUID()
-                    kind_loc = desc['kind']
-                    loc = joker.make_link_location(creator,kind_loc,desc['id'])
-                    jData = dict()
-                    desc['source'] = source
-                    jData['Creator'] = creator
-                    jData['CreationDate'] = str(datetime.now())
-                    jData['LastUpdate'] = ""
-                    jData['OCCI_Location']= loc
-                    jData['OCCI_Description']= desc
-                    jData['Type']= "Link"
-                    try:
-                        database[doc_id] = jData
-                        mesg = desc
-                    except Exception as e:
-                        logger.error("Implicit link : " + e.message)
-                        mesg = "An error has occurred, please check logs for more details "
+                ok_target = joker.verify_existences_teta([desc['target']],db_occi_ids_locs)
+                if ok_target is True:
+                    if desc.has_key('actions'):
+                        ok_a = joker.verify_existences_delta(desc['actions'],db_occi_ids_locs)
+                    else:
+                        ok_a = True
+                    if ok_a is True:
+                        if desc.has_key('mixins'):
+                            ok_m = joker.verify_existences_beta(desc['mixins'],db_occi_ids_locs)
+                        else:
+                            ok_m = True
+                        if ok_m is True:
+                            exist_same = joker.verify_existences_kappa(desc['id'],desc['kind'],creator,db_occi_ids_locs)
+                            if exist_same is True:
+                                logger.error("Reg links impl : Bad link id ")
+                                return False,return_code['Conflict']
+                        else:
+                            logger.error("Reg links impl : Bad Mixins description ")
+                            return False,return_code['Not Found']
+                    else:
+                        logger.error("Reg links impl : Bad Actions description ")
+                        return False,return_code['Not Found']
                 else:
-                    mesg = "Problem in Resources description, check logs for more details"
+                    logger.error("Reg links impl : Bad target description ")
+                    return False,return_code['Not Found']
             else:
-                mesg = "Problem in kind description, check logs for more details"
-
-            loc_res.append(mesg)
-            logger.debug(mesg)
-
-        return loc_res
-
-def verify_existences(occi_ids, db_occi_ids_locs):
-    """
-    Verifies the existence of occi_ids in db_occi_ids_locs
-    """
-    var_ids = list()
-    for occi_ids_locs in db_occi_ids_locs:
-        var_ids.append(occi_ids_locs['OCCI_ID'])
-    try:
-        for occi_id in occi_ids:
-            var_ids.index(occi_id)
-    except KeyError:
-        return False
-
-    return True
+                mesg = "Kind description does not exist"
+                logger.error("Reg links impl: " + mesg)
+                return False,return_code['Not Found']
+        logger.debug("Internal links validated with success")
+        return True,True
 
 class LinkManager(object):
     """
@@ -241,7 +192,7 @@ class LinkManager(object):
         """
 
         loc_res = list()
-        loc = joker.make_category_location({'location':kind_occi_location})
+        loc = joker.make_category_location({'location':"/" + kind_occi_location + "/"})
         kind_occi_id = None
         for elem in db_occi_ids_locs:
             if elem['OCCI_Location'] == loc:
@@ -252,33 +203,35 @@ class LinkManager(object):
 
                 #Verify if the kind to which this request is sent is the same as the one in the link description
                 if desc['kind'] == kind_occi_id:
-                    ok_target = verify_existences([desc['target']],db_occi_ids_locs)
+                    ok_target = joker.verify_existences_teta([desc['target']],db_occi_ids_locs)
                     if ok_target is True:
-                        ok_source = verify_existences([desc['source']],db_occi_ids_locs)
+                        ok_source = joker.verify_existences_teta([desc['source']],db_occi_ids_locs)
                         if ok_source is True:
-                            try:
-                                ok_a = verify_existences(desc['actions'],db_occi_ids_locs)
-                            except KeyError as e:
-                                logger.debug("Register resources : " + e.message)
+                            if desc.has_key('actions'):
+                                ok_a = joker.verify_existences_delta(desc['actions'],db_occi_ids_locs)
+                            else:
                                 ok_a = True
                             if ok_a is True:
-                                try:
-                                    ok_m = verify_existences(desc['mixins'],creator)
-                                except KeyError as e:
-                                    logger.debug("Register resources : " + e.message)
+                                if desc.has_key('mixins'):
+                                    ok_m = joker.verify_existences_beta(desc['mixins'],db_occi_ids_locs)
+                                else:
                                     ok_m = True
-
                                 if ok_m is True:
-                                    loc = joker.make_link_location(creator,kind_occi_location,desc['id'])
-                                    jData = dict()
-                                    jData['_id'] = uuid_Generator.get_UUID()
-                                    jData['Creator'] = creator
-                                    jData['CreationDate'] = str(datetime.now())
-                                    jData['LastUpdate'] = ""
-                                    jData['OCCI_Location']= loc
-                                    jData['OCCI_Description']= desc
-                                    jData['Type']= "Link"
-                                    loc_res.append(jData)
+                                    loc = joker.make_entity_location(creator,kind_occi_location,desc['id'])
+                                    exist_same = joker.verify_existences_teta([loc],db_occi_ids_locs)
+                                    if exist_same is False:
+                                        jData = dict()
+                                        jData['_id'] = uuid_Generator.get_UUID()
+                                        jData['Creator'] = creator
+                                        jData['CreationDate'] = str(datetime.now())
+                                        jData['LastUpdate'] = ""
+                                        jData['OCCI_Location']= loc
+                                        jData['OCCI_Description']= desc
+                                        jData['Type']= "Link"
+                                        loc_res.append(jData)
+                                    else:
+                                        logger.error("Reg links exp : Bad Link id ")
+                                        return list(),return_code['Conflict']
                                 else:
                                     logger.error("Reg links exp : Bad Mixins description ")
                                     return list(),return_code['Not Found']
@@ -292,11 +245,16 @@ class LinkManager(object):
                         logger.error("Reg links exp : Bad target description ")
                         return list(),return_code['Not Found']
                 else:
-                    mesg = "Kind description and kind location don't match, please check logs for more details"
+                    mesg = "Kind description and kind location don't match"
                     logger.error("Reg links exp: " + mesg)
                     return list(),return_code['Conflict']
-
+            logger.debug("Reg links exp: links sent for creation")
             return loc_res,return_code['OK']
+        else:
+            mesg = "No kind corresponding to this location was found"
+            logger.error("Reg links exp: " + mesg)
+            return list(),return_code['Not Found']
+
 
     def associate_links_to_mixin(self,creator,occi_description,occi_mixin_location,occi_mixin_id):
         """

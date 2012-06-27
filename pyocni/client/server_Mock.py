@@ -103,8 +103,8 @@ class ocni_server(object):
     app = url_mapper.Router()
 
     app.add_route('/-/',controller=operationQuery)
-    app.add_route('/{location}/',controller=operationPath)
-    app.add_route('/{location}/{user_id}/',controller=operationPath)
+    app.add_route('/-/{location}/',controller=operationPath)
+    app.add_route('/-/{location}/{user_id}/',controller=operationPath)
     app.add_route('/{location}/{user_id}/{ins_id}',controller=operationEntity)
 
 

@@ -299,9 +299,9 @@ class MixinManager:
                 occi_loc = joker.make_category_location(desc)
                 ok_loc = joker.verify_occi_uniqueness(occi_loc,db_occi_locs)
                 if ok_loc is True:
-                    ok_r = joker.verify_exist_relaters(desc,db_occi_ids)
+                    ok_r = joker.verify_existences_alpha(desc,db_occi_ids)
                     if ok_r is True:
-                        ok_a = joker.verify_exist_actions(desc,db_occi_ids)
+                        ok_a = joker.verify_existences_alpha(desc,db_occi_ids)
                         if ok_a is True:
                             jData = dict()
                             jData['_id'] = uuid_Generator.get_UUID()
@@ -567,31 +567,28 @@ class CategoryManager:
         for q in query:
             db_occi_ids.append( q['key'])
             db_occi_locs.append(q['value'])
-        data_keys = jreq.keys()
-        try:
-            data_keys.index('actions')
+
+        if jreq.has_key('actions'):
             logger.debug("Actions post request : channeled")
             new_actions,resp_code_a = self.manager_a.register_actions(user_id,jreq['actions'],db_occi_ids)
-        except Exception as e:
-            logger.error("ch register categories : " + e.message)
+        else:
+            logger.error("ch register categories : no actions found")
             new_actions = list()
             resp_code_a = return_code['OK']
 
-        try:
-            data_keys.index('kinds')
+        if jreq.has_key('kinds'):
             logger.debug("Kinds post request : channeled")
             new_kinds,resp_code_k = self.manager_k.register_kinds(user_id,jreq['kinds'],db_occi_ids,db_occi_locs)
-        except Exception as e:
-            logger.error("ch register categories : " + e.message)
+        else:
+            logger.error("ch register categories : no kinds found")
             new_kinds = list()
             resp_code_k = return_code['OK']
 
-        try:
-            data_keys.index('mixins')
+        if jreq.has_key('mixins'):
             logger.debug("Mixins post request : channeled")
             new_mixins,resp_code_m = self.manager_m.register_mixins(user_id,jreq['mixins'],db_occi_ids,db_occi_locs)
-        except Exception as e:
-            logger.error("ch register categories : " + e.message)
+        else:
+            logger.error("ch register categories : No mixins found")
             new_mixins= list()
             resp_code_m = return_code['OK']
 
@@ -654,31 +651,27 @@ class CategoryManager:
             elif q['key'] == "Action":
                 db_actions.append(q['value'])
 
-        data_keys = jreq.keys()
-        try:
-            data_keys.index('kinds')
+        if jreq.has_key('kinds'):
             logger.debug("Kinds filter get request : channeled")
             filtred_kinds,resp_code_k = self.manager_k.get_filtered_kinds(jreq['kinds'],db_kinds)
-        except Exception as e:
-            logger.debug("ch get filter : " + e.message)
+        else:
+            logger.debug("ch get filter : kinds not found")
             filtred_kinds = ""
             resp_code_k = return_code['OK']
 
-        try:
-            data_keys.index('mixins')
+        if jreq.has_key('mixins'):
             logger.debug("Mixins filter get request : channeled")
             filtred_mixins,resp_code_m = self.manager_m.get_filtered_mixins(jreq['mixins'],db_mixins)
-        except Exception as e:
-            logger.debug("ch get filter : " + e.message)
+        else:
+            logger.debug("ch get filter : mixins not found" )
             filtred_mixins = ""
             resp_code_m = return_code['OK']
 
-        try:
-            data_keys.index('actions')
+        if jreq.has_key('actions'):
             logger.debug("Actions filter get : channeled")
             filtred_actions,resp_code_a = self.manager_a.get_filtered_actions(jreq['actions'],db_actions)
-        except Exception as e:
-            logger.debug("ch get filter : " + e.message)
+        else:
+            logger.debug("ch get filter : No actions found")
             filtred_actions = ""
             resp_code_a = return_code['OK']
 
@@ -697,50 +690,38 @@ class CategoryManager:
         """
         database = config.prepare_PyOCNI_db()
         try:
-            query = database.view('/get_views/_id_rev_occi_id_creator')
+            query = database.view('/get_views/_id_rev_occi_id_creator_type_occi_desc')
         except Exception as e:
             logger.error("Category delete : " + e.message)
             return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
         db_occi_id_creator = list()
-        for q in query:
-            db_occi_id_creator.append( { "_id" : q['key'],"_rev" : q['value'][0], "OCCI_ID" : q['value'][1],"Creator" : q['value'][2]})
-
-        try:
-            query = database.view('/get_views/type_occi_desc')
-        except Exception as e:
-            logger.error("Category delete : " + e.message)
-            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
-
         db_entities = list()
         for q in query:
-            if q['key'] == "Link" or q['key'] == "Resource":
-                db_entities.append(q['value'])
+            db_occi_id_creator.append( { "_id" : q['key'],"_rev" : q['value'][0], "OCCI_ID" : q['value'][1],"Creator" : q['value'][2]})
+            if q['value'][3] == "Link" or q['value'][3] == "Resource":
+                db_entities.append(q['value'][4])
 
-        data_keys = jreq.keys()
-        try:
-            data_keys.index('kinds')
+        if jreq.has_key('kinds'):
             logger.debug("Kinds delete request : channeled")
             delete_kinds,resp_code_k = self.manager_k.delete_kind_documents(jreq['kinds'],user_id,db_occi_id_creator,db_entities)
-        except Exception as e:
-            logger.error("ch delete filter : " +e.message)
+        else:
+            logger.error("ch delete filter : No kinds found")
             delete_kinds=list()
             resp_code_k = return_code['OK']
 
-        try:
-            data_keys.index('mixins')
+        if jreq.has_key('mixins'):
             logger.debug("Mixins delete request : channeled")
             delete_mixins,resp_code_m = self.manager_m.delete_mixin_documents(jreq['mixins'],user_id,db_occi_id_creator,db_entities)
-        except Exception as e:
-            logger.error("ch delete filter : " +e.message)
+        else:
+            logger.error("ch delete filter : No mixins found")
             delete_mixins=list()
             resp_code_m = return_code['OK']
 
-        try:
-            data_keys.index('actions')
+        if jreq.has_key('actions'):
             logger.debug("Actions delete request : channeled")
             delete_actions,resp_code_a = self.manager_a.delete_action_documents(jreq['actions'],user_id,db_occi_id_creator)
-        except Exception as e:
-            logger.error("ch delete filter : " +e.message)
+        else:
+            logger.error("ch delete filter : No actions found")
             delete_actions = list()
             resp_code_a = return_code['OK']
 
@@ -770,39 +751,35 @@ class CategoryManager:
         for q in query:
             db_occi_id_doc.append( { "OCCI_ID" : q['key'],"Doc" : q['value']})
 
-        data_keys = j_newData.keys()
-        try:
-            data_keys.index('actions')
+        if j_newData.has_key('actions'):
             logger.debug("Actions put request : channeled")
             updated_actions,resp_code_a = self.manager_a.update_OCCI_action_descriptions(user_id,j_newData['actions'],db_occi_id_doc)
-        except Exception as e:
-            logger.error("ch update categories : " + e.message)
+        else:
+            logger.error("ch update categories : No actions found")
             updated_actions=list()
             resp_code_a = return_code['OK']
 
-        try:
-            data_keys.index('kinds')
+        if j_newData.has_key('kinds'):
             logger.debug("Kinds put request : channeled")
             updated_kinds,resp_code_k = self.manager_k.update_OCCI_kind_descriptions(user_id,j_newData['kinds'],db_occi_id_doc)
-        except Exception as e:
-            logger.error("ch update categories : " + e.message)
+        else:
+            logger.error("ch update categories : No kinds found")
             updated_kinds = list()
             resp_code_k = return_code['OK']
-        try:
-            data_keys.index('providers')
+
+        if j_newData.has_key('providers'):
             logger.debug("Providers put request : channeled")
             updated_providers,resp_code_p = self.manager_k.update_kind_providers(user_id,j_newData['providers'],db_occi_id_doc)
-        except Exception as e:
-            logger.error("ch update categories : " + e.message)
+        else:
+            logger.error("ch update categories : No provider found")
             updated_providers=list()
             resp_code_p = return_code['OK']
 
-        try:
-            data_keys.index('mixins')
+        if j_newData.has_key('mixins'):
             logger.debug("Mixins put request : channeled")
             updated_mixins,resp_code_m = self.manager_m.update_OCCI_mixin_descriptions(user_id,j_newData['mixins'],db_occi_id_doc)
-        except Exception as e:
-            logger.error("ch update categories : " + e.message)
+        else:
+            logger.error("ch update categories : No Mixins found")
             updated_mixins = list()
             resp_code_m = return_code['OK']
 

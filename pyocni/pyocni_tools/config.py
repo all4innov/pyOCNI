@@ -105,6 +105,9 @@ def prepare_PyOCNI_db():
             },
             "occi_location_doc": {
                 "map": "(function(doc) { emit (doc.OCCI_Location,doc) });"
+            },
+            "_id_rev_occi_id_creator_type_occi_desc": {
+                "map": "(function(doc) { emit (doc._id,[doc._rev,doc.OCCI_ID, doc.Creator, doc.Type,doc.OCCI_Description]) });"
             }
 
         }

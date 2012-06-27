@@ -88,18 +88,11 @@ class PathManager(object):
             @param location: Address to which this post request was sent
         """
         database = config.prepare_PyOCNI_db()
-        try:
-            jreq.index('resources')
+
+        if jreq.has_key('resources') or jreq.has_key('links'):
             is_kind_loc = True
-        except KeyError:
-            try:
-                jreq.index('links')
-                is_kind_loc = True
-            except KeyError:
-                jreq.index('OCCI_Location')
-                is_kind_loc = False
-        except Exception:
-            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+        else:
+            is_kind_loc = False
 
         if is_kind_loc is True:
             try:
@@ -110,22 +103,21 @@ class PathManager(object):
             db_occi_ids_locs = list()
             for q in query:
                 db_occi_ids_locs.append({"OCCI_ID" : q['key'],"OCCI_Location":q['value']})
-            try:
-                jreq.index('resources')
+
+            if jreq.has_key('resources'):
                 logger.debug("Post path : Post on kind path to create a new resource channeled")
                 new_resources, resp_code_r = self.manager_r.register_resources(user_id,jreq['resources'],location,db_occi_ids_locs)
-            except Exception as e:
-                logger.error("Post path : " +e.message)
+            else:
                 new_resources = list()
                 resp_code_r = return_code['OK']
-            try:
-                jreq.index('links')
+
+            if jreq.has_key('links'):
                 logger.debug("Post path : Post on kind path to create a new link channeled")
                 new_links, resp_code_l = self.manager_l.register_links_explicit(user_id,jreq['links'],location,db_occi_ids_locs)
-            except Exception as e:
-                logger.error("Post path : " +e.message)
+            else:
                 new_links = list()
                 resp_code_l = return_code['OK']
+
             if resp_code_r is not return_code['OK'] or resp_code_l is not return_code['OK']:
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
 
@@ -144,12 +136,10 @@ class PathManager(object):
             for q in query:
                 db_occi_locs_docs.append({"OCCI_Location" : q['key'],"Doc":q['value']})
 
-            try:
-                jreq.index('OCCI_Location')
+            if jreq.has_key('OCCI_Location'):
                 logger.debug("Post path : Post on kind path to create a new resource channeled")
                 updated_entities,resp_code_e = associate_entities_to_mixin(user_id,jreq['OCCI_Location'],location,db_occi_locs_docs)
-            except Exception as e:
-                logger.error("Post path : " +e.message)
+            else:
                 updated_entities = list()
                 resp_code_e = return_code['OK']
 
