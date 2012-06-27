@@ -108,12 +108,7 @@ def filter_occi_description(description,filter):
 
 
 def verify_exist_relaters(description,db_data):
-    """
-    Verify the existence of the related kinds or mixins
-    Args:
-        @param description: OCCI description to test the existence of the related urls
-        @param db_data: Data already stored in database
-    """
+
     try:
         relaters = description['related']
     except Exception as e:
@@ -131,28 +126,94 @@ def verify_exist_relaters(description,db_data):
 
     return True
 
-def verify_exist_actions(description,actions_data):
+def verify_existences_alpha(description,db_data):
     """
+    Verify the existence of items in db_data
+    Args:
+        @param description: OCCI IDs to test the existence of the related urls
+        @param db_data: Data already stored in database
+    """
+    if description.has_key('related'):
+        items = description['related']
+    elif description.has_key('actions'):
+        items = description['actions']
+    else:
+        return False
 
-    """
+
+    if not items:
+        return True
+
     try:
-        actions = description['actions']
-    except Exception as e:
-        logger.debug("exist actions " + e.message)
-        return True
-    if not actions:
-        return True
+        for item in items:
+            db_data.index(item)
+    except KeyError as e:
+        logger.error(" exist alpha : " + e.message)
+        return False
 
-    for action in actions:
-        try:
-            actions_data.index(action)
-        except Exception as e:
-            logger.error(" exist actions : " + e.message)
-            return False
     return True
 
 
+def verify_existences_beta(occi_ids, db_occi_ids_locs):
+    """
+    Verifies the existence of occi_ids in db_occi_ids_locs
+    Args
+        @param occi_ids: OCCI IDs to verify its existence
+        @param db_occi_ids_locs: OCCI IDs and locations contained in the database
+    """
+    var_ids = list()
+    for occi_ids_locs in db_occi_ids_locs:
+        var_ids.append(occi_ids_locs['OCCI_ID'])
+    try:
+        for occi_id in occi_ids:
+            var_ids.index(occi_id)
+    except KeyError as e:
+        logger.debug("exist beta : " + e.message)
+        return False
 
+    return True
+
+def verify_existences_delta(actions, db_occi_ids_locs):
+    """
+    Verifies the existence of occi_ids in db_occi_ids_locs
+    Args
+        @param actions: OCCI IDs to verify its existence
+        @param db_occi_ids_locs: OCCI IDs and locations contained in the database
+    """
+    var_ids = list()
+    for occi_ids_locs in db_occi_ids_locs:
+        var_ids.append(occi_ids_locs['OCCI_ID'])
+
+    var_action_ids = list()
+    for action in actions:
+        var_action_ids.append(action['category'])
+    try:
+        for action_id in var_action_ids:
+            var_ids.index(action_id)
+    except KeyError as e:
+        logger.debug("exist delta : " + e.message)
+        return False
+
+    return True
+
+def verify_existences_teta(occi_locs, db_occi_ids_locs):
+    """
+    Verifies the existence of occi_locations in db_occi_ids_locs
+    Args
+        @param occi_locs: OCCI IDs to verify its existence
+        @param db_occi_ids_locs: OCCI IDs and locations contained in the database
+    """
+    var_ids = list()
+    for occi_ids_locs in db_occi_ids_locs:
+        var_ids.append(occi_ids_locs['OCCI_Location'])
+    try:
+        for occi_loc in occi_locs:
+            var_ids.index(occi_loc)
+    except KeyError as e:
+        logger.debug("exist teta : " + e.message)
+        return False
+
+    return True
 
 def make_category_location(occi_description):
     """
@@ -169,31 +230,18 @@ def make_category_location(occi_description):
         return  None
     return entity_location
 
-def make_resource_location(user_id,kind_loc, uuid):
+def make_entity_location(user_id,kind_loc, uuid):
     """
-    Creates the location of the resource from the occi resource description
+    Creates the location of the resource/link from the occi resource/link description
     Args:
-        @param kind_loc: Kind OCCI location to which this resource instance belongs to
-        @param uuid: UUID of the resource contained in the resource description
-        @param user_id: ID creator of the resource instance
-        @return :<string> Location of the resource
+        @param kind_loc: Kind OCCI location to which this resource/link instance belongs to
+        @param uuid: UUID of the resource/link contained in the resource/link description
+        @param user_id: ID creator of the resource/link instance
+        @return :<string> Location of the resource/link
     """
 
-    resource_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + user_id + kind_loc + uuid
-    return resource_location
-
-def make_link_location(user_id,kind_loc, uuid):
-    """
-    Creates the location of the link from the occi link description
-    Args:
-        @param kind_loc: Kind OCCI location to which this resource instance belongs to
-        @param uuid: UUID of the resource contained in the resource description
-        @param user_id: ID creator of the resource instance
-        @return :<string> Location of the resource
-    """
-
-    link_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + user_id + kind_loc + uuid
-    return link_location
+    entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + user_id + "/" + kind_loc + "/" + uuid
+    return entity_location
 
 
 def verify_occi_uniqueness(occi_term, db_categories):
@@ -236,4 +284,8 @@ def extract_doc(occi_id, db_data):
             logger.debug("Document " + occi_id + " is found")
             return data['Doc']
     logger.error("Document " + occi_id + "couldn't be found")
+    return None
+
+
+def verify_existences_kappa(param, param1, creator, db_occi_ids_locs):
     return None
