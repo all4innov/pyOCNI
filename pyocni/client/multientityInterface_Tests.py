@@ -113,7 +113,7 @@ resources_link ="""
                     "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
                 }
             ],
-            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae30",
             "title": "Compute resource",
             "summary": "This is a compute resource",
             "links": [
@@ -162,7 +162,7 @@ links = """{
             "id": "for my test",
             "title": "Mynetworkinterface",
             "target": "http://127.0.0.1:8090/user_1/resource/996ad860-2a9a-504f-8861-aeafd0b2ae29",
-            "source": "http://127.0.0.1:8090/user_1/resource/996ad860-2a9a-504f-8861-aeafd0b2ae29"
+            "source": "http://127.0.0.1:8090/user_1/resource/996ad860-2a9a-504f-8861-aeafd0b2ae30"
         }
     ]
 }
@@ -219,6 +219,38 @@ class test_post(TestCase):
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
+class test_get(TestCase):
+    """
+    Tests GET request scenarios
+    """
+    def setUp(self):
+
+        """
+        Set up the test environment
+        """
+        self.p = Process(target = start_server)
+        self.p.start()
+        time.sleep(0.5)
+
+    def tearDown(self):
+        self.p.terminate()
+
+    def test_get_all_entities(self):
+        """
+        get resources & links
+        """
+
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/-/template/resource/medium2/")
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
 
 if __name__ == '__main__':
 
@@ -227,12 +259,12 @@ if __name__ == '__main__':
     runner = TextTestRunner(verbosity=2)
 
     #Create the testing suites
-    #    get_suite = loader.loadTestsFromTestCase(test_get)
+    get_suite = loader.loadTestsFromTestCase(test_get)
     #    delete_suite = loader.loadTestsFromTestCase(test_delete)
     #    put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
-    #    runner.run(get_suite)
+    runner.run(get_suite)
     #    runner.run(delete_suite)
     #    runner.run(put_suite)
     runner.run(post_suite)

@@ -87,28 +87,49 @@ def prepare_PyOCNI_db():
         raise Exception("Database is unreachable")
     database = server.get_or_create_db(PyOCNI_DB)
     design_doc = {
-        "_id": "_design/get_views",
+        "_id": "_design/db_views",
         "language": "javascript",
         "type": "DesignDoc",
         "views": {
-            "occi_id_occi_location": {
-                "map": "(function(doc){emit(doc.OCCI_ID,doc.OCCI_Location)});"
+            "for_get_categories":{
+                "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                      "emit (doc.Type, doc.OCCI_Description) });"
             },
-            "type_occi_desc":{
-                "map":"(function(doc) { emit (doc.Type, doc.OCCI_Description) });"
+            "for_update_categories": {
+                "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                       "emit (doc.OCCI_ID,doc) });"
             },
-            "_id_rev_occi_id_creator": {
-                "map": "(function(doc) { emit (doc._id,[doc._rev,doc.OCCI_ID, doc.Creator]) });"
+            "for_associate_a_mixin": {
+                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")||(doc.Type == \"Mixin\"))"
+                       "emit (doc.OCCI_Location,doc) });"
             },
-            "occi_id_doc": {
-                "map": "(function(doc) { emit (doc.OCCI_ID,doc) });"
+            "for_delete_categories": {
+                "map": "(function(doc) {  if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
+                        "emit(null,doc);"
+                        " else "
+                        " emit(doc._id,[doc._rev,doc.OCCI_ID, doc.Creator]);});"
             },
-            "occi_location_doc": {
-                "map": "(function(doc) { emit (doc.OCCI_Location,doc) });"
+            "for_register_categories" : {
+                "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                      "emit (doc.OCCI_ID,doc.OCCI_Location) });"
             },
-            "_id_rev_occi_id_creator_type_occi_desc": {
-                "map": "(function(doc) { emit (doc._id,[doc._rev,doc.OCCI_ID, doc.Creator, doc.Type,doc.OCCI_Description]) });"
+            "for_register_entities": {
+                "map": "(function(doc) { emit (doc.OCCI_ID,doc.OCCI_Location) });"
+            },
+            "for_get_entities": {
+                "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\"))"
+                       "emit (doc.OCCI_Location,[doc.OCCI_ID,doc.Type]) });"
+            },
+            "entities_of_kind": {
+                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                       "emit (doc.OCCI_Description.kind,doc.OCCI_Location) });"
+            },
+            "entities_of_mixin": {
+                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                       "{for (elem in doc.OCCI_Description.mixins) "
+                       "emit (doc.OCCI_Description.mixins[elem],doc.OCCI_Location) }});"
             }
+
 
         }
 
@@ -124,7 +145,7 @@ def purge_PyOCNI_db():
         logger.error("Database is unreachable")
 
     try:
-        server.get_db(PyOCNI_DB).flush()
+        server.delete_db(PyOCNI_DB)
     except Exception:
         logger.debug("No DB named: '" + PyOCNI_DB + "' to delete.")
         server.create_db(PyOCNI_DB)

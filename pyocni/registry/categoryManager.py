@@ -93,31 +93,25 @@ class KindManager:
                 occi_loc = joker.make_category_location(desc)
                 ok_loc = joker.verify_occi_uniqueness(occi_loc,db_occi_locs)
                 if ok_loc is True:
-                    ok_r = joker.verify_exist_relaters(desc,db_occi_ids)
-                    if ok_r is True:
-                        ok_a = joker.verify_exist_actions(desc,db_occi_ids)
-                        if ok_a is True:
-                            jData = dict()
-                            jData['_id'] = uuid_Generator.get_UUID()
-                            jData['Creator'] = creator
-                            jData['CreationDate'] = str(datetime.now())
-                            jData['LastUpdate'] = ""
-                            jData['OCCI_Location']= occi_loc
-                            jData['OCCI_Description']= desc
-                            jData['OCCI_ID'] = occi_id
-                            jData['Type']= "Kind"
-                            jData['Provider']= {"local":[],"remote":[]}
-                            loc_res.append(jData)
-                        else:
-                            message = "Missing action description, Kind will not be created."
-                            logger.error("Register kind : " + message)
-                            resp_code = return_code['Not Found']
-                            return list(),resp_code
+                    ok_ar = joker.verify_existences_alpha(desc,db_occi_ids)
+                    if ok_ar is True:
+                        jData = dict()
+                        jData['_id'] = uuid_Generator.get_UUID()
+                        jData['Creator'] = creator
+                        jData['CreationDate'] = str(datetime.now())
+                        jData['LastUpdate'] = ""
+                        jData['OCCI_Location']= occi_loc
+                        jData['OCCI_Description']= desc
+                        jData['OCCI_ID'] = occi_id
+                        jData['Type']= "Kind"
+                        jData['Provider']= {"local":[],"remote":[]}
+                        loc_res.append(jData)
                     else:
-                        message = "Missing related kind description, Kind will not be created."
+                        message = "Missing action or related kind description, Kind will not be created."
                         logger.error("Register kind : " + message)
                         resp_code = return_code['Not Found']
                         return list(),resp_code
+
                 else:
                     message = "Location conflict, kind will not be created."
                     logger.error("Register kind : " + message)
@@ -561,7 +555,7 @@ class CategoryManager:
 
         """
         database = config.prepare_PyOCNI_db()
-        query = database.view('/get_views/occi_id_occi_location')
+        query = database.view('/db_views/for_register_categories')
         db_occi_ids = list()
         db_occi_locs = list()
         for q in query:
@@ -609,7 +603,7 @@ class CategoryManager:
         db_mixins = list()
         db_actions = list()
         try:
-            query = database.view('/get_views/type_occi_desc')
+            query = database.view('/db_views/for_get_categories')
         except Exception as e:
             logger.error("Category get all : " + e.message)
             return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
@@ -638,7 +632,7 @@ class CategoryManager:
         db_mixins = list()
         db_actions = list()
         try:
-            query = database.view('/get_views/type_occi_desc')
+            query = database.view('/db_views/for_get_categories')
         except Exception as e:
             logger.error("Category get all : " + e.message)
             return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
@@ -690,16 +684,17 @@ class CategoryManager:
         """
         database = config.prepare_PyOCNI_db()
         try:
-            query = database.view('/get_views/_id_rev_occi_id_creator_type_occi_desc')
+            query = database.view('/db_views/for_delete_categories')
         except Exception as e:
             logger.error("Category delete : " + e.message)
             return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
         db_occi_id_creator = list()
         db_entities = list()
         for q in query:
-            db_occi_id_creator.append( { "_id" : q['key'],"_rev" : q['value'][0], "OCCI_ID" : q['value'][1],"Creator" : q['value'][2]})
-            if q['value'][3] == "Link" or q['value'][3] == "Resource":
-                db_entities.append(q['value'][4])
+            if q['key'] is not None:
+                db_occi_id_creator.append( { "_id" : q['key'],"_rev" : q['value'][0], "OCCI_ID" : q['value'][1],"Creator" : q['value'][2]})
+            else:
+                db_entities.append(q['value'])
 
         if jreq.has_key('kinds'):
             logger.debug("Kinds delete request : channeled")
@@ -743,14 +738,13 @@ class CategoryManager:
         """
         database = config.prepare_PyOCNI_db()
         try:
-            query = database.view('/get_views/occi_id_doc')
+            query = database.view('/db_views/for_update_categories')
         except Exception as e:
             logger.error("Category delete : " + e.message)
             return "An error has occurred, please check log for more details",return_code['Internal Server Error']
         db_occi_id_doc = list()
         for q in query:
             db_occi_id_doc.append( { "OCCI_ID" : q['key'],"Doc" : q['value']})
-
         if j_newData.has_key('actions'):
             logger.debug("Actions put request : channeled")
             updated_actions,resp_code_a = self.manager_a.update_OCCI_action_descriptions(user_id,j_newData['actions'],db_occi_id_doc)

@@ -104,28 +104,6 @@ def filter_occi_description(description,filter):
 
     return True
 
-
-
-
-def verify_exist_relaters(description,db_data):
-
-    try:
-        relaters = description['related']
-    except Exception as e:
-        logger.debug(" exist relaters : " + e.message)
-        return True
-    if not relaters:
-        return True
-
-    try:
-        for related in relaters:
-            db_data.index(related)
-    except ValueError as e:
-        logger.error(" exist relaters : " + e.message)
-        return False
-
-    return True
-
 def verify_existences_alpha(description,db_data):
     """
     Verify the existence of items in db_data
@@ -135,15 +113,16 @@ def verify_existences_alpha(description,db_data):
     """
     if description.has_key('related'):
         items = description['related']
+        if description.has_key('actions'):
+            items += description['actions']
     elif description.has_key('actions'):
         items = description['actions']
     else:
-        return False
+        return True
 
 
     if not items:
         return True
-
     try:
         for item in items:
             db_data.index(item)
@@ -230,19 +209,6 @@ def make_category_location(occi_description):
         return  None
     return entity_location
 
-def make_entity_location(user_id,kind_loc, uuid):
-    """
-    Creates the location of the resource/link from the occi resource/link description
-    Args:
-        @param kind_loc: Kind OCCI location to which this resource/link instance belongs to
-        @param uuid: UUID of the resource/link contained in the resource/link description
-        @param user_id: ID creator of the resource/link instance
-        @return :<string> Location of the resource/link
-    """
-
-    entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + user_id + "/" + kind_loc + "/" + uuid
-    return entity_location
-
 
 def verify_occi_uniqueness(occi_term, db_categories):
     """
@@ -287,5 +253,42 @@ def extract_doc(occi_id, db_data):
     return None
 
 
-def verify_existences_kappa(param, param1, creator, db_occi_ids_locs):
-    return False
+def make_entity_location_from_url(creator, url_path, uuid):
+    """
+    Creates the location of the resource/link from the occi resource/link description
+    Args:
+        @param url_path: Kind OCCI location to which this resource/link instance belongs to
+        @param uuid: UUID of the resource/link contained in the resource/link description
+        @param creator: ID creator of the resource/link instance
+        @return :<string> Location of the resource/link
+    """
+    kind_loc = url_path.split('/-/')[1]
+    entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + creator + "/" + kind_loc + uuid
+    return entity_location
+
+
+
+def make_implicit_link_location(uuid, kind_id, creator, db_occi_ids_locs):
+    """
+    Creates the location of the resource/link from the occi resource/link description
+    Args:
+        @param kind_id: Kind OCCI id to which this link instance belongs to
+        @param uuid: UUID of the link contained in the link description
+        @param creator: ID creator of the link instance
+        @param db_occi_ids_locs: OCCI IDs and locations stored in the database
+        @return :<string> Location of the resource/link
+    """
+    for occi_id_loc in db_occi_ids_locs:
+        if occi_id_loc['OCCI_ID'] == kind_id:
+            kind_loc = occi_id_loc['OCCI_Location'].split('/-/')[1]
+            entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + creator + "/" + kind_loc + uuid
+
+            return entity_location
+
+    return None
+
+
+def verify_existences_kappa(occi_ids, db_occi_ids_locs):
+    #verify that the target and source are different resources
+    #verify that the target and source are resources and not links
+    return True
