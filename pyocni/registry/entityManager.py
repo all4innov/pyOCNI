@@ -29,658 +29,418 @@ Created on Jun 12, 2012
 
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.occi_Joker as joker
-from pyocni.registry.categoryManager import KindManager,MixinManager,ActionManager
 try:
     import simplejson as json
 except ImportError:
     import json
 from datetime import datetime
 from pyocni.pyocni_tools import uuid_Generator
-from couchdbkit import *
 from pyocni.pyocni_tools.config import return_code
 
 # getting the Logger
 logger = config.logger
 
-
-# Get the database server configuration
-
-DB_server_IP = config.DB_IP
-DB_server_PORT = config.DB_PORT
-
-def purgeEntityDBs():
-    """
-    Delete resource and link databases
-    """
-    try:
-        server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
-    except Exception:
-        logger.error("Database is unreachable")
-    try:
-        server.get_db(config.Resource_DB).flush()
-
-    except Exception:
-        logger.debug("No DB named: '" + config.Resource_DB + "' to delete")
-        server.create_db(config.Resource_DB)
-    try:
-        server.get_db(config.Link_DB).flush()
-    except Exception:
-        logger.debug("No DB named: '" + config.Link_DB + "' to delete")
-        server.create_db(config.Link_DB)
-
-
+#=======================================================================================================================
+#                                           ResourceManager
+#=======================================================================================================================
 
 class ResourceManager(object):
     """
     Manager of resource and link documents in the couch database.
     """
 
-    def __init__(self):
-
-        try:
-            self.server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
-        except Exception:
-            logger.error("Database is unreachable")
-            raise Exception("Database is unreachable")
-        self.manager_m = MixinManager()
-        self.manager_a = ActionManager()
-        self.manager_k = KindManager()
-
-    def add_design_resource_docs_to_db(self):
-        """
-        Add resource design documents to database.
-        """
-        design_doc = {
-            "_id": "_design/get_entity",
-            "language": "javascript",
-            "type": "DesignDoc",
-            "views": {
-                "all": {
-                    "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
-                }
-            }
-
-        }
-        database = self.server.get_or_create_db(config.Resource_DB)
-        if database.doc_exist(design_doc['_id']):
-            pass
-        else:
-            database.save_doc(design_doc)
-
-#    def get_entity_by_id(self,doc_id=None):
-#
-#        """
-#        Returns the OCCI entity description contained inside the entity document matching the doc_id provided
-#        Args:
-#            @param doc_id: id of the entity document to be retrieved
-#            @return : <dict> OCCI description of the resource
-#
-#        """
-#        database = self.server.get_or_create_db(config.Resource_DB)
-#        #if the doc_id exists then the resource description will be returned
-#        if database.doc_exist(doc_id):
-#            elem = database.get(doc_id)
-#            res = elem['OCCI_Description']
-#            logger.debug("Resource document " + str(doc_id) + " is found")
-#            return res,return_code['OK']
-#        else:
-#            message = "Resource document " + str(doc_id) + " does not exist"
-#            logger.debug(message)
-#            return message,return_code['Resource not found']
-#
-#    def get_all_resources(self):
-#        """
-#        Returns all OCCI descriptions of the resources contained inside resource documents stored in the database
-#        Args:
-#            @return : <dict> All OCCI resource descriptions
-#
-#        """
-#        database = self.server.get_or_create_db(config.Resource_DB)
-#        query = database.view('/get_resource/all')
-#        var = list()
-#        #Extract resource descriptions from the dictionary
-#        try:
-#            for elem in query:
-#                var.append(elem['value'])
-#            logger.debug("Resources found")
-#            return var,return_code['OK']
-#        except Exception as e:
-#            logger.error(e.message)
-#            return e.message,return_code['Internal Server Error']
-
-    def register_resources(self,creator,occi_description,occi_kind_location,occi_kind_id):
+    def register_resources(self,creator,occi_descriptions,url_path,db_occi_ids_locs):
 
         """
         Add new resources to the database
         Args:
             @param creator: the user who created these new resources
-            @param occi_description: the OCCI description of the new resources
-            @param occi_kind_location: the kind location to which belong these new resources
-            @param occi_kind_id: the occi kind id of the kind to which belongs these new resources
+            @param occi_descriptions: the OCCI description of the new resources
+            @param db_occi_ids_locs: OCCI IDs and OCCI Location extracted from the database
+            @param url_path: URL path of the request
         """
-
-        database = self.server.get_or_create_db(config.Resource_DB)
-        self.add_design_resource_docs_to_db()
         loc_res = list()
-        for desc in occi_description:
-            #Verify if the kind to which this request is sent is the same as the one in the resource description
-            if desc['kind'] == occi_kind_id:
-                try:
-                    desc.index['actions']
-                    existing_actions = self.manager_a.verify_exist_actions(desc['actions'],creator)
-                    ok_a = desc['actions'].__len__() is existing_actions.__len__()
-                except Exception as e:
-                    logger.debug("Register resources : " + e.message)
-                    ok_a = True
 
-                if ok_a is False:
-                    desc['actions'] = existing_actions
-                    logger.debug("Problem in Actions description, check logs for more details")
-                try:
-                    desc.index['mixins']
-                    existing_mixins = self.manager_m.verify_exist_mixins(desc['mixins'],creator)
-                    ok_m = desc['mixins'].__len__() is existing_mixins.__len__()
-                except Exception as e:
-                        logger.debug("Register resources : " + e.message)
-                        ok_m = True
+        kind_occi_id = None
+        for elem in db_occi_ids_locs:
+            if elem['OCCI_Location'] == url_path:
+                kind_occi_id = elem['OCCI_ID']
+                break
+        if kind_occi_id is not None:
+            for desc in occi_descriptions:
 
-                if ok_m is False:
-                    desc['mixins'] = existing_mixins
-                    logger.debug("Problem in Mixins description, check logs for more details")
-                loc = joker.make_resource_location(creator,occi_kind_location,desc['id'])
-                try:
-                    desc.index['links']
-                    created_links = self.register_links_implicit(desc['links'],creator,loc)
-                    ok_l = created_links.__len__() is desc['links'].__len__()
-                except Exception as e:
-                    logger.debug("Register resources : " + e.message)
-                    ok_l = True
-
-                if ok_l is False:
-                    desc['links'] = created_links
-                    logger.debug("Problem in Links description, check logs for more details")
-
-
-                doc_id = uuid_Generator.get_UUID()
-                jData = dict()
-                jData['Creator'] = creator
-                jData['CreationDate'] = str(datetime.now())
-                jData['LastUpdate'] = ""
-                jData['OCCI_Location']= loc
-                jData['OCCI_Description']= desc
-                jData['Type']= "Resource"
-                try:
-                    database[doc_id] = jData
-                    mesg = loc
-                    logger.debug("Register resources : " + mesg)
-
-                except Exception as e:
-                    mesg = "An error has occurred, please check log for more details"
-                    logger.error("Register resources : " + e.message)
-
-
-            else:
-                mesg = "Kind description and kind location don't match, please check logs for more details"
-                logger.error("Register resource : " + mesg)
-            loc_res.append(mesg)
-        return loc_res
-
-    def verify_exist_resource(self,resource_loc):
-        """
-        Verifies the existence of a resource with such resource location
-        Args:
-            @param resource_loc: Location of the resource
-        """
-        self.add_design_resource_docs_to_db()
-        database = self.server.get_or_create_db(config.Resource_DB)
-        query = database.view('/get_resource/by_occi_location',key = resource_loc)
-        if query.count() is 0:
-            return False
-        else:
-            return True
-
-
-#    def update_resource(self,doc_id=None,user_id=None,new_Data=None):
-#        """
-#        Update all fields of the resource document (Can only be done by the creator of the document)
-#        Args:
-#            @param doc_id: id of the resource document
-#            @param user_id: id of the issuer of update request
-#            @param new_Data: the new data that will be used to update the old data
-#        """
-#        #Get the old document data from the database
-#        database = self.server.get_or_create_db(config.Resource_DB)
-#
-#        if database.doc_exist(doc_id) is True:
-#            oldData = database.get(doc_id)
-#            if oldData['Creator'] == user_id:
-#                oldData_keys = oldData.keys()
-#                newData_keys =  new_Data.keys()
-#                problems = False
-#                for key in newData_keys:
-#                    try:
-#                        #OCCI_Description field will be treated separately
-#                        if key == "OCCI_Description":
-#                            old_descrip = oldData[key]['resources'][0]
-#                            new_descrip = new_Data[key]['resources'][0]
-#                            problems,oldData[key]['resources'][0] = joker.update_occi_description(old_descrip,new_descrip)
-#                        else:
-#                            oldData_keys.index(key)
-#                            oldData[key] = new_Data[key]
-#                    except Exception:
-#                        problems = True
-#                        logger.debug(key + "could not be found")
-#                        #Keep the record of the keys(=parts) that couldn't be update
-#                if problems is True:
-#                    message = "Resource document " + str(doc_id) + " has not been totally updated. Check log for more details"
-#                else:
-#                    message = "Resource document " + str(doc_id) + " has been updated successfully"
-#                oldData['LastUpdate'] = str(datetime.now())
-#                #Update the resource document
-#                database.save_doc(oldData,force_update = True)
-#                logger.debug(message)
-#                return message,return_code['OK']
-#            else:
-#                message= "You have no right to update this resource document"
-#                logger.debug(message)
-#                return message,return_code['Unauthorized']
-#
-#        else:
-#            message = "Resource document " + str(doc_id) + " couldn\'t be found"
-#            logger.debug(message)
-#            return message,return_code['Resource not found']
-#
-#    def delete_resource_document(self,doc_id=None,user_id=None):
-#        """
-#        Delete the resource document that is related to the id provided (Can only be done by the creator of the document)
-#        Args:
-#            @param doc_id: id of the resource document
-#            @param user_id: id of the issuer of the delete request
-#        """
-#        database = self.server.get_or_create_db(config.Resource_DB)
-#        #Verify the existence of such resource document
-#        if database.doc_exist(doc_id):
-#        #If so then delete
-#            try:
-#                Data = database.get(doc_id)
-#                if Data['Creator'] == user_id:
-#                    database.delete_doc(doc_id)
-#                    message = "Resource document " + str(doc_id) + " has been successfully deleted "
-#                    logger.debug(message)
-#                    return message,return_code['OK']
-#                else:
-#                    message = "You have no right to delete this resource document"
-#                    logger.debug(message)
-#                    return message,return_code['Unauthorized']
-#            except Exception as e:
-#                logger.error(e.message)
-#                return e.message,return_code['Internal Server Error']
-#        else:
-#            #else reply with resource document not found
-#            message = "Resource document " + str(doc_id) + " not found"
-#            logger.debug(message)
-#            return message,return_code['Resource not found']
-
-    def add_design_link_docs_to_db(self):
-        """
-        Add link design documents to database.
-        """
-        design_doc = {
-            "_id": "_design/get_link",
-            "language": "javascript",
-            "type": "DesignDoc",
-            "views": {
-                "all": {
-                    "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
-                },
-                "by_occi_location": {
-                    "map": "(function(doc) { emit (doc.OCCI_Location, doc.Creator) });"
-                }
-            }
-
-        }
-        database = self.server.get_or_create_db(config.Link_DB)
-        if database.doc_exist(design_doc['_id']):
-            pass
-        else:
-            database.save_doc(design_doc)
-    def associate_resources_to_mixin(self,creator,occi_description,occi_mixin_location,occi_mixin_id):
-        """
-        Associate resources to mixin
-        Args:
-            @param creator: Issuer of the association request
-            @param occi_description: Resource description
-            @param occi_mixin_id: id of the mixin
-            @param occi_mixin_location: location of the mixin
-        """
-    def register_links_implicit(self,creator,occi_descriptions,source):
-
-        """
-        Add new links to the database (Called only during the creation of a new resource instance)
-        Args:
-            @param creator: the user who created this new link
-            @param occi_descriptions: the OCCI description of the new link
-        """
-
-        database = self.server.get_or_create_db(config.Link_DB)
-        self.add_design_link_docs_to_db()
-        loc_res=list()
-        for desc in occi_descriptions:
-            ok_k= self.manager_k.verify_exist_kind(desc['kind'])
-            if ok_k is True:
-                ok_t = self.verify_exist_resource(desc['target'])
-                if ok_t is True:
-                    existing_actions = self.manager_a.verify_exist_actions(desc['actions'],creator)
-                    ok_a = existing_actions.__len__() is desc['actions'].__len__()
-                    if ok_a is False:
-                        logger.debug("Problem in Actions description, check logs for more details")
-                        desc['actions'] = existing_actions
-                    existing_mixins = self.manager_m.verify_exist_mixins(desc['mixins',creator])
-                    ok_m = existing_mixins.__len__() is desc['mixins'].__len__()
-                    if ok_m is False:
-                        logger.debug("Problem in Mixins description, check logs for more details")
-                        desc['mixins'] = existing_mixins
-                    doc_id = uuid_Generator.get_UUID()
-                    kind_loc = desc['kind']
-                    loc = joker.make_link_location(creator,kind_loc,desc['id'])
-                    jData = dict()
-                    desc['source'] = source
-                    jData['Creator'] = creator
-                    jData['CreationDate'] = str(datetime.now())
-                    jData['LastUpdate'] = ""
-                    jData['OCCI_Location']= loc
-                    jData['OCCI_Description']= desc
-                    jData['Type']= "Link"
-                    try:
-                        database[doc_id] = jData
-                        mesg = desc
-                    except Exception as e:
-                        logger.error("Implicit link : " + e.message)
-                        mesg = "An error has occurred, please check logs for more details "
+                #Verify if the kind to which this request is sent is the same as the one in the link description
+                if desc['kind'] == kind_occi_id:
+                    if desc.has_key('actions'):
+                        ok_a = joker.verify_existences_delta(desc['actions'],db_occi_ids_locs)
+                    else:
+                        ok_a = True
+                    if ok_a is True:
+                        if desc.has_key('mixins'):
+                            ok_m = joker.verify_existences_beta(desc['mixins'],db_occi_ids_locs)
+                        else:
+                            ok_m = True
+                        if ok_m is True:
+                            if desc.has_key('links'):
+                                ok_l,exist_links = self.verify_links_implicit(desc['links'],creator,db_occi_ids_locs)
+                            else:
+                                ok_l = True
+                                exist_links = False
+                            if ok_l is True:
+                                loc = joker.make_entity_location_from_url(creator,url_path,desc['id'])
+                                exist_same = joker.verify_existences_teta([loc],db_occi_ids_locs)
+                                if exist_same is False:
+                                    jData = dict()
+                                    jData['_id'] = uuid_Generator.get_UUID()
+                                    jData['Creator'] = creator
+                                    jData['CreationDate'] = str(datetime.now())
+                                    jData['LastUpdate'] = ""
+                                    jData['OCCI_Location']= loc
+                                    jData['OCCI_Description']= desc
+                                    jData['Type']= "Resource"
+                                    jData['Internal_Links'] = exist_links
+                                    loc_res.append(jData)
+                                else:
+                                    logger.error("Reg resource exp : Bad Resource id ")
+                                    return list(),return_code['Conflict']
+                            else:
+                                logger.error("Reg resources exp : Bad links description ")
+                                return list(),exist_links
+                        else:
+                            logger.error("Reg resources exp : Bad Mixins description ")
+                            return list(),return_code['Not Found']
+                    else:
+                        logger.error("Reg resources exp : Bad Actions description ")
+                        return list(),return_code['Not Found']
                 else:
-                    mesg = "Problem in Resources description, check logs for more details"
+                    mesg = "Kind description and kind location don't match"
+                    logger.error("Reg resources exp: " + mesg)
+                    return list(),return_code['Conflict']
+            logger.debug("Reg resouces exp: Resources sent for creation")
+            return loc_res,return_code['OK']
+        else:
+            mesg = "No kind corresponding to this location was found"
+            logger.error("Reg resources exp: " + mesg)
+            return list(),return_code['Not Found']
+
+
+    def verify_links_implicit(self,occi_descriptions,creator,db_occi_ids_locs):
+        """
+        Checks the integrity of internal resource links (Called only during the creation of a new resource instance)
+        Args:
+
+            @param occi_descriptions: the OCCI descriptions of new links
+            @param creator: Issuer of the request
+            @param db_occi_ids_locs: OCCI IDs and locations contained in the database
+        """
+        impl_link_locs = list()
+        for desc in occi_descriptions:
+            ok_k = joker.verify_existences_beta([desc['kind']],db_occi_ids_locs)
+            #Verify if the kind to which this request is sent is the same as the one in the link description
+            if ok_k is True:
+                ok_target = joker.verify_existences_teta([desc['target']],db_occi_ids_locs)
+                if ok_target is True:
+                    if desc.has_key('actions'):
+                        ok_a = joker.verify_existences_delta(desc['actions'],db_occi_ids_locs)
+                    else:
+                        ok_a = True
+                    if ok_a is True:
+                        if desc.has_key('mixins'):
+                            ok_m = joker.verify_existences_beta(desc['mixins'],db_occi_ids_locs)
+                        else:
+                            ok_m = True
+                        if ok_m is True:
+                            loc = joker.make_implicit_link_location(desc['id'],desc['kind'],creator,db_occi_ids_locs)
+                            exist_same = joker.verify_existences_teta([loc],db_occi_ids_locs)
+                            if exist_same is True:
+                                logger.error("Reg links impl : Bad link id ")
+                                return False,return_code['Conflict']
+                            else:
+                                impl_link_locs.append(loc)
+                        else:
+                            logger.error("Reg links impl : Bad Mixins description ")
+                            return False,return_code['Not Found']
+                    else:
+                        logger.error("Reg links impl : Bad Actions description ")
+                        return False,return_code['Not Found']
+                else:
+                    logger.error("Reg links impl : Bad target description ")
+                    return False,return_code['Not Found']
             else:
-                mesg = "Problem in kind description, check logs for more details"
+                mesg = "Kind description does not exist"
+                logger.error("Reg links impl: " + mesg)
+                return False,return_code['Not Found']
+        logger.debug("Internal links validated with success")
+        return True,impl_link_locs
 
-            loc_res.append(mesg)
-            logger.debug(mesg)
-
-        return loc_res
-
+#=======================================================================================================================
+#                                           LinkManager
+#=======================================================================================================================
 
 class LinkManager(object):
     """
     Manager of link documents in the couch database.
     """
 
-    def __init__(self):
-
-        try:
-            self.server = Server('http://' + str(DB_server_IP) + ':' + str(DB_server_PORT))
-        except Exception:
-            logger.error("Database is unreachable")
-            raise Exception("Database is unreachable")
-        self.manager_k = KindManager()
-        self.manager_a = ActionManager()
-        self.manager_m = MixinManager()
-        self.manager_r = ResourceManager()
-    def add_design_link_docs_to_db(self):
-        """
-        Add link design documents to database.
-        """
-        design_doc = {
-            "_id": "_design/get_link",
-            "language": "javascript",
-            "type": "DesignDoc",
-            "views": {
-                "all": {
-                    "map": "(function(doc) { emit(doc._id, doc.OCCI_Description) });"
-                },
-                "by_occi_location": {
-                    "map": "(function(doc) { emit (doc.OCCI_Location, doc.Creator) });"
-                }
-            }
-
-        }
-        database = self.server.get_or_create_db(config.Link_DB)
-        if database.doc_exist(design_doc['_id']):
-            pass
-        else:
-            database.save_doc(design_doc)
-
-    def verify_exist_links(self,link_ids_list):
-        """
-        Verify the existence of links using the links OCCI ID provided
-        Args:
-            @param link_ids_list: List containing the ids of links that need to verify its existence
-        """
-        self.add_design_link_docs_to_db()
-        database = self.server.get_or_create_db(config.Link_DB)
-        exists = list()
-        for link_id in link_ids_list:
-            query = database.view('/get_link/by_occi_location',key = link_id )
-            if query.count() is 0:
-                logger.error("Exist links : No match to link " + link_id)
-            else:
-                logger.debug("Exist links : Link " + link_id + " verified ")
-                exists.append(link_id)
-
-        return exists
-
-#    def get_link_by_id(self,doc_id=None):
-#
-#        """
-#        Returns the OCCI link description contained inside the document matching the doc_id provided
-#        Args:
-#            @param doc_id: id of the link document to be retrieved
-#            @return : <dict> OCCI description of the link
-#
-#        """
-#        database = self.server.get_or_create_db(config.Link_DB)
-#        #if the doc_id exists then the link description will be returned
-#        if database.doc_exist(doc_id):
-#            elem = database.get(doc_id)
-#            res = elem['OCCI_Description']
-#            logger.debug("Link document" + str(doc_id) + " is found")
-#            return res,return_code['OK']
-#        else:
-#            message = "Link document" + str(doc_id) + " does not exist"
-#            logger.debug(message)
-#            return message,return_code['Resource not found']
-#
-#    def get_all_links(self):
-#        """
-#        Returns all OCCI descriptions of the links contained inside documents stored in the database
-#        Args:
-#            @return : <dict> All OCCI link descriptions
-#
-#        """
-#        database = self.server.get_or_create_db(config.Link_DB)
-#        query = database.view('/get_link/all')
-#        var = list()
-#        #Extract link descriptions from the dictionary
-#        try:
-#            for elem in query:
-#                var.append(elem['value'])
-#            logger.debug("Link documents found")
-#            return var,return_code['OK']
-#        except Exception as e:
-#            logger.error(e.message)
-#            return e.message,return_code['Internal Server Error']
-
-
-    def register_links_explicit(self,creator,occi_descriptions,kind_occi_location,kind_occi_id):
+    def register_links_explicit(self,creator,occi_descriptions,url_path,db_occi_ids_locs):
         """
         Add new links to database
         Args:
             @param creator: Issuer of the register request
             @param occi_descriptions: Link OCCI descriptions
-            @param kind_occi_location: Location of the kind to which belong these links
-            @param kind_occi_id: OCCI ID of the kind to which belong these links
+            @param db_occi_ids_locs: OCCI ID and locations extracted from the database
+            @param url_path: URL path of the request
         """
-        database = self.server.get_or_create_db(config.Link_DB)
-        self.add_design_link_docs_to_db()
+
         loc_res = list()
-        for desc in occi_descriptions:
-            #Verify if the kind to which this request is sent is the same as the one in the link description
-            if desc['kind'] == kind_occi_id:
-                ok_target = self.manager_r.verify_exist_resource(desc['target'])
-                if ok_target is True:
-                    ok_source = self.manager_r.verify_exist_resource(desc['source'])
-                    if ok_source is True:
-                        try:
-                            desc.index['actions']
-                            existing_actions = self.manager_a.verify_exist_actions(desc['actions'],creator)
-                            ok_a = desc['actions'].__len__() is existing_actions.__len__()
-                        except Exception as e:
-                            logger.debug("Register resources : " + e.message)
-                            ok_a = True
+        kind_occi_id = None
+        for elem in db_occi_ids_locs:
+            if elem['OCCI_Location'] == url_path:
+                kind_occi_id = elem['OCCI_ID']
+                break
+        if kind_occi_id is not None:
+            for desc in occi_descriptions:
 
-                        if ok_a is False:
-                            desc['actions'] = existing_actions
-                            logger.debug("Problem in Actions description, check logs for more details")
-                        try:
-                            desc.index['mixins']
-                            existing_mixins = self.manager_m.verify_exist_mixins(desc['mixins'],creator)
-                            ok_m = desc['mixins'].__len__() is existing_mixins.__len__()
-                        except Exception as e:
-                            logger.debug("Register resources : " + e.message)
-                            ok_m = True
+                #Verify if the kind to which this request is sent is the same as the one in the link description
+                if desc['kind'] == kind_occi_id:
 
-                        if ok_m is False:
-                            desc['mixins'] = existing_mixins
-                            logger.debug("Problem in Mixins description, check logs for more details")
-                        loc = joker.make_link_location(creator,kind_occi_location,desc['id'])
+                    ok_target_source = joker.verify_existences_teta([desc['target'],desc['source']],db_occi_ids_locs)
+                    if ok_target_source is True:
+                        ok_kappa = joker.verify_existences_kappa([desc['target'],desc['source']],db_occi_ids_locs)
+                        if ok_kappa is True:
+                            if desc.has_key('actions'):
+                                ok_a = joker.verify_existences_delta(desc['actions'],db_occi_ids_locs)
+                            else:
+                                ok_a = True
+                            if ok_a is True:
+                                if desc.has_key('mixins'):
+                                    ok_m = joker.verify_existences_beta(desc['mixins'],db_occi_ids_locs)
+                                else:
+                                    ok_m = True
+                                if ok_m is True:
+                                    loc = joker.make_entity_location_from_url(creator,url_path,desc['id'])
+                                    exist_same = joker.verify_existences_teta([loc],db_occi_ids_locs)
+                                    if exist_same is False:
+                                        jData = dict()
+                                        jData['_id'] = uuid_Generator.get_UUID()
+                                        jData['Creator'] = creator
+                                        jData['CreationDate'] = str(datetime.now())
+                                        jData['LastUpdate'] = ""
+                                        jData['OCCI_Location']= loc
+                                        jData['OCCI_Description']= desc
+                                        jData['Type']= "Link"
+                                        loc_res.append(jData)
+                                    else:
+                                        logger.error("Reg links exp : Bad Link id ")
+                                        return list(),return_code['Conflict']
+                                else:
+                                    logger.error("Reg links exp : Bad Mixins description ")
+                                    return list(),return_code['Not Found']
+                            else:
+                                logger.error("Reg links exp : Bad Actions description ")
+                                return list(),return_code['Not Found']
+                        else:
+                            logger.error("Reg links exp : Bad resources description ")
+                            return list(),return_code['Bad Request']
+                    else:
+                        logger.error("Reg links exp : Bad resources description ")
+                        return list(),return_code['Not Found']
+                else:
+                    mesg = "Kind description and kind location don't match"
+                    logger.error("Reg links exp: " + mesg)
+                    return list(),return_code['Conflict']
+            logger.debug("Reg links exp: links sent for creation")
+            return loc_res,return_code['OK']
+        else:
+            mesg = "No kind corresponding to this location was found"
+            logger.error("Reg links exp: " + mesg)
+            return list(),return_code['Not Found']
 
-                        doc_id = uuid_Generator.get_UUID()
-                        jData = dict()
-                        jData['Creator'] = creator
-                        jData['CreationDate'] = str(datetime.now())
-                        jData['LastUpdate'] = ""
-                        jData['OCCI_Location']= loc
-                        jData['OCCI_Description']= desc
-                        jData['Type']= "Link"
-                        try:
-                            database[doc_id] = jData
-                            mesg = loc
-                            logger.debug("Register links : " + mesg)
 
-                        except Exception as e:
-                            mesg = "An error has occurred, please check log for more details"
-                            logger.error("Register links : " + e.message)
+#=======================================================================================================================
+#                                           MultiEntityManager
+#=======================================================================================================================
 
-            else:
-                mesg = "Kind description and kind location don't match, please check logs for more details"
-                logger.error("Register links : " + mesg)
-            loc_res.append(mesg)
-        return loc_res
+class MultiEntityManager(object):
+    """
 
-#    def update_link(self,doc_id=None,user_id=None,new_Data=None):
-#        """
-#        Update all fields of the link document (Can only be done by the creator of the document)
-#        Args:
-#            @param doc_id: id of the link document
-#            @param user_id: id of the issuer of update request
-#            @param new_Data: the new data that will be used to update the old data
-#        """
-#        #Get the old document data from the database
-#        database = self.server.get_or_create_db(config.Link_DB)
-#
-#        if database.doc_exist(doc_id) is True:
-#            oldData = database.get(doc_id)
-#            if oldData['Creator'] == user_id:
-#                oldData_keys = oldData.keys()
-#                newData_keys =  new_Data.keys()
-#                problems = False
-#                for key in newData_keys:
-#                    try:
-#                        #OCCI_Description field will be treated separately
-#                        if key == "OCCI_Description":
-#                            old_descrip = oldData[key]['links'][0]
-#                            new_descrip = new_Data[key]['links'][0]
-#                            problems,oldData[key]['links'][0] = joker.update_occi_description(old_descrip,new_descrip)
-#                        else:
-#                            oldData_keys.index(key)
-#                            oldData[key] = new_Data[key]
-#                    except Exception:
-#                        problems = True
-#                        logger.debug(key + "could not be found")
-#                        #Keep the record of the keys(=parts) that couldn't be update
-#                if problems:
-#                    message = "Link document " + str(doc_id) + " has not been totally updated. Check log for more details"
-#                else:
-#                    message = "Link Document " + str(doc_id) + " has been updated successfully"
-#                oldData['LastUpdate'] = str(datetime.now())
-#                #Update the document
-#                database.save_doc(oldData,force_update = True)
-#                logger.debug(message)
-#                return message,return_code['OK']
-#            else:
-#                message= "You have no right to update this link document"
-#                logger.debug(message)
-#                return message,return_code['Unauthorized']
-#
-#        else:
-#            message = "Link document " + str(doc_id) + " couldn\'t be found"
-#            logger.debug(message)
-#            return message,return_code['Resource not found']
-#
-#    def delete_link_document(self,doc_id=None,user_id=None):
-#        """
-#        Delete the link document that is related to the id provided (Can only be done by the creator of the document)
-#        Args:
-#            @param doc_id: id of the link document
-#            @param user_id: id of the issuer of the delete request
-#        """
-#        database = self.server.get_or_create_db(config.Link_DB)
-#        #Verify the existence of such link document
-#        if database.doc_exist(doc_id):
-#        #If so then delete
-#            try:
-#                Data = database.get(doc_id)
-#                if Data['Creator'] == user_id:
-#                    database.delete_doc(doc_id)
-#                    message = "Link document " + str(doc_id) + " has been successfully deleted "
-#                    logger.debug(message)
-#                    return message,return_code['OK']
-#                else:
-#                    message = "You have no right to delete this link document"
-#                    logger.debug(message)
-#                    return message,return_code['Unauthorized']
-#            except Exception as e:
-#                logger.error(e.message)
-#                return e.message,return_code['Internal Server Error']
-#        else:
-#            #else reply with link document not found
-#            message = "Link document " + str(doc_id) + " not found"
-#            logger.debug(message)
-#            return message,return_code['Resource not found']
-    def associate_links_to_mixin(self,creator,occi_description,occi_mixin_location,occi_mixin_id):
+    """
+
+    def __init__(self):
+
+        self.manager_r = ResourceManager()
+        self.manager_l = LinkManager()
+
+    def channel_post_multi(self,user_id,jreq,url_path):
         """
-        Associate resources to mixin
+        Identifies the post path's goal : create a resource instance or update a mixin
         Args:
-            @param creator: Issuer of the association request
-            @param occi_description: link description
-            @param occi_mixin_id: id of the mixin
-            @param occi_mixin_location: location of the mixin
+            @param user_id: ID of the issuer of the post request
+            @param jreq: Body content of the post request
+            @param url_path: Address to which this post request was sent
+        """
+        database = config.prepare_PyOCNI_db()
+
+        if jreq.has_key('resources') or jreq.has_key('links'):
+            is_kind_loc = True
+        else:
+            is_kind_loc = False
+
+        if is_kind_loc is True:
+            try:
+                query = database.view('/db_views/for_register_entities')
+            except Exception as e:
+                logger.error("post multi entities : " + e.message)
+                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            db_occi_ids_locs = list()
+            for q in query:
+                db_occi_ids_locs.append({"OCCI_ID" : q['key'],"OCCI_Location":q['value']})
+
+            if jreq.has_key('resources'):
+                logger.debug("Post path : Post on kind path to create a new resource channeled")
+                new_resources, resp_code_r = self.manager_r.register_resources(user_id,jreq['resources'],url_path,db_occi_ids_locs)
+            else:
+                new_resources = list()
+                resp_code_r = return_code['OK']
+
+            if jreq.has_key('links'):
+                logger.debug("Post path : Post on kind path to create a new link channeled")
+                new_links, resp_code_l = self.manager_l.register_links_explicit(user_id,jreq['links'],url_path,db_occi_ids_locs)
+            else:
+                new_links = list()
+                resp_code_l = return_code['OK']
+
+            if resp_code_r is not return_code['OK'] or resp_code_l is not return_code['OK']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+            entities = new_resources + new_links
+            database.save_docs(entities,use_uuids=True, all_or_nothing=True)
+            #return the locations of the resources
+            return "",return_code['OK']
+
+        else:
+            if jreq.has_key('OCCI_Locations'):
+                db_occi_locs_docs = list()
+                to_search_for = jreq['OCCI_Locations']
+                to_search_for.append(url_path)
+                for item in to_search_for:
+                    try:
+                        query = database.view('/db_views/for_associate_a_mixin',key=item)
+                    except Exception as e:
+                        logger.error("Associate a mixin : " + e.message)
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+                    if query.count() is 0:
+                        logger.error("Associate a mixin  : " + item)
+                        return "An error has occurred, please check log for more details",return_code['Not Found']
+                    else:
+                        q = query.first()
+                        db_occi_locs_docs.append({"OCCI_Location" : q['key'],"Doc":q['value']})
+
+                    logger.debug("Post path : Post on kind path to associate a mixin channeled")
+                    updated_entities,resp_code_e = associate_entities_to_a_mixin(jreq['OCCI_Locations'],url_path,db_occi_locs_docs)
+            else:
+                updated_entities = list()
+                resp_code_e = return_code['OK']
+
+            if resp_code_e is not return_code['OK']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+            database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
+            return "",return_code['OK']
+
+    def channel_get_all_entities(self,url_path):
+        """
+        retrieve all entities belonging to a kind or a mixin
+        Args:
+            @param url_path: Address to which this post request was sent
         """
 
+        database = config.prepare_PyOCNI_db()
+        try:
+            query = database.view('/db_views/for_get_entities',key=url_path)
+        except Exception as e:
+            logger.error("get all multi entities : " + e.message)
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+        if query.count() is 0:
+            logger.error("get all multi entities  : " + url_path)
+            return "An error has occurred, please check log for more details",return_code['Not Found']
+        else:
+            q = query.first()
+            if q['value'][1] == "Kind":
+                try:
+                    kind_id = q['value'][0]
+                    entities = database.view('/db_views/entities_of_kind',key = kind_id)
+                except Exception as e:
+                    logger.error("get all multi entities : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            elif q['value'][1] == "Mixin":
+                try:
+                    mix_id = q['value'][0]
 
-def dissociate_resource_from_mixin(occi_id):
+                    entities = database.view('/db_views/entities_of_mixin',key = mix_id)
+                except Exception as e:
+                    logger.error("get all multi entities : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            else:
+                logger.error("get all multi entities : Unknown " + q['value'][1])
+                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+        to_return = list()
+        for entity in entities:
+            to_return.append(entity['value'])
+        return to_return,return_code['OK']
+
+
+
+    def channel_get_filtered_entities(self, jreq):
+        pass
+
+#=======================================================================================================================
+#                                           SingleEntityManager
+#=======================================================================================================================
+
+class SingleEntityManager(object):
     """
-    Dissociates a resource from a mixin upon the deletion of a mixin
+
+    """
+
+    def __init__(self):
+
+        self.manager_r = ResourceManager()
+        self.manager_l = LinkManager()
+
+#=======================================================================================================================
+#                                           Independant Functions
+#=======================================================================================================================
+
+def associate_entities_to_a_mixin(entities_locations, url_path, db_occi_ids_docs):
+    """
+    Add a single mixin to entities
     Args:
-        @param mix_desc: OCCI description of the mixin
+        @param entities_locations: OCCI Location of the entities
+        @param url_path: location of the mixin
+        @param db_occi_ids_docs: OCCI IDs and documents of the entities already contained in the database
     """
-    return True
-def get_resources_belonging_to_kind(kind_desc):
-    """
-    Verifies if there are resources of this kind description
-    Args:
-        @param kind_desc: OCCI kind description of the kind
+    #Get the Mixin's OCCI_ID
 
-    """
-    return True
-
-
-
+    mix_id = None
+    to_update = list()
+    for item in db_occi_ids_docs:
+        if item['OCCI_Location'] == url_path and item['Doc']['Type'] == "Mixin":
+            mix_id = item['Doc']['OCCI_ID']
+        else:
+            to_update.append(item['Doc'])
+    if mix_id is not None:
+        for doc in to_update:
+            if doc['OCCI_Description'].has_key('mixins'):
+                var = doc['OCCI_Description']['mixins']
+                try:
+                    var.index(mix_id)
+                except ValueError:
+                    var.append(mix_id)
+                    doc['OCCI_Description']['mixins'] = var
+            else:
+                doc['OCCI_Description']['mixins'] = [mix_id]
+        return to_update,return_code['OK']
+    else:
+        return list(),return_code['Not Found']

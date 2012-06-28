@@ -34,8 +34,7 @@ try:
     import simplejson as json
 except ImportError:
     import json
-from pyocni.registry.entityManager import ResourceManager,LinkManager
-from pyocni.registry.categoryManager import KindManager,MixinManager
+
 from datetime import datetime
 from pyocni.pyocni_tools import uuid_Generator
 from couchdbkit import *
@@ -44,74 +43,17 @@ from pyocni.pyocni_tools.config import return_code
 logger = config.logger
 
 
-# Get the database server configuration
 
-DB_server_IP = config.DB_IP
-DB_server_PORT = config.DB_PORT
+
 
 class PathManager(object):
     """
-
+    CRUD operations on Path
     """
 
     def __init__(self):
-        self.manager_k = KindManager()
-        self.manager_m = MixinManager()
-        self.manager_r = ResourceManager()
-        self.manager_l = LinkManager()
 
-    def channel_post_path(self,user_id,jreq,location):
-        """
-        Identifies the post path's goal : create a resource instance or update a mixin
-        Args:
-            @param user_id: ID of the issuer of the post request
-            @param jreq: Body content of the post request
-            @param location: Address to which this post request was sent
-        """
-
-        #Verify if this is a kind location
-        ok_k,occi_id_k = self.manager_k.verify_kind_location(location)
-        #if yes : call the ResourceManager to create a new resource instance
-        if ok_k is True:
-
-            try:
-                jreq.index('resources')
-                logger.debug("Post path : Post on kind path to create a new resource channeled")
-                mesg_1 = self.manager_r.register_resources(user_id,jreq['resources'],location,occi_id_k)
-            except Exception as e:
-                logger.error("Post path : " +e.message)
-                mesg_1 = ""
-            try:
-                jreq.index('links')
-                logger.debug("Post path : Post on kind path to create a new link channeled")
-                mesg_2 = self.manager_l.register_links_explicit(user_id,jreq['links'],location,occi_id_k)
-            except Exception as e:
-                logger.error("Post path : " +e.message)
-                mesg_2 = ""
-
-        else:
-        #if no : verify if this is a mixin location
-            ok_m,occi_id_m = self.manager_m.verify_mixin_location(location)
-            if ok_m is True:
-                #if yes: call the ResourceManager to attach this mixin to resources
-                try:
-                    jreq.index('resources')
-                    logger.debug("Post path : Post on kind path to create a new resource channeled")
-                    self.manager_r.associate_resources_to_mixin(user_id,jreq['resources'],location,occi_id_m)
-                except Exception as e:
-                    logger.error("Post path : " +e.message)
-                    mesg_1 = ""
-                try:
-                    jreq.index('links')
-                    logger.debug("Post path : Post on kind path to create a new link channeled")
-                    mesg_2 = self.manager_l.associate_links_to_mixin(user_id,jreq['links'],location,occi_id_m)
-                except Exception as e:
-                    logger.error("Post path : " +e.message)
-                    mesg_2 = ""
-
-                logger.debug("Post path : Post on mixin path channeled")
-            else:
-                logger.error("Post path : Unknown location")
+        pass
 
 
     def channel_get_path(self,user_id,jreq,location):
@@ -122,17 +64,4 @@ class PathManager(object):
             @param jreq: Body content of the post request
             @param location: Address to which this post request was sent
         """
-        #Verify if this is a kind location
-        ok_k = self.manager_k.verify_kind_location(location)
-        #if yes : call the ResourceManager to retrieve resource instances belonging to this kind
-        if ok_k is True:
-            logger.debug("Get path : Get on kind path channeled")
-        else:
-        #if no : verify if this is a mixin location
-            ok_m = self.manager_m.verify_mixin_location(location)
-            if ok_m is True:
-                #if yes: call the ResourceManager to retrieve all resource instances belonging to this mixin
-                logger.debug("Get path : Get on mixin path channeled")
-            else:
-                #Get all locations and state hierarchy below this path
-                logger.debug("Get path : Get on path channeled")
+

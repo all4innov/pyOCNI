@@ -29,7 +29,7 @@ Created on Feb 25, 2011
 
 import logging.config
 from configobj import ConfigObj
-
+from couchdbkit import *
 import os
 
 
@@ -71,3 +71,81 @@ return_code = {'OK': 200,
                'Internal Server Error': 500,
                'Not Implemented': 501,
                'Service Unavailable': 503}
+
+# ======================================================================================
+# Prepare the PyOCNI database
+# ======================================================================================
+
+def prepare_PyOCNI_db():
+    """
+    Start the server, get the database and add Category design documents to it.
+    """
+    try:
+        server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
+    except Exception:
+        logger.error("CategoryManager : Database is unreachable")
+        raise Exception("Database is unreachable")
+    database = server.get_or_create_db(PyOCNI_DB)
+    design_doc = {
+        "_id": "_design/db_views",
+        "language": "javascript",
+        "type": "DesignDoc",
+        "views": {
+            "for_get_categories":{
+                "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                      "emit (doc.Type, doc.OCCI_Description) });"
+            },
+            "for_update_categories": {
+                "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                       "emit (doc.OCCI_ID,doc) });"
+            },
+            "for_associate_a_mixin": {
+                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")||(doc.Type == \"Mixin\"))"
+                       "emit (doc.OCCI_Location,doc) });"
+            },
+            "for_delete_categories": {
+                "map": "(function(doc) {  if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
+                        "emit(null,doc);"
+                        " else "
+                        " emit(doc._id,[doc._rev,doc.OCCI_ID, doc.Creator]);});"
+            },
+            "for_register_categories" : {
+                "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                      "emit (doc.OCCI_ID,doc.OCCI_Location) });"
+            },
+            "for_register_entities": {
+                "map": "(function(doc) { emit (doc.OCCI_ID,doc.OCCI_Location) });"
+            },
+            "for_get_entities": {
+                "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\"))"
+                       "emit (doc.OCCI_Location,[doc.OCCI_ID,doc.Type]) });"
+            },
+            "entities_of_kind": {
+                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                       "emit (doc.OCCI_Description.kind,doc.OCCI_Location) });"
+            },
+            "entities_of_mixin": {
+                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                       "{for (elem in doc.OCCI_Description.mixins) "
+                       "emit (doc.OCCI_Description.mixins[elem],doc.OCCI_Location) }});"
+            }
+
+
+        }
+
+    }
+    database.save_doc(design_doc,force_update=True)
+    return database
+
+def purge_PyOCNI_db():
+
+    try:
+        server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
+    except Exception:
+        logger.error("Database is unreachable")
+
+    try:
+        server.delete_db(PyOCNI_DB)
+    except Exception:
+        logger.debug("No DB named: '" + PyOCNI_DB + "' to delete.")
+        server.create_db(PyOCNI_DB)

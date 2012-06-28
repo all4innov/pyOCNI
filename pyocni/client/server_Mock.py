@@ -27,7 +27,7 @@ Created on Jun 01, 2012
 @version: 1.0
 @license: LGPL - Lesser General Public License
 """
-from pyocni.crud_Interfaces.entityInterface import EntityInterface
+from pyocni.crud_Interfaces.entityInterface import SingleEntityInterface,MultiEntityInterface
 from pyocni.crud_Interfaces.pathInterface import PathInterface
 from pyocni.crud_Interfaces.queryInterface import QueryInterface
 import pyocni.pyocni_tools.config as config
@@ -98,14 +98,18 @@ class ocni_server(object):
 
     operationPath = url_mapper.rest_controller(PathInterface)
     operationQuery = url_mapper.rest_controller(QueryInterface)
-    operationEntity = url_mapper.rest_controller(EntityInterface)
+    operationSingleEntity = url_mapper.rest_controller(SingleEntityInterface)
+    operationMultiEntity = url_mapper.rest_controller(MultiEntityInterface)
 
     app = url_mapper.Router()
 
     app.add_route('/-/',controller=operationQuery)
+    app.add_route('/-/{location}/',controller=operationMultiEntity)
+    app.add_route('/-/{location}/{idontknow}/{idontcare}/',controller=operationMultiEntity)
+    app.add_route('/{location}/{user_id}/{ins_id}',controller=operationSingleEntity)
     app.add_route('/{location}/',controller=operationPath)
-    app.add_route('/{location}/{user_id}/',controller=operationPath)
-    app.add_route('/{location}/{user_id}/{ins_id}',controller=operationEntity)
+    app.add_route('{location}/{user_id}/',controller=operationPath)
+
 
 
     def run_server(self):
