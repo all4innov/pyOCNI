@@ -54,7 +54,7 @@ status: Still an ongoing work
 2. API Documentation
 ====================
 the api documentation are available through this html file:
-PyOCNI/pyocni/doc/index.html
+pyOCNI/pyocni/doc/index.html
 
 3. Installation
 ===============
@@ -66,7 +66,12 @@ This software needs this packages to run:
 * python <= 2.7
 * python-all-dev (for eventlet/greenlet install/make)
 * python-setuptools (to execute the setup.py file)
-* couchdb
+* couchdb >= 1.2.0 (Easiest install: using build-couchdb https://github.com/iriscouch/build-couchdb )
+
+   To test CouchDB:           http://127.0.0.1:5984
+
+   To test the CouchDB GUI:   http://127.0.0.1:5984/_utils/
+
 
 3.2. Install
 ------------
