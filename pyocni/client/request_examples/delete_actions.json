@@ -1,0 +1,8 @@
+{
+    "actions": [
+        {
+            "term": "stop",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
+        }
+    ]
+}

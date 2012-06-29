@@ -1,0 +1,8 @@
+{
+    "mixins": [
+        {
+            "term": "medium",
+            "scheme": "http://example.com/template/resource#"
+        }
+    ]
+}

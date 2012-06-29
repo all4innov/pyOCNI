@@ -1,0 +1,23 @@
+{
+    "mixins": [
+        {
+            "term": "medium",
+            "scheme": "http://example.com/template/resource#",
+            "title": "Large VM",
+            "related": [
+                "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "speed": {
+                            "type": "number",
+                            "default": 3
+                        }
+                    }
+                }
+            },
+            "location": "/template/resource/medium/"
+        }
+    ]
+}

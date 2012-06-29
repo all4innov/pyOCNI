@@ -1,0 +1,18 @@
+{
+    "actions": [
+        {
+            "attributes": {
+                "method": {
+                    "default": "poweroff",
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpioff|poweroff"
+                }
+            },
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "start Compute instance"
+        }
+    ]
+}

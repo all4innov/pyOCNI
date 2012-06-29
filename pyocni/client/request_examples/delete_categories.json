@@ -1,0 +1,20 @@
+{
+    "actions": [
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
+        }
+    ],
+    "kinds": [
+        {
+            "term": "storage",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#"
+        }
+    ],
+    "mixins": [
+        {
+            "term": "resource_tpl",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#"
+        }
+    ]
+}
