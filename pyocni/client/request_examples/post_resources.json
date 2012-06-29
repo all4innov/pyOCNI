@@ -1,0 +1,54 @@
+{
+    "resources": [
+        {
+            "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
+            "mixins": [
+                "http: //schemas.opennebula.org/occi/infrastructure#my_mixin",
+                "http: //schemas.other.org/occi#my_mixin"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "speed": 2,
+                        "memory": 4,
+                        "cores": 2
+                    }
+                },
+                "org": {
+                    "other": {
+                        "occi": {
+                            "my_mixin": {
+                                "my_attribute": "my_value"
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": [
+                {
+                    "title": "Start My Server",
+                    "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                }
+            ],
+            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+            "title": "Compute resource",
+            "summary": "This is a compute resource",
+            "links": [
+                {
+                    "target": "http://myservice.tld/storage/59e06cf8-f390-5093-af2e-3685be593",
+                    "kind": "http: //schemas.ogf.org/occi/infrastructure#storagelink",
+                    "attributes": {
+                        "occi": {
+                            "storagelink": {
+                                "deviceid": "ide: 0: 1"
+                            }
+                        }
+                    },
+                    "id": "391ada15-580c-5baa-b16f-eeb35d9b1122",
+                    "title": "Mydisk"
+                }
+            ]
+        }
+    ]
+}
