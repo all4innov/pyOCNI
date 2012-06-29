@@ -362,25 +362,34 @@ class MultiEntityManager(object):
 
         else:
             if jreq.has_key('OCCI_Locations'):
-                db_occi_locs_docs = list()
-                to_search_for = jreq['OCCI_Locations']
-                to_search_for.append(url_path)
-                for item in to_search_for:
-                    try:
-                        query = database.view('/db_views/for_associate_a_mixin',key=item)
-                    except Exception as e:
-                        logger.error("Associate a mixin : " + e.message)
-                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                db_docs = list()
+                try:
+                    query = database.view('/db_views/my_mixins',key = url_path)
+                except Exception as e:
+                    logger.error("Associate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if query.count() is 0:
+                    logger.error("Associate a mixin  : " + url_path)
+                    return "An error has occurred, please check log for more details",return_code['Not Found']
+                else:
+                    mix_id = query.first()['value']
+                    to_search_for = jreq['OCCI_Locations']
+                    for item in to_search_for:
+                        try:
+                            query = database.view('/db_views/for_associate_mixin',key=[item,user_id])
+                        except Exception as e:
+                            logger.error("Associate a mixin : " + e.message)
+                            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
-                    if query.count() is 0:
-                        logger.error("Associate a mixin  : " + item)
-                        return "An error has occurred, please check log for more details",return_code['Not Found']
-                    else:
-                        q = query.first()
-                        db_occi_locs_docs.append({"OCCI_Location" : q['key'],"Doc":q['value']})
+                        if query.count() is 0:
+                            logger.error("Associate a mixin  : " + item)
+                            return "An error has occurred, please check log for more details",return_code['Not Found']
+                        else:
+                            q = query.first()
+                            db_docs.append(q['value'])
 
-                    logger.debug("Post path : Post on mixin path to associate a mixin channeled")
-                    updated_entities,resp_code_e = associate_entities_to_a_mixin(url_path,db_occi_locs_docs)
+                        logger.debug("Post path : Post on mixin path to associate a mixin channeled")
+                        updated_entities,resp_code_e = associate_entities_to_a_mixin(mix_id,db_docs)
             else:
                 updated_entities = list()
                 resp_code_e = return_code['OK']
@@ -433,7 +442,7 @@ class MultiEntityManager(object):
                 to_return_res.append(entity['value'][0])
             else:
                 to_return_link.append((entity['value'][0]))
-        result = {'resources': to_return_res, 'links': to_return_link}
+        result = to_return_res + to_return_link
         return result,return_code['OK']
 
     def channel_get_filtered_entities(self,req_path,terms):
@@ -474,18 +483,71 @@ class MultiEntityManager(object):
                     logger.debug("Links get filter : link not found")
                     filtered_links = ""
                     resp_code_l = return_code['OK']
+
                 if resp_code_l is not 200 or resp_code_r is not 200:
                     return "An error has occurred, please check log for more details",return_code['Bad Request']
-                result = {'resources': filtered_res, 'links': filtered_links}
+
+                result = filtered_res + filtered_links
                 return result,return_code['OK']
             else:
                 return entities,ok
+
         except Exception as e:
             logger.error("filtered entities : " + e.message)
             return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
-    def channel_put_multi(self, user_id, jBody, path_url):
-        pass
+    def channel_put_multi(self, user_id, jreq, req_url):
+        """
+        Update the mixin collection of resources
+        Args:
+            @param user_id: The issuer of the request
+            @param jreq: OCCI_Locations of the resources
+            @param req_url: URL of the request
+        """
+        database = config.prepare_PyOCNI_db()
+        if jreq.has_key('Resource_Locations') and jreq.has_key('Mixin_Locations'):
+            url_path = joker.reformat_url_path(req_url)
+            db_docs = list()
+            to_validate = jreq['Mixin_Locations']
+            to_validate.append(url_path)
+            mix_ids = list()
+            for occi_loc in to_validate:
+                try:
+                    query = database.view('/db_views/my_mixins',key = occi_loc)
+                except Exception as e:
+                    logger.error("Associate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if query.count() is 0:
+                    logger.error("Associate mixins : " + occi_loc)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                else:
+                    mix_ids.append(query.first()['value'])
+
+            to_search_for = jreq['Resource_Locations']
+            for item in to_search_for:
+                try:
+                    query = database.view('/db_views/for_associate_mixin',key=[item,user_id])
+                except Exception as e:
+                    logger.error("Associate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if query.count() is 0:
+                    logger.error("Associate mixins  : " + item)
+                    return "An error has occurred, please check log for more details",return_code['Not Found']
+                else:
+                    q = query.first()
+                    db_docs.append(q['value'])
+
+            logger.debug("Post path : Post on mixin path to associate mixins channeled")
+            updated_entities,resp_code_e = associate_entities_to_mixins(mix_ids,db_docs)
+        else:
+            updated_entities = list()
+            resp_code_e = return_code['Bad Request']
+
+        if resp_code_e is not return_code['OK']:
+            return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+        database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
+        return "",return_code['OK']
 
 #=======================================================================================================================
 #                                           SingleEntityManager
@@ -502,27 +564,18 @@ class SingleEntityManager(object):
         self.manager_l = LinkManager()
 
 #=======================================================================================================================
-#                                           Independant Functions
+#                                           Independent Functions
 #=======================================================================================================================
 
-def associate_entities_to_a_mixin( url_path, db_occi_ids_docs):
+def associate_entities_to_a_mixin( mix_id, db_docs):
     """
     Add a single mixin to entities
     Args:
-        @param url_path: location of the mixin
-        @param db_occi_ids_docs: OCCI IDs and documents of the entities already contained in the database
+        @param mix_id: OCCI ID of the mixin
+        @param db_docs: documents of the entities already contained in the database
     """
-    #Get the Mixin's OCCI_ID
-
-    mix_id = None
-    to_update = list()
-    for item in db_occi_ids_docs:
-        if item['OCCI_Location'] == url_path and item['Doc']['Type'] == "Mixin":
-            mix_id = item['Doc']['OCCI_ID']
-        else:
-            to_update.append(item['Doc'])
     if mix_id is not None:
-        for doc in to_update:
+        for doc in db_docs:
             if doc['OCCI_Description'].has_key('mixins'):
                 var = doc['OCCI_Description']['mixins']
                 try:
@@ -533,7 +586,20 @@ def associate_entities_to_a_mixin( url_path, db_occi_ids_docs):
             else:
                 doc['OCCI_Description']['mixins'] = [mix_id]
         logger.debug("Associate mixin : Mixin associated with success")
-        return to_update,return_code['OK']
+        return db_docs,return_code['OK']
     else:
         logger.debug("Associate mixin : Mixin description problem")
         return list(),return_code['Not Found']
+
+def associate_entities_to_mixins(mix_ids, db_docs):
+    """
+    Add a collection of mixins to entities
+    Args:
+        @param mix_ids: OCCI IDs of mixins
+        @param db_docs: documents of the entities already contained in the database
+    """
+
+    for doc in db_docs:
+        doc['OCCI_Description']['mixins'] = mix_ids
+    logger.debug("Associate mixin : Mixin associated with success")
+    return db_docs,return_code['OK']

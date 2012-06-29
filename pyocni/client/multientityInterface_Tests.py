@@ -170,6 +170,10 @@ links = """{
 occi_ids = """
 {"OCCI_Locations":["http://127.0.0.1:8090/user_1/resource/for my test"]}
 """
+res_mix_locs = """
+{"Resource_Locations":["http://127.0.0.1:8090/user_1/resource/for my test","http://127.0.0.1:8090/user_1/resource/for my test2"],
+"Mixin_Locations":[]}
+"""
 class test_post(TestCase):
     """
     Tests POST request scenarios
@@ -219,6 +223,7 @@ class test_post(TestCase):
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
+
 class test_get(TestCase):
     """
     Tests GET request scenarios
@@ -270,6 +275,37 @@ class test_get(TestCase):
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
 
+class test_put(TestCase):
+    """
+    Tests PUT request scenarios
+    """
+    def setUp(self):
+
+        """
+        Set up the test environment
+        """
+        self.p = Process(target = start_server)
+        self.p.start()
+        time.sleep(0.5)
+
+    def tearDown(self):
+        self.p.terminate()
+
+    def test_associate_mixins(self):
+        """
+        """
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/mixin/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
+        c.setopt(pycurl.POSTFIELDS,res_mix_locs)
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
 if __name__ == '__main__':
 
     #Create the testing tools
@@ -279,10 +315,10 @@ if __name__ == '__main__':
     #Create the testing suites
     get_suite = loader.loadTestsFromTestCase(test_get)
     #    delete_suite = loader.loadTestsFromTestCase(test_delete)
-    #    put_suite = loader.loadTestsFromTestCase(test_put)
+    put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
     runner.run(get_suite)
     #    runner.run(delete_suite)
-    #    runner.run(put_suite)
+    runner.run(put_suite)
     runner.run(post_suite)

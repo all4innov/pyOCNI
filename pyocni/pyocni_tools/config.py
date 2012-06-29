@@ -99,9 +99,9 @@ def prepare_PyOCNI_db():
                 "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
                        "emit (doc.OCCI_ID,doc) });"
             },
-            "for_associate_a_mixin": {
-                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")||(doc.Type == \"Mixin\"))"
-                       "emit (doc.OCCI_Location,doc) });"
+            "for_associate_mixin": {
+                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                            " emit([doc.OCCI_Location,doc.Creator],doc);});"
             },
             "for_delete_categories": {
                 "map": "(function(doc) {  if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
@@ -132,6 +132,10 @@ def prepare_PyOCNI_db():
             "for_get_filtered": {
                 "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
                        "emit (doc.OCCI_Location,[doc.OCCI_Description,doc.Type]) });"
+            },
+            "my_mixins":{
+                "map": "(function(doc) { if (doc.Type == \"Mixin\")"
+                       "emit (doc.OCCI_Location,doc.OCCI_ID) });"
             }
 
 
