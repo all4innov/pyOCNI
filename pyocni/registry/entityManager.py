@@ -60,7 +60,6 @@ class ResourceManager(object):
             @param url_path: URL path of the request
         """
         loc_res = list()
-
         kind_occi_id = None
         for elem in db_occi_ids_locs:
             if elem['OCCI_Location'] == url_path:
@@ -173,6 +172,27 @@ class ResourceManager(object):
         logger.debug("Internal links validated with success")
         return True,impl_link_locs
 
+    def get_filtered_resources(self, filters, descriptions_res):
+        """
+        Retrieve the resources  that match the filters provided
+        Args:
+            @param filters: Filters
+            @param descriptions_res: Resource descriptions
+        """
+        var = list()
+        try:
+            for desc in descriptions_res:
+                for filter in filters:
+                    checks =joker.filter_occi_description(desc['OCCI_Description'],filter)
+                    if checks is True:
+                        var.append(desc['OCCI_ID'])
+                        logger.debug("Entity filtered : document found")
+                        break
+            return var,return_code['OK']
+        except Exception as e:
+            logger.error("filtered res : " + e.message)
+            return "An error has occurred",return_code['Internal Server Error']
+
 #=======================================================================================================================
 #                                           LinkManager
 #=======================================================================================================================
@@ -257,6 +277,27 @@ class LinkManager(object):
             return list(),return_code['Not Found']
 
 
+    def get_filtered_links(self, filters, descriptions_link):
+        """
+        Retrieve the resources  that match the filters provided
+        Args:
+            @param filters: Filters
+            @param descriptions_link: Link descriptions
+        """
+        var = list()
+        try:
+            for desc in descriptions_link:
+                for filter in filters:
+                    checks =joker.filter_occi_description(desc['OCCI_Description'],filter)
+                    if checks is True:
+                        var.append(desc['OCCI_ID'])
+                        logger.debug("Entity filtered : document found")
+                        break
+            return var,return_code['OK']
+        except Exception as e:
+            logger.error("filtered link : " + e.message)
+            return "An error has occurred",return_code['Internal Server Error']
+
 #=======================================================================================================================
 #                                           MultiEntityManager
 #=======================================================================================================================
@@ -271,14 +312,15 @@ class MultiEntityManager(object):
         self.manager_r = ResourceManager()
         self.manager_l = LinkManager()
 
-    def channel_post_multi(self,user_id,jreq,url_path):
+    def channel_post_multi(self,user_id,jreq,req_path):
         """
         Identifies the post path's goal : create a resource instance or update a mixin
         Args:
             @param user_id: ID of the issuer of the post request
             @param jreq: Body content of the post request
-            @param url_path: Address to which this post request was sent
+            @param req_path: Address to which this post request was sent
         """
+        url_path = joker.reformat_url_path(req_path)
         database = config.prepare_PyOCNI_db()
 
         if jreq.has_key('resources') or jreq.has_key('links'):
@@ -337,8 +379,8 @@ class MultiEntityManager(object):
                         q = query.first()
                         db_occi_locs_docs.append({"OCCI_Location" : q['key'],"Doc":q['value']})
 
-                    logger.debug("Post path : Post on kind path to associate a mixin channeled")
-                    updated_entities,resp_code_e = associate_entities_to_a_mixin(jreq['OCCI_Locations'],url_path,db_occi_locs_docs)
+                    logger.debug("Post path : Post on mixin path to associate a mixin channeled")
+                    updated_entities,resp_code_e = associate_entities_to_a_mixin(url_path,db_occi_locs_docs)
             else:
                 updated_entities = list()
                 resp_code_e = return_code['OK']
@@ -349,13 +391,13 @@ class MultiEntityManager(object):
             database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
             return "",return_code['OK']
 
-    def channel_get_all_entities(self,url_path):
+    def channel_get_all_entities(self,req_path):
         """
         retrieve all entities belonging to a kind or a mixin
         Args:
-            @param url_path: Address to which this post request was sent
+            @param req_path: Address to which this post request was sent
         """
-
+        url_path = joker.reformat_url_path(req_path)
         database = config.prepare_PyOCNI_db()
         try:
             query = database.view('/db_views/for_get_entities',key=url_path)
@@ -377,7 +419,6 @@ class MultiEntityManager(object):
             elif q['value'][1] == "Mixin":
                 try:
                     mix_id = q['value'][0]
-
                     entities = database.view('/db_views/entities_of_mixin',key = mix_id)
                 except Exception as e:
                     logger.error("get all multi entities : " + e.message)
@@ -385,14 +426,65 @@ class MultiEntityManager(object):
             else:
                 logger.error("get all multi entities : Unknown " + q['value'][1])
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
-        to_return = list()
+        to_return_res = list()
+        to_return_link = list()
         for entity in entities:
-            to_return.append(entity['value'])
-        return to_return,return_code['OK']
+            if entity['value'][1] == "Resource":
+                to_return_res.append(entity['value'][0])
+            else:
+                to_return_link.append((entity['value'][0]))
+        result = {'resources': to_return_res, 'links': to_return_link}
+        return result,return_code['OK']
 
+    def channel_get_filtered_entities(self,req_path,terms):
+        """
+        Retrieve entities belonging to a kind or a mixin matching the terms specified
+        Args:
+            @param req_path: Address to which this post request was sent
+            @param terms: Terms to filter entities
+        """
+        descriptions_res = list()
+        descriptions_link = list()
+        database = config.prepare_PyOCNI_db()
+        try:
+            entities,ok = self.channel_get_all_entities(req_path)
+            entities = entities['links'] + entities['resources']
+            if ok == return_code['OK']:
+                for entity in entities:
+                    try:
+                        query = database.view('/db_views/for_get_filtered',key=entity)
+                        if query.first()['value'][1] == "Resource":
+                            descriptions_res.append({'OCCI_ID' : entity,'OCCI_Description' : query.first()['value'][0]})
+                        else:
+                            descriptions_link.append({'OCCI_ID' : entity,'OCCI_Description' : query.first()['value'][0]})
+                    except Exception as e:
+                        logger.error("get filtered entities : " + e.message)
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if terms.has_key('resources'):
+                    logger.debug("Resources filter get request : channeled")
+                    filtered_res,resp_code_r = self.manager_r.get_filtered_resources(terms['resources'],descriptions_res)
+                else:
+                    logger.debug("Resources get filter : res not found")
+                    filtered_res = ""
+                    resp_code_r = return_code['OK']
+                if terms.has_key('links'):
+                    logger.debug("links filter get request : channeled")
+                    filtered_links,resp_code_l = self.manager_l.get_filtered_links(terms['links'],descriptions_link)
+                else:
+                    logger.debug("Links get filter : link not found")
+                    filtered_links = ""
+                    resp_code_l = return_code['OK']
+                if resp_code_l is not 200 or resp_code_r is not 200:
+                    return "An error has occurred, please check log for more details",return_code['Bad Request']
+                result = {'resources': filtered_res, 'links': filtered_links}
+                return result,return_code['OK']
+            else:
+                return entities,ok
+        except Exception as e:
+            logger.error("filtered entities : " + e.message)
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
-
-    def channel_get_filtered_entities(self, jreq):
+    def channel_put_multi(self, user_id, jBody, path_url):
         pass
 
 #=======================================================================================================================
@@ -413,11 +505,10 @@ class SingleEntityManager(object):
 #                                           Independant Functions
 #=======================================================================================================================
 
-def associate_entities_to_a_mixin(entities_locations, url_path, db_occi_ids_docs):
+def associate_entities_to_a_mixin( url_path, db_occi_ids_docs):
     """
     Add a single mixin to entities
     Args:
-        @param entities_locations: OCCI Location of the entities
         @param url_path: location of the mixin
         @param db_occi_ids_docs: OCCI IDs and documents of the entities already contained in the database
     """
@@ -441,6 +532,8 @@ def associate_entities_to_a_mixin(entities_locations, url_path, db_occi_ids_docs
                     doc['OCCI_Description']['mixins'] = var
             else:
                 doc['OCCI_Description']['mixins'] = [mix_id]
+        logger.debug("Associate mixin : Mixin associated with success")
         return to_update,return_code['OK']
     else:
+        logger.debug("Associate mixin : Mixin description problem")
         return list(),return_code['Not Found']

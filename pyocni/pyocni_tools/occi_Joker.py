@@ -20,14 +20,13 @@ Created on Jun 12, 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
-@author: Houssem Medhioub
-@contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
 @version: 0.3
 @license: LGPL - Lesser General Public License
 
 """
 import pyocni.pyocni_tools.config as config
+
 # getting the Logger
 logger = config.logger
 
@@ -89,7 +88,6 @@ def filter_occi_description(description,filter):
     """
 
     #Try to get the keys from filter dictionary
-
     filter_keys = filter.keys()
     desc_keys = description.keys()
     for key in filter_keys:
@@ -292,3 +290,13 @@ def verify_existences_kappa(occi_ids, db_occi_ids_locs):
     #verify that the target and source are different resources
     #verify that the target and source are resources and not links
     return True
+
+def reformat_url_path(url_path):
+    """
+    Reformat the URL path to a category path
+    Args:
+        @param url_path: URL path
+    """
+    loc = url_path.split(config.PyOCNI_Server_Address)
+    new_path = config.PyOCNI_Server_Address+"/-"+loc[1]
+    return new_path

@@ -30,6 +30,7 @@ Created on Jun 01, 2012
 from pyocni.crud_Interfaces.entityInterface import SingleEntityInterface,MultiEntityInterface
 from pyocni.crud_Interfaces.pathInterface import PathInterface
 from pyocni.crud_Interfaces.queryInterface import QueryInterface
+from pyocni.crud_Interfaces.singleCategoryInterface import SingleCategoryInterface
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.DoItYourselfWebOb as url_mapper
 import eventlet
@@ -100,12 +101,13 @@ class ocni_server(object):
     operationQuery = url_mapper.rest_controller(QueryInterface)
     operationSingleEntity = url_mapper.rest_controller(SingleEntityInterface)
     operationMultiEntity = url_mapper.rest_controller(MultiEntityInterface)
-
+    operationSingleCategory = url_mapper.rest_controller(SingleCategoryInterface)
     app = url_mapper.Router()
 
     app.add_route('/-/',controller=operationQuery)
-    app.add_route('/-/{location}/',controller=operationMultiEntity)
-    app.add_route('/-/{location}/{idontknow}/{idontcare}/',controller=operationMultiEntity)
+    app.add_route('/-/{location}/',controller=operationSingleCategory)
+    app.add_route('/{location}/',controller=operationMultiEntity)
+    app.add_route('/{location}/{idontknow}/{idontcare}/',controller=operationMultiEntity)
     app.add_route('/{location}/{user_id}/{ins_id}',controller=operationSingleEntity)
     app.add_route('/{location}/',controller=operationPath)
     app.add_route('{location}/{user_id}/',controller=operationPath)
@@ -121,8 +123,7 @@ class ocni_server(object):
 #        result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
 #                                             "   Do you want to purge all databases (DB  reinitialization)?", "no")
 #        if result == 'yes':
-#            entityManager.purgeEntityDBs()
-#            categoryManager.purgeCategoryDBs()
+#            config.purge_PyOCNI_db()
 
         print ("\n______________________________________________________________________________________\n"
                "The OCNI server is running at: " + config.OCNI_IP + ":"+config.OCNI_PORT)

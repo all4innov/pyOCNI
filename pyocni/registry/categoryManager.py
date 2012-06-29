@@ -65,9 +65,7 @@ class KindManager:
                     if ok is True:
                         var.append(elem)
                         logger.debug("Kind filtered document found")
-                    else:
-                        message = "No kind document matches the requirements"
-                        logger.debug(message)
+                        break
             return var,return_code['OK']
         except Exception as e:
             logger.error("filtered kinds : " + e.message)
@@ -265,9 +263,7 @@ class MixinManager:
                     if ok is True:
                         var.append(elem)
                         logger.debug("Mixin filtered document found")
-                    else:
-                        message = "No mixin document matches the requirements"
-                        logger.debug(message)
+                        break
             return var,return_code['OK']
         except Exception as e:
             logger.error("filtered mixins : " + e.message)
@@ -399,6 +395,7 @@ class MixinManager:
                 logger.error("Delete mixin : " + event)
                 return list(), return_code['Bad Request']
         return message,res_code
+
     def dissociate_entities_belonging_to_mixin(self, occi_id, db_entities):
         return True
 
@@ -427,9 +424,7 @@ class ActionManager:
                     if ok is True:
                         var.append(elem)
                         logger.debug("action filtered document found")
-                    else:
-                        message = "No action document matches the requirements"
-                        logger.debug(message)
+                        break
             return var,return_code['OK']
         except Exception as e:
             logger.error("filtered actions : " + e.message)

@@ -159,7 +159,7 @@ links = """{
                     "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
                 }
             ],
-            "id": "for my test",
+            "id": "for my test2",
             "title": "Mynetworkinterface",
             "target": "http://127.0.0.1:8090/user_1/resource/996ad860-2a9a-504f-8861-aeafd0b2ae29",
             "source": "http://127.0.0.1:8090/user_1/resource/996ad860-2a9a-504f-8861-aeafd0b2ae30"
@@ -192,7 +192,7 @@ class test_post(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/resource/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
@@ -209,7 +209,7 @@ class test_post(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/mixin/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
@@ -242,11 +242,29 @@ class test_get(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,"http://127.0.0.1:8090/-/template/resource/medium2/")
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/template/resource/medium2/")
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
         c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+
+    def test_get_filtred_entities(self):
+        """
+        get filtred resources & links
+        """
+
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/template/resource/medium2/")
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,resources)
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()

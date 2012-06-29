@@ -1,0 +1,3 @@
+
+class SingleCategoryInterface(object):
+    pass

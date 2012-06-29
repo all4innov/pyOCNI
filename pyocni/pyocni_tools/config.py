@@ -50,7 +50,7 @@ DB_config = ConfigObj(get_absolute_path_from_relative_path("../couchdb_server.co
 DB_IP = DB_config['CouchDB_IP']
 DB_PORT = DB_config['CouchDB_PORT']
 PyOCNI_DB = DB_config['CouchDB_PyOCNI']
-
+PyOCNI_Server_Address = 'http://' + str(OCNI_IP) + ':' + str(OCNI_PORT)
 
 # ======================================================================================
 # HTTP Return Codes
@@ -122,12 +122,16 @@ def prepare_PyOCNI_db():
             },
             "entities_of_kind": {
                 "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                       "emit (doc.OCCI_Description.kind,doc.OCCI_Location) });"
+                       "emit (doc.OCCI_Description.kind,[doc.OCCI_Location,doc.Type]) });"
             },
             "entities_of_mixin": {
                 "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
                        "{for (elem in doc.OCCI_Description.mixins) "
-                       "emit (doc.OCCI_Description.mixins[elem],doc.OCCI_Location) }});"
+                       "emit (doc.OCCI_Description.mixins[elem],[doc.OCCI_Location,doc.Type]) }});"
+            },
+            "for_get_filtered": {
+                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                       "emit (doc.OCCI_Location,[doc.OCCI_Description,doc.Type]) });"
             }
 
 
@@ -140,7 +144,7 @@ def prepare_PyOCNI_db():
 def purge_PyOCNI_db():
 
     try:
-        server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
+        server = Server(PyOCNI_Server_Address)
     except Exception:
         logger.error("Database is unreachable")
 
