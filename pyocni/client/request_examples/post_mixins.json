@@ -1,0 +1,23 @@
+{
+    "mixins": [
+        {
+            "term": "medium",
+            "scheme": "http://example.com/template/resource#",
+            "title": "Medium VM",
+            "related": [
+                "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "speed": {
+                            "type": "number",
+                            "default": 2.8
+                        }
+                    }
+                }
+            },
+            "location": "/template/resource/medium/"
+        }
+    ]
+}
