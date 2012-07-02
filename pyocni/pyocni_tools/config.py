@@ -136,6 +136,17 @@ def prepare_PyOCNI_db():
             "my_mixins":{
                 "map": "(function(doc) { if (doc.Type == \"Mixin\")"
                        "emit (doc.OCCI_Location,doc.OCCI_ID) });"
+            },
+            "my_occi_locations":{
+                "map": "(function(doc) {emit (doc.OCCI_Location,doc.Creator) });"
+            },
+            "my_resources":{
+                "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                       "emit ([doc.OCCI_Location,doc.Creator],doc.OCCI_Description) });"
+            },
+            "for_delete_entities" :{
+                "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                       "emit (doc.Creator,[doc.OCCI_Location,doc._id,doc._rev]) });"
             }
 
 

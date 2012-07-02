@@ -36,6 +36,7 @@ except ImportError:
 from datetime import datetime
 from pyocni.pyocni_tools import uuid_Generator
 from pyocni.pyocni_tools.config import return_code
+from pyocni.registry.pathManager import PathManager
 
 # getting the Logger
 logger = config.logger
@@ -191,7 +192,7 @@ class ResourceManager(object):
             return var,return_code['OK']
         except Exception as e:
             logger.error("filtered res : " + e.message)
-            return "An error has occurred",return_code['Internal Server Error']
+            return list(),return_code['Internal Server Error']
 
 #=======================================================================================================================
 #                                           LinkManager
@@ -296,7 +297,7 @@ class LinkManager(object):
             return var,return_code['OK']
         except Exception as e:
             logger.error("filtered link : " + e.message)
-            return "An error has occurred",return_code['Internal Server Error']
+            return list(),return_code['Internal Server Error']
 
 #=======================================================================================================================
 #                                           MultiEntityManager
@@ -311,6 +312,7 @@ class MultiEntityManager(object):
 
         self.manager_r = ResourceManager()
         self.manager_l = LinkManager()
+        self.manager_p = PathManager()
 
     def channel_post_multi(self,user_id,jreq,req_path):
         """
@@ -361,7 +363,7 @@ class MultiEntityManager(object):
             return "",return_code['OK']
 
         else:
-            if jreq.has_key('OCCI_Locations'):
+            if jreq.has_key('Resource_Locations'):
                 db_docs = list()
                 try:
                     query = database.view('/db_views/my_mixins',key = url_path)
@@ -373,7 +375,7 @@ class MultiEntityManager(object):
                     return "An error has occurred, please check log for more details",return_code['Not Found']
                 else:
                     mix_id = query.first()['value']
-                    to_search_for = jreq['OCCI_Locations']
+                    to_search_for = jreq['Resource_Locations']
                     for item in to_search_for:
                         try:
                             query = database.view('/db_views/for_associate_mixin',key=[item,user_id])
@@ -400,11 +402,13 @@ class MultiEntityManager(object):
             database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
             return "",return_code['OK']
 
-    def channel_get_all_entities(self,req_path):
+    def channel_get_all_entities(self,req_path,user,jreq):
         """
         retrieve all entities belonging to a kind or a mixin
         Args:
             @param req_path: Address to which this post request was sent
+            @param user: Issuer of the request
+            @param jreq: Data provided for filtering
         """
         url_path = joker.reformat_url_path(req_path)
         database = config.prepare_PyOCNI_db()
@@ -414,8 +418,9 @@ class MultiEntityManager(object):
             logger.error("get all multi entities : " + e.message)
             return "An error has occurred, please check log for more details",return_code['Internal Server Error']
         if query.count() is 0:
-            logger.error("get all multi entities  : " + url_path)
-            return "An error has occurred, please check log for more details",return_code['Not Found']
+            logger.error("get all multi entities  : this is a get on a path " + url_path)
+            var, resp_code = self.manager_p.channel_get_on_path(user,req_path,jreq)
+            return var, resp_code
         else:
             q = query.first()
             if q['value'][1] == "Kind":
@@ -445,19 +450,19 @@ class MultiEntityManager(object):
         result = to_return_res + to_return_link
         return result,return_code['OK']
 
-    def channel_get_filtered_entities(self,req_path,terms):
+    def channel_get_filtered_entities(self,req_path,user,terms):
         """
         Retrieve entities belonging to a kind or a mixin matching the terms specified
         Args:
             @param req_path: Address to which this post request was sent
             @param terms: Terms to filter entities
+            @param user: Issuer of the request
         """
         descriptions_res = list()
         descriptions_link = list()
         database = config.prepare_PyOCNI_db()
         try:
-            entities,ok = self.channel_get_all_entities(req_path)
-            entities = entities['links'] + entities['resources']
+            entities,ok = self.channel_get_all_entities(req_path,user,terms)
             if ok == return_code['OK']:
                 for entity in entities:
                     try:
@@ -474,14 +479,14 @@ class MultiEntityManager(object):
                     filtered_res,resp_code_r = self.manager_r.get_filtered_resources(terms['resources'],descriptions_res)
                 else:
                     logger.debug("Resources get filter : res not found")
-                    filtered_res = ""
+                    filtered_res = list()
                     resp_code_r = return_code['OK']
                 if terms.has_key('links'):
                     logger.debug("links filter get request : channeled")
                     filtered_links,resp_code_l = self.manager_l.get_filtered_links(terms['links'],descriptions_link)
                 else:
                     logger.debug("Links get filter : link not found")
-                    filtered_links = ""
+                    filtered_links = list()
                     resp_code_l = return_code['OK']
 
                 if resp_code_l is not 200 or resp_code_r is not 200:
@@ -549,6 +554,63 @@ class MultiEntityManager(object):
         database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
         return "",return_code['OK']
 
+    def channel_delete_multi(self, user_id, jreq, req_url):
+        """
+        Update the mixin collection of resources
+        Args:
+            @param user_id: The issuer of the request
+            @param jreq: OCCI_Locations of the resources
+            @param req_url: URL of the request
+        """
+        database = config.prepare_PyOCNI_db()
+        if jreq is "":
+            logger.debug("Dissociate mixins : This is a delete on path " + req_url)
+            res,resp_code = self.manager_p.channel_delete_on_path(req_url,user_id)
+            return res,resp_code
+        else:
+            if jreq.has_key('Resource_Locations'):
+                url_path = joker.reformat_url_path(req_url)
+                db_docs = list()
+                to_validate = list()
+                to_validate.append(url_path)
+                for occi_loc in to_validate:
+                    try:
+                        query = database.view('/db_views/my_mixins',key = occi_loc)
+                    except Exception as e:
+                        logger.error("Dissociate mixins : " + e.message)
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                    if query.count() is 0:
+                        logger.debug("Dissociate mixins : This is a delete on path " + occi_loc)
+                        res,resp_code = self.manager_p.channel_delete_on_path(req_url,user_id)
+                        return res,resp_code
+                    else:
+                        mix_id = query.first()['value']
+
+                to_search_for = jreq['Resource_Locations']
+                for item in to_search_for:
+                    try:
+                        query = database.view('/db_views/for_associate_mixin',key=[item,user_id])
+                    except Exception as e:
+                        logger.error("Associate mixins : " + e.message)
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                    if query.count() is 0:
+                        logger.error("Associate mixins  : " + item)
+                        return "An error has occurred, please check log for more details",return_code['Not Found']
+                    else:
+                        q = query.first()
+                        db_docs.append(q['value'])
+
+                logger.debug("Delete path: delete on mixin path to Dissociate mixins channeled")
+                updated_entities,resp_code_e = dissociate_entities_from_a_mixin(mix_id,db_docs)
+            else:
+                updated_entities = list()
+                resp_code_e = return_code['Bad Request']
+
+            if resp_code_e is not return_code['OK']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+            database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
+            return "",return_code['OK']
 #=======================================================================================================================
 #                                           SingleEntityManager
 #=======================================================================================================================
@@ -603,3 +665,29 @@ def associate_entities_to_mixins(mix_ids, db_docs):
         doc['OCCI_Description']['mixins'] = mix_ids
     logger.debug("Associate mixin : Mixin associated with success")
     return db_docs,return_code['OK']
+
+def dissociate_entities_from_a_mixin(mix_id, db_docs):
+    """
+    Remove a single mixin from entities
+    Args:
+        @param mix_id: OCCI ID of the mixin
+        @param db_docs: documents of the entities already contained in the database
+    """
+    if mix_id is not None:
+        for doc in db_docs:
+            if doc['OCCI_Description'].has_key('mixins'):
+                var = doc['OCCI_Description']['mixins']
+                try:
+                    print mix_id
+                    print var
+                    var.remove(mix_id)
+
+                    doc['OCCI_Description']['mixins'] = var
+                except ValueError as e:
+                    logger.error('Diss a mixin: ' + e.message)
+
+        logger.debug("Dissociate mixin : Mixin dissociated with success")
+        return db_docs,return_code['OK']
+    else:
+        logger.debug("Dissociate mixin : Mixin description problem")
+        return list(),return_code['Not Found']

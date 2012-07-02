@@ -168,7 +168,7 @@ links = """{
 }
 """
 occi_ids = """
-{"OCCI_Locations":["http://127.0.0.1:8090/user_1/resource/for my test"]}
+{"Resource_Locations":["http://127.0.0.1:8090/user_1/resource/for my test"]}
 """
 res_mix_locs = """
 {"Resource_Locations":["http://127.0.0.1:8090/user_1/resource/for my test","http://127.0.0.1:8090/user_1/resource/for my test2"],
@@ -306,6 +306,40 @@ class test_put(TestCase):
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
+
+class test_delete(TestCase):
+    """
+    Tests DELETE request scenarios
+    """
+    def setUp(self):
+
+        """
+        Set up the test environment
+        """
+        self.p = Process(target = start_server)
+        self.p.start()
+        time.sleep(0.5)
+
+    def tearDown(self):
+        self.p.terminate()
+
+    def test_dissociate_mixins(self):
+        """
+        """
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/mixin/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
+        c.setopt(pycurl.POSTFIELDS,occi_ids)
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+
+
 if __name__ == '__main__':
 
     #Create the testing tools

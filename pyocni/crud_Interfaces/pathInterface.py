@@ -44,10 +44,12 @@ class PathInterface(object):
         CRUD operation on kinds, mixins and actions
 
     """
-    def __init__(self,req,location):
+    def __init__(self,req,location,user_id = None):
 
         self.req = req
+        self.user_id = user_id
         self.location=location
+        self.path_url = self.req.path_url
         self.res = Response()
         self.res.content_type = req.accept
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
@@ -60,22 +62,8 @@ class PathInterface(object):
     def get(self):
 
         """
-        Retrieval of all registered Kinds, mixins and actions
+        Retrieval of everything below this path
         """
-        if self.req.body == "":
-            self.res = self.manager.channel_get_all_categories()
-        else:
-            jreq = json.loads(self.req.body)
-            self.res = self.manager.channel_get_filtered_categories(jreq)
-
-        return self.res
-
-    def post(self):
-        """
-        Create a new entity instance or attach resource instance to a mixin database
-
-        """
-
         #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
 
         if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
@@ -98,34 +86,10 @@ class PathInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        self.res.body,self.res.status_code = self.manager.channel_post_path(user_id,jBody,self.location)
+        var, self.res.status_code = self.manager.channel_get_on_path(user_id,jBody,self.path_url)
+        self.res.body = json.dumps(var)
         return self.res
 
-    def put(self):
-        """
-        Update the document specific to the id provided in the request with new data
-
-        """
-
-        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
-
-        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
-            # Solution To adopt : Validate HTTP then convert to JSON
-            pass
-        elif self.req.content_type == "application/occi:json":
-            #  Solution To adopt : Validate then convert to application/occi+json
-            pass
-        elif self.req.content_type == "application/occi+json":
-            #Validate the JSON message
-            pass
-        else:
-            self.res.status_code = return_code["Unsupported Media Type"]
-            self.res.body = self.req.content_type + " is an unknown request content type"
-            return self.res
-            #Get the new data from the request
-        j_newData = json.loads(self.req.body)
-        self.res.body,self.res.status_code = self.manager.update_kind(self.doc_id,self.user_id,j_newData)
-        return self.res
 
     def delete(self):
         """
@@ -138,5 +102,5 @@ class PathInterface(object):
         user_id = base64.decodestring(user_id)
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
-        self.res.body= self.manager.channel_delete_categories(jBody,user_id)
+        self.res.body= self.manager.channel_delete_on_path(jBody,user_id)
         return self.res

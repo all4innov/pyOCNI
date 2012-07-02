@@ -721,6 +721,7 @@ class CategoryManager:
         categories = delete_kinds + delete_mixins + delete_actions
 
         database.delete_docs(categories)
+        logger.debug("Categories delete with success")
         return "",return_code['OK']
 
 

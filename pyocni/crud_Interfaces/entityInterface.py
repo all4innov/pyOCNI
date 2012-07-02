@@ -141,10 +141,10 @@ class MultiEntityInterface(object):
         user_id = user_id.split(':')[0]
 
         if self.req.body == "":
-            var,self.res.status_code = self.manager.channel_get_all_entities(self.path_url)
+            var,self.res.status_code = self.manager.channel_get_all_entities(self.path_url,user_id,"")
         else:
             jreq = json.loads(self.req.body)
-            var,self.res.status_code = self.manager.channel_get_filtered_entities(self.path_url,jreq)
+            var,self.res.status_code = self.manager.channel_get_filtered_entities(self.path_url,user_id,jreq)
 
         self.res.body = json.dumps(var)
         return self.res
@@ -178,4 +178,39 @@ class MultiEntityInterface(object):
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
         self.res.body,self.res.status_code = self.manager.channel_put_multi(user_id,jBody,self.path_url)
+        return self.res
+
+    def delete(self):
+        """
+        Dissociates a resource instance from a mixin
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/json:occi":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+        if self.req.body is not "":
+            jBody = json.loads(self.req.body)
+            #add the JSON to database along with other attributes
+            self.res.body,self.res.status_code = self.manager.channel_delete_multi(user_id,jBody,self.path_url)
+        else:
+            #add the JSON to database along with other attributes
+            self.res.body,self.res.status_code = self.manager.channel_delete_multi(user_id,"",self.path_url)
         return self.res

@@ -88,6 +88,8 @@ def filter_occi_description(description,filter):
     """
 
     #Try to get the keys from filter dictionary
+    print filter
+    print description
     filter_keys = filter.keys()
     desc_keys = description.keys()
     for key in filter_keys:
@@ -299,4 +301,14 @@ def reformat_url_path(url_path):
     """
     loc = url_path.split(config.PyOCNI_Server_Address)
     new_path = config.PyOCNI_Server_Address+"/-"+loc[1]
+    return new_path
+
+def format_url_path(cat_path):
+    """
+    format the category path to a URL path
+    Args:
+        @param cat_path: Category path
+    """
+    loc = cat_path.split("/-/")
+    new_path = config.PyOCNI_Server_Address+"/"+loc[1]
     return new_path
