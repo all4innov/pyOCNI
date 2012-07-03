@@ -30,7 +30,7 @@ import pyocni.pyocni_tools.config as config
 # getting the Logger
 logger = config.logger
 
-def update_occi_description(oldData,newData):
+def update_occi_category_description(oldData,newData):
     """
     Update only a part of the occi description
     Args:
@@ -43,6 +43,36 @@ def update_occi_description(oldData,newData):
     oldData_keys = oldData.keys()
     newData_keys = newData.keys()
     forbidden_keys = ["term","scheme","location"]
+    for key in newData_keys:
+        try:
+            forbidden_keys.index(key)
+            if oldData[key] != newData[key]:
+                logger.debug("update description : " + key + " is forbidden to change")
+                return True,None
+        except ValueError:
+            try:
+                oldData_keys.index(key)
+                oldData[key] = newData[key]
+            except ValueError:
+                #Keep the record of the keys(=parts) that couldn't be updated
+                logger.debug("update description : " + key + " could not be found")
+                return True,None
+
+    return False,oldData
+
+def update_occi_entity_description(oldData,newData):
+    """
+    Update only a part of the occi description
+    Args:
+        @param newData: The new OCCI description
+        @param oldData: The old OCCI description
+        @return : Updated data and a boolean (false if all fields are updated, true if there were some un-updated fields)
+    """
+
+    #Try to get the keys from occi description dictionary
+    oldData_keys = oldData.keys()
+    newData_keys = newData.keys()
+    forbidden_keys = ["id","kind"]
     for key in newData_keys:
         try:
             forbidden_keys.index(key)
@@ -88,8 +118,6 @@ def filter_occi_description(description,filter):
     """
 
     #Try to get the keys from filter dictionary
-    print filter
-    print description
     filter_keys = filter.keys()
     desc_keys = description.keys()
     for key in filter_keys:

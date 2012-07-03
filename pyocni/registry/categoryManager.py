@@ -141,7 +141,7 @@ class KindManager:
             old_doc = joker.extract_doc(occi_id,db_data)
             if old_doc is not None:
                 if user_id == old_doc['Creator']:
-                    problems,occi_description= joker.update_occi_description(old_doc['OCCI_Description'],desc)
+                    problems,occi_description= joker.update_occi_category_description(old_doc['OCCI_Description'],desc)
                     if problems is True:
                         message = "Kind OCCI description " + occi_id + " has not been totally updated."
                         logger.error("Kind OCCI description update " + message)
@@ -343,7 +343,7 @@ class MixinManager:
             old_doc = joker.extract_doc(occi_id,db_data)
             if old_doc is not None:
                 if user_id == old_doc['Creator']:
-                    problems,occi_description= joker.update_occi_description(old_doc['OCCI_Description'],desc)
+                    problems,occi_description= joker.update_occi_category_description(old_doc['OCCI_Description'],desc)
                     if problems is True:
                         message = "Mixin OCCI description " + occi_id + " has not been totally updated."
                         logger.error("Mixin OCCI description update " + message)
@@ -480,7 +480,7 @@ class ActionManager:
             old_doc = joker.extract_doc(occi_id,db_data)
             if old_doc is not None:
                 if user_id == old_doc['Creator']:
-                    problems,occi_description= joker.update_occi_description(old_doc['OCCI_Description'],desc)
+                    problems,occi_description= joker.update_occi_category_description(old_doc['OCCI_Description'],desc)
                     if problems is True:
                         message = "Action OCCI description " + occi_id + " has not been totally updated."
                         logger.error("Action OCCI description update " + message)

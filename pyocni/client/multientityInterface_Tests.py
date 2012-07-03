@@ -27,7 +27,6 @@ Created on Jun 27, 2012
 @license: LGPL - Lesser General Public License
 """
 from multiprocessing import Process
-from pyocni.pyocni_tools.config import return_code
 from unittest import TestLoader,TextTestRunner,TestCase
 import pyocni.client.server_Mock as server
 import pycurl
