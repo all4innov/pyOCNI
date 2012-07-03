@@ -162,7 +162,7 @@ kinds_dep = """
 mixins = """
 {"mixins": [
         {
-            "term": "resource_tpl",
+            "term": "mixin",
             "scheme": "http://schemas.ogf.org/occi/infrastructure#",
             "title": "Big Bad VM",
             "related": [],
@@ -331,7 +331,7 @@ class test_delete(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
-        c.setopt(pycurl.POSTFIELDS,mixins_dep)
+        c.setopt(pycurl.POSTFIELDS,kinds_indep)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

@@ -105,7 +105,28 @@ links = """{
     ]
 }
 """
+part_links = """{
+    "links": [
+            {
+            "id": " try to change it",
+            "title": "My partial update test !",
+            "target": "http://127.0.0.1:8090/bilel/compute/vm1",
+            "source": "http://127.0.0.1:8090/bilel/compute2/vm2"
+        }
+    ]
+}
+"""
+part_resource ="""
+{
+    "resources": [{
 
+            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+            "title": "Compute resource ????",
+            "summary": "This is a compute resource"
+        }
+    ]
+}
+"""
 def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
@@ -132,11 +153,11 @@ class test_post(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/resource/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/bilel/compute/vm1')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
-        c.setopt(pycurl.POSTFIELDS,links)
+        c.setopt(pycurl.POSTFIELDS,part_resource)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -168,7 +189,7 @@ class test_get(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,"http://127.0.0.1:8090/bilel/links/link1")
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/bilel/compute/vm1")
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -178,7 +199,38 @@ class test_get(TestCase):
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
 
+class test_delete(TestCase):
+    """
+    Tests DELETE request scenarios
+    """
+    def setUp(self):
 
+        """
+        Set up the test environment
+        """
+        self.p = Process(target = start_server)
+        self.p.start()
+        time.sleep(0.5)
+
+    def tearDown(self):
+        self.p.terminate()
+
+    def test_delete_entity(self):
+        """
+        delete resources & links
+        """
+
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/bilel/compute/vm1")
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
 
 class test_put(TestCase):
     """
@@ -220,11 +272,11 @@ if __name__ == '__main__':
 
     #Create the testing suites
     get_suite = loader.loadTestsFromTestCase(test_get)
-    #    delete_suite = loader.loadTestsFromTestCase(test_delete)
+    delete_suite = loader.loadTestsFromTestCase(test_delete)
     put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
     runner.run(get_suite)
-    #    runner.run(delete_suite)
+    runner.run(delete_suite)
     runner.run(put_suite)
     runner.run(post_suite)

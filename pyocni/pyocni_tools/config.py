@@ -104,10 +104,7 @@ def prepare_PyOCNI_db():
                             " emit([doc.OCCI_Location,doc.Creator],doc);});"
             },
             "for_delete_categories": {
-                "map": "(function(doc) {  if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
-                        "emit(null,doc);"
-                        " else "
-                        " emit(doc._id,[doc._rev,doc.OCCI_ID, doc.Creator]);});"
+                "map": "(function(doc) { emit(doc._id,[doc._rev,doc.OCCI_ID, doc.Creator])});"
             },
             "for_register_categories" : {
                 "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
@@ -151,6 +148,11 @@ def prepare_PyOCNI_db():
             "for_update_entities":{
                 "map" :"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
                         "emit ([doc.OCCI_Location,doc.Creator],doc)});"
+            },
+            "entities_of_mixin_v2":{
+                "map":"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                    "{for (elem in doc.OCCI_Description.mixins)"
+                    "emit (doc.OCCI_Description.mixins[elem],doc) }});"
             }
 
 

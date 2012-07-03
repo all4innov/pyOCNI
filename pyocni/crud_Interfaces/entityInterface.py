@@ -146,7 +146,40 @@ class SingleEntityInterface(object):
         #add the JSON to database along with other attributes
         self.res.body,self.res.status_code = self.manager.channel_post_single(user_id,jBody,self.path_url)
         return self.res
-    #=======================================================================================================================
+
+    def delete(self):
+        """
+        Delete a resource instance
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/json:occi":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+
+        #add the JSON to database along with other attributes
+        self.res.body,self.res.status_code = self.manager.channel_delete_single(user_id,self.path_url)
+
+        return self.res
+
+#=======================================================================================================================
 #                                           MultiEntityInterface
 #=======================================================================================================================
 class MultiEntityInterface(object):

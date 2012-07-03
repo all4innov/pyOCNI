@@ -218,8 +218,8 @@ class KindManager:
             occi_id = joker.get_description_id(desc)
             kind_id_rev = joker.verify_exist_occi_id_creator(occi_id,user_id,db_categories)
             if kind_id_rev is not None:
-                ok = self.get_entities_belonging_to_kind(occi_id,db_entities)
-                if ok is True:
+                exist_entities = self.get_entities_belonging_to_kind(occi_id,db_entities)
+                if exist_entities is False:
                     message.append(kind_id_rev)
                     event = "Kind document " + occi_id + " is sent for delete "
                     logger.debug("Delete kind : " + event)
@@ -234,6 +234,17 @@ class KindManager:
         return message,res_code
 
     def get_entities_belonging_to_kind(self, occi_id,db_data):
+        """
+        Verifies if there are entities of this kind
+        Args:
+            @param occi_id: OCCI_ID of the kind
+            @param db_data: OCCI_IDs of the kind that has entities running
+        """
+        try:
+            db_data.index(occi_id)
+        except ValueError as e:
+            logger.debug("Entities belong kind : " + e.message)
+            return False
         return True
 
 
@@ -381,23 +392,37 @@ class MixinManager:
             occi_id = joker.get_description_id(desc)
             mixin_id_rev = joker.verify_exist_occi_id_creator(occi_id,user_id,db_categories)
             if mixin_id_rev is not None:
-                ok = self.dissociate_entities_belonging_to_mixin(occi_id,db_entities)
-                if ok is True:
+                db_entities,dissociated = self.dissociate_entities_belonging_to_mixin(occi_id,db_entities)
+                if dissociated is True:
                     message.append(mixin_id_rev)
                     event = "Mixin document " + occi_id + " is sent for delete "
                     logger.debug("Delete mixin : " + event)
                 else:
-                    event = "Unable to delete because this mixin document " + occi_id + " has resources depending on it. "
+                    event = "Unable to delete because this mixin document " + occi_id + " still has resources depending on it. "
                     logger.error("Delete mixin : " + event)
-                    return list(), return_code['Bad Request']
+                    return list(),list(), return_code['Bad Request']
             else:
                 event = "Could not find this mixin document " + occi_id +" or you are not authorized for for delete"
                 logger.error("Delete mixin : " + event)
-                return list(), return_code['Bad Request']
-        return message,res_code
+                return list(),list(), return_code['Bad Request']
+
+
+        return message,db_entities,res_code
 
     def dissociate_entities_belonging_to_mixin(self, occi_id, db_entities):
-        return True
+        """
+        Dissociates entities from a mixin
+        Args:
+            @param occi_id: OCCI ID of the mixin
+            @param db_entities: Docs of the entities that could be having the mixin in their mixin collection
+        """
+
+        for item in db_entities:
+            try:
+                item['OCCI_Description']['mixins'].remove(occi_id)
+            except ValueError as e:
+                logger.debug("dis entities belong mixin " + e.message)
+        return db_entities,True
 
 
 class ActionManager:
@@ -684,27 +709,45 @@ class CategoryManager:
             logger.error("Category delete : " + e.message)
             return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
         db_occi_id_creator = list()
-        db_entities = list()
         for q in query:
             if q['key'] is not None:
                 db_occi_id_creator.append( { "_id" : q['key'],"_rev" : q['value'][0], "OCCI_ID" : q['value'][1],"Creator" : q['value'][2]})
-            else:
-                db_entities.append(q['value'])
-
         if jreq.has_key('kinds'):
-            logger.debug("Kinds delete request : channeled")
-            delete_kinds,resp_code_k = self.manager_k.delete_kind_documents(jreq['kinds'],user_id,db_occi_id_creator,db_entities)
+            try:
+                query = database.view('/db_views/entities_of_kind')
+            except Exception as e:
+                logger.error("Category delete : " + e.message)
+                return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
+            db_kind_entities = list()
+            for q in query:
+                if q['key'] is not None:
+                    db_kind_entities.append(q['key'])
+
+                logger.debug("Kinds delete request : channeled")
+                delete_kinds,resp_code_k = self.manager_k.delete_kind_documents(jreq['kinds'],user_id,db_occi_id_creator,db_kind_entities)
         else:
             logger.error("ch delete filter : No kinds found")
             delete_kinds=list()
             resp_code_k = return_code['OK']
 
         if jreq.has_key('mixins'):
+            db_mixin_entities = list()
+            for mix in jreq['mixins']:
+                occi_id = joker.get_description_id(mix)
+                try:
+                    query = database.view('/db_views/entities_of_mixin_v2',key =occi_id)
+                except Exception as e:
+                    logger.error("Category delete : " + e.message)
+                    return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
+                db_mixin_entities.append(query.first()['value'])
+
+
             logger.debug("Mixins delete request : channeled")
-            delete_mixins,resp_code_m = self.manager_m.delete_mixin_documents(jreq['mixins'],user_id,db_occi_id_creator,db_entities)
+            delete_mixins,to_update,resp_code_m = self.manager_m.delete_mixin_documents(jreq['mixins'],user_id,db_occi_id_creator,db_mixin_entities)
         else:
             logger.error("ch delete filter : No mixins found")
             delete_mixins=list()
+            to_update = list()
             resp_code_m = return_code['OK']
 
         if jreq.has_key('actions'):
@@ -721,6 +764,7 @@ class CategoryManager:
         categories = delete_kinds + delete_mixins + delete_actions
 
         database.delete_docs(categories)
+        database.save_docs(to_update,force_update=True, all_or_nothing=True)
         logger.debug("Categories delete with success")
         return "",return_code['OK']
 

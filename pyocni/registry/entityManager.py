@@ -277,7 +277,7 @@ class ResourceManager(object):
                         exist_links = False
                     if ok_l is True:
                         logger.debug("Up resource: Resource sent for update")
-                        return occi_description,return_code['OK']
+                        return occi_description,exist_links,return_code['OK']
                     else:
                         logger.error("Up resource: Bad links description ")
                         return list(),exist_links
@@ -292,48 +292,48 @@ class ResourceManager(object):
             logger.error("Up resource: " + mesg)
             return list(),return_code['Not Found']
 
-    def partial_resource_update(self, user_id, occi_description, db_occi_ids_locs):
+    def partial_resource_update(self, user_id,old_data,occi_description, db_occi_ids_locs):
         """
         Verifies the validity of a resource's new data
         Args:
             @param user_id: Issuer of the request
             @param occi_description: Resource description
+            @param old_data: Old resource description
             @param db_occi_ids_locs: Ids and locations from the database
         """
-        ok_k = joker.verify_existences_beta([occi_description['kind']],db_occi_ids_locs)
-        #Verify if the kind to which this request is sent is the same as the one in the link description
-        if ok_k is True:
-            if occi_description.has_key('actions'):
-                ok_a = joker.verify_existences_delta(occi_description['actions'],db_occi_ids_locs)
-            else:
-                ok_a = True
-            if ok_a is True:
-                if occi_description.has_key('mixins'):
-                    ok_m = joker.verify_existences_beta(occi_description['mixins'],db_occi_ids_locs)
-                else:
-                    ok_m = True
-                if ok_m is True:
-                    if occi_description.has_key('links'):
-                        ok_l,exist_links = self.verify_links_implicit(occi_description['links'],user_id,db_occi_ids_locs)
-                    else:
-                        ok_l = True
-                        exist_links = False
-                    if ok_l is True:
-                        logger.debug("Up resource: Resource sent for update")
-                        return occi_description,return_code['OK']
-                    else:
-                        logger.error("Up resource: Bad links description ")
-                        return list(),exist_links
-                else:
-                    logger.error("Up resource: Bad Mixins description ")
-                    return list(),return_code['Not Found']
-            else:
-                logger.error("Up resource: Bad Actions description ")
-                return list(),return_code['Not Found']
+
+        if occi_description.has_key('actions'):
+            ok_a = joker.verify_existences_delta(occi_description['actions'],db_occi_ids_locs)
         else:
-            mesg = "Kind description does not exist match"
-            logger.error("Up resource: " + mesg)
-            return list(),return_code['Not Found']
+            ok_a = True
+        if ok_a is True:
+            if occi_description.has_key('mixins'):
+                ok_m = joker.verify_existences_beta(occi_description['mixins'],db_occi_ids_locs)
+            else:
+                ok_m = True
+            if ok_m is True:
+                if occi_description.has_key('links'):
+                    ok_l,exist_links = self.verify_links_implicit(occi_description['links'],user_id,db_occi_ids_locs)
+                else:
+                    ok_l = True
+                    exist_links = False
+                if ok_l is True:
+                    problems,updated_data = joker.update_occi_entity_description(old_data,occi_description)
+                    if problems is False:
+                        logger.debug("Up partial resource: Resource sent for update")
+                        return updated_data,exist_links,return_code['OK']
+                    else:
+                        logger.error("Up partial resource: Resource couldn't have been fully updated")
+                        return updated_data,False,return_code['Conflict']
+                else:
+                    logger.error("Up partial resource: Bad links description ")
+                    return list(),False,exist_links
+            else:
+                logger.error("Up partial resource: Bad Mixins description ")
+                return list(),False,return_code['Not Found']
+        else:
+            logger.error("Up partial resource: Bad Actions description ")
+            return list(),False,return_code['Not Found']
 
 #=======================================================================================================================
 #                                           LinkManager
@@ -497,7 +497,7 @@ class LinkManager(object):
 
     def update_link(self, user_id, occi_description, db_occi_ids_locs):
         """
-        Add a new link with a custom URL to the database
+        Update the link description attached to the custom URL
         Args:
             @param user_id: Issuer of the request
             @param occi_description: link description
@@ -541,8 +541,49 @@ class LinkManager(object):
             return list(),return_code['Not Found']
 
 
-    def partial_link_update(self, user_id, param, db_occi_ids_locs):
-        pass
+    def partial_link_update(self, user_id, old_data, occi_description, db_occi_ids_locs):
+        """
+        Update the link description attached to the custom URL
+        Args:
+            @param user_id: Issuer of the request
+            @param occi_description: link description
+            @param old_data: Old link description
+            @param db_occi_ids_locs: Ids and locations from the database
+        """
+        #Verify if the kind to which this request is sent is the same as the one in the link description
+        ok_target_source = joker.verify_existences_teta([occi_description['target'],occi_description['source']],db_occi_ids_locs)
+        if ok_target_source is True:
+            ok_kappa = joker.verify_existences_kappa([occi_description['target'],occi_description['source']],db_occi_ids_locs)
+            if ok_kappa is True:
+                if occi_description.has_key('actions'):
+                    ok_a = joker.verify_existences_delta(occi_description['actions'],db_occi_ids_locs)
+                else:
+                    ok_a = True
+                if ok_a is True:
+                    if occi_description.has_key('mixins'):
+                        ok_m = joker.verify_existences_beta(occi_description['mixins'],db_occi_ids_locs)
+                    else:
+                        ok_m = True
+                    if ok_m is True:
+                        problems,updated_data = joker.update_occi_entity_description(old_data,occi_description)
+                        if problems is False:
+                            logger.debug("Up part link: Link sent for update")
+                            return updated_data,return_code['OK']
+                        else:
+                            logger.error("Up part link: Link couldn't have been fully updated")
+                            return updated_data,return_code['Conflict']
+                    else:
+                        logger.error("UP partial link cus: Bad Mixins description ")
+                        return list(),return_code['Not Found']
+                else:
+                    logger.error("UP partial link cus: Bad Actions description ")
+                    return list(),return_code['Not Found']
+            else:
+                logger.error("UP partial link cus: Bad resources description ")
+                return list(),return_code['Bad Request']
+        else:
+            logger.error("UP partial link cus: Bad resources description ")
+            return list(),return_code['Not Found']
 
 #=======================================================================================================================
 #                                           MultiEntityManager
@@ -925,7 +966,8 @@ class SingleEntityManager(object):
             #This is an update of a resource
             if jBody.has_key('resources'):
                 logger.debug("Put single : update resource channeled")
-                entity, resp_code_r = self.manager_r.update_resource(user_id,jBody['resources'][0],db_occi_ids_locs)
+                entity,new_links, resp_code_r = self.manager_r.update_resource(user_id,jBody['resources'][0],db_occi_ids_locs)
+                to_update['Internal_Links'] = new_links
             else:
                 resp_code_r = return_code['OK']
 
@@ -990,25 +1032,48 @@ class SingleEntityManager(object):
             logger.error("Part Entity Update: No such entity")
             return "An error has occurred, please check logs for more details",return_code['Not Found']
         else:
+            old_doc = query2.first()['value']
             #This is an update of a resource
             if jBody.has_key('resources'):
                 logger.debug("Put single : update resource channeled")
-                entity, resp_code_r = self.manager_r.partial_resource_update(user_id,jBody['resources'][0],db_occi_ids_locs)
+                entity,new_links, resp_code_r = self.manager_r.partial_resource_update(user_id,old_doc['OCCI_Description'],jBody['resources'][0],db_occi_ids_locs)
+                old_doc['Internal_Links'] = new_links
             else:
                 resp_code_r = return_code['OK']
 
             if jBody.has_key('links'):
                 logger.debug("Post path : update link channeled")
-                entity, resp_code_l = self.manager_l.partial_link_update(user_id,jBody['links'][0],db_occi_ids_locs)
+                entity, resp_code_l = self.manager_l.partial_link_update(user_id,old_doc['OCCI_Description'],jBody['links'][0],db_occi_ids_locs)
             else:
                 resp_code_l = return_code['OK']
 
             if resp_code_r is not return_code['OK'] or resp_code_l is not return_code['OK']:
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
-            to_update['OCCI_Description'] = entity
-            database.save_doc(to_update,force_update=True, all_or_nothing=True)
+            old_doc['OCCI_Description'] = entity
+            database.save_doc(old_doc,force_update=True, all_or_nothing=True)
             #return the locations of the resources
             return "",return_code['OK']
+
+    def channel_delete_single(self, user_id, path_url):
+        """
+        Delete a resource instance
+        Args:
+            @param user_id: Issuer of the delete request
+            @param path_url: URL of the resource
+        """
+        database = config.prepare_PyOCNI_db()
+        try:
+            query = database.view('/db_views/for_update_entities',key=[path_url,user_id])
+        except Exception as e:
+            logger.error("delete single : " + e.message)
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+        if query.count() is 0:
+            logger.error("Delete single: No such entity")
+            return "An error has occurred, please check log for more details", return_code['Not Found']
+        else:
+            database.delete_doc(query.first()['value'])
+            logger.debug("Delete single: Resource " + path_url + " is deleted ")
+            return "",return_code['OK, but no content returned']
 
 #=======================================================================================================================
 #                                           Independent Functions

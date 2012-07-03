@@ -32,14 +32,14 @@ logger = config.logger
 
 def update_occi_category_description(oldData,newData):
     """
-    Update only a part of the occi description
+    Update only a part of the occi category description
     Args:
-        @param newData: The new OCCI description
-        @param oldData: The old OCCI description
+        @param newData: The new OCCI category description
+        @param oldData: The old OCCI category description
         @return : Updated data and a boolean (false if all fields are updated, true if there were some un-updated fields)
     """
 
-    #Try to get the keys from occi description dictionary
+    #Try to get the keys from occi category description dictionary
     oldData_keys = oldData.keys()
     newData_keys = newData.keys()
     forbidden_keys = ["term","scheme","location"]
@@ -55,21 +55,21 @@ def update_occi_category_description(oldData,newData):
                 oldData[key] = newData[key]
             except ValueError:
                 #Keep the record of the keys(=parts) that couldn't be updated
-                logger.debug("update description : " + key + " could not be found")
+                logger.debug("update category description : " + key + " could not be found")
                 return True,None
 
     return False,oldData
 
 def update_occi_entity_description(oldData,newData):
     """
-    Update only a part of the occi description
+    Update only a part of the occi entity description
     Args:
-        @param newData: The new OCCI description
-        @param oldData: The old OCCI description
+        @param newData: The new OCCI entity description
+        @param oldData: The old OCCI entity description
         @return : Updated data and a boolean (false if all fields are updated, true if there were some un-updated fields)
     """
 
-    #Try to get the keys from occi description dictionary
+    #Try to get the keys from occi entity description dictionary
     oldData_keys = oldData.keys()
     newData_keys = newData.keys()
     forbidden_keys = ["id","kind"]
@@ -85,7 +85,7 @@ def update_occi_entity_description(oldData,newData):
                 oldData[key] = newData[key]
             except ValueError:
                 #Keep the record of the keys(=parts) that couldn't be updated
-                logger.debug("update description : " + key + " could not be found")
+                logger.debug("update entity description : " + key + " could not be found")
                 return True,None
 
     return False,oldData

@@ -45,7 +45,6 @@ class QueryInterface(object):
     """
     def __init__(self,req):
 
-        self.location = location
         self.req = req
         self.res = Response()
         self.res.content_type = req.accept
