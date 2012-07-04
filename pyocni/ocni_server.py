@@ -414,7 +414,7 @@ class OperationResource(object):
         # =2= add the created resource to the registry
 
         _user_id = 'user1'
-        _location = '/' + self.term + '/' + _user_id + '/' + uuid_generator.get_UUID()
+        _location = '/' + self.term + '/' + _user_id + '/' + _resource.occi_core_id
         location_registry().register_location(_location, _resource)
 
         # =3= execute the backend command by sending the resource object

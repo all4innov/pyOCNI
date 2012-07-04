@@ -49,6 +49,8 @@ from  pyocni.specification.occi_core import Category, Kind, Mixin, Action, Entit
 
 from pyocni.registry.registry import location_registry, category_registry
 
+import pyocni.pyocni_tools.UUID_Generator as uuid_generator
+
 # getting the Logger
 logger = config.logger
 
@@ -271,7 +273,10 @@ class resource_serializer(object):
         _kind_scheme = result_obj['kind']['scheme']
         _kind_class = result_obj['kind']['class']
 
-        _occi_core_id = result_obj['occi.core.id']
+        if result_obj['occi.core.id'] == "":
+            _occi_core_id = uuid_generator.get_UUID()
+        else:
+            _occi_core_id = result_obj['occi.core.id']
         _occi_core_title = result_obj['occi.core.title']
         _occi_core_summary = result_obj['occi.core.summary']
         _mixins = result_obj['mixins']
