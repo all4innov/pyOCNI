@@ -1,20 +1,31 @@
-{
-    "actions": [
-        {
-            "term": "start",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
-        }
-    ],
+/*
+
+ =1= Delete of multiple kinds,mixins and actions can be done at the same time
+ =2= Object members term and scheme MUST exist in each description
+
+ */
+
+ {
     "kinds": [
         {
-            "term": "storage",
+            "term": "compute",
             "scheme": "http://schemas.ogf.org/occi/infrastructure#"
         }
     ],
     "mixins": [
         {
-            "term": "resource_tpl",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#"
+            "term": "medium",
+            "scheme": "http://example.com/template/resource#"
+        }
+    ],
+    "actions": [
+        {
+            "term": "stop",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
+        },
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
         }
     ]
 }

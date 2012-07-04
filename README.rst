@@ -106,7 +106,7 @@ In order to use PyOCNI, you must respect certain rules :
 
 These are some commands that you can use with PyOCNI
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
 * Create Actions::
 
@@ -124,9 +124,9 @@ ________________________________________________________________________________
 
    curl -X DELETE -d@delete_actions.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
 * Create Mixins::
 
@@ -144,9 +144,9 @@ ________________________________________________________________________________
 
    curl -X DELETE -d@delete_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
 * Creation of Kinds, Mixins and Actions at the same time::
 
@@ -168,9 +168,9 @@ ________________________________________________________________________________
 
    curl -X DELETE -d@delete_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
 * Create Kinds::
 
@@ -188,59 +188,88 @@ ________________________________________________________________________________
 
    curl -X PUT -d@put_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
+* Update Kind providers::
+
+   curl -X DELETE -d@put_providers.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+
 * Delete Kinds::
 
    curl -X DELETE -d@delete_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
+
+
+* Get Resources,Links and URLs below a path ::
+
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{path}
+
+* Get Resources and Links below a path::
+
+   curl -X GET -d@get_res_link_b_path.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{primary}/{secondary}
+
+* Delete all Resources and Links below a path::
+
+   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{primary}/{secondary}
+
+________________________________________________________________________________________________________________________
+
+________________________________________________________________________________________________________________________
 
 * Create Resources of a kind::
 
    curl -X POST -d@post_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/
 
-* Get Resources of a user::
+* Create a Resource with a custom URL path::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/
+   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{my_custom_resource_path}
 
 * Get a Resource::
 
    curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
 
-* Update a Resource::
+* Full Update a Resource::
 
-   curl -X PUT -d@update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+
+* Partial Update a Resource::
+
+   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
 
 * Delete a Resource::
 
    curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
 * Create Links of a kind::
 
    curl -X POST -d@post_links.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/
 
-* Get Links of a user::
+* Create a Link with a custom resource path::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/
+   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{my_custom_link_path}
 
 * Get a Link::
 
    curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
 
-* Update a Link::
+* Full update a Link::
 
-   curl -X PUT -d@update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
+   curl -X PUT -d@full_update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
+
+* Patial update a Link::
+
+   curl -X POST -d@partial_update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
 
 * Delete a link::
 
    curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
 
-__________________________________________________________________________________________________________________
+________________________________________________________________________________________________________________________
 
 5. For developers
 =================
@@ -903,7 +932,7 @@ Some of pyocni's needs might be:
        ]
    }
 
-* update_resource.json::
+* full_update_resource.json::
 
    {
        "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
@@ -948,7 +977,7 @@ Some of pyocni's needs might be:
        ]
    }
 
-* update_link.json::
+* full_update_link.json::
 
    {
        "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",

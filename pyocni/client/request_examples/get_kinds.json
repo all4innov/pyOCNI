@@ -1,39 +1,16 @@
+/*
+ =1= Multiple kinds can be retrieved at the same time
+ =2= If there is no filter, all kinds in the database will be retrieved
+ =3= If there is a filter, it should containt only the object members described in the OCCI JSON rendering draft
+ */
+
 {
     "kinds": [
         {
-            "term": "compute",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/core#resource"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
-                        }
-                    }
-                }
-            },
             "actions": [
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-            ],
-            "location": "/compute/"
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop"
+            ]
         }
     ]
 }
