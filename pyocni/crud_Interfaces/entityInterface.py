@@ -46,10 +46,12 @@ class SingleEntityInterface(object):
         CRUD operation on resources and links
 
     """
-    def __init__(self,req,location):
+    def __init__(self,req,location,idontknow=None,idontcare=None,action=None):
 
         self.req = req
         self.location=location
+        self.path_url = self.req.path_url
+        self.triggered_action = action
         self.res = Response()
         self.res.content_type = req.accept
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
@@ -59,6 +61,128 @@ class SingleEntityInterface(object):
             self.res.body = "An error has occurred, please check log for more details"
             self.res.status_code = return_code["Internal Server Error"]
 
+    def put(self):
+        """
+        Create a new entity instance with a customized URL or perform a full update of the resource
+        """
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/json:occi":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+        jBody = json.loads(self.req.body)
+        #add the JSON to database along with other attributes
+        self.res.body,self.res.status_code = self.manager.channel_put_single(user_id,jBody,self.path_url)
+        return self.res
+
+    def get(self):
+        """
+        Retrieve the representation of a resource
+        """
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/json:occi":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+        #add the JSON to database along with other attributes
+        var,self.res.status_code = self.manager.channel_get_single(user_id,self.path_url)
+        self.res.body = json.dumps(var)
+        return self.res
+
+    def post(self):
+        """
+        Perform a partial update of a resource
+        """
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/json:occi":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+        jBody = json.loads(self.req.body)
+        #add the JSON to database along with other attributes
+        if self.triggered_action is None:
+            self.res.body,self.res.status_code = self.manager.channel_post_single(user_id,jBody,self.path_url)
+        else:
+            self.res.body,self.res.status_code = self.manager.channel_triggered_action_single(user_id,jBody,self.path_url,self.triggered_action)
+
+        return self.res
+
+    def delete(self):
+        """
+        Delete a resource instance
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/json:occi":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+
+        #add the JSON to database along with other attributes
+        self.res.body,self.res.status_code = self.manager.channel_delete_single(user_id,self.path_url)
+
+        return self.res
 
 #=======================================================================================================================
 #                                           MultiEntityInterface
@@ -67,10 +191,11 @@ class MultiEntityInterface(object):
     """
     CRUD operation on kinds, mixins and actions
     """
-    def __init__(self,req,location,idontknow,idontcare):
+    def __init__(self,req,location,idontknow=None,idontcare=None,action=None):
 
         self.req = req
         self.location=location
+        self.triggered_action = action
         self.path_url = self.req.path_url
         self.res = Response()
         self.res.content_type = req.accept
@@ -110,12 +235,20 @@ class MultiEntityInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        self.res.body,self.res.status_code = self.manager.channel_post_multi(user_id,jBody,self.path_url)
+        if self.triggered_action is None:
+            var,self.res.status_code = self.manager.channel_post_multi(user_id,jBody,self.path_url)
+            if type(var) is not str:
+                self.res.body = json.dumps(var)
+            else:
+                self.res.body = var
+        else:
+            self.res.body,self.res.status_code = self.manager.channel_trigger_actions(user_id,jBody,self.path_url,self.triggered_action)
+
         return self.res
 
     def get(self):
         """
-        Gets all entities belonging to a kind or a mixin
+        Gets entities belonging to a kind or a mixin
 
         """
 
@@ -141,10 +274,76 @@ class MultiEntityInterface(object):
         user_id = user_id.split(':')[0]
 
         if self.req.body == "":
-            var,self.res.status_code = self.manager.channel_get_all_entities(self.path_url)
+            var,self.res.status_code = self.manager.channel_get_all_entities(self.path_url,user_id,"")
         else:
             jreq = json.loads(self.req.body)
-            var,self.res.status_code = self.manager.channel_get_filtered_entities(jreq)
+            var,self.res.status_code = self.manager.channel_get_filtered_entities(self.path_url,user_id,jreq)
 
         self.res.body = json.dumps(var)
+        return self.res
+
+    def put(self):
+        """
+        Update the mixin collection of entities
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/json:occi":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+        jBody = json.loads(self.req.body)
+        #add the JSON to database along with other attributes
+        self.res.body,self.res.status_code = self.manager.channel_put_multi(user_id,jBody,self.path_url)
+        return self.res
+
+    def delete(self):
+        """
+        Dissociates a resource instance from a mixin
+
+        """
+
+        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+
+        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+            # Solution To adopt : Validate HTTP then convert to JSON
+            pass
+        elif self.req.content_type == "application/json:occi":
+            #  Solution To adopt : Validate then convert to application/occi+json
+            pass
+        elif self.req.content_type == "application/occi+json":
+            #Validate the JSON message
+            pass
+        else:
+            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.body = self.req.content_type + " is an unknown request content type"
+            return self.res
+
+        #Decode authorization header to get the user_id
+        var,user_id = self.req.authorization
+        user_id = base64.decodestring(user_id)
+        user_id = user_id.split(':')[0]
+        if self.req.body is not "":
+            jBody = json.loads(self.req.body)
+            #add the JSON to database along with other attributes
+            self.res.body,self.res.status_code = self.manager.channel_delete_multi(user_id,jBody,self.path_url)
+        else:
+            #add the JSON to database along with other attributes
+            self.res.body,self.res.status_code = self.manager.channel_delete_multi(user_id,"",self.path_url)
         return self.res

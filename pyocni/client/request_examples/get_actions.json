@@ -1,9 +1,12 @@
+/*
+=1= Multiple actions can be retrieved at the same time
+=2= If there is no filter, all actions in the database will be retrieved
+=3= If there is a filter, it should containt only the object members described in the OCCI JSON rendering draft
+ */
+
 {
     "actions": [
         {
-            "term": "stop",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-            "title": "Stop Compute instance",
             "attributes": {
                 "method": {
                     "mutable": true,
@@ -13,6 +16,10 @@
                     "default": "poweroff"
                 }
             }
+        },
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
         }
     ]
 }

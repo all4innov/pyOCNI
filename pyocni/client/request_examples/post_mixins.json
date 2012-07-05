@@ -1,12 +1,17 @@
+/*
+
+ =1= Multiple mixins can be created at the same time
+ =2= Mixin descriptions MUST follow the OCCI JSON rendering draft specifications
+ =3= The values in the related object member MUST always refer to mixins that already exist in the database
+
+ */
+
 {
     "mixins": [
         {
             "term": "medium",
             "scheme": "http://example.com/template/resource#",
             "title": "Medium VM",
-            "related": [
-                "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-            ],
             "attributes": {
                 "occi": {
                     "compute": {

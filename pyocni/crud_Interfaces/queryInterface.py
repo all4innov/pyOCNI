@@ -75,7 +75,6 @@ class QueryInterface(object):
             self.res.status_code = return_code["Unsupported Media Type"]
             self.res.body = self.req.content_type + " is an unknown request content type"
             return self.res
-
         if self.req.body == "":
             var,self.res.status_code = self.manager.channel_get_all_categories()
         else:

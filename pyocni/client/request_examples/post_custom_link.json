@@ -1,7 +1,7 @@
 /*
 
- =1= Multiple links can be created at the same time
- =2= Link descriptions MUST follow the OCCI JSON rendering draft link description specifications
+ =1= Only one link can be created
+ =2= Link description MUST follow the OCCI JSON rendering draft link description specification
  =2= Source and target MUST already be created before creating the link
 
  */

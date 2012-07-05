@@ -26,7 +26,7 @@ Created on Jun 12, 2012
 @version: 0.3
 @license: LGPL - Lesser General Public License
 """
-
+from pyocni.backend import dummy_backend,l3vpn_backend,libnetvirt_backend,openflow_backend,opennebula_backend,openstack_backend
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.occi_Joker as joker
 try:
@@ -36,6 +36,7 @@ except ImportError:
 from datetime import datetime
 from pyocni.pyocni_tools import uuid_Generator
 from pyocni.pyocni_tools.config import return_code
+from pyocni.registry.pathManager import PathManager
 
 # getting the Logger
 logger = config.logger
@@ -60,7 +61,6 @@ class ResourceManager(object):
             @param url_path: URL path of the request
         """
         loc_res = list()
-
         kind_occi_id = None
         for elem in db_occi_ids_locs:
             if elem['OCCI_Location'] == url_path:
@@ -117,7 +117,7 @@ class ResourceManager(object):
                     logger.error("Reg resources exp: " + mesg)
                     return list(),return_code['Conflict']
             logger.debug("Reg resouces exp: Resources sent for creation")
-            return loc_res,return_code['OK']
+            return loc_res,return_code['OK, and location returned']
         else:
             mesg = "No kind corresponding to this location was found"
             logger.error("Reg resources exp: " + mesg)
@@ -172,6 +172,169 @@ class ResourceManager(object):
                 return False,return_code['Not Found']
         logger.debug("Internal links validated with success")
         return True,impl_link_locs
+
+    def get_filtered_resources(self, filters, descriptions_res):
+        """
+        Retrieve the resources  that match the filters provided
+        Args:
+            @param filters: Filters
+            @param descriptions_res: Resource descriptions
+        """
+        var = list()
+        try:
+            for desc in descriptions_res:
+                for filter in filters:
+                    checks =joker.filter_occi_description(desc['OCCI_Description'],filter)
+                    if checks is True:
+                        var.append(desc['OCCI_ID'])
+                        logger.debug("Entity filtered : document found")
+                        break
+            return var,return_code['OK']
+        except Exception as e:
+            logger.error("filtered res : " + e.message)
+            return list(),return_code['Internal Server Error']
+
+    def register_custom_resource(self, user_id, occi_description, path_url, db_occi_ids_locs):
+        """
+        Add a new resource with a custom URL to the database
+        Args:
+            @param user_id: Issuer of the request
+            @param occi_description: Resource description
+            @param path_url: Custom URL of the resource
+            @param db_occi_ids_locs: Ids and locations from the database
+        """
+        ok_k = joker.verify_existences_beta([occi_description['kind']],db_occi_ids_locs)
+        #Verify if the kind to which this request is sent is the same as the one in the link description
+        if ok_k is True:
+            if occi_description.has_key('actions'):
+                ok_a = joker.verify_existences_delta(occi_description['actions'],db_occi_ids_locs)
+            else:
+                ok_a = True
+            if ok_a is True:
+                if occi_description.has_key('mixins'):
+                    ok_m = joker.verify_existences_beta(occi_description['mixins'],db_occi_ids_locs)
+                else:
+                    ok_m = True
+                if ok_m is True:
+                    if occi_description.has_key('links'):
+                        ok_l,exist_links = self.verify_links_implicit(occi_description['links'],user_id,db_occi_ids_locs)
+                    else:
+                        ok_l = True
+                        exist_links = False
+                    if ok_l is True:
+                        jData = dict()
+                        jData['_id'] = uuid_Generator.get_UUID()
+                        jData['Creator'] = user_id
+                        jData['CreationDate'] = str(datetime.now())
+                        jData['LastUpdate'] = ""
+                        jData['OCCI_Location']= path_url
+                        jData['OCCI_Description']= occi_description
+                        jData['Type']= "Resource"
+                        jData['Internal_Links'] = exist_links
+                    else:
+                        logger.error("Reg resource cust : Bad links description ")
+                        return list(),exist_links
+                else:
+                    logger.error("Reg resource cust : Bad Mixins description ")
+                    return list(),return_code['Not Found']
+            else:
+                logger.error("Reg resource cust : Bad Actions description ")
+                return list(),return_code['Not Found']
+        else:
+            mesg = "Kind description does not exist match"
+            logger.error("Reg resource cust: " + mesg)
+            return list(),return_code['Not Found']
+
+        logger.debug("Reg resource cust: Resources sent for creation")
+        return jData,return_code['OK, and location returned']
+
+
+    def update_resource(self, user_id, old_description,occi_description, db_occi_ids_locs):
+        """
+        Verifies the validity of a resource's new data
+        Args:
+            @param user_id: Issuer of the request
+            @param old_description: Old resource description
+            @param occi_description: Resource description
+            @param db_occi_ids_locs: Ids and locations from the database
+        """
+        ok_k = joker.verify_existences_beta([occi_description['kind']],db_occi_ids_locs)
+        #Verify if the kind to which this request is sent is the same as the one in the link description
+        if ok_k is True:
+            if occi_description.has_key('actions'):
+                ok_a = joker.verify_existences_delta(occi_description['actions'],db_occi_ids_locs)
+            else:
+                ok_a = True
+            if ok_a is True:
+                if occi_description.has_key('mixins'):
+                    ok_m = joker.verify_existences_beta(occi_description['mixins'],db_occi_ids_locs)
+                else:
+                    ok_m = True
+                if ok_m is True:
+                    if occi_description.has_key('links'):
+                        logger.error("Internal links are not forbidden to update")
+                        return list(),return_code['Bad Request']
+                    else:
+                        problems,occi_description = joker.update_occi_entity_description(old_description,occi_description)
+                        if problems is False:
+                            logger.debug("Up resource: Resource sent for update")
+                            return occi_description,return_code['OK, and location returned']
+                        else:
+                            logger.error("Up resource : Resource update failed")
+                            return list(),return_code['Bad Request']
+                else:
+                    logger.error("Up resource: Bad Mixins description ")
+                    return list(),return_code['Not Found']
+            else:
+                logger.error("Up resource: Bad Actions description ")
+                return list(),return_code['Not Found']
+        else:
+            mesg = "Kind description does not exist match"
+            logger.error("Up resource: " + mesg)
+            return list(),return_code['Not Found']
+
+    def partial_resource_update(self, user_id,old_data,occi_description, db_occi_ids_locs):
+        """
+        Verifies the validity of a resource's new data
+        Args:
+            @param user_id: Issuer of the request
+            @param occi_description: Resource description
+            @param old_data: Old resource description
+            @param db_occi_ids_locs: Ids and locations from the database
+        """
+
+        if occi_description.has_key('actions'):
+            ok_a = joker.verify_existences_delta(occi_description['actions'],db_occi_ids_locs)
+        else:
+            ok_a = True
+        if ok_a is True:
+            if occi_description.has_key('mixins'):
+                ok_m = joker.verify_existences_beta(occi_description['mixins'],db_occi_ids_locs)
+            else:
+                ok_m = True
+            if ok_m is True:
+                if occi_description.has_key('links'):
+                    ok_l,exist_links = self.verify_links_implicit(occi_description['links'],user_id,db_occi_ids_locs)
+                else:
+                    ok_l = True
+                    exist_links = False
+                if ok_l is True:
+                    problems,updated_data = joker.update_occi_entity_description(old_data,occi_description)
+                    if problems is False:
+                        logger.debug("Up partial resource: Resource sent for update")
+                        return updated_data,exist_links,return_code['OK']
+                    else:
+                        logger.error("Up partial resource: Resource couldn't have been fully updated")
+                        return updated_data,False,return_code['Conflict']
+                else:
+                    logger.error("Up partial resource: Bad links description ")
+                    return list(),False,exist_links
+            else:
+                logger.error("Up partial resource: Bad Mixins description ")
+                return list(),False,return_code['Not Found']
+        else:
+            logger.error("Up partial resource: Bad Actions description ")
+            return list(),False,return_code['Not Found']
 
 #=======================================================================================================================
 #                                           LinkManager
@@ -250,16 +413,185 @@ class LinkManager(object):
                     logger.error("Reg links exp: " + mesg)
                     return list(),return_code['Conflict']
             logger.debug("Reg links exp: links sent for creation")
-            return loc_res,return_code['OK']
+            return loc_res,return_code['OK, and location returned']
         else:
             mesg = "No kind corresponding to this location was found"
             logger.error("Reg links exp: " + mesg)
             return list(),return_code['Not Found']
 
+    def get_filtered_links(self, filters, descriptions_link):
+        """
+        Retrieve the resources  that match the filters provided
+        Args:
+            @param filters: Filters
+            @param descriptions_link: Link descriptions
+        """
+        var = list()
+        try:
+            for desc in descriptions_link:
+                for filter in filters:
+                    checks =joker.filter_occi_description(desc['OCCI_Description'],filter)
+                    if checks is True:
+                        var.append(desc['OCCI_ID'])
+                        logger.debug("Entity filtered : document found")
+                        break
+            return var,return_code['OK']
+        except Exception as e:
+            logger.error("filtered link : " + e.message)
+            return list(),return_code['Internal Server Error']
+
+    def register_custom_link(self, user_id, occi_description, path_url, db_occi_ids_locs):
+        """
+        Add a new link with a custom URL to the database
+        Args:
+            @param user_id: Issuer of the request
+            @param occi_description: link description
+            @param path_url: Custom URL of the link
+            @param db_occi_ids_locs: Ids and locations from the database
+        """
+        ok_k = joker.verify_existences_beta([occi_description['kind']],db_occi_ids_locs)
+
+        #Verify if the kind to which this request is sent is the same as the one in the link description
+        if ok_k is True:
+            ok_target_source = joker.verify_existences_teta([occi_description['target'],occi_description['source']],db_occi_ids_locs)
+            if ok_target_source is True:
+                ok_kappa = joker.verify_existences_kappa([occi_description['target'],occi_description['source']],db_occi_ids_locs)
+                if ok_kappa is True:
+                    if occi_description.has_key('actions'):
+                        ok_a = joker.verify_existences_delta(occi_description['actions'],db_occi_ids_locs)
+                    else:
+                        ok_a = True
+                    if ok_a is True:
+                        if occi_description.has_key('mixins'):
+                            ok_m = joker.verify_existences_beta(occi_description['mixins'],db_occi_ids_locs)
+                        else:
+                            ok_m = True
+                        if ok_m is True:
+                            jData = dict()
+                            jData['_id'] = uuid_Generator.get_UUID()
+                            jData['Creator'] = user_id
+                            jData['CreationDate'] = str(datetime.now())
+                            jData['LastUpdate'] = ""
+                            jData['OCCI_Location']= path_url
+                            jData['OCCI_Description']= occi_description
+                            jData['Type']= "Link"
+
+                        else:
+                            logger.error("Reg link cus : Bad Mixins description ")
+                            return list(),return_code['Not Found']
+                    else:
+                        logger.error("Reg link cus : Bad Actions description ")
+                        return list(),return_code['Not Found']
+                else:
+                    logger.error("Reg link cus : Bad resources description ")
+                    return list(),return_code['Bad Request']
+            else:
+                logger.error("Reg link cus : Bad resources description ")
+                return list(),return_code['Not Found']
+        else:
+            mesg = "Kind description does not exist"
+            logger.error("Reg link cus: " + mesg)
+            return list(),return_code['Not Found']
+
+        logger.debug("Reg link cus: Link sent for creation")
+        return jData,return_code['OK, and location returned']
+
+    def update_link(self, user_id, occi_description, db_occi_ids_locs):
+        """
+        Update the link description attached to the custom URL
+        Args:
+            @param user_id: Issuer of the request
+            @param occi_description: link description
+            @param db_occi_ids_locs: Ids and locations from the database
+        """
+        ok_k = joker.verify_existences_beta([occi_description['kind']],db_occi_ids_locs)
+
+        #Verify if the kind to which this request is sent is the same as the one in the link description
+        if ok_k is True:
+            ok_target_source = joker.verify_existences_teta([occi_description['target'],occi_description['source']],db_occi_ids_locs)
+            if ok_target_source is True:
+                ok_kappa = joker.verify_existences_kappa([occi_description['target'],occi_description['source']],db_occi_ids_locs)
+                if ok_kappa is True:
+                    if occi_description.has_key('actions'):
+                        ok_a = joker.verify_existences_delta(occi_description['actions'],db_occi_ids_locs)
+                    else:
+                        ok_a = True
+                    if ok_a is True:
+                        if occi_description.has_key('mixins'):
+                            ok_m = joker.verify_existences_beta(occi_description['mixins'],db_occi_ids_locs)
+                        else:
+                            ok_m = True
+                        if ok_m is True:
+                            logger.debug("UP link cus: Link sent for update")
+                            return occi_description,return_code['OK']
+                        else:
+                            logger.error("UP link cus: Bad Mixins description ")
+                            return list(),return_code['Not Found']
+                    else:
+                        logger.error("UP link cus: Bad Actions description ")
+                        return list(),return_code['Not Found']
+                else:
+                    logger.error("UP link cus: Bad resources description ")
+                    return list(),return_code['Bad Request']
+            else:
+                logger.error("UP link cus: Bad resources description ")
+                return list(),return_code['Not Found']
+        else:
+            mesg = "Kind description does not exist"
+            logger.error("UP link cus: " + mesg)
+            return list(),return_code['Not Found']
+
+
+    def partial_link_update(self, user_id, old_data, occi_description, db_occi_ids_locs):
+        """
+        Update the link description attached to the custom URL
+        Args:
+            @param user_id: Issuer of the request
+            @param occi_description: link description
+            @param old_data: Old link description
+            @param db_occi_ids_locs: Ids and locations from the database
+        """
+        #Verify if the kind to which this request is sent is the same as the one in the link description
+        ok_target_source = joker.verify_existences_teta([occi_description['target'],occi_description['source']],db_occi_ids_locs)
+        if ok_target_source is True:
+            ok_kappa = joker.verify_existences_kappa([occi_description['target'],occi_description['source']],db_occi_ids_locs)
+            if ok_kappa is True:
+                if occi_description.has_key('actions'):
+                    ok_a = joker.verify_existences_delta(occi_description['actions'],db_occi_ids_locs)
+                else:
+                    ok_a = True
+                if ok_a is True:
+                    if occi_description.has_key('mixins'):
+                        ok_m = joker.verify_existences_beta(occi_description['mixins'],db_occi_ids_locs)
+                    else:
+                        ok_m = True
+                    if ok_m is True:
+                        problems,updated_data = joker.update_occi_entity_description(old_data,occi_description)
+                        if problems is False:
+                            logger.debug("Up part link: Link sent for update")
+                            return updated_data,return_code['OK']
+                        else:
+                            logger.error("Up part link: Link couldn't have been fully updated")
+                            return updated_data,return_code['Conflict']
+                    else:
+                        logger.error("UP partial link cus: Bad Mixins description ")
+                        return list(),return_code['Not Found']
+                else:
+                    logger.error("UP partial link cus: Bad Actions description ")
+                    return list(),return_code['Not Found']
+            else:
+                logger.error("UP partial link cus: Bad resources description ")
+                return list(),return_code['Bad Request']
+        else:
+            logger.error("UP partial link cus: Bad resources description ")
+            return list(),return_code['Not Found']
 
 #=======================================================================================================================
 #                                           MultiEntityManager
 #=======================================================================================================================
+
+
+
 
 class MultiEntityManager(object):
     """
@@ -270,15 +602,17 @@ class MultiEntityManager(object):
 
         self.manager_r = ResourceManager()
         self.manager_l = LinkManager()
+        self.manager_p = PathManager()
 
-    def channel_post_multi(self,user_id,jreq,url_path):
+    def channel_post_multi(self,user_id,jreq,req_path):
         """
         Identifies the post path's goal : create a resource instance or update a mixin
         Args:
             @param user_id: ID of the issuer of the post request
             @param jreq: Body content of the post request
-            @param url_path: Address to which this post request was sent
+            @param req_path: Address to which this post request was sent
         """
+        url_path = joker.reformat_url_path(req_path)
         database = config.prepare_PyOCNI_db()
 
         if jreq.has_key('resources') or jreq.has_key('links'):
@@ -301,44 +635,55 @@ class MultiEntityManager(object):
                 new_resources, resp_code_r = self.manager_r.register_resources(user_id,jreq['resources'],url_path,db_occi_ids_locs)
             else:
                 new_resources = list()
-                resp_code_r = return_code['OK']
+                resp_code_r = return_code['OK, and location returned']
 
             if jreq.has_key('links'):
                 logger.debug("Post path : Post on kind path to create a new link channeled")
                 new_links, resp_code_l = self.manager_l.register_links_explicit(user_id,jreq['links'],url_path,db_occi_ids_locs)
             else:
                 new_links = list()
-                resp_code_l = return_code['OK']
+                resp_code_l = return_code['OK, and location returned']
 
-            if resp_code_r is not return_code['OK'] or resp_code_l is not return_code['OK']:
+            if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
 
             entities = new_resources + new_links
             database.save_docs(entities,use_uuids=True, all_or_nothing=True)
+            locations = list()
+            for item in entities:
+                locations.append(item['OCCI_Location'])
             #return the locations of the resources
-            return "",return_code['OK']
-
+            return locations,return_code['OK, and location returned']
         else:
-            if jreq.has_key('OCCI_Locations'):
-                db_occi_locs_docs = list()
-                to_search_for = jreq['OCCI_Locations']
-                to_search_for.append(url_path)
-                for item in to_search_for:
-                    try:
-                        query = database.view('/db_views/for_associate_a_mixin',key=item)
-                    except Exception as e:
-                        logger.error("Associate a mixin : " + e.message)
-                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            if jreq.has_key('Resource_Locations'):
+                db_docs = list()
+                try:
+                    query = database.view('/db_views/my_mixins',key = url_path)
+                except Exception as e:
+                    logger.error("Associate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if query.count() is 0:
+                    logger.error("Associate a mixin  : " + url_path)
+                    return "An error has occurred, please check log for more details",return_code['Not Found']
+                else:
+                    mix_id = query.first()['value']
+                    to_search_for = jreq['Resource_Locations']
+                    for item in to_search_for:
+                        try:
+                            query = database.view('/db_views/for_associate_mixin',key=[item,user_id])
+                        except Exception as e:
+                            logger.error("Associate a mixin : " + e.message)
+                            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
-                    if query.count() is 0:
-                        logger.error("Associate a mixin  : " + item)
-                        return "An error has occurred, please check log for more details",return_code['Not Found']
-                    else:
-                        q = query.first()
-                        db_occi_locs_docs.append({"OCCI_Location" : q['key'],"Doc":q['value']})
+                        if query.count() is 0:
+                            logger.error("Associate a mixin  : " + item)
+                            return "An error has occurred, please check log for more details",return_code['Not Found']
+                        else:
+                            q = query.first()
+                            db_docs.append(q['value'])
 
-                    logger.debug("Post path : Post on kind path to associate a mixin channeled")
-                    updated_entities,resp_code_e = associate_entities_to_a_mixin(jreq['OCCI_Locations'],url_path,db_occi_locs_docs)
+                logger.debug("Post path : Post on mixin path to associate a mixin channeled")
+                updated_entities,resp_code_e = associate_entities_to_a_mixin(mix_id,db_docs)
             else:
                 updated_entities = list()
                 resp_code_e = return_code['OK']
@@ -349,13 +694,15 @@ class MultiEntityManager(object):
             database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
             return "",return_code['OK']
 
-    def channel_get_all_entities(self,url_path):
+    def channel_get_all_entities(self,req_path,user,jreq):
         """
         retrieve all entities belonging to a kind or a mixin
         Args:
-            @param url_path: Address to which this post request was sent
+            @param req_path: Address to which this post request was sent
+            @param user: Issuer of the request
+            @param jreq: Data provided for filtering
         """
-
+        url_path = joker.reformat_url_path(req_path)
         database = config.prepare_PyOCNI_db()
         try:
             query = database.view('/db_views/for_get_entities',key=url_path)
@@ -363,8 +710,9 @@ class MultiEntityManager(object):
             logger.error("get all multi entities : " + e.message)
             return "An error has occurred, please check log for more details",return_code['Internal Server Error']
         if query.count() is 0:
-            logger.error("get all multi entities  : " + url_path)
-            return "An error has occurred, please check log for more details",return_code['Not Found']
+            logger.error("get all multi entities  : this is a get on a path " + url_path)
+            var, resp_code = self.manager_p.channel_get_on_path(user,req_path,jreq)
+            return var, resp_code
         else:
             q = query.first()
             if q['value'][1] == "Kind":
@@ -377,7 +725,6 @@ class MultiEntityManager(object):
             elif q['value'][1] == "Mixin":
                 try:
                     mix_id = q['value'][0]
-
                     entities = database.view('/db_views/entities_of_mixin',key = mix_id)
                 except Exception as e:
                     logger.error("get all multi entities : " + e.message)
@@ -385,15 +732,254 @@ class MultiEntityManager(object):
             else:
                 logger.error("get all multi entities : Unknown " + q['value'][1])
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
-        to_return = list()
+        to_return_res = list()
+        to_return_link = list()
         for entity in entities:
-            to_return.append(entity['value'])
-        return to_return,return_code['OK']
+            if entity['value'][1] == "Resource":
+                to_return_res.append(entity['value'][0])
+            else:
+                to_return_link.append((entity['value'][0]))
+        result = to_return_res + to_return_link
+        return result,return_code['OK']
+
+    def channel_get_filtered_entities(self,req_path,user,terms):
+        """
+        Retrieve entities belonging to a kind or a mixin matching the terms specified
+        Args:
+            @param req_path: Address to which this post request was sent
+            @param terms: Terms to filter entities
+            @param user: Issuer of the request
+        """
+        descriptions_res = list()
+        descriptions_link = list()
+        database = config.prepare_PyOCNI_db()
+        try:
+            entities,ok = self.channel_get_all_entities(req_path,user,terms)
+            if ok == return_code['OK']:
+                for entity in entities:
+                    try:
+                        query = database.view('/db_views/for_get_filtered',key=entity)
+                        if query.first()['value'][1] == "Resource":
+                            descriptions_res.append({'OCCI_ID' : entity,'OCCI_Description' : query.first()['value'][0]})
+                        else:
+                            descriptions_link.append({'OCCI_ID' : entity,'OCCI_Description' : query.first()['value'][0]})
+                    except Exception as e:
+                        logger.error("get filtered entities : " + e.message)
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if terms.has_key('resources'):
+                    logger.debug("Resources filter get request : channeled")
+                    filtered_res,resp_code_r = self.manager_r.get_filtered_resources(terms['resources'],descriptions_res)
+                else:
+                    logger.debug("Resources get filter : res not found")
+                    filtered_res = list()
+                    resp_code_r = return_code['OK']
+                if terms.has_key('links'):
+                    logger.debug("links filter get request : channeled")
+                    filtered_links,resp_code_l = self.manager_l.get_filtered_links(terms['links'],descriptions_link)
+                else:
+                    logger.debug("Links get filter : link not found")
+                    filtered_links = list()
+                    resp_code_l = return_code['OK']
+
+                if resp_code_l is not 200 or resp_code_r is not 200:
+                    return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+                result = filtered_res + filtered_links
+                return result,return_code['OK']
+            else:
+                return entities,ok
+
+        except Exception as e:
+            logger.error("filtered entities : " + e.message)
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+    def channel_put_multi(self, user_id, jreq, req_url):
+        """
+        Update the mixin collection of resources
+        Args:
+            @param user_id: The issuer of the request
+            @param jreq: OCCI_Locations of the resources
+            @param req_url: URL of the request
+        """
+        database = config.prepare_PyOCNI_db()
+        if jreq.has_key('Resource_Locations') and jreq.has_key('Mixin_Locations'):
+            url_path = joker.reformat_url_path(req_url)
+            db_docs = list()
+            to_validate = jreq['Mixin_Locations']
+            to_validate.append(url_path)
+            mix_ids = list()
+            for occi_loc in to_validate:
+                try:
+                    query = database.view('/db_views/my_mixins',key = occi_loc)
+                except Exception as e:
+                    logger.error("Associate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if query.count() is 0:
+                    logger.error("Associate mixins : " + occi_loc)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                else:
+                    mix_ids.append(query.first()['value'])
+
+            to_search_for = jreq['Resource_Locations']
+            for item in to_search_for:
+                try:
+                    query = database.view('/db_views/for_associate_mixin',key=[item,user_id])
+                except Exception as e:
+                    logger.error("Associate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if query.count() is 0:
+                    logger.error("Associate mixins  : " + item)
+                    return "An error has occurred, please check log for more details",return_code['Not Found']
+                else:
+                    q = query.first()
+                    db_docs.append(q['value'])
+
+            logger.debug("Post path : Post on mixin path to associate mixins channeled")
+            updated_entities,resp_code_e = associate_entities_to_mixins(mix_ids,db_docs)
+        else:
+            updated_entities = list()
+            resp_code_e = return_code['Bad Request']
+
+        if resp_code_e is not return_code['OK']:
+            return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+        database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
+        return "",return_code['OK']
+
+    def channel_delete_multi(self, user_id, jreq, req_url):
+        """
+        Update the mixin collection of resources
+        Args:
+            @param user_id: The issuer of the request
+            @param jreq: OCCI_Locations of the resources
+            @param req_url: URL of the request
+        """
+        database = config.prepare_PyOCNI_db()
+        if jreq is "":
+            logger.debug("Dissociate mixins : This is a delete on path " + req_url)
+            res,resp_code = self.manager_p.channel_delete_on_path(req_url,user_id)
+            return res,resp_code
+        else:
+            if jreq.has_key('Resource_Locations'):
+                url_path = joker.reformat_url_path(req_url)
+                db_docs = list()
+                try:
+                    query = database.view('/db_views/my_mixins',key = url_path)
+                except Exception as e:
+                    logger.error("Dissociate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if query.count() is 0:
+                    logger.debug("Dissociate mixins : This is a delete on path " + url_path)
+                    res,resp_code = self.manager_p.channel_delete_on_path(req_url,user_id)
+                    return res,resp_code
+                else:
+                    mix_id = query.first()['value']
+
+                to_search_for = jreq['Resource_Locations']
+                for item in to_search_for:
+                    try:
+                        query = database.view('/db_views/for_associate_mixin',key=[item,user_id])
+                    except Exception as e:
+                        logger.error("Associate mixins : " + e.message)
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                    if query.count() is 0:
+                        logger.error("Associate mixins  : " + item)
+                        return "An error has occurred, please check log for more details",return_code['Not Found']
+                    else:
+                        q = query.first()
+                        db_docs.append(q['value'])
+
+                logger.debug("Delete path: delete on mixin path to Dissociate mixins channeled")
+                updated_entities,resp_code_e = dissociate_entities_from_a_mixin(mix_id,db_docs)
+            else:
+                updated_entities = list()
+                resp_code_e = return_code['Bad Request']
+
+            if resp_code_e is not return_code['OK']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+            database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
+            return "",return_code['OK']
+
+    def channel_trigger_actions(self, user_id, jBody, req_url, triggered_action):
+        """
+        Trigger action on a collection of kind or mixin
+        Args:
+            @param user_id: Issuer of the request
+            @param jBody: Action provided
+            @param req_url: URL of the request
+            @param triggered_action: Action name
+        """
+        database = config.prepare_PyOCNI_db()
+        path_url = joker.reformat_url_path(req_url)
+        # Get OCCI_ID from OCCI_Location
+        try:
+            query = database.view('/db_views/for_get_entities',key = path_url)
+        except Exception as e:
+            logger.error("Dissociate mixins : " + e.message)
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+        if query.count() is 0:
+            logger.debug("trigger_actions : No such  kind or mixin was found")
+            return "An error has occured, please check log for more details", return_code['Not Found']
+        else:
+            occi_id = query.first()['value'][0]
+            occi_type = query.first()['value'][1]
+            #Get resources that has this mixin or kind
+            if occi_type == "Kind":
+                try:
+                    query2 = database.view('/db_views/entities_of_kind',key = occi_id)
+                except Exception as e:
+                    logger.error("Dissociate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            elif occi_type == "Mixin":
+                try:
+                    query2 = database.view('/db_views/entities_of_mixin',key = occi_id)
+                except Exception as e:
+                    logger.error("Dissociate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            to_send = list()
+            for q in query2:
+                entity = q['value'][0]
+                try:
+                    query3 = database.view('/db_views/for_trigger_action', key=[entity,user_id])
+                except Exception as e:
+                    logger.error("trigger action single : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if query3.count() is 0:
+                    logger.error("trigger action single : No such resource")
+                    return "An error has occurred, please check log for more details",return_code['Not Found']
+                else:
+                    kind_mix = list()
+                    kind_mix.append(query3.first()['value'][0])
+                    kind_mix += query3.first()['value'][1]
+                    action_id = joker.get_description_id(jBody['actions'][0])
+                    provider = None
+                    for item in kind_mix:
+                        try:
+                            query2 = database.view('/db_views/actions_of_kind_mix', key=[item,action_id])
+                        except Exception as e:
+                            logger.error("trigger action single : " + e.message)
+                            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+                        if query2.count() is not 0:
+                            try:
+                                query2 = database.view('/db_views/my_providers', key=kind_mix[0])
+                                provider = query2['value']
+                            except Exception as e:
+                                logger.error("trigger action single : " + e.message)
+                                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                            break
+
+                    if provider is not None:
+                        to_send.append({"resource_url":entity,"action":jBody['action'][0],"provider":provider['local']})
+                    else:
+                        logger.error("Trig action : No provider was found")
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+            res,res_code = trigger_action_on_multi_resource(to_send)
 
 
-
-    def channel_get_filtered_entities(self, jreq):
-        pass
 
 #=======================================================================================================================
 #                                           SingleEntityManager
@@ -409,29 +995,231 @@ class SingleEntityManager(object):
         self.manager_r = ResourceManager()
         self.manager_l = LinkManager()
 
+    def channel_put_single(self, user_id, jBody, path_url):
+        """
+        Creates a new resource of performs a full description update of the resource
+        Args:
+            @param user_id: Issuer of the request
+            @param jBody: Data contained in the request body
+            @param path_url: URL of the request
+        """
+
+        #Verify the uniqueness of the URL request
+        database = config.prepare_PyOCNI_db()
+        try:
+            query = database.view('/db_views/for_register_entities')
+        except Exception as e:
+            logger.error("put single : " + e.message)
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+        db_occi_ids_locs = list()
+        for q in query:
+            db_occi_ids_locs.append({"OCCI_ID" : q['key'],"OCCI_Location":q['value']})
+
+        try:
+            query2 = database.view('/db_views/my_resources',key=[path_url,user_id])
+        except Exception as e:
+            logger.error("put single : " + e.message)
+            return "An error has occurred, please check logs for more details",return_code['Internal Server Error']
+        if query2.count() is 0:
+            #This is a create a new resource request
+            if jBody.has_key('resources'):
+                logger.debug("Put single : create a new resource channeled")
+                entity, resp_code_r = self.manager_r.register_custom_resource(user_id,jBody['resources'][0],path_url,db_occi_ids_locs)
+            else:
+                resp_code_r = return_code['OK, and location returned']
+
+            if jBody.has_key('links'):
+                logger.debug("Post path : create a new link channeled")
+                entity, resp_code_l = self.manager_l.register_custom_link(user_id,jBody['links'][0],path_url,db_occi_ids_locs)
+            else:
+                resp_code_l = return_code['OK, and location returned']
+
+            if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+
+            database.save_doc(entity,use_uuids=True, all_or_nothing=True)
+
+            #return the locations of the resources
+            return entity['OCCI_Location'],return_code['OK, and location returned']
+        else:
+            try:
+                query2 = database.view('/db_views/for_update_entities',key=[path_url,user_id])
+                to_update = query2.first()['value']
+            except Exception as e:
+                logger.error("put single : " + e.message)
+                return "An error has occurred, please check logs for more details",return_code['Internal Server Error']
+            #This is an update of a resource
+            if jBody.has_key('resources'):
+                logger.debug("Put single : update resource channeled")
+                entity, resp_code_r = self.manager_r.update_resource(user_id,to_update['OCCI_Description'],jBody['resources'][0],db_occi_ids_locs)
+            else:
+                resp_code_r = return_code['OK, and location returned']
+
+            if jBody.has_key('links'):
+                logger.debug("Post path : update link channeled")
+                entity, resp_code_l = self.manager_l.update_link(user_id,jBody['links'][0],db_occi_ids_locs)
+            else:
+                resp_code_l = return_code['OK, and location returned']
+
+            if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+            to_update['OCCI_Description'] = entity
+            database.save_doc(to_update,force_update=True, all_or_nothing=True)
+            #return the locations of the resources
+            return to_update['OCCI_Location'],return_code['OK, and location returned']
+
+    def channel_get_single(self, user_id, path_url):
+        """
+        Retrieve the description of a resource related to the URL provided
+        Args:
+            @param user_id: Issuer of the request
+            @param path_url: URL of the request
+        """
+        database = config.prepare_PyOCNI_db()
+        try:
+            query = database.view('/db_views/my_resources',key=[path_url,user_id])
+        except Exception as e:
+            logger.error("get single : " + e.message)
+            return "An error has occurred, please check logs for more details",return_code['Internal Server Error']
+        if query.count() is 0:
+            logger.error("Get single: No such entity was found" )
+            return "An error has occured, please check logs for more details", return_code['Not Found']
+        else:
+            return query.first()['value'],return_code['OK']
+
+    def channel_post_single(self, user_id, jBody, path_url):
+        """
+        Creates a new resource of performs a full description update of the resource
+        Args:
+            @param user_id: Issuer of the request
+            @param jBody: Data contained in the request body
+            @param path_url: URL of the request
+        """
+
+        #Verify the uniqueness of the URL request
+        database = config.prepare_PyOCNI_db()
+        try:
+            query = database.view('/db_views/for_register_entities')
+        except Exception as e:
+            logger.error("put single : " + e.message)
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+        db_occi_ids_locs = list()
+        for q in query:
+            db_occi_ids_locs.append({"OCCI_ID" : q['key'],"OCCI_Location":q['value']})
+
+        try:
+            query2 = database.view('/db_views/for_update_entities',key=[path_url,user_id])
+        except Exception as e:
+            logger.error("put single : " + e.message)
+            return "An error has occurred, please check logs for more details",return_code['Internal Server Error']
+        if query2.count() is 0:
+            logger.error("Part Entity Update: No such entity")
+            return "An error has occurred, please check logs for more details",return_code['Not Found']
+        else:
+            old_doc = query2.first()['value']
+            #This is an update of a resource
+            if jBody.has_key('resources'):
+                logger.debug("Put single : update resource channeled")
+                entity,new_links, resp_code_r = self.manager_r.partial_resource_update(user_id,old_doc['OCCI_Description'],jBody['resources'][0],db_occi_ids_locs)
+                old_doc['Internal_Links'] = new_links
+            else:
+                resp_code_r = return_code['OK, and location returned']
+
+            if jBody.has_key('links'):
+                logger.debug("Post path : update link channeled")
+                entity, resp_code_l = self.manager_l.partial_link_update(user_id,old_doc['OCCI_Description'],jBody['links'][0],db_occi_ids_locs)
+            else:
+                resp_code_l = return_code['OK, and location returned']
+
+            if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
+                return "An error has occurred, please check log for more details",return_code['Bad Request']
+            old_doc['OCCI_Description'] = entity
+            database.save_doc(old_doc,force_update=True, all_or_nothing=True)
+            #return the locations of the resources
+            return old_doc['OCCI_ID'],return_code['OK, and location returned']
+
+    def channel_delete_single(self, user_id, path_url):
+        """
+        Delete a resource instance
+        Args:
+            @param user_id: Issuer of the delete request
+            @param path_url: URL of the resource
+        """
+        database = config.prepare_PyOCNI_db()
+        try:
+            query = database.view('/db_views/for_update_entities',key=[path_url,user_id])
+        except Exception as e:
+            logger.error("delete single : " + e.message)
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+        if query.count() is 0:
+            logger.error("Delete single: No such entity")
+            return "An error has occurred, please check log for more details", return_code['Not Found']
+        else:
+            database.delete_doc(query.first()['value'])
+            logger.debug("Delete single: Resource " + path_url + " is deleted ")
+            return "",return_code['OK']
+
+    def channel_triggered_action_single(self, user_id, jBody, path_url, triggered_action):
+        """
+        Trigger the action on the resource
+        Args:
+            @param user_id: issuer of the request
+            @param jBody: Data provided
+            @param path_url: URL of the request
+            @param triggered_action: Action name to trigger
+        """
+        database = config.prepare_PyOCNI_db()
+        try:
+            query = database.view('/db_views/for_trigger_action', key=[path_url,user_id])
+        except Exception as e:
+            logger.error("trigger action single : " + e.message)
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+        if query.count() is 0:
+            logger.error("trigger action single : No such resource")
+            return "An error has occurred, please check log for more details",return_code['Not Found']
+        else:
+            kind_mix = list()
+            kind_mix.append(query.first()['value'][0])
+            kind_mix += query.first()['value'][1]
+            action_id = joker.get_description_id(jBody['actions'][0])
+            provider = None
+            for item in kind_mix:
+                try:
+                    query2 = database.view('/db_views/actions_of_kind_mix', key=[item,action_id])
+                except Exception as e:
+                    logger.error("trigger action single : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+                if query2.count() is not 0:
+                    try:
+                        query2 = database.view('/db_views/actions_of_kind_mix', key=kind_mix[0])
+                        provider = query2['value']
+                    except Exception as e:
+                        logger.error("trigger action single : " + e.message)
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                    break
+
+            if provider is not None:
+                resp, resp_code = trigger_action_on_a_resource(path_url,jBody['action'][0],provider['local'])
+                return resp,resp_code
+            else:
+                logger.error("Trig action : No provider was found")
+                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+
 #=======================================================================================================================
-#                                           Independant Functions
+#                                           Independent Functions
 #=======================================================================================================================
 
-def associate_entities_to_a_mixin(entities_locations, url_path, db_occi_ids_docs):
+def associate_entities_to_a_mixin( mix_id, db_docs):
     """
     Add a single mixin to entities
     Args:
-        @param entities_locations: OCCI Location of the entities
-        @param url_path: location of the mixin
-        @param db_occi_ids_docs: OCCI IDs and documents of the entities already contained in the database
+        @param mix_id: OCCI ID of the mixin
+        @param db_docs: documents of the entities already contained in the database
     """
-    #Get the Mixin's OCCI_ID
-
-    mix_id = None
-    to_update = list()
-    for item in db_occi_ids_docs:
-        if item['OCCI_Location'] == url_path and item['Doc']['Type'] == "Mixin":
-            mix_id = item['Doc']['OCCI_ID']
-        else:
-            to_update.append(item['Doc'])
     if mix_id is not None:
-        for doc in to_update:
+        for doc in db_docs:
             if doc['OCCI_Description'].has_key('mixins'):
                 var = doc['OCCI_Description']['mixins']
                 try:
@@ -441,6 +1229,83 @@ def associate_entities_to_a_mixin(entities_locations, url_path, db_occi_ids_docs
                     doc['OCCI_Description']['mixins'] = var
             else:
                 doc['OCCI_Description']['mixins'] = [mix_id]
-        return to_update,return_code['OK']
+        logger.debug("Associate mixin : Mixin associated with success")
+        return db_docs,return_code['OK']
     else:
+        logger.debug("Associate mixin : Mixin description problem")
         return list(),return_code['Not Found']
+
+def associate_entities_to_mixins(mix_ids, db_docs):
+    """
+    Add a collection of mixins to entities
+    Args:
+        @param mix_ids: OCCI IDs of mixins
+        @param db_docs: documents of the entities already contained in the database
+    """
+
+    for doc in db_docs:
+        doc['OCCI_Description']['mixins'] = mix_ids
+    logger.debug("Associate mixin : Mixin associated with success")
+    return db_docs,return_code['OK']
+
+def dissociate_entities_from_a_mixin(mix_id, db_docs):
+    """
+    Remove a single mixin from entities
+    Args:
+        @param mix_id: OCCI ID of the mixin
+        @param db_docs: documents of the entities already contained in the database
+    """
+    if mix_id is not None:
+        for doc in db_docs:
+            if doc['OCCI_Description'].has_key('mixins'):
+                var = doc['OCCI_Description']['mixins']
+                try:
+                    print mix_id
+                    print var
+                    var.remove(mix_id)
+
+                    doc['OCCI_Description']['mixins'] = var
+                except ValueError as e:
+                    logger.error('Diss a mixin: ' + e.message)
+
+        logger.debug("Dissociate mixin : Mixin dissociated with success")
+        return db_docs,return_code['OK']
+    else:
+        logger.debug("Dissociate mixin : Mixin description problem")
+        return list(),return_code['Not Found']
+
+def trigger_action_on_a_resource(path_url,action,provider):
+    """
+    Send the action triggering request to the appropriate provider
+     Args:
+        @param path_url: Resource URL Path
+        @param action: Action description
+        @param provider: Provider of the resource
+    """
+    if provider == "dummy":
+        backend = dummy_backend()
+    elif provider == "l3vpn":
+        backend = l3vpn_backend()
+    elif provider == "libnetvirt":
+        backend = libnetvirt_backend()
+    elif provider == "openflow":
+        backend = openflow_backend()
+    elif provider == "opennebula":
+        backend = opennebula_backend()
+    elif provider == "openstack":
+        backend = openstack_backend()
+    else:
+        logger.error("trigger action_on_resource : Unknown provider")
+        return " An error has occurred, please check logs for more details", return_code['Not Found']
+    backend.action(path_url,action)
+    return "", return_code['OK']
+
+def trigger_action_on_multi_resource(data):
+    """
+    Trigger the action on multiple resource
+    Args:
+        @param data: Data provided for triggering the action
+    """
+    for item in data:
+        trigger_action_on_a_resource(item['resource_url'],item['action'],item['provider'])
+    return "",return_code['OK']

@@ -1,3 +1,10 @@
+/*
+
+ =1= Delete of multiple mixins at the same time is possible
+ =2= term and scheme are the only required object members to delete a mixin
+
+ */
+
 {
     "mixins": [
         {
