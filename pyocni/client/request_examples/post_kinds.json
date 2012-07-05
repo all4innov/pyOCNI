@@ -1,12 +1,17 @@
+/*
+
+ =1= Multiple kinds can be created at the same time
+ =2= Kind descriptions MUST follow the OCCI JSON rendering draft specifications
+ =3= The values in the related object member MUST always refer to kinds that already exist in the database
+
+ */
+
 {
     "kinds": [
         {
             "term": "compute",
             "scheme": "http://schemas.ogf.org/occi/infrastructure#",
             "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/core#resource"
-            ],
             "attributes": {
                 "occi": {
                     "compute": {
@@ -30,10 +35,15 @@
             },
             "actions": [
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop"
             ],
             "location": "/compute/"
+        },
+        {
+            "term": "networkinterface",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+            "title": "networkinterface link",
+            "location": "/networkinterface/"
         }
     ]
 }

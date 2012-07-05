@@ -1,22 +1,12 @@
+/*
+ =1= Multiple Mixins can be retrieved at the same time
+ =2= If there is no filter, all mixins in the database will be retrieved
+ =3= If there is a filter, it should containt only the object members described in the OCCI JSON rendering draft
+ */
+
 {
     "mixins": [
         {
-            "term": "medium",
-            "scheme": "http://example.com/template/resource#",
-            "title": "Medium VM",
-            "related": [
-                "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": {
-                            "type": "number",
-                            "default": 2.8
-                        }
-                    }
-                }
-            },
             "location": "/template/resource/medium/"
         }
     ]

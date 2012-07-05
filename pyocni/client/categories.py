@@ -1,11 +1,33 @@
-/*
+# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-=1= A category can be a kind,mixin or an action
-=2= Multiple Kinds, Mixins and Actions can be created at the same time as long as categories mentionned in the object
-member[related] already exist in the database
+# Copyright (C) 2012 Bilel Msekni - Institut Mines-Telecom
+#
+# This library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
-*/
+"""
+Created on Jun 19, 2012
 
+@author: Bilel Msekni
+@contact: bilel.msekni@telecom-sudparis.eu
+@author: Houssem Medhioub
+@contact: houssem.medhioub@it-sudparis.eu
+@organization: Institut Mines-Telecom - Telecom SudParis
+@version: 0.3
+@license: LGPL - Lesser General Public License
+"""
+import pyocni.pyocni_tools.uuid_Generator as uuid
+post_categories ="""
 {
     "kinds": [
         {
@@ -95,3 +117,44 @@ member[related] already exist in the database
         }
     ]
 }
+"""
+def get_kind(guid):
+    post_kind ="{"\
+        "\"kinds\": ["\
+                "{"\
+                "\"term\": \"compute" + str(guid) +"\","\
+                "\"scheme\": \"http://schemas.ogf.org/occi/infrastructure#\","\
+                "\"title\": \"Compute Resource\","\
+                "\"attributes\": {"\
+                "\"occi\": {"\
+                "\"compute\": {"\
+                "\"hostname\": {"\
+                "\"mutable\": true,"\
+                "\"required\": false,"\
+                "\"type\": \"string\","\
+                "\"pattern\": \"(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*\","\
+                "\"minimum\": \"1\","\
+                "\"maximum\": \"255\""\
+                "},"\
+                "\"state\": {"\
+                "\"mutable\": false,"\
+                "\"required\": false,"\
+                "\"type\": \"string\","\
+                "\"pattern\": \"inactive|active|suspended|failed\","\
+                "\"default\": \"inactive\""\
+                "}"\
+                "}"\
+                "}"\
+                "},"\
+                "\"actions\": ["\
+                "\"http://schemas.ogf.org/occi/infrastructure/compute/action#start\","\
+                "\"http://schemas.ogf.org/occi/infrastructure/compute/action#stop\""\
+                "],"\
+                "\"location\": \"/compute" + str(guid) + "/\""\
+                "}"\
+                "]"\
+                "}"\
+
+    return post_kind
+#======================================================================================================================
+
