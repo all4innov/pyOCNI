@@ -70,12 +70,12 @@ class PathManager(object):
                 if str_loc.endswith("/"):
                     str_loc = joker.format_url_path(str_loc)
                 else:
-                    if q['value'] is not user_id:
+                    if q['value'] != user_id:
                         str_loc = ""
                 if str_loc.find(req_path) is not -1:
                     locations.append(str_loc)
 
-            logger.debug("Get on Path: done with success")
+            logger.debug("Get on Path:"+ req_path +"done with success")
             return locations,return_code['OK']
         else:
             try:

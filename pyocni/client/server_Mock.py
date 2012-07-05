@@ -108,7 +108,10 @@ class ocni_server(object):
     app.add_route('/{location}/{idontknow}/',controller=operationMultiEntity)
     app.add_route('/{location}/{idontknow}/{idontcare}/',controller=operationMultiEntity)
     app.add_route('/{location}/{idontknow}/{idontcare}',controller=operationSingleEntity)
-
+    app.add_route('/{location}/{idontknow}/{idontcare}?action={action}',controller=operationSingleEntity)
+    app.add_route('/{location}/{idontknow}/{idontcare}/?action={action}',controller=operationMultiEntity)
+    app.add_route('/{location}/{idontknow}/?action={action}',controller=operationMultiEntity)
+    app.add_route('/{location}/?action={action}',controller=operationMultiEntity)
 
 
     def run_server(self):

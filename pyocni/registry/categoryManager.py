@@ -581,10 +581,10 @@ class CategoryManager:
         for q in query:
             db_occi_ids.append( q['key'])
             db_occi_locs.append(q['value'])
-
         if jreq.has_key('actions'):
             logger.debug("Actions post request : channeled")
             new_actions,resp_code_a = self.manager_a.register_actions(user_id,jreq['actions'],db_occi_ids)
+            db_occi_ids,db_occi_locs = create_temporary_db(db_occi_ids,db_occi_locs,new_actions)
         else:
             logger.error("ch register categories : no actions found")
             new_actions = list()
@@ -723,8 +723,8 @@ class CategoryManager:
                 if q['key'] is not None:
                     db_kind_entities.append(q['key'])
 
-                logger.debug("Kinds delete request : channeled")
-                delete_kinds,resp_code_k = self.manager_k.delete_kind_documents(jreq['kinds'],user_id,db_occi_id_creator,db_kind_entities)
+            logger.debug("Kinds delete request : channeled")
+            delete_kinds,resp_code_k = self.manager_k.delete_kind_documents(jreq['kinds'],user_id,db_occi_id_creator,db_kind_entities)
         else:
             logger.error("ch delete filter : No kinds found")
             delete_kinds=list()
@@ -739,7 +739,8 @@ class CategoryManager:
                 except Exception as e:
                     logger.error("Category delete : " + e.message)
                     return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
-                db_mixin_entities.append(query.first()['value'])
+                if query.count() is not 0:
+                    db_mixin_entities.append(query.first()['value'])
 
 
             logger.debug("Mixins delete request : channeled")
@@ -824,3 +825,23 @@ class CategoryManager:
         categories = updated_kinds + updated_providers + updated_mixins + updated_actions
         database.save_docs(categories,force_update=True, all_or_nothing=True)
         return "",return_code['OK']
+
+
+#=======================================================================================================================
+#                           Independant Functions
+#=======================================================================================================================
+def create_temporary_db(data_1,data_2,new_data):
+    """
+    Add new_data to data
+    Args:
+        @param data_1: old data
+        @param data_2: old data
+        @param new_data: new data
+    """
+    for item in new_data:
+        if item.has_key('OCCI_ID'):
+            data_1.append(item['OCCI_ID'])
+        elif item.has_key('OCCI_Location'):
+            data_2.append(item['OCCI_Location'])
+    return data_1,data_2
+

@@ -46,11 +46,12 @@ class SingleEntityInterface(object):
         CRUD operation on resources and links
 
     """
-    def __init__(self,req,location,idontknow=None,idontcare=None):
+    def __init__(self,req,location,idontknow=None,idontcare=None,action=None):
 
         self.req = req
         self.location=location
         self.path_url = self.req.path_url
+        self.triggered_action = action
         self.res = Response()
         self.res.content_type = req.accept
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
@@ -144,7 +145,11 @@ class SingleEntityInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        self.res.body,self.res.status_code = self.manager.channel_post_single(user_id,jBody,self.path_url)
+        if self.triggered_action is None:
+            self.res.body,self.res.status_code = self.manager.channel_post_single(user_id,jBody,self.path_url)
+        else:
+            self.res.body,self.res.status_code = self.manager.channel_triggered_action_single(user_id,jBody,self.path_url,self.triggered_action)
+
         return self.res
 
     def delete(self):
@@ -229,7 +234,11 @@ class MultiEntityInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        self.res.body,self.res.status_code = self.manager.channel_post_multi(user_id,jBody,self.path_url)
+        var,self.res.status_code = self.manager.channel_post_multi(user_id,jBody,self.path_url)
+        if type(var) is not str:
+            self.res.body = json.dumps(var)
+        else:
+            self.res.body = var
         return self.res
 
     def get(self):

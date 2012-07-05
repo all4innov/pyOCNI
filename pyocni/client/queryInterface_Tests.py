@@ -27,232 +27,17 @@ Created on Jun 19, 2012
 @license: LGPL - Lesser General Public License
 """
 from multiprocessing import Process
-from pyocni.pyocni_tools.config import return_code
 from unittest import TestLoader,TextTestRunner,TestCase
 import pyocni.client.server_Mock as server
 import pycurl
 import time
 import StringIO
-
+import categories as fake_data
+import timeit
 
 def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
-
-actions ="""
-{
-    "actions": [
-        {
-            "term": "restart",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-            "title": "Stop Compute instance",
-            "attributes": {
-                "method": {
-                    "mutable": true,
-                    "required": false,
-                    "type": "string",
-                    "pattern": "graceful|acpioff|poweroff",
-                    "default": "poweroff"
-                }
-            }
-        },
-        {
-            "term": "stop",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-            "title": "Stop Compute instance",
-            "attributes": {
-                "method": {
-                    "mutable": true,
-                    "required": false,
-                    "type": "string",
-                    "pattern": "graceful|acpioff|poweroff",
-                    "default": "poweroff"
-                }
-            }
-        },
-        {
-            "term": "start",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-            "title": "Stop Compute instance",
-            "attributes": {
-                "method": {
-                    "mutable": true,
-                    "required": false,
-                    "type": "string",
-                    "pattern": "graceful|acpioff|poweroff",
-                    "default": "poweroff"
-                }
-            }
-        }
-    ]
-}
-"""
-kinds_indep="""
-{"kinds": [
-        {
-            "term": "resource",
-            "scheme": "http://schemas.ogf.org/occi/core#",
-            "title": "Compute Bilel",
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "2550"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
-                        }
-                    }
-                }
-            },
-            "location": "/resource/"
-        }
-    ]
-    }
-"""
-kinds_dep = """
-{
-    "kinds": [
-        {
-            "term": "storage",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#resource",
-            "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/core#resource"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
-                        }
-                    }
-                }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-            ],
-            "location": "/storage/"
-        }
-    ]
-}"""
-mixins = """
-{"mixins": [
-        {
-            "term": "mixin",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Big Bad VM",
-            "related": [],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": {
-                            "type": "number",
-                            "default": 2.8
-                        }
-                    }
-                }
-            },
-            "location": "/template/resource/resource_tpl/"
-        }
-    ]
-}
-"""
-mixins_dep = """
-{
-    "mixins": [
-        {
-            "term": "medium",
-            "scheme": "http://example.com/template/resource#",
-            "title": "Medium VM",
-            "related": [
-                "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": {
-                            "type": "number",
-                            "default": 2.8
-                        }
-                    }
-                }
-            },
-            "location": "/template/resource/medium2/"
-        },
-        {
-            "term": "mixin",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "related": [
-                "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
-                        },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
-                        }
-                    }
-                }
-            },
-            "actions": [
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-            ],
-            "location": "/mixin/"
-        }
-    ]
-}
-        """
-providers ="""
-{"providers": [
-        {
-        "Provider": {
-            "local": ["Houssem"],
-            "remote": ["Bilel"]
-        },
-        "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#resourcestorage"
-    }
-]
-}"""
-
 
 class test_get(TestCase):
     """
@@ -282,9 +67,11 @@ class test_get(TestCase):
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
+        for x in range(0,10):
+            c.perform()
+            content = storage.getvalue()
+            print " ===== Body content =====\n " + content + " ==========\n"
+
 
 
     def test_get_filter_categories_ok(self):
@@ -297,7 +84,7 @@ class test_get(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
-        c.setopt(pycurl.POSTFIELDS,actions)
+        c.setopt(pycurl.POSTFIELDS,fake_data.post_categories)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -331,7 +118,7 @@ class test_delete(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
-        c.setopt(pycurl.POSTFIELDS,kinds_indep)
+        c.setopt(pycurl.POSTFIELDS,fake_data.post_categories)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -361,19 +148,17 @@ class test_post(TestCase):
         """
         register kind, mixins or actions
         """
-        storage = StringIO.StringIO()
+
         c = pycurl.Curl()
+        storage = StringIO.StringIO()
         c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
-        c.setopt(pycurl.POSTFIELDS,mixins_dep)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
+        c.setopt(pycurl.POSTFIELDS,fake_data.post_categories)
         c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
-
 
 class test_put(TestCase):
     """
@@ -401,7 +186,7 @@ class test_put(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
-        c.setopt(pycurl.POSTFIELDS,kinds_indep)
+        c.setopt(pycurl.POSTFIELDS,fake_data.post_categories)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

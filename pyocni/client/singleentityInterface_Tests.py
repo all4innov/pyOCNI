@@ -32,101 +32,7 @@ import pyocni.client.server_Mock as server
 import pycurl
 import time
 import StringIO
-resources ="""
-{
-    "resources": [
-            {
-            "kind": "http://schemas.ogf.org/occi/core#resource",
-            "mixins": [
-                "http://example.com/template/resource#medium",
-                "http://schemas.ogf.org/occi/infrastructure#mixin"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": 2,
-                        "memory": 4,
-                        "cores": 2
-                    }
-                },
-                "org": {
-                    "other": {
-                        "occi": {
-                            "my_mixin": {
-                                "my_attribute": "my_value"
-                            }
-                        }
-                    }
-                }
-            },
-            "actions": [
-                    {
-                    "title": "Start My Server",
-                    "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
-                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                }
-            ],
-            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
-            "title": "Compute resource",
-            "summary": "This is a compute resource"
-        }
-    ]
-}
-"""
-links = """{
-    "links": [
-            {
-            "kind": "http://schemas.ogf.org/occi/core#resource",
-            "attributes": {
-                "occi": {
-                    "infrastructure": {
-                        "networkinterface": {
-                            "interface": "eth0",
-                            "mac": "00:80:41:ae:fd:7e",
-                            "address": "192.168.0.100",
-                            "gateway": "192.168.0.1",
-                            "allocation": "dynamic"
-                        }
-                    }
-                }
-            },
-            "actions": [
-                    {
-                    "title": "Disable networkinterface",
-                    "href": "/networkinterface/22fe83ae-a20f-54fc-b436-cec85c94c5e8?action=up",
-                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                }
-            ],
-            "id": "for my test2",
-            "title": "Mynetworkinterface",
-            "target": "http://127.0.0.1:8090/bilel/compute/vm1",
-            "source": "http://127.0.0.1:8090/bilel/compute2/vm2"
-        }
-    ]
-}
-"""
-part_links = """{
-    "links": [
-            {
-            "id": " try to change it",
-            "title": "My partial update test !",
-            "target": "http://127.0.0.1:8090/bilel/compute/vm1",
-            "source": "http://127.0.0.1:8090/bilel/compute2/vm2"
-        }
-    ]
-}
-"""
-part_resource ="""
-{
-    "resources": [{
-
-            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
-            "title": "Compute resource ????",
-            "summary": "This is a compute resource"
-        }
-    ]
-}
-"""
+import pyocni.client.entities as fake_data
 def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
@@ -222,7 +128,7 @@ class test_delete(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,"http://127.0.0.1:8090/bilel/compute/vm1")
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/bilel/vms/v1")
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
@@ -253,11 +159,11 @@ class test_put(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/bilel/links/link1')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/bilel/vms/v3')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
-        c.setopt(pycurl.POSTFIELDS,links)
+        c.setopt(pycurl.POSTFIELDS,fake_data.provider_up)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

@@ -153,7 +153,22 @@ def prepare_PyOCNI_db():
                 "map":"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
                     "{for (elem in doc.OCCI_Description.mixins)"
                     "emit (doc.OCCI_Description.mixins[elem],doc) }});"
+            },
+            "for_trigger_action": {
+                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                       "emit ([doc.OCCI_Location,doc.Creator],[doc.OCCI_Description.kind,doc.OCCI_Description.mixins]) });"
+            },
+            "actions_of_kind_mix": {
+                "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\"))"
+                    "{doc_id = doc.OCCI_Description.scheme + doc.OCCI_Description.term; "
+                    "for (elem in doc.OCCI_Description.actions) "
+                    "emit ([doc.OCCI_Description.actions[elem],doc_id],doc.Provider) }});"
+            },
+            "my_providers": {
+                "map": "(function(doc) { if (doc.Type == \"Kind\")"
+                       "emit (doc.OCCI_ID,doc.Provider)});"
             }
+
 
 
         }

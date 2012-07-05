@@ -9,7 +9,7 @@
 {
     "resources": [
         {
-            "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
+            "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
             "mixins": [
                 "http://example.com/template/resource#medium"
             ],
@@ -43,7 +43,7 @@
             "summary": "This is a compute resource"
         },
         {
-            "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
+            "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
             "mixins": [
                 "http://example.com/template/resource#medium"
             ],
