@@ -20,27 +20,26 @@ Created on Jun 12, 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
-@author: Houssem Medhioub
-@contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
 @version: 0.3
 @license: LGPL - Lesser General Public License
 
 """
 import pyocni.pyocni_tools.config as config
+
 # getting the Logger
 logger = config.logger
 
-def update_occi_description(oldData,newData):
+def update_occi_category_description(oldData,newData):
     """
-    Update only a part of the occi description
+    Update only a part of the occi category description
     Args:
-        @param newData: The new OCCI description
-        @param oldData: The old OCCI description
+        @param newData: The new OCCI category description
+        @param oldData: The old OCCI category description
         @return : Updated data and a boolean (false if all fields are updated, true if there were some un-updated fields)
     """
 
-    #Try to get the keys from occi description dictionary
+    #Try to get the keys from occi category description dictionary
     oldData_keys = oldData.keys()
     newData_keys = newData.keys()
     forbidden_keys = ["term","scheme","location"]
@@ -56,7 +55,37 @@ def update_occi_description(oldData,newData):
                 oldData[key] = newData[key]
             except ValueError:
                 #Keep the record of the keys(=parts) that couldn't be updated
-                logger.debug("update description : " + key + " could not be found")
+                logger.debug("update category description : " + key + " could not be found")
+                return True,None
+
+    return False,oldData
+
+def update_occi_entity_description(oldData,newData):
+    """
+    Update only a part of the occi entity description
+    Args:
+        @param newData: The new OCCI entity description
+        @param oldData: The old OCCI entity description
+        @return : Updated data and a boolean (false if all fields are updated, true if there were some un-updated fields)
+    """
+
+    #Try to get the keys from occi entity description dictionary
+    oldData_keys = oldData.keys()
+    newData_keys = newData.keys()
+    forbidden_keys = ["id","kind"]
+    for key in newData_keys:
+        try:
+            forbidden_keys.index(key)
+            if oldData[key] != newData[key]:
+                logger.debug("update description : " + key + " is forbidden to change")
+                return True,None
+        except ValueError:
+            try:
+                oldData_keys.index(key)
+                oldData[key] = newData[key]
+            except ValueError:
+                #Keep the record of the keys(=parts) that couldn't be updated
+                logger.debug("update entity description : " + key + " could not be found")
                 return True,None
 
     return False,oldData
@@ -89,7 +118,6 @@ def filter_occi_description(description,filter):
     """
 
     #Try to get the keys from filter dictionary
-
     filter_keys = filter.keys()
     desc_keys = description.keys()
     for key in filter_keys:
@@ -292,3 +320,23 @@ def verify_existences_kappa(occi_ids, db_occi_ids_locs):
     #verify that the target and source are different resources
     #verify that the target and source are resources and not links
     return True
+
+def reformat_url_path(url_path):
+    """
+    Reformat the URL path to a category path
+    Args:
+        @param url_path: URL path
+    """
+    loc = url_path.split(config.PyOCNI_Server_Address)
+    new_path = config.PyOCNI_Server_Address+"/-"+loc[1]
+    return new_path
+
+def format_url_path(cat_path):
+    """
+    format the category path to a URL path
+    Args:
+        @param cat_path: Category path
+    """
+    loc = cat_path.split("/-/")
+    new_path = config.PyOCNI_Server_Address+"/"+loc[1]
+    return new_path

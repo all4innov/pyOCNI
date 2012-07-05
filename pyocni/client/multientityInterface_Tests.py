@@ -27,149 +27,19 @@ Created on Jun 27, 2012
 @license: LGPL - Lesser General Public License
 """
 from multiprocessing import Process
-from pyocni.pyocni_tools.config import return_code
 from unittest import TestLoader,TextTestRunner,TestCase
 import pyocni.client.server_Mock as server
 import pycurl
 import time
 import StringIO
+import pyocni.client.entities as fake_data
 
 
 def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
-resources ="""
-{
-    "resources": [
-            {
-            "kind": "http://schemas.ogf.org/occi/core#resource",
-            "mixins": [
-                "http://example.com/template/resource#medium",
-                "http://schemas.ogf.org/occi/infrastructure#mixin"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": 2,
-                        "memory": 4,
-                        "cores": 2
-                    }
-                },
-                "org": {
-                    "other": {
-                        "occi": {
-                            "my_mixin": {
-                                "my_attribute": "my_value"
-                            }
-                        }
-                    }
-                }
-            },
-            "actions": [
-                    {
-                    "title": "Start My Server",
-                    "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
-                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                }
-            ],
-            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
-            "title": "Compute resource",
-            "summary": "This is a compute resource"
-        }
-    ]
-}
-"""
-resources_link ="""
-{
-    "resources": [
-        {
-            "kind": "http://schemas.ogf.org/occi/core#resource",
-            "mixins": [
-                "http://example.com/template/resource#medium",
-                "http://schemas.ogf.org/occi/infrastructure#mixin"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": 2,
-                        "memory": 4,
-                        "cores": 2
-                    }
-                },
-                "org": {
-                    "other": {
-                        "occi": {
-                            "my_mixin": {
-                                "my_attribute": "my_value"
-                            }
-                        }
-                    }
-                }
-            },
-            "actions": [
-                {
-                    "title": "Start My Server",
-                    "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
-                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                }
-            ],
-            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae30",
-            "title": "Compute resource",
-            "summary": "This is a compute resource",
-            "links": [
-                {
-                    "target": "http://127.0.0.1:8090/user_1/resource/996ad860-2a9a-504f-8861-aeafd0b2ae29",
-                    "kind": "http://schemas.ogf.org/occi/infrastructure#resourcestorage",
-                    "attributes": {
-                        "occi": {
-                            "storagelink": {
-                                "deviceid": "ide: 0: 1"
-                            }
-                        }
-                    },
-                    "id": "391ada15-580c-5baa-b16f-eeb35d9b1122",
-                    "title": "Mydisk"
-                }
-            ]
-        }
-    ]
-}
-"""
-links = """{
-    "links": [
-            {
-            "kind": "http://schemas.ogf.org/occi/core#resource",
-            "attributes": {
-                "occi": {
-                    "infrastructure": {
-                        "networkinterface": {
-                            "interface": "eth0",
-                            "mac": "00:80:41:ae:fd:7e",
-                            "address": "192.168.0.100",
-                            "gateway": "192.168.0.1",
-                            "allocation": "dynamic"
-                        }
-                    }
-                }
-            },
-            "actions": [
-                    {
-                    "title": "Disable networkinterface",
-                    "href": "/networkinterface/22fe83ae-a20f-54fc-b436-cec85c94c5e8?action=up",
-                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                }
-            ],
-            "id": "for my test",
-            "title": "Mynetworkinterface",
-            "target": "http://127.0.0.1:8090/user_1/resource/996ad860-2a9a-504f-8861-aeafd0b2ae29",
-            "source": "http://127.0.0.1:8090/user_1/resource/996ad860-2a9a-504f-8861-aeafd0b2ae30"
-        }
-    ]
-}
-"""
-occi_ids = """
-{"OCCI_Locations":["http://127.0.0.1:8090/user_1/resource/for my test"]}
-"""
+
+
 class test_post(TestCase):
     """
     Tests POST request scenarios
@@ -192,11 +62,11 @@ class test_post(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/resource/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/compute/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
-        c.setopt(pycurl.POSTFIELDS,links)
+        c.setopt(pycurl.POSTFIELDS,"{\"a\":\"b\"}")
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -209,16 +79,17 @@ class test_post(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/mixin/')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/template/resource/medium/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
-        c.setopt(pycurl.POSTFIELDS,occi_ids)
+        c.setopt(pycurl.POSTFIELDS,fake_data.associate_mixin)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
+
 class test_get(TestCase):
     """
     Tests GET request scenarios
@@ -242,7 +113,7 @@ class test_get(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,"http://127.0.0.1:8090/-/template/resource/medium2/")
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/compute/")
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -251,6 +122,89 @@ class test_get(TestCase):
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
+
+    def test_get_filtred_entities(self):
+        """
+        get filtred resources & links
+        """
+
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/compute/")
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(pycurl.POSTFIELDS,fake_data.links)
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+
+class test_put(TestCase):
+    """
+    Tests PUT request scenarios
+    """
+    def setUp(self):
+
+        """
+        Set up the test environment
+        """
+        self.p = Process(target = start_server)
+        self.p.start()
+        time.sleep(0.5)
+
+    def tearDown(self):
+        self.p.terminate()
+
+    def test_associate_mixins(self):
+        """
+        """
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/template/resource/medium/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
+        c.setopt(pycurl.POSTFIELDS,fake_data.put_on_mixin_path)
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+
+class test_delete(TestCase):
+    """
+    Tests DELETE request scenarios
+    """
+    def setUp(self):
+
+        """
+        Set up the test environment
+        """
+        self.p = Process(target = start_server)
+        self.p.start()
+        time.sleep(0.5)
+
+    def tearDown(self):
+        self.p.terminate()
+
+    def test_dissociate_mixins(self):
+        """
+        """
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/template/resource/medium/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
+        c.setopt(pycurl.POSTFIELDS,fake_data.associate_mixin)
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+
 
 if __name__ == '__main__':
 
@@ -261,10 +215,10 @@ if __name__ == '__main__':
     #Create the testing suites
     get_suite = loader.loadTestsFromTestCase(test_get)
     #    delete_suite = loader.loadTestsFromTestCase(test_delete)
-    #    put_suite = loader.loadTestsFromTestCase(test_put)
+    put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
     runner.run(get_suite)
     #    runner.run(delete_suite)
-    #    runner.run(put_suite)
+    runner.run(put_suite)
     runner.run(post_suite)

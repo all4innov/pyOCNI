@@ -65,9 +65,7 @@ class KindManager:
                     if ok is True:
                         var.append(elem)
                         logger.debug("Kind filtered document found")
-                    else:
-                        message = "No kind document matches the requirements"
-                        logger.debug(message)
+                        break
             return var,return_code['OK']
         except Exception as e:
             logger.error("filtered kinds : " + e.message)
@@ -143,7 +141,7 @@ class KindManager:
             old_doc = joker.extract_doc(occi_id,db_data)
             if old_doc is not None:
                 if user_id == old_doc['Creator']:
-                    problems,occi_description= joker.update_occi_description(old_doc['OCCI_Description'],desc)
+                    problems,occi_description= joker.update_occi_category_description(old_doc['OCCI_Description'],desc)
                     if problems is True:
                         message = "Kind OCCI description " + occi_id + " has not been totally updated."
                         logger.error("Kind OCCI description update " + message)
@@ -220,8 +218,8 @@ class KindManager:
             occi_id = joker.get_description_id(desc)
             kind_id_rev = joker.verify_exist_occi_id_creator(occi_id,user_id,db_categories)
             if kind_id_rev is not None:
-                ok = self.get_entities_belonging_to_kind(occi_id,db_entities)
-                if ok is True:
+                exist_entities = self.get_entities_belonging_to_kind(occi_id,db_entities)
+                if exist_entities is False:
                     message.append(kind_id_rev)
                     event = "Kind document " + occi_id + " is sent for delete "
                     logger.debug("Delete kind : " + event)
@@ -236,6 +234,17 @@ class KindManager:
         return message,res_code
 
     def get_entities_belonging_to_kind(self, occi_id,db_data):
+        """
+        Verifies if there are entities of this kind
+        Args:
+            @param occi_id: OCCI_ID of the kind
+            @param db_data: OCCI_IDs of the kind that has entities running
+        """
+        try:
+            db_data.index(occi_id)
+        except ValueError as e:
+            logger.debug("Entities belong kind : " + e.message)
+            return False
         return True
 
 
@@ -265,9 +274,7 @@ class MixinManager:
                     if ok is True:
                         var.append(elem)
                         logger.debug("Mixin filtered document found")
-                    else:
-                        message = "No mixin document matches the requirements"
-                        logger.debug(message)
+                        break
             return var,return_code['OK']
         except Exception as e:
             logger.error("filtered mixins : " + e.message)
@@ -347,7 +354,7 @@ class MixinManager:
             old_doc = joker.extract_doc(occi_id,db_data)
             if old_doc is not None:
                 if user_id == old_doc['Creator']:
-                    problems,occi_description= joker.update_occi_description(old_doc['OCCI_Description'],desc)
+                    problems,occi_description= joker.update_occi_category_description(old_doc['OCCI_Description'],desc)
                     if problems is True:
                         message = "Mixin OCCI description " + occi_id + " has not been totally updated."
                         logger.error("Mixin OCCI description update " + message)
@@ -385,22 +392,37 @@ class MixinManager:
             occi_id = joker.get_description_id(desc)
             mixin_id_rev = joker.verify_exist_occi_id_creator(occi_id,user_id,db_categories)
             if mixin_id_rev is not None:
-                ok = self.dissociate_entities_belonging_to_mixin(occi_id,db_entities)
-                if ok is True:
+                db_entities,dissociated = self.dissociate_entities_belonging_to_mixin(occi_id,db_entities)
+                if dissociated is True:
                     message.append(mixin_id_rev)
                     event = "Mixin document " + occi_id + " is sent for delete "
                     logger.debug("Delete mixin : " + event)
                 else:
-                    event = "Unable to delete because this mixin document " + occi_id + " has resources depending on it. "
+                    event = "Unable to delete because this mixin document " + occi_id + " still has resources depending on it. "
                     logger.error("Delete mixin : " + event)
-                    return list(), return_code['Bad Request']
+                    return list(),list(), return_code['Bad Request']
             else:
                 event = "Could not find this mixin document " + occi_id +" or you are not authorized for for delete"
                 logger.error("Delete mixin : " + event)
-                return list(), return_code['Bad Request']
-        return message,res_code
+                return list(),list(), return_code['Bad Request']
+
+
+        return message,db_entities,res_code
+
     def dissociate_entities_belonging_to_mixin(self, occi_id, db_entities):
-        return True
+        """
+        Dissociates entities from a mixin
+        Args:
+            @param occi_id: OCCI ID of the mixin
+            @param db_entities: Docs of the entities that could be having the mixin in their mixin collection
+        """
+
+        for item in db_entities:
+            try:
+                item['OCCI_Description']['mixins'].remove(occi_id)
+            except ValueError as e:
+                logger.debug("dis entities belong mixin " + e.message)
+        return db_entities,True
 
 
 class ActionManager:
@@ -427,9 +449,7 @@ class ActionManager:
                     if ok is True:
                         var.append(elem)
                         logger.debug("action filtered document found")
-                    else:
-                        message = "No action document matches the requirements"
-                        logger.debug(message)
+                        break
             return var,return_code['OK']
         except Exception as e:
             logger.error("filtered actions : " + e.message)
@@ -485,7 +505,7 @@ class ActionManager:
             old_doc = joker.extract_doc(occi_id,db_data)
             if old_doc is not None:
                 if user_id == old_doc['Creator']:
-                    problems,occi_description= joker.update_occi_description(old_doc['OCCI_Description'],desc)
+                    problems,occi_description= joker.update_occi_category_description(old_doc['OCCI_Description'],desc)
                     if problems is True:
                         message = "Action OCCI description " + occi_id + " has not been totally updated."
                         logger.error("Action OCCI description update " + message)
@@ -561,10 +581,10 @@ class CategoryManager:
         for q in query:
             db_occi_ids.append( q['key'])
             db_occi_locs.append(q['value'])
-
         if jreq.has_key('actions'):
             logger.debug("Actions post request : channeled")
             new_actions,resp_code_a = self.manager_a.register_actions(user_id,jreq['actions'],db_occi_ids)
+            db_occi_ids,db_occi_locs = create_temporary_db(db_occi_ids,db_occi_locs,new_actions)
         else:
             logger.error("ch register categories : no actions found")
             new_actions = list()
@@ -689,27 +709,46 @@ class CategoryManager:
             logger.error("Category delete : " + e.message)
             return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
         db_occi_id_creator = list()
-        db_entities = list()
         for q in query:
             if q['key'] is not None:
                 db_occi_id_creator.append( { "_id" : q['key'],"_rev" : q['value'][0], "OCCI_ID" : q['value'][1],"Creator" : q['value'][2]})
-            else:
-                db_entities.append(q['value'])
-
         if jreq.has_key('kinds'):
+            try:
+                query = database.view('/db_views/entities_of_kind')
+            except Exception as e:
+                logger.error("Category delete : " + e.message)
+                return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
+            db_kind_entities = list()
+            for q in query:
+                if q['key'] is not None:
+                    db_kind_entities.append(q['key'])
+
             logger.debug("Kinds delete request : channeled")
-            delete_kinds,resp_code_k = self.manager_k.delete_kind_documents(jreq['kinds'],user_id,db_occi_id_creator,db_entities)
+            delete_kinds,resp_code_k = self.manager_k.delete_kind_documents(jreq['kinds'],user_id,db_occi_id_creator,db_kind_entities)
         else:
             logger.error("ch delete filter : No kinds found")
             delete_kinds=list()
             resp_code_k = return_code['OK']
 
         if jreq.has_key('mixins'):
+            db_mixin_entities = list()
+            for mix in jreq['mixins']:
+                occi_id = joker.get_description_id(mix)
+                try:
+                    query = database.view('/db_views/entities_of_mixin_v2',key =occi_id)
+                except Exception as e:
+                    logger.error("Category delete : " + e.message)
+                    return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
+                if query.count() is not 0:
+                    db_mixin_entities.append(query.first()['value'])
+
+
             logger.debug("Mixins delete request : channeled")
-            delete_mixins,resp_code_m = self.manager_m.delete_mixin_documents(jreq['mixins'],user_id,db_occi_id_creator,db_entities)
+            delete_mixins,to_update,resp_code_m = self.manager_m.delete_mixin_documents(jreq['mixins'],user_id,db_occi_id_creator,db_mixin_entities)
         else:
             logger.error("ch delete filter : No mixins found")
             delete_mixins=list()
+            to_update = list()
             resp_code_m = return_code['OK']
 
         if jreq.has_key('actions'):
@@ -726,6 +765,8 @@ class CategoryManager:
         categories = delete_kinds + delete_mixins + delete_actions
 
         database.delete_docs(categories)
+        database.save_docs(to_update,force_update=True, all_or_nothing=True)
+        logger.debug("Categories delete with success")
         return "",return_code['OK']
 
 
@@ -784,3 +825,23 @@ class CategoryManager:
         categories = updated_kinds + updated_providers + updated_mixins + updated_actions
         database.save_docs(categories,force_update=True, all_or_nothing=True)
         return "",return_code['OK']
+
+
+#=======================================================================================================================
+#                           Independant Functions
+#=======================================================================================================================
+def create_temporary_db(data_1,data_2,new_data):
+    """
+    Add new_data to data
+    Args:
+        @param data_1: old data
+        @param data_2: old data
+        @param new_data: new data
+    """
+    for item in new_data:
+        if item.has_key('OCCI_ID'):
+            data_1.append(item['OCCI_ID'])
+        elif item.has_key('OCCI_Location'):
+            data_2.append(item['OCCI_Location'])
+    return data_1,data_2
+
