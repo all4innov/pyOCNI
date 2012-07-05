@@ -191,10 +191,11 @@ class MultiEntityInterface(object):
     """
     CRUD operation on kinds, mixins and actions
     """
-    def __init__(self,req,location,idontknow=None,idontcare=None):
+    def __init__(self,req,location,idontknow=None,idontcare=None,action=None):
 
         self.req = req
         self.location=location
+        self.triggered_action = action
         self.path_url = self.req.path_url
         self.res = Response()
         self.res.content_type = req.accept
@@ -234,11 +235,15 @@ class MultiEntityInterface(object):
         user_id = user_id.split(':')[0]
         jBody = json.loads(self.req.body)
         #add the JSON to database along with other attributes
-        var,self.res.status_code = self.manager.channel_post_multi(user_id,jBody,self.path_url)
-        if type(var) is not str:
-            self.res.body = json.dumps(var)
+        if self.triggered_action is None:
+            var,self.res.status_code = self.manager.channel_post_multi(user_id,jBody,self.path_url)
+            if type(var) is not str:
+                self.res.body = json.dumps(var)
+            else:
+                self.res.body = var
         else:
-            self.res.body = var
+            self.res.body,self.res.status_code = self.manager.channel_trigger_actions(user_id,jBody,self.path_url,self.triggered_action)
+
         return self.res
 
     def get(self):

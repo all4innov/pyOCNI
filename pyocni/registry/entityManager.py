@@ -590,6 +590,9 @@ class LinkManager(object):
 #                                           MultiEntityManager
 #=======================================================================================================================
 
+
+
+
 class MultiEntityManager(object):
     """
 
@@ -897,6 +900,87 @@ class MultiEntityManager(object):
 
             database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
             return "",return_code['OK']
+
+    def channel_trigger_actions(self, user_id, jBody, req_url, triggered_action):
+        """
+        Trigger action on a collection of kind or mixin
+        Args:
+            @param user_id: Issuer of the request
+            @param jBody: Action provided
+            @param req_url: URL of the request
+            @param triggered_action: Action name
+        """
+        database = config.prepare_PyOCNI_db()
+        path_url = joker.reformat_url_path(req_url)
+        # Get OCCI_ID from OCCI_Location
+        try:
+            query = database.view('/db_views/for_get_entities',key = path_url)
+        except Exception as e:
+            logger.error("Dissociate mixins : " + e.message)
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+        if query.count() is 0:
+            logger.debug("trigger_actions : No such  kind or mixin was found")
+            return "An error has occured, please check log for more details", return_code['Not Found']
+        else:
+            occi_id = query.first()['value'][0]
+            occi_type = query.first()['value'][1]
+            #Get resources that has this mixin or kind
+            if occi_type == "Kind":
+                try:
+                    query2 = database.view('/db_views/entities_of_kind',key = occi_id)
+                except Exception as e:
+                    logger.error("Dissociate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            elif occi_type == "Mixin":
+                try:
+                    query2 = database.view('/db_views/entities_of_mixin',key = occi_id)
+                except Exception as e:
+                    logger.error("Dissociate mixins : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+            to_send = list()
+            for q in query2:
+                entity = q['value'][0]
+                try:
+                    query3 = database.view('/db_views/for_trigger_action', key=[entity,user_id])
+                except Exception as e:
+                    logger.error("trigger action single : " + e.message)
+                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                if query3.count() is 0:
+                    logger.error("trigger action single : No such resource")
+                    return "An error has occurred, please check log for more details",return_code['Not Found']
+                else:
+                    kind_mix = list()
+                    kind_mix.append(query3.first()['value'][0])
+                    kind_mix += query3.first()['value'][1]
+                    action_id = joker.get_description_id(jBody['actions'][0])
+                    provider = None
+                    for item in kind_mix:
+                        try:
+                            query2 = database.view('/db_views/actions_of_kind_mix', key=[item,action_id])
+                        except Exception as e:
+                            logger.error("trigger action single : " + e.message)
+                            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+                        if query2.count() is not 0:
+                            try:
+                                query2 = database.view('/db_views/my_providers', key=kind_mix[0])
+                                provider = query2['value']
+                            except Exception as e:
+                                logger.error("trigger action single : " + e.message)
+                                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                            break
+
+                    if provider is not None:
+                        to_send.append({"resource_url":entity,"action":jBody['action'][0],"provider":provider['local']})
+                    else:
+                        logger.error("Trig action : No provider was found")
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+            res,res_code = trigger_action_on_multi_resource(to_send)
+
+
+
 #=======================================================================================================================
 #                                           SingleEntityManager
 #=======================================================================================================================
@@ -1082,7 +1166,7 @@ class SingleEntityManager(object):
             @param user_id: issuer of the request
             @param jBody: Data provided
             @param path_url: URL of the request
-            @param triggered_action:
+            @param triggered_action: Action name to trigger
         """
         database = config.prepare_PyOCNI_db()
         try:
@@ -1095,20 +1179,24 @@ class SingleEntityManager(object):
             return "An error has occurred, please check log for more details",return_code['Not Found']
         else:
             kind_mix = list()
-            kind_mix.append(query().first()['value'][0])
-            kind_mix += query().first()['value'][1]
+            kind_mix.append(query.first()['value'][0])
+            kind_mix += query.first()['value'][1]
             action_id = joker.get_description_id(jBody['actions'][0])
             provider = None
             for item in kind_mix:
                 try:
                     query2 = database.view('/db_views/actions_of_kind_mix', key=[item,action_id])
-                    if query2['value'] is not None:
-                        provider = query2['value']
                 except Exception as e:
                     logger.error("trigger action single : " + e.message)
                     return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
-                if query2().count() is not 0:
+                if query2.count() is not 0:
+                    try:
+                        query2 = database.view('/db_views/actions_of_kind_mix', key=kind_mix[0])
+                        provider = query2['value']
+                    except Exception as e:
+                        logger.error("trigger action single : " + e.message)
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
                     break
 
             if provider is not None:
@@ -1211,3 +1299,13 @@ def trigger_action_on_a_resource(path_url,action,provider):
         return " An error has occurred, please check logs for more details", return_code['Not Found']
     backend.action(path_url,action)
     return "", return_code['OK']
+
+def trigger_action_on_multi_resource(data):
+    """
+    Trigger the action on multiple resource
+    Args:
+        @param data: Data provided for triggering the action
+    """
+    for item in data:
+        trigger_action_on_a_resource(item['resource_url'],item['action'],item['provider'])
+    return "",return_code['OK']

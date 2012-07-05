@@ -32,7 +32,7 @@ import pyocni.client.server_Mock as server
 import pycurl
 import time
 import StringIO
-
+import pyocni.client.entities as fake_data
 res_filter = """
 {
     "resources": [
@@ -47,6 +47,7 @@ res_filter = """
 def start_server():
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
+
 class test_get(TestCase):
     """
     Tests GET request scenarios
@@ -70,7 +71,7 @@ class test_get(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,"http://127.0.0.1:8090/bilel/compute/")
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/template/resource/")
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
@@ -87,12 +88,12 @@ class test_get(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,"http://127.0.0.1:8090/bilel/compute/")
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/user_1/compute/")
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
         c.setopt(pycurl.USERPWD, 'user_1:password')
-        c.setopt(pycurl.POSTFIELDS,res_filter)
+        c.setopt(pycurl.POSTFIELDS,fake_data.links)
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
@@ -121,7 +122,7 @@ class test_delete(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,"http://127.0.0.1:8090/bilel/compute2/")
+        c.setopt(pycurl.URL,"http://127.0.0.1:8090/user_1/compute/")
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
