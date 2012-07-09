@@ -38,8 +38,8 @@ class dummy_backend(backend):
         Create an entity (Resource or Link)
 
         '''
+
         logger.debug('The create operation of the dummy_backend')
-        logger.debug('bilel')
 
     def read(self, entity):
         '''

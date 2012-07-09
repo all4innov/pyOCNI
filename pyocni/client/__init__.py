@@ -25,7 +25,9 @@ Created on Feb 25, 2011
 @license: LGPL - Lesser General Public License
 """
 
-import httplib2
+import eventlet.patcher
+httplib2 = eventlet.patcher.import_patched("httplib2")
+
 import pprint
 
 if __name__ == '__main__':
