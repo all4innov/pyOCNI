@@ -102,7 +102,7 @@ class KindManager:
                         jData['OCCI_Description']= desc
                         jData['OCCI_ID'] = occi_id
                         jData['Type']= "Kind"
-                        jData['Provider']= {"local":[],"remote":[]}
+                        jData['Provider']= {"local":["dummy"],"remote":[]}
                         loc_res.append(jData)
                     else:
                         message = "Missing action or related kind description, Kind will not be created."
@@ -626,7 +626,7 @@ class CategoryManager:
             query = database.view('/db_views/for_get_categories')
         except Exception as e:
             logger.error("Category get all : " + e.message)
-            return ["An error has occurred, please check log for more details"],return_code['Internal Server Error']
+            return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
         for q in query:
             if q['key'] == "Kind":

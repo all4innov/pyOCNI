@@ -156,5 +156,23 @@ def get_kind(guid):
                 "}"\
 
     return post_kind
+
+put_provider ="""
+    {
+    "providers": [
+            {
+            "Provider": {
+                "local": [
+                    "dummy"
+                ],
+                "remote": [
+                    "Bilel"
+                ]
+            },
+            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#compute"
+        }
+    ]
+}
+"""
 #======================================================================================================================
 

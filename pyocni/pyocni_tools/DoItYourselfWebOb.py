@@ -1,6 +1,6 @@
 # All rights reserved
 # Work extracted from webob.org website
-# http://docs.webob.org/en/latest/do-it-yourself.html
+# thttp://docs.webob.org/en/latest/do-it-yourself.html
 
 import re
 import sys
@@ -11,7 +11,7 @@ import eventlet
 from eventlet import wsgi
 
 var_regex = re.compile(r'''
-     \{          # The exact character "{"
+     \{        # The exact character "{"
      (\w+)       # The variable name (restricted to a-z, 0-9, _)
       (?::([^}]+))? # The optional :regex part
      \}          # The exact character "}"

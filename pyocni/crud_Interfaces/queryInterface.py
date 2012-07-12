@@ -36,6 +36,7 @@ except ImportError:
 
 import base64
 from pyocni.pyocni_tools.config import return_code
+from pyocni.serialization.httpResponse_Formater import To_HTTP_Text_OCCI,To_HTTP_Text_Plain,To_HTTP_Text_URI_List
 
 class QueryInterface(object):
     """
@@ -49,6 +50,9 @@ class QueryInterface(object):
         self.res = Response()
         self.res.content_type = req.accept
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
+        self.text_plain_f = To_HTTP_Text_Plain()
+        self.text_occi_f = To_HTTP_Text_OCCI()
+        self.text_uri_f = To_HTTP_Text_URI_List()
         try:
             self.manager = CategoryManager()
         except Exception:
@@ -64,6 +68,7 @@ class QueryInterface(object):
 
         if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
             # Solution To adopt : Validate HTTP then convert to JSON
+
             pass
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
@@ -72,16 +77,33 @@ class QueryInterface(object):
             #Validate the JSON message
             pass
         else:
-            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.status_code = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
             return self.res
+
         if self.req.body == "":
             var,self.res.status_code = self.manager.channel_get_all_categories()
         else:
             jreq = json.loads(self.req.body)
             var,self.res.status_code = self.manager.channel_get_filtered_categories(jreq)
 
-        self.res.body = json.dumps(var)
+        if self.res.status_code == return_code['OK']:
+            if str(self.req.accept) == "application/occi+json":
+                self.res.body = json.dumps(var)
+
+            elif str(self.req.accept) == "text/occi":
+                #reformat the response to text/occi
+                self.res.body = "OK"
+                self.res.headers.extend(self.text_occi_f.format_to_text_occi_categories(var))
+
+            else :
+                #reformat the response to text/plain (default OCCI response format)
+                self.res.content_type = "text/plain"
+                self.res.body = self.text_plain_f.format_to_text_plain_categories(var)
+        else:
+            self.res.content_type = "text/html"
+            self.res.body = var
+
         return self.res
 
     def post(self):
