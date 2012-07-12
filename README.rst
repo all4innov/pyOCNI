@@ -307,6 +307,8 @@ Houssem Medhioub: houssem.medhioub@it-sudparis.eu
 
 Bilel Msekni: bilel.msekni@telecom-sudparis.eu
 
+Djamal Zeghlache: djamal.zeghlache@it-sudparis.eu
+
 8. Acknowledgment
 =================
 This work has been supported by:
@@ -863,6 +865,25 @@ Some of pyocni's needs might be:
             }
         ]
     }
+
+* put_providers.json::
+
+    {
+        "providers": [
+            {
+                "Provider": {
+                    "local": [
+                        "Houssem"
+                    ],
+                    "remote": [
+                        "Bilel"
+                    ]
+                },
+                "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#compute"
+            }
+        ]
+    }
+
 
 * delete_kinds.json::
 
