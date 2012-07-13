@@ -176,3 +176,9 @@ put_provider ="""
 """
 #======================================================================================================================
 
+post_http_categories = "Category : my_stuff;\"" \
+                    "scheme=\"http://example.com/occi/my_stuff#\";"\
+                   "class=\"mixin\";"\
+                   "title=\"Storage Resource\";"\
+                   "location=\"/my_stuff/\";"\
+                   "attributes=\"occi.storage.size{required} occi.storage.state{immutable}\";"\

@@ -37,7 +37,7 @@ except ImportError:
 import base64
 from pyocni.pyocni_tools.config import return_code
 from pyocni.serialization.httpResponse_Formater import To_HTTP_Text_OCCI,To_HTTP_Text_Plain,To_HTTP_Text_URI_List
-
+from pyocni.serialization.httpRequest_Formater import From_Text_Plain_to_JSON, From_Text_OCCI_to_JSON
 class QueryInterface(object):
     """
 
@@ -53,6 +53,8 @@ class QueryInterface(object):
         self.text_plain_f = To_HTTP_Text_Plain()
         self.text_occi_f = To_HTTP_Text_OCCI()
         self.text_uri_f = To_HTTP_Text_URI_List()
+        self.from_text_plain_f = From_Text_Plain_to_JSON()
+        self.from_text_occi_f = From_Text_OCCI_to_JSON()
         try:
             self.manager = CategoryManager()
         except Exception:
@@ -65,26 +67,30 @@ class QueryInterface(object):
         Retrieval of all registered Kinds, mixins and actions
         """
         #Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
-
-        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+        jreq = ""
+        if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
+            jreq = self.from_text_plain_f.format_text_plain_categories_to_json(self.req.body)
 
-            pass
+        elif self.req.content_type == "text/occi":
+            jreq = self.from_text_occi_f.format_text_occi_categories_to_json(self.req.headers)
+
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
             pass
+
         elif self.req.content_type == "application/occi+json":
             #Validate the JSON message
-            pass
+            jreq = json.loads(self.req.body)
+
         else:
             self.res.status_code = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
             return self.res
 
-        if self.req.body == "":
+        if jreq == "":
             var,self.res.status_code = self.manager.channel_get_all_categories()
         else:
-            jreq = json.loads(self.req.body)
             var,self.res.status_code = self.manager.channel_get_filtered_categories(jreq)
 
         if self.res.status_code == return_code['OK']:
@@ -113,18 +119,25 @@ class QueryInterface(object):
         """
 
         #Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
+        jBody=dict()
 
-        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+        if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
-            pass
+            jBody = self.from_text_plain_f.format_text_plain_categories_to_json(self.req.body)
+
+        elif self.req.content_type == "text/occi":
+            jBody = self.from_text_occi_f.format_text_occi_categories_to_json(self.req.headers)
+
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
             pass
+
         elif self.req.content_type == "application/occi+json":
             #Validate the JSON message
-            pass
+            jBody = json.loads(self.req.body)
+
         else:
-            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.status_code = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
             return self.res
 
@@ -132,7 +145,7 @@ class QueryInterface(object):
         var,user_id = self.req.authorization
         user_id = base64.decodestring(user_id)
         user_id = user_id.split(':')[0]
-        jBody = json.loads(self.req.body)
+
         #add the JSON to database along with other attributes
         self.res.body,self.res.status_code = self.manager.channel_register_categories(user_id,jBody)
         return self.res
@@ -144,26 +157,33 @@ class QueryInterface(object):
         """
 
         #Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
-
-        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+        j_newData = dict()
+        if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
-            pass
+            j_newData = self.from_text_plain_f.format_text_plain_categories_to_json(self.req.body)
+
+        elif self.req.content_type == "text/occi":
+            j_newData = self.from_text_occi_f.format_text_occi_categories_to_json(self.req.headers)
+
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
             pass
+
         elif self.req.content_type == "application/occi+json":
             #Validate the JSON message
-            pass
+            j_newData = json.loads(self.req.body)
+
         else:
-            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.status_code = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
             return self.res
+
         #Decode authorization header to get the user_id
         var,user_id = self.req.authorization
         user_id = base64.decodestring(user_id)
         user_id = user_id.split(':')[0]
         #Get the new data from the request
-        j_newData = json.loads(self.req.body)
+
         self.res.body, self.res.status_code = self.manager.channel_update_categories(user_id,j_newData)
         return self.res
 
@@ -175,24 +195,31 @@ class QueryInterface(object):
         """
         #Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
 
-        if self.req.content_type == "text/occi" or self.req.content_type == "text/plain" or self.req.content_type == "text/uri-list":
+        if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
-            pass
+            jBody = self.from_text_plain_f.format_text_plain_categories_to_json(self.req.body)
+
+        elif self.req.content_type == "text/occi":
+            jBody = self.from_text_occi_f.format_text_occi_categories_to_json(self.req.headers)
+
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
             pass
+
         elif self.req.content_type == "application/occi+json":
             #Validate the JSON message
-            pass
+            jBody = json.loads(self.req.body)
+
         else:
-            self.res.status_code = return_code["Unsupported Media Type"]
+            self.res.status_code = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
             return self.res
+
         #Decode authorization header to get the user_id
         var,user_id = self.req.authorization
         user_id = base64.decodestring(user_id)
         user_id = user_id.split(':')[0]
-        jBody = json.loads(self.req.body)
+
         self.res.body,self.res.status_code= self.manager.channel_delete_categories(jBody,user_id)
 
         return self.res
