@@ -10,6 +10,7 @@ from webob import exc
 import eventlet
 from eventlet import wsgi
 
+#  \{ (\w+)(?::([^}]+))?\}
 var_regex = re.compile(r'''
      \{          # The exact character "{"
      (\w+)       # The variable name (restricted to a-z, 0-9, _)
@@ -145,8 +146,9 @@ if __name__ == '__main__':
             return 'Hello from DELETE'
 
     class Hello2(object):
-        def __init__(self, req, a):
+        def __init__(self, req, a, b):
             self.a = a
+            self.b = b
             self.request = req
 
         def post(self):
@@ -154,7 +156,7 @@ if __name__ == '__main__':
             return 'Hello2 from POST %s!' % self.request. params
 
         def get(self):
-            return 'Hello2 from GET: 33333333 ' + str(self.a)
+            return 'Hello2 from GET: 33333333 ' + str(self.a)  + ' ' + str(self.b)
 
         def put(self):
             return 'Hello2 from PUT %s!' % self.request.params['name']
@@ -167,9 +169,9 @@ if __name__ == '__main__':
 
     hello_world = Router()
     hello_world.add_route('/', controller=hello)
-    hello_world.add_route('/{a:bb}/', controller=hello2)
+    hello_world.add_route('/{a}/action={b}', controller=hello2)
 
-    req = Request.blank('/a/')
+    req = Request.blank('/aValue/action=bValue')
     req.body = 'name=Houssem'
     resp = req.get_response(hello_world)
     print (resp)
