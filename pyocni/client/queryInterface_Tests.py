@@ -36,6 +36,7 @@ import categories as fake_data
 import timeit
 
 def start_server():
+
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
 
