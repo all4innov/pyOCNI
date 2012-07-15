@@ -70,6 +70,23 @@ class test_post(TestCase):
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
 
+    def test_trigger_action_resource(self):
+        """
+        register resources & links
+        """
+        storage = StringIO.StringIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/bilel/compute/vm1?action=start')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.CUSTOMREQUEST, 'POST')
+        c.setopt(pycurl.POSTFIELDS,fake_data.trig_action)
+        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
+
 
 
 class test_get(TestCase):
@@ -95,11 +112,11 @@ class test_get(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,"http://127.0.0.1:8090/bilel/compute/vm1")
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
-        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.URL,"http://127.0.0.1:8090/bilel/vms/v1")
+        c.setopt(c.HTTPHEADER, ['Accept:text/plain','content-Type: application/occi+json'])
+        c.setopt(c.VERBOSE, True)
+        c.setopt(c.CUSTOMREQUEST, 'GET')
+        c.setopt(c.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
@@ -159,11 +176,11 @@ class test_put(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/bilel/vms/v3')
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/bilel/vms/v1')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
-        c.setopt(pycurl.POSTFIELDS,fake_data.provider_up)
+        c.setopt(pycurl.POSTFIELDS,fake_data.post_resources)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

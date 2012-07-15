@@ -38,10 +38,6 @@ from pyocni.pyocni_tools.config import return_code
 # getting the Logger
 logger = config.logger
 
-
-
-
-
 class PathManager(object):
     """
     CRUD operations on Path

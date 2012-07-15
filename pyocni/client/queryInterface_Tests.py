@@ -36,6 +36,7 @@ import categories as fake_data
 import timeit
 
 def start_server():
+
     ocni_server_instance = server.ocni_server()
     ocni_server_instance.run_server()
 
@@ -57,20 +58,19 @@ class test_get(TestCase):
 
     def test_get_all_categories(self):
         """
-        Get all kinds
+        Get all kinds,mixins and actions
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
-        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.URL,'http://127.0.0.1:8090/-/')
+        c.setopt(c.HTTPHEADER, ['Accept:text','content-Type: application/occi+json'])
+        c.setopt(c.VERBOSE, True)
+        c.setopt(c.CUSTOMREQUEST, 'GET')
+        c.setopt(c.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
-        for x in range(0,10):
-            c.perform()
-            content = storage.getvalue()
-            print " ===== Body content =====\n " + content + " ==========\n"
+        c.perform()
+        content = storage.getvalue()
+        print " ===== Body content =====\n " + content + " ==========\n"
 
 
 
@@ -153,11 +153,12 @@ class test_post(TestCase):
         storage = StringIO.StringIO()
         c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: text/occi','Category:' +fake_data.post_http_categories])
+
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
-        c.setopt(pycurl.POSTFIELDS,fake_data.post_categories)
+        #c.setopt(pycurl.POSTFIELDS,fake_data.post_http_categories)
         c.perform()
 
 class test_put(TestCase):
@@ -186,7 +187,7 @@ class test_put(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
-        c.setopt(pycurl.POSTFIELDS,fake_data.post_categories)
+        c.setopt(pycurl.POSTFIELDS,fake_data.put_provider)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

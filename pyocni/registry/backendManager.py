@@ -16,7 +16,7 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Created on Jun 19, 2012
+Created on Jun 12, 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
@@ -26,30 +26,20 @@ Created on Jun 19, 2012
 @version: 0.3
 @license: LGPL - Lesser General Public License
 """
-
-from webob import Response
-from pyocni.registry.singleCategoryManager import SingleCategoryManager
+from pyocni.backend import dummy_backend,l3vpn_backend,libnetvirt_backend,openflow_backend,opennebula_backend,openstack_backend
+import pyocni.pyocni_tools.config as config
+import pyocni.pyocni_tools.occi_Joker as joker
 try:
     import simplejson as json
 except ImportError:
     import json
-
-import base64
+from datetime import datetime
+from pyocni.pyocni_tools import uuid_Generator
 from pyocni.pyocni_tools.config import return_code
+from pyocni.registry.pathManager import PathManager
 
-class SingleCategoryInterface(object):
+# getting the Logger
+logger = config.logger
 
-    def __init__(self,req):
-
-        self.req = req
-        self.res = Response()
-        self.res.content_type = req.accept
-        self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
-        try:
-            self.manager = SingleCategoryManager()
-        except Exception:
-            self.res.body = "An error has occurred, please check log for more details"
-            self.res.status_code = return_code["Internal Server Error"]
-
-    def put(self):
-       pass
+class BackendManager(object):
+    pass

@@ -710,6 +710,7 @@ class MultiEntityManager(object):
             logger.error("get all multi entities : " + e.message)
             return "An error has occurred, please check log for more details",return_code['Internal Server Error']
         if query.count() is 0:
+            # Retrieve the state of the name space hierarchy
             logger.error("get all multi entities  : this is a get on a path " + url_path)
             var, resp_code = self.manager_p.channel_get_on_path(user,req_path,jreq)
             return var, resp_code
@@ -1085,23 +1086,25 @@ class SingleEntityManager(object):
             logger.error("Get single: No such entity was found" )
             return "An error has occured, please check logs for more details", return_code['Not Found']
         else:
-            return query.first()['value'],return_code['OK']
+            if query.first()['value'][0] == "Resource":
+                res = { "resources": [query.first()['value'][1]]}
+            else:
+                res = { "links": [query.first()['value'][1]]}
+            return res,return_code['OK']
 
     def channel_post_single(self, user_id, jBody, path_url):
         """
-        Creates a new resource of performs a full description update of the resource
+        Performs a partial description update of the resource
         Args:
             @param user_id: Issuer of the request
             @param jBody: Data contained in the request body
             @param path_url: URL of the request
         """
-
-        #Verify the uniqueness of the URL request
         database = config.prepare_PyOCNI_db()
         try:
             query = database.view('/db_views/for_register_entities')
         except Exception as e:
-            logger.error("put single : " + e.message)
+            logger.error("post single : " + e.message)
             return "An error has occurred, please check log for more details",return_code['Internal Server Error']
         db_occi_ids_locs = list()
         for q in query:
@@ -1110,7 +1113,7 @@ class SingleEntityManager(object):
         try:
             query2 = database.view('/db_views/for_update_entities',key=[path_url,user_id])
         except Exception as e:
-            logger.error("put single : " + e.message)
+            logger.error("post single : " + e.message)
             return "An error has occurred, please check logs for more details",return_code['Internal Server Error']
         if query2.count() is 0:
             logger.error("Part Entity Update: No such entity")
@@ -1135,6 +1138,7 @@ class SingleEntityManager(object):
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
             old_doc['OCCI_Description'] = entity
             database.save_doc(old_doc,force_update=True, all_or_nothing=True)
+
             #return the locations of the resources
             return old_doc['OCCI_ID'],return_code['OK, and location returned']
 
@@ -1297,7 +1301,7 @@ def trigger_action_on_a_resource(path_url,action,provider):
     else:
         logger.error("trigger action_on_resource : Unknown provider")
         return " An error has occurred, please check logs for more details", return_code['Not Found']
-    backend.action(path_url,action)
+    response = backend.action(path_url,action)
     return "", return_code['OK']
 
 def trigger_action_on_multi_resource(data):

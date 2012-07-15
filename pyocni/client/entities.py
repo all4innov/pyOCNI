@@ -179,3 +179,32 @@ provider_up = """
         ]
     }
 }"""
+
+
+trig_action = """
+{
+    "actions": [
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Start Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpion|poweron",
+                    "default": "poweron"
+                }
+            }
+        }
+    ]
+}
+"""
+
+entity_http = "Category:compute; scheme=\"http://schemas.ogf.org/occi/infrastructure#\"; class=\"kind\";"\
+      "Category: my_stuff; scheme=\"http://example.com/occi/my_stuff#\"; class=\"mixin\";"\
+      "X-OCCI-Attribute: occi.compute.cores=2"\
+      "X-OCCI-Attribute: occi.compute.hostname=\"foobar\""\
+      "Link: </users/foo/compute/b9ff813e-fee5-4a9d-b839-673f39746096?action=start>;"\
+      "rel=\"http://schemas.ogf.org/occi/infrastructure/compute/action#start\""
