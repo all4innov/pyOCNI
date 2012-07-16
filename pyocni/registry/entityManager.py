@@ -26,17 +26,21 @@ Created on Jun 12, 2012
 @version: 0.3
 @license: LGPL - Lesser General Public License
 """
-from pyocni.backend import dummy_backend,l3vpn_backend,libnetvirt_backend,openflow_backend,opennebula_backend,openstack_backend
+
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.occi_Joker as joker
-try:
-    import simplejson as json
-except ImportError:
-    import json
+import pyocni.registry.backendManager as backend_m
+
+
 from datetime import datetime
 from pyocni.pyocni_tools import uuid_Generator
 from pyocni.pyocni_tools.config import return_code
 from pyocni.registry.pathManager import PathManager
+
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 # getting the Logger
 logger = config.logger
@@ -322,7 +326,7 @@ class ResourceManager(object):
                     problems,updated_data = joker.update_occi_entity_description(old_data,occi_description)
                     if problems is False:
                         logger.debug("Up partial resource: Resource sent for update")
-                        return updated_data,exist_links,return_code['OK']
+                        return updated_data,exist_links,return_code['OK, and location returned']
                     else:
                         logger.error("Up partial resource: Resource couldn't have been fully updated")
                         return updated_data,False,return_code['Conflict']
@@ -649,6 +653,9 @@ class MultiEntityManager(object):
 
             entities = new_resources + new_links
             database.save_docs(entities,use_uuids=True, all_or_nothing=True)
+
+            backend_m.create_entities(entities)
+
             locations = list()
             for item in entities:
                 locations.append(item['OCCI_Location'])
@@ -686,12 +693,14 @@ class MultiEntityManager(object):
                 updated_entities,resp_code_e = associate_entities_to_a_mixin(mix_id,db_docs)
             else:
                 updated_entities = list()
-                resp_code_e = return_code['OK']
+                resp_code_e = return_code['Not Found']
 
             if resp_code_e is not return_code['OK']:
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
 
             database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
+
+            backend_m.update_entities(db_docs,updated_entities)
             return "",return_code['OK']
 
     def channel_get_all_entities(self,req_path,user,jreq):
@@ -715,11 +724,14 @@ class MultiEntityManager(object):
             var, resp_code = self.manager_p.channel_get_on_path(user,req_path,jreq)
             return var, resp_code
         else:
+
+            occi_descriptions = list()
             q = query.first()
             if q['value'][1] == "Kind":
                 try:
                     kind_id = q['value'][0]
                     entities = database.view('/db_views/entities_of_kind',key = kind_id)
+
                 except Exception as e:
                     logger.error("get all multi entities : " + e.message)
                     return "An error has occurred, please check log for more details",return_code['Internal Server Error']
@@ -730,17 +742,30 @@ class MultiEntityManager(object):
                 except Exception as e:
                     logger.error("get all multi entities : " + e.message)
                     return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
             else:
                 logger.error("get all multi entities : Unknown " + q['value'][1])
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
         to_return_res = list()
         to_return_link = list()
+
         for entity in entities:
+            try:
+                res = database.view('/db_views/my_resources',key = [entity['value'][0],user])
+                occi_descriptions.append(res['value'][1])
+            except Exception as e:
+                logger.error("get all multi entities : " + e.message)
+                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
+        for entity in entities:
+
             if entity['value'][1] == "Resource":
                 to_return_res.append(entity['value'][0])
             else:
                 to_return_link.append((entity['value'][0]))
+
         result = to_return_res + to_return_link
+        backend_m.read_entities(occi_descriptions)
         return result,return_code['OK']
 
     def channel_get_filtered_entities(self,req_path,user,terms):
@@ -786,6 +811,15 @@ class MultiEntityManager(object):
                     return "An error has occurred, please check log for more details",return_code['Bad Request']
 
                 result = filtered_res + filtered_links
+                occi_descriptions = list()
+                for item in result:
+                    try:
+                        res = database.view('/db_views/my_resources',key = [item,user])
+                        occi_descriptions.append(res['value'][1])
+                    except Exception as e:
+                        logger.error("get all multi entities : " + e.message)
+                        return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+                backend_m.read_entities(occi_descriptions)
                 return result,return_code['OK']
             else:
                 return entities,ok
@@ -845,6 +879,7 @@ class MultiEntityManager(object):
             return "An error has occurred, please check log for more details",return_code['Bad Request']
 
         database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
+        backend_m.update_entities(db_docs,updated_entities)
         return "",return_code['OK']
 
     def channel_delete_multi(self, user_id, jreq, req_url):
@@ -900,6 +935,7 @@ class MultiEntityManager(object):
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
 
             database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
+            backend_m.update_entities(db_docs,updated_entities)
             return "",return_code['OK']
 
     def channel_trigger_actions(self, user_id, jBody, req_url, triggered_action):
@@ -978,7 +1014,8 @@ class MultiEntityManager(object):
                         logger.error("Trig action : No provider was found")
                         return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
-            res,res_code = trigger_action_on_multi_resource(to_send)
+            backend_m.trigger_action_on_multi_resource(to_send)
+            return "",return_code['OK']
 
 
 
@@ -1039,13 +1076,14 @@ class SingleEntityManager(object):
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
 
             database.save_doc(entity,use_uuids=True, all_or_nothing=True)
-
+            backend_m.create_entity(entity)
             #return the locations of the resources
             return entity['OCCI_Location'],return_code['OK, and location returned']
         else:
             try:
                 query2 = database.view('/db_views/for_update_entities',key=[path_url,user_id])
                 to_update = query2.first()['value']
+                old_data = to_update['OCCI_Description']
             except Exception as e:
                 logger.error("put single : " + e.message)
                 return "An error has occurred, please check logs for more details",return_code['Internal Server Error']
@@ -1064,9 +1102,13 @@ class SingleEntityManager(object):
 
             if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
+
             to_update['OCCI_Description'] = entity
             database.save_doc(to_update,force_update=True, all_or_nothing=True)
+
             #return the locations of the resources
+
+            backend_m.update_entity(old_data,entity)
             return to_update['OCCI_Location'],return_code['OK, and location returned']
 
     def channel_get_single(self, user_id, path_url):
@@ -1090,6 +1132,10 @@ class SingleEntityManager(object):
                 res = { "resources": [query.first()['value'][1]]}
             else:
                 res = { "links": [query.first()['value'][1]]}
+
+            entity = query.first()['value'][1]
+
+            backend_m.read_entity(entity,entity['kind'])
             return res,return_code['OK']
 
     def channel_post_single(self, user_id, jBody, path_url):
@@ -1120,6 +1166,8 @@ class SingleEntityManager(object):
             return "An error has occurred, please check logs for more details",return_code['Not Found']
         else:
             old_doc = query2.first()['value']
+            old_data = old_doc['OCCI_Description']
+            entity = dict()
             #This is an update of a resource
             if jBody.has_key('resources'):
                 logger.debug("Put single : update resource channeled")
@@ -1134,13 +1182,16 @@ class SingleEntityManager(object):
             else:
                 resp_code_l = return_code['OK, and location returned']
 
+            print resp_code_r
             if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
+
             old_doc['OCCI_Description'] = entity
             database.save_doc(old_doc,force_update=True, all_or_nothing=True)
 
+            backend_m.update_entity(old_data,entity)
             #return the locations of the resources
-            return old_doc['OCCI_ID'],return_code['OK, and location returned']
+            return old_doc['OCCI_Location'],return_code['OK, and location returned']
 
     def channel_delete_single(self, user_id, path_url):
         """
@@ -1160,6 +1211,12 @@ class SingleEntityManager(object):
             return "An error has occurred, please check log for more details", return_code['Not Found']
         else:
             database.delete_doc(query.first()['value'])
+
+            #get the kind to get the provider
+            entity = query.first()['value']['OCCI_Description']
+
+            #send the request to the appropriate provider
+            backend_m.delete_entity(entity,entity['kind'])
             logger.debug("Delete single: Resource " + path_url + " is deleted ")
             return "",return_code['OK']
 
@@ -1204,8 +1261,8 @@ class SingleEntityManager(object):
                     break
 
             if provider is not None:
-                resp, resp_code = trigger_action_on_a_resource(path_url,jBody['action'][0],provider['local'])
-                return resp,resp_code
+                resp, resp_code = backend_m.trigger_action_on_a_resource(path_url,jBody['action'][0],provider['local'][0])
+                return resp,return_code['OK']
             else:
                 logger.error("Trig action : No provider was found")
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
@@ -1278,38 +1335,5 @@ def dissociate_entities_from_a_mixin(mix_id, db_docs):
         logger.debug("Dissociate mixin : Mixin description problem")
         return list(),return_code['Not Found']
 
-def trigger_action_on_a_resource(path_url,action,provider):
-    """
-    Send the action triggering request to the appropriate provider
-     Args:
-        @param path_url: Resource URL Path
-        @param action: Action description
-        @param provider: Provider of the resource
-    """
-    if provider == "dummy":
-        backend = dummy_backend()
-    elif provider == "l3vpn":
-        backend = l3vpn_backend()
-    elif provider == "libnetvirt":
-        backend = libnetvirt_backend()
-    elif provider == "openflow":
-        backend = openflow_backend()
-    elif provider == "opennebula":
-        backend = opennebula_backend()
-    elif provider == "openstack":
-        backend = openstack_backend()
-    else:
-        logger.error("trigger action_on_resource : Unknown provider")
-        return " An error has occurred, please check logs for more details", return_code['Not Found']
-    response = backend.action(path_url,action)
-    return "", return_code['OK']
 
-def trigger_action_on_multi_resource(data):
-    """
-    Trigger the action on multiple resource
-    Args:
-        @param data: Data provided for triggering the action
-    """
-    for item in data:
-        trigger_action_on_a_resource(item['resource_url'],item['action'],item['provider'])
-    return "",return_code['OK']
+

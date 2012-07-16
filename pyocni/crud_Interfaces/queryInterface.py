@@ -70,10 +70,12 @@ class QueryInterface(object):
         jreq = ""
         if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
-            jreq = self.from_text_plain_f.format_text_plain_categories_to_json(self.req.body)
+            if jreq != "":
+                jreq = self.from_text_plain_f.format_text_plain_categories_to_json(self.req.body)
 
         elif self.req.content_type == "text/occi":
-            jreq = self.from_text_occi_f.format_text_occi_categories_to_json(self.req.headers)
+            if jreq != "":
+                jreq = self.from_text_occi_f.format_text_occi_categories_to_json(self.req.headers)
 
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
@@ -81,7 +83,8 @@ class QueryInterface(object):
 
         elif self.req.content_type == "application/occi+json":
             #Validate the JSON message
-            jreq = json.loads(self.req.body)
+            if jreq != "":
+                jreq = json.loads(self.req.body)
 
         else:
             self.res.status_code = return_code['Not Acceptable']
@@ -194,7 +197,7 @@ class QueryInterface(object):
 
         """
         #Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
-
+        jBody =""
         if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
             jBody = self.from_text_plain_f.format_text_plain_categories_to_json(self.req.body)
