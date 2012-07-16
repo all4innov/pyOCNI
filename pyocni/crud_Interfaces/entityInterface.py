@@ -158,6 +158,8 @@ class SingleEntityInterface(object):
         """
         Perform a partial update of a resource
         """
+        if self.req.params.has_key('action'):
+            self.triggered_action = self.req.params['action']
 
         #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
         jBody = ""
@@ -208,6 +210,7 @@ class SingleEntityInterface(object):
                 self.res.body = var
 
         else:
+            print self.triggered_action
             self.res.body,self.res.status_code = self.manager.channel_triggered_action_single(user_id,jBody,self.path_url,self.triggered_action)
 
         return self.res

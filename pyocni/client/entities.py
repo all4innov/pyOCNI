@@ -121,7 +121,7 @@ part_resource ="""
 {
     "resources": [{
 
-            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+
             "title": "Compute resource ????",
             "summary": "This is a compute resource"
         }
@@ -170,15 +170,7 @@ post_resources_link= """{
 }
 """
 
-provider_up = """
-{
-    "Providers": {
-        "remote": [],
-        "local": [
-            "dummy"
-        ]
-    }
-}"""
+
 
 
 trig_action = """
