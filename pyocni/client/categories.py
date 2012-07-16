@@ -156,5 +156,39 @@ def get_kind(guid):
                 "}"\
 
     return post_kind
+
+put_provider ="""
+    {
+    "providers": [
+            {
+            "Provider": {
+                "local": [
+                    "dummy"
+                ],
+                "remote": [
+                    "Bilel"
+                ]
+            },
+            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#compute"
+        }
+    ]
+}
+"""
+
+provider_up = """
+{
+    "Providers": {
+        "remote": [],
+        "local": [
+            "dummy"
+        ]
+    }
+}"""
 #======================================================================================================================
 
+post_http_categories = "Category : my_stuff;\"" \
+                    "scheme=\"http://example.com/occi/my_stuff#\";"\
+                   "class=\"mixin\";"\
+                   "title=\"Storage Resource\";"\
+                   "location=\"/my_stuff/\";"\
+                   "attributes=\"occi.storage.size{required} occi.storage.state{immutable}\";"\

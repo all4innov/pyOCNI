@@ -139,7 +139,7 @@ def prepare_PyOCNI_db():
             },
             "my_resources":{
                 "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                       "emit ([doc.OCCI_Location,doc.Creator],doc.OCCI_Description) });"
+                       "emit ([doc.OCCI_Location,doc.Creator],[doc.Type, doc.OCCI_Description]) });"
             },
             "for_delete_entities" :{
                 "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
