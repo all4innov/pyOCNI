@@ -3,6 +3,8 @@
 ==========================================================
 
 :Version: 0.3
+:Source: https://github.com/jordan-developer/PyOCNI
+:Keywords: OCNI, OCCI, REST, Interface, HTTP, JSON, CouchDB, Eventlet, Webob, Cloud Computing, Cloud Networking
 
 Developers
 ==========
