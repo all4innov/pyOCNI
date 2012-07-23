@@ -27,6 +27,52 @@ Created on Jun 19, 2012
 @license: LGPL - Lesser General Public License
 """
 import pyocni.pyocni_tools.uuid_Generator as uuid
+
+def get_a_kind():
+
+    guid = uuid.get_UUID()
+
+    create_kind =\
+        "{"\
+        "\"kinds\": ["\
+                "{"\
+                "\"term\": \"compute" + guid +"\","\
+                """
+                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                "title": "Compute Resource",
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "hostname": {
+                                "mutable": true,
+                                "required": false,
+                                "type": "string",
+                                "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                                "minimum": "1",
+                                "maximum": "255"
+                            },
+                            "state": {
+                                "mutable": false,
+                                "required": false,
+                                "type": "string",
+                                "pattern": "inactive|active|suspended|failed",
+                                "default": "inactive"
+                            }
+                        }
+                    }
+                },
+                "actions": [
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#stop"
+                ],
+                """ \
+                "\"location\": \"/compute"+ guid +"/\""\
+            "}"\
+        "]"\
+    "}"
+    return create_kind
+
+
 post_categories ="""
 {
     "kinds": [
@@ -118,44 +164,7 @@ post_categories ="""
     ]
 }
 """
-def get_kind(guid):
-    post_kind ="{"\
-        "\"kinds\": ["\
-                "{"\
-                "\"term\": \"compute" + str(guid) +"\","\
-                "\"scheme\": \"http://schemas.ogf.org/occi/infrastructure#\","\
-                "\"title\": \"Compute Resource\","\
-                "\"attributes\": {"\
-                "\"occi\": {"\
-                "\"compute\": {"\
-                "\"hostname\": {"\
-                "\"mutable\": true,"\
-                "\"required\": false,"\
-                "\"type\": \"string\","\
-                "\"pattern\": \"(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*\","\
-                "\"minimum\": \"1\","\
-                "\"maximum\": \"255\""\
-                "},"\
-                "\"state\": {"\
-                "\"mutable\": false,"\
-                "\"required\": false,"\
-                "\"type\": \"string\","\
-                "\"pattern\": \"inactive|active|suspended|failed\","\
-                "\"default\": \"inactive\""\
-                "}"\
-                "}"\
-                "}"\
-                "},"\
-                "\"actions\": ["\
-                "\"http://schemas.ogf.org/occi/infrastructure/compute/action#start\","\
-                "\"http://schemas.ogf.org/occi/infrastructure/compute/action#stop\""\
-                "],"\
-                "\"location\": \"/compute" + str(guid) + "/\""\
-                "}"\
-                "]"\
-                "}"\
 
-    return post_kind
 
 put_provider ="""
     {
@@ -184,6 +193,41 @@ provider_up = """
         ]
     }
 }"""
+post_actions =\
+            """
+            {
+                "actions": [
+        {
+            "term": "stop",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Stop Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpioff|poweroff",
+                    "default": "poweroff"
+                }
+            }
+        },
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Start Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpion|poweron",
+                    "default": "poweron"
+                }
+            }
+        }
+    ]
+}
+"""
 #======================================================================================================================
 
 post_http_categories = "Category : my_stuff;\"" \

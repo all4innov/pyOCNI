@@ -92,7 +92,7 @@ This software needs this packages to run:
 -------------------
 ::
 
-   python start.py
+   sudo python start.py
 
 4. HowTo use (examples. The json files are at the end of this README)
 =====================================================================
