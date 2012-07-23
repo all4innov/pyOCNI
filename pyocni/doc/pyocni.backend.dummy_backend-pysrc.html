@@ -85,7 +85,7 @@
 <a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line"><tt class="py-docstring">@author: Houssem Medhioub</tt> </tt>
 <a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"><tt class="py-docstring">@contact: houssem.medhioub@it-sudparis.eu</tt> </tt>
 <a name="L23"></a><tt class="py-lineno">23</tt>  <tt class="py-line"><tt class="py-docstring">@organization: Institut Mines-Telecom - Telecom SudParis</tt> </tt>
-<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-docstring">@version: 0.1</tt> </tt>
+<a name="L24"></a><tt class="py-lineno">24</tt>  <tt class="py-line"><tt class="py-docstring">@version: 0.3</tt> </tt>
 <a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line"><tt class="py-docstring">@license: LGPL - Lesser General Public License</tt> </tt>
 <a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
 <a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line"> </tt>
@@ -97,11 +97,182 @@ pyocni.backend.backend
 pyocni.backend.backend.backend" class="py-name" href="#" onclick="return doclink('link-2', 'backend', 'link-1');">backend</a></tt> <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name"><a title="pyocni.backend
 pyocni.backend.backend
 pyocni.backend.backend.backend" class="py-name" href="#" onclick="return doclink('link-3', 'backend', 'link-1');">backend</a></tt> </tt>
-<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"> </tt>
-<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"> </tt>
-<a name="dummy_backend"></a><div id="dummy_backend-def"><a name="L32"></a><tt class="py-lineno">32</tt> <a class="py-toggle" href="#" id="dummy_backend-toggle" onclick="return toggle('dummy_backend');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.backend.dummy_backend.dummy_backend-class.html">dummy_backend</a><tt class="py-op">(</tt><tt class="py-base-class">backend</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="dummy_backend-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="dummy_backend-expanded"><a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">    <tt class="py-keyword">pass</tt> </tt>
-</div><a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-4" class="py-name"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-4', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Package pyocni.pyocni_tools=pyocni.pyocni_tools-module.html"><a title="pyocni.pyocni_tools" class="py-name" href="#" onclick="return doclink('link-5', 'pyocni_tools', 'link-5');">pyocni_tools</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module pyocni.pyocni_tools.config=pyocni.pyocni_tools.config-module.html,Variable pyocni.pyocni_tools.config.config=pyocni.pyocni_tools.config-module.html#config"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-6', 'config', 'link-6');">config</a></tt> <tt class="py-keyword">as</tt> <tt id="link-7" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-7', 'config', 'link-6');">config</a></tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line"><tt class="py-comment"># getting the Logger</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line"><tt id="link-8" class="py-name" targets="Variable pyocni.backend.backend.logger=pyocni.backend.backend-module.html#logger,Variable pyocni.backend.dummy_backend.logger=pyocni.backend.dummy_backend-module.html#logger,Variable pyocni.backend.l3vpn_backend.logger=pyocni.backend.l3vpn_backend-module.html#logger,Variable pyocni.backend.libnetvirt_backend.logger=pyocni.backend.libnetvirt_backend-module.html#logger,Variable pyocni.backend.openflow_backend.logger=pyocni.backend.openflow_backend-module.html#logger,Variable pyocni.backend.opennebula_backend.logger=pyocni.backend.opennebula_backend-module.html#logger,Variable pyocni.backend.openstack_backend.logger=pyocni.backend.openstack_backend-module.html#logger,Variable pyocni.client.Tests.server_Mock.logger=pyocni.client.Tests.server_Mock-module.html#logger,Variable pyocni.ocni_server.logger=pyocni.ocni_server-module.html#logger,Variable pyocni.pyocni_tools.config.logger=pyocni.pyocni_tools.config-module.html#logger,Variable pyocni.pyocni_tools.couchdbdoc_Joker.logger=pyocni.pyocni_tools.couchdbdoc_Joker-module.html#logger,Variable pyocni.pyocni_tools.occi_Joker.logger=pyocni.pyocni_tools.occi_Joker-module.html#logger,Variable pyocni.registry.backendManager.logger=pyocni.registry.backendManager-module.html#logger,Variable pyocni.registry.categoryManager.logger=pyocni.registry.categoryManager-module.html#logger,Variable pyocni.registry.entityManager.logger=pyocni.registry.entityManager-module.html#logger,Variable pyocni.registry.locationManager.logger=pyocni.registry.locationManager-module.html#logger,Variable pyocni.registry.pathManager.logger=pyocni.registry.pathManager-module.html#logger,Variable pyocni.registry.registry.logger=pyocni.registry.registry-module.html#logger,Variable pyocni.serialization.serializer_http.logger=pyocni.serialization.serializer_http-module.html#logger"><a title="pyocni.backend.backend.logger
+pyocni.backend.dummy_backend.logger
+pyocni.backend.l3vpn_backend.logger
+pyocni.backend.libnetvirt_backend.logger
+pyocni.backend.openflow_backend.logger
+pyocni.backend.opennebula_backend.logger
+pyocni.backend.openstack_backend.logger
+pyocni.client.Tests.server_Mock.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.registry.backendManager.logger
+pyocni.registry.categoryManager.logger
+pyocni.registry.entityManager.logger
+pyocni.registry.locationManager.logger
+pyocni.registry.pathManager.logger
+pyocni.registry.registry.logger
+pyocni.serialization.serializer_http.logger" class="py-name" href="#" onclick="return doclink('link-8', 'logger', 'link-8');">logger</a></tt> <tt class="py-op">=</tt> <tt id="link-9" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-9', 'config', 'link-6');">config</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name"><a title="pyocni.backend.backend.logger
+pyocni.backend.dummy_backend.logger
+pyocni.backend.l3vpn_backend.logger
+pyocni.backend.libnetvirt_backend.logger
+pyocni.backend.openflow_backend.logger
+pyocni.backend.opennebula_backend.logger
+pyocni.backend.openstack_backend.logger
+pyocni.client.Tests.server_Mock.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.registry.backendManager.logger
+pyocni.registry.categoryManager.logger
+pyocni.registry.entityManager.logger
+pyocni.registry.locationManager.logger
+pyocni.registry.pathManager.logger
+pyocni.registry.registry.logger
+pyocni.serialization.serializer_http.logger" class="py-name" href="#" onclick="return doclink('link-10', 'logger', 'link-8');">logger</a></tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line"> </tt>
+<a name="dummy_backend"></a><div id="dummy_backend-def"><a name="L34"></a><tt class="py-lineno">34</tt> <a class="py-toggle" href="#" id="dummy_backend-toggle" onclick="return toggle('dummy_backend');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.backend.dummy_backend.dummy_backend-class.html">dummy_backend</a><tt class="py-op">(</tt><tt class="py-base-class">backend</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="dummy_backend-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="dummy_backend-expanded"><a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line"> </tt>
+<a name="dummy_backend.create"></a><div id="dummy_backend.create-def"><a name="L36"></a><tt class="py-lineno">36</tt> <a class="py-toggle" href="#" id="dummy_backend.create-toggle" onclick="return toggle('dummy_backend.create');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.backend.dummy_backend.dummy_backend-class.html#create">create</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">entity</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="dummy_backend.create-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="dummy_backend.create-expanded"><a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">        <tt class="py-docstring">'''</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line"><tt class="py-docstring">        Create an entity (Resource or Link)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt id="link-11" class="py-name"><a title="pyocni.backend.backend.logger
+pyocni.backend.dummy_backend.logger
+pyocni.backend.l3vpn_backend.logger
+pyocni.backend.libnetvirt_backend.logger
+pyocni.backend.openflow_backend.logger
+pyocni.backend.opennebula_backend.logger
+pyocni.backend.openstack_backend.logger
+pyocni.client.Tests.server_Mock.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.registry.backendManager.logger
+pyocni.registry.categoryManager.logger
+pyocni.registry.entityManager.logger
+pyocni.registry.locationManager.logger
+pyocni.registry.pathManager.logger
+pyocni.registry.registry.logger
+pyocni.serialization.serializer_http.logger" class="py-name" href="#" onclick="return doclink('link-11', 'logger', 'link-8');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">'The create operation of the dummy_backend'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line"> </tt>
+<a name="dummy_backend.read"></a><div id="dummy_backend.read-def"><a name="L45"></a><tt class="py-lineno">45</tt> <a class="py-toggle" href="#" id="dummy_backend.read-toggle" onclick="return toggle('dummy_backend.read');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.backend.dummy_backend.dummy_backend-class.html#read">read</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">entity</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="dummy_backend.read-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="dummy_backend.read-expanded"><a name="L46"></a><tt class="py-lineno">46</tt>  <tt class="py-line">        <tt class="py-docstring">'''</tt> </tt>
+<a name="L47"></a><tt class="py-lineno">47</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L48"></a><tt class="py-lineno">48</tt>  <tt class="py-line"><tt class="py-docstring">        Get the Entity's information</tt> </tt>
+<a name="L49"></a><tt class="py-lineno">49</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L50"></a><tt class="py-lineno">50</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L51"></a><tt class="py-lineno">51</tt>  <tt class="py-line">        <tt id="link-12" class="py-name"><a title="pyocni.backend.backend.logger
+pyocni.backend.dummy_backend.logger
+pyocni.backend.l3vpn_backend.logger
+pyocni.backend.libnetvirt_backend.logger
+pyocni.backend.openflow_backend.logger
+pyocni.backend.opennebula_backend.logger
+pyocni.backend.openstack_backend.logger
+pyocni.client.Tests.server_Mock.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.registry.backendManager.logger
+pyocni.registry.categoryManager.logger
+pyocni.registry.entityManager.logger
+pyocni.registry.locationManager.logger
+pyocni.registry.pathManager.logger
+pyocni.registry.registry.logger
+pyocni.serialization.serializer_http.logger" class="py-name" href="#" onclick="return doclink('link-12', 'logger', 'link-8');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">'The read operation of the dummy_backend'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L52"></a><tt class="py-lineno">52</tt>  <tt class="py-line"> </tt>
+<a name="dummy_backend.update"></a><div id="dummy_backend.update-def"><a name="L53"></a><tt class="py-lineno">53</tt> <a class="py-toggle" href="#" id="dummy_backend.update-toggle" onclick="return toggle('dummy_backend.update');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.backend.dummy_backend.dummy_backend-class.html#update">update</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">old_entity</tt><tt class="py-op">,</tt> <tt class="py-param">new_entity</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="dummy_backend.update-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="dummy_backend.update-expanded"><a name="L54"></a><tt class="py-lineno">54</tt>  <tt class="py-line">        <tt class="py-docstring">'''</tt> </tt>
+<a name="L55"></a><tt class="py-lineno">55</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L56"></a><tt class="py-lineno">56</tt>  <tt class="py-line"><tt class="py-docstring">        Update an Entity's information</tt> </tt>
+<a name="L57"></a><tt class="py-lineno">57</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L58"></a><tt class="py-lineno">58</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L59"></a><tt class="py-lineno">59</tt>  <tt class="py-line">        <tt id="link-13" class="py-name"><a title="pyocni.backend.backend.logger
+pyocni.backend.dummy_backend.logger
+pyocni.backend.l3vpn_backend.logger
+pyocni.backend.libnetvirt_backend.logger
+pyocni.backend.openflow_backend.logger
+pyocni.backend.opennebula_backend.logger
+pyocni.backend.openstack_backend.logger
+pyocni.client.Tests.server_Mock.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.registry.backendManager.logger
+pyocni.registry.categoryManager.logger
+pyocni.registry.entityManager.logger
+pyocni.registry.locationManager.logger
+pyocni.registry.pathManager.logger
+pyocni.registry.registry.logger
+pyocni.serialization.serializer_http.logger" class="py-name" href="#" onclick="return doclink('link-13', 'logger', 'link-8');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">'The update operation of the dummy_backend'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L60"></a><tt class="py-lineno">60</tt>  <tt class="py-line"> </tt>
+<a name="dummy_backend.delete"></a><div id="dummy_backend.delete-def"><a name="L61"></a><tt class="py-lineno">61</tt> <a class="py-toggle" href="#" id="dummy_backend.delete-toggle" onclick="return toggle('dummy_backend.delete');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.backend.dummy_backend.dummy_backend-class.html#delete">delete</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">entity</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="dummy_backend.delete-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="dummy_backend.delete-expanded"><a name="L62"></a><tt class="py-lineno">62</tt>  <tt class="py-line">        <tt class="py-docstring">'''</tt> </tt>
+<a name="L63"></a><tt class="py-lineno">63</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L64"></a><tt class="py-lineno">64</tt>  <tt class="py-line"><tt class="py-docstring">        Delete an Entity</tt> </tt>
+<a name="L65"></a><tt class="py-lineno">65</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L66"></a><tt class="py-lineno">66</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L67"></a><tt class="py-lineno">67</tt>  <tt class="py-line">        <tt id="link-14" class="py-name"><a title="pyocni.backend.backend.logger
+pyocni.backend.dummy_backend.logger
+pyocni.backend.l3vpn_backend.logger
+pyocni.backend.libnetvirt_backend.logger
+pyocni.backend.openflow_backend.logger
+pyocni.backend.opennebula_backend.logger
+pyocni.backend.openstack_backend.logger
+pyocni.client.Tests.server_Mock.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.registry.backendManager.logger
+pyocni.registry.categoryManager.logger
+pyocni.registry.entityManager.logger
+pyocni.registry.locationManager.logger
+pyocni.registry.pathManager.logger
+pyocni.registry.registry.logger
+pyocni.serialization.serializer_http.logger" class="py-name" href="#" onclick="return doclink('link-14', 'logger', 'link-8');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">'The delete operation of the dummy_backend'</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L68"></a><tt class="py-lineno">68</tt>  <tt class="py-line"> </tt>
+<a name="dummy_backend.action"></a><div id="dummy_backend.action-def"><a name="L69"></a><tt class="py-lineno">69</tt> <a class="py-toggle" href="#" id="dummy_backend.action-toggle" onclick="return toggle('dummy_backend.action');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.backend.dummy_backend.dummy_backend-class.html#action">action</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">entity</tt><tt class="py-op">,</tt> <tt class="py-param">action</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="dummy_backend.action-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="dummy_backend.action-expanded"><a name="L70"></a><tt class="py-lineno">70</tt>  <tt class="py-line">        <tt class="py-docstring">'''</tt> </tt>
+<a name="L71"></a><tt class="py-lineno">71</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L72"></a><tt class="py-lineno">72</tt>  <tt class="py-line"><tt class="py-docstring">        Perform an action on an Entity</tt> </tt>
+<a name="L73"></a><tt class="py-lineno">73</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L74"></a><tt class="py-lineno">74</tt>  <tt class="py-line"><tt class="py-docstring">        '''</tt> </tt>
+<a name="L75"></a><tt class="py-lineno">75</tt>  <tt class="py-line">        <tt id="link-15" class="py-name"><a title="pyocni.backend.backend.logger
+pyocni.backend.dummy_backend.logger
+pyocni.backend.l3vpn_backend.logger
+pyocni.backend.libnetvirt_backend.logger
+pyocni.backend.openflow_backend.logger
+pyocni.backend.opennebula_backend.logger
+pyocni.backend.openstack_backend.logger
+pyocni.client.Tests.server_Mock.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.registry.backendManager.logger
+pyocni.registry.categoryManager.logger
+pyocni.registry.entityManager.logger
+pyocni.registry.locationManager.logger
+pyocni.registry.pathManager.logger
+pyocni.registry.registry.logger
+pyocni.serialization.serializer_http.logger" class="py-name" href="#" onclick="return doclink('link-15', 'logger', 'link-8');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">'The Entity\'s action operation of the dummy_backend'</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L76"></a><tt class="py-lineno">76</tt>  <tt class="py-line"> </tt><script type="text/javascript">
 <!--
 expandto(location.href);
 // -->
@@ -139,7 +310,7 @@ expandto(location.href);
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Dec  1 19:36:00 2011
+    Generated by Epydoc 3.0.1 on Mon Jul 23 11:54:53 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

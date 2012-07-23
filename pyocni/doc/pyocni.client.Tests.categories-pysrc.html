@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>pyocni.client.Tests.categories</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >pyocni</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="pyocni-module.html">Package&nbsp;pyocni</a> ::
+        <a href="pyocni.client-module.html">Package&nbsp;client</a> ::
+        <a href="pyocni.client.Tests-module.html">Package&nbsp;Tests</a> ::
+        Module&nbsp;categories
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="pyocni.client.Tests.categories-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="pyocni.client.Tests.categories-module.html">Module pyocni.client.Tests.categories</a></h1>
+<pre class="py-src">
+# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+# Copyright (C) 2012 Bilel Msekni - Institut Mines-Telecom
+#
+# This library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+Created on Jun 19, 2012
+
+@author: Bilel Msekni
+@contact: bilel.msekni@telecom-sudparis.eu
+@author: Houssem Medhioub
+@contact: houssem.medhioub@it-sudparis.eu
+@organization: Institut Mines-Telecom - Telecom SudParis
+@version: 0.3
+@license: LGPL - Lesser General Public License
+"""
+import pyocni.pyocni_tools.uuid_Generator as uuid
+
+def get_a_kind():
+
+    guid = uuid.get_UUID()
+
+    create_kind =\
+        "{"\
+        "\"kinds\": ["\
+                "{"\
+                "\"term\": \"compute" + guid +"\","\
+                """
+                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                "title": "Compute Resource",
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "hostname": {
+                                "mutable": true,
+                                "required": false,
+                                "type": "string",
+                                "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                                "minimum": "1",
+                                "maximum": "255"
+                            },
+                            "state": {
+                                "mutable": false,
+                                "required": false,
+                                "type": "string",
+                                "pattern": "inactive|active|suspended|failed",
+                                "default": "inactive"
+                            }
+                        }
+                    }
+                },
+                "actions": [
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#stop"
+                ],
+                """ \
+                "\"location\": \"/compute"+ guid +"/\""\
+            "}"\
+        "]"\
+    "}"
+    return create_kind
+
+
+post_categories ="""
+{
+    "kinds": [
+        {
+            "term": "compute",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+            "title": "Compute Resource",
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "hostname": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                            "minimum": "1",
+                            "maximum": "255"
+                        },
+                        "state": {
+                            "mutable": false,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "inactive|active|suspended|failed",
+                            "default": "inactive"
+                        }
+                    }
+                }
+            },
+            "actions": [
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop"
+            ],
+            "location": "/compute/"
+        },
+        {
+            "term": "networkinterface",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+            "title": "networkinterface link",
+            "location": "/networkinterface/"
+        }
+    ],
+    "mixins": [
+        {
+            "term": "medium",
+            "scheme": "http://example.com/template/resource#",
+            "title": "Medium VM",
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "speed": {
+                            "type": "number",
+                            "default": 2.8
+                        }
+                    }
+                }
+            },
+            "location": "/template/resource/medium/"
+        }
+    ],
+    "actions": [
+        {
+            "term": "stop",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Stop Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpioff|poweroff",
+                    "default": "poweroff"
+                }
+            }
+        },
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Start Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpion|poweron",
+                    "default": "poweron"
+                }
+            }
+        }
+    ]
+}
+"""
+
+
+put_provider ="""
+    {
+    "providers": [
+            {
+            "Provider": {
+                "local": [
+                    "dummy"
+                ],
+                "remote": [
+                    "Bilel"
+                ]
+            },
+            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#compute"
+        }
+    ]
+}
+"""
+
+provider_up = """
+{
+    "Providers": {
+        "remote": [],
+        "local": [
+            "dummy"
+        ]
+    }
+}"""
+post_actions =\
+            """
+            {
+                "actions": [
+        {
+            "term": "stop",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Stop Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpioff|poweroff",
+                    "default": "poweroff"
+                }
+            }
+        },
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Start Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpion|poweron",
+                    "default": "poweron"
+                }
+            }
+        }
+    ]
+}
+"""
+#======================================================================================================================
+
+post_http_categories = "Category : my_stuff;\"" \
+                    "scheme=\"http://example.com/occi/my_stuff#\";"\
+                   "class=\"mixin\";"\
+                   "title=\"Storage Resource\";"\
+                   "location=\"/my_stuff/\";"\
+                   "attributes=\"occi.storage.size{required} occi.storage.state{immutable}\";"\
+<script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >pyocni</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Mon Jul 23 11:54:52 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

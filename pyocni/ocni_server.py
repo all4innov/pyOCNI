@@ -95,7 +95,6 @@ class ocni_server(object):
 
     """
 
-
     operationQuery = url_mapper.rest_controller(QueryInterface)
     operationSingleEntity = url_mapper.rest_controller(SingleEntityInterface)
     operationMultiEntity = url_mapper.rest_controller(MultiEntityInterface)
