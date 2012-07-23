@@ -1,0 +1,25 @@
+/*
+
+ =1= Multiple resources and links can be retrieved at the same time
+ =2= Resource and link descriptions MUST follow the OCCI JSON rendering draft resource and link description specifications
+ =2= If there is no filter, all resources and links below the path will be retrieved
+ =3= If there is a filter, it should containt only the object members described in the OCCI JSON rendering draft
+
+ */
+
+{
+    "resources": [
+        {
+            "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
+            "mixins": [
+                "http://example.com/template/resource#medium"
+            ]
+        }
+    ],
+    "links": [
+        {
+            "target": "http://127.0.0.1:8090/compute/996ad860-2a9a-504f-8861-aeafd0b2ae30",
+            "source": "http://127.0.0.1:8090/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29"
+        }
+    ]
+}

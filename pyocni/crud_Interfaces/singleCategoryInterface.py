@@ -1,6 +1,6 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-# Copyright (C) 2012 Bilel Msekni - Institut Mines-Telecom
+# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -16,30 +16,40 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-Created on May 29, 2012
+Created on Jun 19, 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
+@author: Houssem Medhioub
+@contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
-@version: 0.1
+@version: 0.3
 @license: LGPL - Lesser General Public License
 """
 
-import uuid
+from webob import Response
+from pyocni.registry.singleCategoryManager import SingleCategoryManager
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
+import base64
+from pyocni.pyocni_tools.config import return_code
 
-def get_UUID():
+class SingleCategoryInterface(object):
 
-    """
-    There are many ways to generate a uuid
-    This example is using the generate random uuid method
+    def __init__(self,req):
 
-    """
-    _uuid=None
-    _uuid=str(uuid.uuid4())
-    return _uuid
+        self.req = req
+        self.res = Response()
+        self.res.content_type = req.accept
+        self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
+        try:
+            self.manager = SingleCategoryManager()
+        except Exception:
+            self.res.body = "An error has occurred, please check log for more details"
+            self.res.status_code = return_code["Internal Server Error"]
 
-
-if __name__== "__main__":
-    _uuid=str(uuid.uuid4())
-    print "New UUID = "+_uuid
+    def put(self):
+       pass

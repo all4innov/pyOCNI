@@ -1,0 +1,16 @@
+/*
+
+ =1= Only one link can be updated at a same time
+ =2= Patial description MUST be provided
+ =3= Link description MUST follow the OCCI JSON rendering draft link description specifications
+ =4= kind and id are forbidden to change
+
+ */
+
+{
+    "links": [
+        {
+            "title": "Mynetworkinterface"
+        }
+    ]
+}

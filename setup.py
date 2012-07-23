@@ -7,7 +7,7 @@ def read(fname):
 setup(name='pyocni',
       author='Houssem Medhioub',
       author_email='houssem.medhioub@it-sudparis.eu',
-      version='0.1',
+      version='0.3',
       description='PyOCNI: A Python implementation of an extended OCCI with a JSON serialization',
       long_description=read('README'),
       url='http://www.example.com/pyocni',
@@ -32,7 +32,9 @@ setup(name='pyocni',
           'eventlet',
           'sphinx',
           'ZODB3',
-          'httplib2'
+          'httplib2',
+          'couchdb',
+          'couchdbkit'
           #'pack>=0.97',
           #'pack'
       ],

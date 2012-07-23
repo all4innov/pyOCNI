@@ -1,6 +1,6 @@
 # -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
 
-# Copyright (C) 2011 Houssem Medhioub - Institut Telecom
+# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
 #
 # This library is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as
@@ -20,8 +20,8 @@ Created on Feb 25, 2011
 
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
-@organization: Institut Telecom - Telecom SudParis
-@version: 0.1
+@organization: Institut Mines-Telecom - Telecom SudParis
+@version: 0.3
 @license: LGPL - Lesser General Public License
 """
 
@@ -35,13 +35,13 @@ if __name__ == '__main__':
     #h.add_credentials('name', 'password')
 
     #    ====== Retrieval of all registered Kinds and Mixins  ======
-    #    curl -X GET -H 'accept: application/json:occi' -v http://127.0.0.1:8090/-/
+        #curl -X GET -H 'accept: application/occi+json' -v http://127.0.0.1:8090/-/
 
     print ('========================================================================================================')
     print ('sending the request: Retrieval of all registered Kinds and Mixins...')
     resp, content = h.request('http://127.0.0.1:8090/-/',
                               'GET',
-                              headers={'content-type': 'application/json:occi', 'accept': 'application/json:occi'},
+                              headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
                               body='')
     print('********** The response header **********')
     pprint.pprint(resp)
@@ -49,12 +49,12 @@ if __name__ == '__main__':
     print(content)
 
     #    ================= Creation of Resource instance (Compute) =================
-    # curl -X POST -d@post_compute.json -H 'content-type: application/json:occi' -v http://157.159.249.133:8090/compute/
+    # curl -X POST -d@post_compute.json -H 'content-type: application/occi+json' -v http://157.159.249.133:8090/compute/
     #print ('========================================================================================================')
     #print ('sending the request: Creation of Resource instance (compute) ')
     #resp, content = h.request('http://157.159.249.33:8090/compute/',
     #                         'POST',
-    #                          headers={'content-type': 'application/json:occi', 'accept': 'application/json:occi'},
+    #                          headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
     #                          body='''
 #    {
 #        "kind": {
@@ -84,12 +84,12 @@ if __name__ == '__main__':
 #    print(content)
 #
 #    #    ================= Creation of Resource instance (network) with ipnetwork mixin  =================
-#    #    curl -X POST -d@post_network_ipnetwork.json -H 'content-type: application/json:occi' -v http://157.159.249.133:8090/network/
+#    #    curl -X POST -d@post_network_ipnetwork.json -H 'content-type: application/occi+json' -v http://157.159.249.133:8090/network/
 #    print ('========================================================================================================')
 #    print ('sending the request: Creation of Resource instance (network) with ipnetwork mixin ')
 #    resp, content = h.request('http://127.0.0.1:8090/network/',
 #                              'POST',
-#                              headers={'content-type': 'application/json:occi', 'accept': 'application/json:occi'},
+#                              headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
 #                              body='''
 #    {
 #        "kind": {
@@ -125,12 +125,12 @@ if __name__ == '__main__':
 #    print(content)
 #
 #    #    ================= Creation of Resource instance (CloNeNode) =================
-#    #    curl -X POST -d@post_clonenode.json -H 'content-type: application/json:occi' -v http://157.159.249.133:8090/clonenode/
+#    #    curl -X POST -d@post_clonenode.json -H 'content-type: application/occi+json' -v http://157.159.249.133:8090/clonenode/
 #    print ('========================================================================================================')
 #    print ('sending the request: Creation of Resource instance (CloNeNode) ')
 #    resp, content = h.request('http://127.0.0.1:8090/CloNeNode/',
 #                              'POST',
-#                              headers={'content-type': 'application/json:occi', 'accept': 'application/json:occi'},
+#                              headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
 #                              body='''
 #    {
 #        "kind": {
@@ -167,13 +167,13 @@ if __name__ == '__main__':
 #    print(content)
 #
 #    #    ================= Creation of Resource instance (CloNeNode) with openFlow Mixin =================
-#    #    curl -X POST -d@post_clonenode_openflow.json -H 'content-type: application/json:occi' -v http://157.159.249.133:8090/clonenode/
+#    #    curl -X POST -d@post_clonenode_openflow.json -H 'content-type: application/occi+json' -v http://157.159.249.133:8090/clonenode/
 #
 #    print ('========================================================================================================')
 #    print ('sending the request: Creation of Resource instance (CloNeNode) with openFlow Mixin')
 #    resp, content = h.request('http://127.0.0.1:8090/CloNeNode/',
 #                              'POST',
-#                              headers={'content-type': 'application/json:occi', 'accept': 'application/json:occi'},
+#                              headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
 #                              body='''
 #    {
 #        "kind": {
@@ -219,18 +219,18 @@ if __name__ == '__main__':
 #    print(content)
 #
 #    #    ================= Creation of Resource resource instance (CloNeLink) =================
-#    #    curl -X POST -H 'accept: application/json:occi' -v http://127.0.0.1:8090/CloNeLink/
+#    #    curl -X POST -H 'accept: application/occi+json' -v http://127.0.0.1:8090/CloNeLink/
 #    """
 #
 #    """
 #
 #    #    ================= Creation of Resource instance (CloNeLink) with l3vpn Mixin =================
-#    #    curl -X POST -d@post_clonelink_l3vpn.json -H 'content-type: application/json:occi' -v http://157.159.249.133:8090/clonelink/
+#    #    curl -X POST -d@post_clonelink_l3vpn.json -H 'content-type: application/occi+json' -v http://157.159.249.133:8090/clonelink/
 #    print ('========================================================================================================')
 #    print ('sending the request: Creation of Resource instance (CloNeLink) with l3vpn Mixin')
 #    resp, content = h.request('http://127.0.0.1:8090/CloNeLink/',
 #                              'POST',
-#                              headers={'content-type': 'application/json:occi', 'accept': 'application/json:occi'},
+#                              headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
 #                              body='''
 #    {
 #       "kind":{
@@ -313,12 +313,12 @@ if __name__ == '__main__':
 #    print(content)
 #
 #    #    ================= Retrieval of Resource instance (compute) =================
-#    #    curl -X GET -H 'accept: application/json:occi' -v http://127.0.0.1:8090/compute/user1/compute1
+#    #    curl -X GET -H 'accept: application/occi+json' -v http://127.0.0.1:8090/compute/user1/compute1
 #    print ('========================================================================================================')
 #    print ('sending the request: Retrieval of Resource instance (http://127.0.0.1:8090/compute/user1/compute1) ')
 #    resp, content = h.request('http://127.0.0.1:8090/compute/user1/compute1',
 #                              'GET',
-#                              headers={'content-type': 'application/json:occi', 'accept': 'application/json:occi'},
+#                              headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
 #                              body='')
 #    print('********** The response header **********')
 #    pprint.pprint(resp)
@@ -326,13 +326,13 @@ if __name__ == '__main__':
 #    print(content)
 #
 #    #    ================= Retrieval of Resource instance (CloNeNode) =================
-#    #    curl -X GET -H 'accept: application/json:occi' -v http://127.0.0.1:8090/CloNeNode/user1/CloNeNode10
+#    #    curl -X GET -H 'accept: application/occi+json' -v http://127.0.0.1:8090/CloNeNode/user1/CloNeNode10
 #
 #    print ('========================================================================================================')
 #    print ('sending the request: Retrieval of Resource instance (http://127.0.0.1:8090/CloNeNode/user1/CloNeNode20) ')
 #    resp, content = h.request('http://127.0.0.1:8090/CloNeNode/user1/CloNeNode20',
 #                              'GET',
-#                              headers={'content-type': 'application/json:occi', 'accept': 'application/json:occi'},
+#                              headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
 #                              body='')
 #    print('********** The response header **********')
 #    pprint.pprint(resp)
@@ -340,12 +340,12 @@ if __name__ == '__main__':
 #    print(content)
 #
 #    #    ================= Retrieval of Resource instance (CloNeLink) =================
-#    #    curl -X GET -H 'accept: application/json:occi' -v http://127.0.0.1:8090/CloNeLink/user1/CloNeLink30
+#    #    curl -X GET -H 'accept: application/occi+json' -v http://127.0.0.1:8090/CloNeLink/user1/CloNeLink30
 #    print ('========================================================================================================')
 #    print ('sending the request: Retrieval of Resource instance (http://127.0.0.1:8090/CloNeLink/user1/CloNeLink30) ')
 #    resp, content = h.request('http://127.0.0.1:8090/CloNeLink/user1/CloNeLink30',
 #                              'GET',
-#                              headers={'content-type': 'application/json:occi', 'accept': 'application/json:occi'},
+#                              headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
 #                              body='')
 #    print('********** The response header **********')
 #    pprint.pprint(resp)
@@ -353,14 +353,14 @@ if __name__ == '__main__':
 #    print(content)
 #
 #    #    ================= Retrieval of all resource instance below a path =================
-#    #    curl -X GET -H 'accept: application/json:occi' -v http://127.0.0.1:8090/compute/user1/
+#    #    curl -X GET -H 'accept: application/occi+json' -v http://127.0.0.1:8090/compute/user1/
 #
 #    print ('========================================================================================================')
 #    print (
 #        'sending the request: Retrieval of all Resource instances below a path (http://127.0.0.1:8090/CloNeNode/user1/) ')
 #    resp, content = h.request('http://127.0.0.1:8090/CloNeNode/user1/',
 #                              'GET',
-#                              headers={'content-type': 'application/json:occi', 'accept': 'application/json:occi'},
+#                              headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
 #                              body='')
 #    print('********** The response header **********')
 #    pprint.pprint(resp)
@@ -371,17 +371,17 @@ if __name__ == '__main__':
 ======================================================================================================================
 ======================================================================================================================
 ======================================================================================================================
-houssem-Latitude[02:58:08]houssem~$ curl -X GET -H 'accept: application/json:occi' -v http://127.0.0.1:8090/-/
+houssem-Latitude[02:58:08]houssem~$ curl -X GET -H 'accept: application/occi+json' -v http://127.0.0.1:8090/-/
 * About to connect() to 127.0.0.1 port 8090 (#0)
 *   Trying 127.0.0.1... connected
 * Connected to 127.0.0.1 (127.0.0.1) port 8090 (#0)
 > GET /-/ HTTP/1.1
 > User-Agent: curl/7.21.6 (x86_64-pc-linux-gnu) libcurl/7.21.6 OpenSSL/1.0.0e zlib/1.2.3.4 libidn/1.22 librtmp/2.3
 > Host: 127.0.0.1:8090
-> accept: application/json:occi
+> accept: application/occi+json
 >
 < HTTP/1.1 200 OK
-< Content-Type: application:json:occi; charset=UTF-8
+< Content-Type: application:occi+json; charset=UTF-8
 < Server: ocni-server/1.1 (linux) OCNI/1.1
 < Content-Length: 4072
 < Date: Sat, 26 Nov 2011 01:58:18 GMT
@@ -520,17 +520,17 @@ houssem-Latitude[02:58:08]houssem~$ curl -X GET -H 'accept: application/json:occ
 ======================================================================================================================
 ======================================================================================================================
 
-houssem-Latitude[02:59:30]houssem~$ curl -X GET -H 'accept: application/json:occi' -v http://127.0.0.1:8090/compute/user1/compute1
+houssem-Latitude[02:59:30]houssem~$ curl -X GET -H 'accept: application/occi+json' -v http://127.0.0.1:8090/compute/user1/compute1
 * About to connect() to 127.0.0.1 port 8090 (#0)
 *   Trying 127.0.0.1... connected
 * Connected to 127.0.0.1 (127.0.0.1) port 8090 (#0)
 > GET /compute/user1/compute1 HTTP/1.1
 > User-Agent: curl/7.21.6 (x86_64-pc-linux-gnu) libcurl/7.21.6 OpenSSL/1.0.0e zlib/1.2.3.4 libidn/1.22 librtmp/2.3
 > Host: 127.0.0.1:8090
-> accept: application/json:occi
+> accept: application/occi+json
 >
 < HTTP/1.1 200 OK
-< Content-Type: application:json:occi; charset=UTF-8
+< Content-Type: application:occi+json; charset=UTF-8
 < Server: ocni-server/1.1 (linux) OCNI/1.1
 < Content-Length: 629
 < Date: Sat, 26 Nov 2011 01:59:37 GMT
