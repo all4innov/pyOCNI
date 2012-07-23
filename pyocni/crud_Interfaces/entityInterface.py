@@ -165,10 +165,10 @@ class SingleEntityInterface(object):
         jBody = ""
         if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
-            jBody = self.from_text_plain_f.format_text_plain_entity_to_json(self.req.body)
+            jBody = self.from_text_plain_f.format_text_plain_entity_to_json_v2(self.req.body)
 
         elif self.req.content_type == "text/occi":
-            jBody = self.from_text_occi_f.format_text_occi_entity_to_json(self.req.headers)
+            jBody = self.from_text_occi_f.format_text_occi_entity_to_json_v2(self.req.headers)
 
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
@@ -275,10 +275,14 @@ class MultiEntityInterface(object):
         jBody = ""
         if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
-            jBody = self.from_text_plain_f.format_text_plain_entity_to_json(self.req.body)
+            self.res.body = ""
+            self.res.status_code = return_code['Not Implemented']
+            return self.res
 
         elif self.req.content_type == "text/occi":
-            jBody = self.from_text_occi_f.format_text_occi_entity_to_json(self.req.headers)
+            self.res.body = ""
+            self.res.status_code = return_code['Not Implemented']
+            return self.res
 
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
@@ -321,10 +325,12 @@ class MultiEntityInterface(object):
         jBody = ""
         if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
-            jBody = self.from_text_plain_f.format_text_plain_entity_to_json(self.req.body)
+            if self.req.body != "":
+                jBody = self.from_text_plain_f.format_text_plain_categories_to_json(self.req.body)
 
         elif self.req.content_type == "text/occi":
-            jBody = self.from_text_occi_f.format_text_occi_entity_to_json(self.req.headers)
+            if self.req.body != "":
+                jBody = self.from_text_occi_f.format_text_occi_categories_to_json(self.req.headers)
 
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
@@ -389,10 +395,14 @@ class MultiEntityInterface(object):
         jBody = ""
         if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
-            jBody = self.from_text_plain_f.format_text_plain_entity_to_json(self.req.body)
+            self.res.body = ""
+            self.res.status_code = return_code['Not Implemented']
+            return self.res
 
         elif self.req.content_type == "text/occi":
-            jBody = self.from_text_occi_f.format_text_occi_entity_to_json(self.req.headers)
+            self.res.body = ""
+            self.res.status_code = return_code['Not Implemented']
+            return self.res
 
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
@@ -427,10 +437,14 @@ class MultiEntityInterface(object):
         jBody = ""
         if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
-            jBody = self.from_text_plain_f.format_text_plain_entity_to_json(self.req.body)
+            self.res.body = ""
+            self.res.status_code = return_code['Not Implemented']
+            return self.res
 
         elif self.req.content_type == "text/occi":
-            jBody = self.from_text_occi_f.format_text_occi_entity_to_json(self.req.headers)
+            self.res.body = ""
+            self.res.status_code = return_code['Not Implemented']
+            return self.res
 
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
@@ -449,6 +463,7 @@ class MultiEntityInterface(object):
         var,user_id = self.req.authorization
         user_id = base64.decodestring(user_id)
         user_id = user_id.split(':')[0]
+
         if self.req.body is not "":
             jBody = json.loads(self.req.body)
             #add the JSON to database along with other attributes

@@ -180,7 +180,7 @@ def prepare_PyOCNI_db():
 def purge_PyOCNI_db():
 
     try:
-        server = Server(PyOCNI_Server_Address)
+        server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
     except Exception:
         logger.error("Database is unreachable")
 
