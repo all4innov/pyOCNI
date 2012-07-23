@@ -94,6 +94,30 @@ class From_Text_Plain_to_JSON():
 
         return {'resources' : [entity]}
 
+    def format_text_plain_entity_to_json_v2(self, body):
+
+        kind,mixins,attributes,actions,links = extractor.get_entity_members_from_body(body)
+        entity = dict()
+
+        if kind is not None:
+            entity['kind'] = kind
+
+        if len(mixins) is not 0:
+            entity['mixins'] = mixins
+
+        if attributes is not None:
+            entity['attributes'] = attributes
+
+        if len(actions) is not 0:
+            entity['actions'] = actions
+
+        if len(links) is not 0:
+            entity['links'] = links
+
+        return {'resources' : [entity]}
+
+
+
 class From_Text_OCCI_to_JSON():
 
     def format_text_occi_categories_to_json(self, var):
@@ -154,6 +178,27 @@ class From_Text_OCCI_to_JSON():
 
         return {'resources' : [entity]}
 
+    def format_text_occi_entity_to_json_v2(self, headers):
+
+        kind,mixins,attributes,actions,links = extractor.get_entity_members_from_headers(headers)
+        entity = dict()
+
+        if kind is not None:
+            entity['kind'] = kind
+
+        if len(mixins) is not 0:
+            entity['mixins'] = mixins
+
+        if attributes is not None:
+            entity['attributes'] = attributes
+
+        if len(actions) is not 0:
+            entity['actions'] = actions
+
+        if len(links) is not 0:
+            entity['links'] = links
+
+        return {'resources' : [entity]}
 
 
 def assemble_category(term,scheme,title,rel,location,attributes,actions):
@@ -178,16 +223,3 @@ def assemble_category(term,scheme,title,rel,location,attributes,actions):
 
     return category
 
-
-if __name__ == "__main__":
-
-    cat = "Category: compute; scheme=\"http://schemas.ogf.org/occi/infrastructure#\"; class=\"kind\";" \
-            "Category: my_stuff; scheme=\"http://example.com/occi/my_stuff#\"; class=\"mixin\";" \
-            "X-OCCI-Attribute: occi.compute.cores=2"\
-            "X-OCCI-Attribute: occi.compute.hostname=\"foobar\""\
-            "Link: </users/foo/compute/b9ff813e-fee5-4a9d-b839-673f39746096?action=start>;"\
-            "rel=\"http://schemas.ogf.org/occi/infrastructure/compute/action#start\""
-
-    obj = From_Text_Plain_to_JSON()
-    res = obj.format_text_plain_entity_to_json(cat)
-    print res
