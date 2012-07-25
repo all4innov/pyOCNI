@@ -35,7 +35,6 @@ import pyocni.pyocni_tools.DoItYourselfWebOb as url_mapper
 import eventlet
 from pyocni.registry import categoryManager,entityManager
 from eventlet import wsgi
-from pyocni.registry.registry import backend_registry, serialization_registry
 from pyocni.pyocni_tools import ask_user_details as shell_ask
 from pyocni.backend.dummy_backend import dummy_backend
 from pyocni.backend.openflow_backend import openflow_backend
