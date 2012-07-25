@@ -119,11 +119,15 @@ part_links = """{
 """
 part_resource ="""
 {
-    "resources": [{
-
-
-            "title": "Compute resource ????",
-            "summary": "This is a compute resource"
+    "resources": [
+        {
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "cores": 2
+                    }
+                }
+            }
         }
     ]
 }
