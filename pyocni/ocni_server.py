@@ -33,15 +33,9 @@ from pyocni.crud_Interfaces.singleCategoryInterface import SingleCategoryInterfa
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.DoItYourselfWebOb as url_mapper
 import eventlet
-from pyocni.registry import categoryManager,entityManager
 from eventlet import wsgi
 from pyocni.pyocni_tools import ask_user_details as shell_ask
-from pyocni.backend.dummy_backend import dummy_backend
-from pyocni.backend.openflow_backend import openflow_backend
-from pyocni.backend.l3vpn_backend import l3vpn_backend
-from pyocni.backend.opennebula_backend import opennebula_backend
-from pyocni.backend.openstack_backend import openstack_backend
-from pyocni.backend.libnetvirt_backend import libnetvirt_backend
+
 
 
 # getting the Logger
