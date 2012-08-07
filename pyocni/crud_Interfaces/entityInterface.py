@@ -275,14 +275,10 @@ class MultiEntityInterface(object):
         jBody = ""
         if self.req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
-            self.res.body = ""
-            self.res.status_code = return_code['Not Implemented']
-            return self.res
+            jBody = self.from_text_plain_f.format_text_plain_entity_to_json(self.req.body)
 
         elif self.req.content_type == "text/occi":
-            self.res.body = ""
-            self.res.status_code = return_code['Not Implemented']
-            return self.res
+            jBody = self.from_text_occi_f.format_text_occi_entity_to_json(self.req.headers)
 
         elif self.req.content_type == "application/json:occi":
             #  Solution To adopt : Validate then convert to application/occi+json
@@ -304,7 +300,9 @@ class MultiEntityInterface(object):
 
         #add the JSON to database along with other attributes
         if self.triggered_action is None:
+
             var,self.res.status_code = self.manager.channel_post_multi(user_id,jBody,self.path_url)
+
             if type(var) is not str:
                 self.res.body = json.dumps(var)
             else:

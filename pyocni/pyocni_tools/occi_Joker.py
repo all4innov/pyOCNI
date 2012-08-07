@@ -310,7 +310,6 @@ def make_implicit_link_location(uuid, kind_id, creator, db_occi_ids_locs):
         if occi_id_loc['OCCI_ID'] == kind_id:
             kind_loc = occi_id_loc['OCCI_Location'].split('/-/')[1]
             entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + creator + "/" + kind_loc + uuid
-
             return entity_location
 
     return None
