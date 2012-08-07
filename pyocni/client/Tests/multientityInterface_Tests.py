@@ -28,11 +28,11 @@ Created on Jun 27, 2012
 """
 from multiprocessing import Process
 from unittest import TestLoader,TextTestRunner,TestCase
-import pyocni.client.server_Mock as server
+import pyocni.client.Tests.server_Mock as server
 import pycurl
 import time
 import StringIO
-import pyocni.client.entities as fake_data
+import pyocni.client.Tests.entities as fake_data
 
 
 def start_server():
@@ -62,11 +62,11 @@ class test_post(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/compute/action2/')
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+        c.setopt(pycurl.URL,'http://127.0.0.1:8090/compute/')
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-Type: text/plain'])
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
-        c.setopt(pycurl.POSTFIELDS,"")
+        c.setopt(pycurl.POSTFIELDS,fake_data.entity_http)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

@@ -38,6 +38,7 @@ import base64
 from pyocni.pyocni_tools.config import return_code
 from pyocni.serialization.httpResponse_Formater import To_HTTP_Text_OCCI,To_HTTP_Text_Plain,To_HTTP_Text_URI_List
 from pyocni.serialization.httpRequest_Formater import From_Text_Plain_to_JSON, From_Text_OCCI_to_JSON
+
 class QueryInterface(object):
     """
 
