@@ -766,7 +766,7 @@ class MultiEntityManager(object):
 
         result = to_return_res + to_return_link
         #backend_m.read_entities(occi_descriptions)
-        return result,return_code['OK']
+        return result,return_code['OK, and location returned']
 
     def channel_get_filtered_entities(self,req_path,user,terms):
         """
