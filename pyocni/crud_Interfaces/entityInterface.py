@@ -336,7 +336,8 @@ class MultiEntityInterface(object):
 
         elif self.req.content_type == "application/occi+json":
             #Validate the JSON message
-            jBody = json.loads(self.req.body)
+            if self.req.body != "":
+                jBody = json.loads(self.req.body)
 
         else:
             self.res.status_code = return_code['Not Acceptable']
@@ -378,9 +379,9 @@ class MultiEntityInterface(object):
 
         else:
             self.res.content_type = "text/html"
-            self.res.body = var
+            self.res.body = str(var)
 
-            return self.res
+        return self.res
 
     def put(self):
         """
