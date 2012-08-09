@@ -432,15 +432,15 @@ def get_entity_members_from_headers(headers):
     actions = list()
     links = list()
     entity_list = list()
-    if headers.has_key('Category'):
+    if headers.__contains__('Category'):
         categories = headers['Category']
         entity_list.extend(categories.split(','))
 
-    if headers.has_key('Link'):
+    if headers.__contains__('Link'):
         link_headers = headers['Link']
         entity_list.extend(link_headers.split(','))
 
-    if headers.has_key('X-OCCI-Attribute'):
+    if headers.__contains__('X-OCCI-Attribute'):
         att_h = headers['X-OCCI-Attribute']
         entity_list.extend(att_h.split(','))
 
