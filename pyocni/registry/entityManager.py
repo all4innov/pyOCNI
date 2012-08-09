@@ -765,7 +765,7 @@ class MultiEntityManager(object):
                 to_return_link.append((entity['value'][0]))
 
         result = to_return_res + to_return_link
-        backend_m.read_entities(occi_descriptions)
+        #backend_m.read_entities(occi_descriptions)
         return result,return_code['OK']
 
     def channel_get_filtered_entities(self,req_path,user,terms):
@@ -819,7 +819,7 @@ class MultiEntityManager(object):
                     except Exception as e:
                         logger.error("get all multi entities : " + e.message)
                         return "An error has occurred, please check log for more details",return_code['Internal Server Error']
-                backend_m.read_entities(occi_descriptions)
+                #backend_m.read_entities(occi_descriptions)
                 return result,return_code['OK']
             else:
                 return entities,ok
