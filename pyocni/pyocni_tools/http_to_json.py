@@ -67,14 +67,20 @@ class http_json(object):
                 if i < (len(attribute_name_partitioned) - 1):
                     a = a[attribute_name_partitioned[i]]
                 else:
-                    a[attribute_name_partitioned[i]] = json.loads(attribute_value)
+                    try:
+                        a[attribute_name_partitioned[i]] = json.loads(attribute_value)
+                    except Exception :
+                        a[attribute_name_partitioned[i]] = attribute_value
             else:
                 if i < (len(attribute_name_partitioned) - 1):
                     a[attribute_name_partitioned[i]] = {}
                     a = a[attribute_name_partitioned[i]]
                     json_result.update(a)
                 else:
-                    a[attribute_name_partitioned[i]] = json.loads(attribute_value)
+                    try:
+                        a[attribute_name_partitioned[i]] = json.loads(attribute_value)
+                    except Exception :
+                        a[attribute_name_partitioned[i]] = attribute_value
 
         pprint.pprint(" =============== Sending ===============")
         pprint.pprint('the sent attribute : ' + attribute)

@@ -366,7 +366,13 @@ def extract_attributes_from_http_entity(items):
 
 
 def cnv_attribute_from_http_to_json(attribute,json_result={}):
+    """
 
+    method to convert and add one OCCI HTTP attribute to an OCCI JSON object
+
+    # the attribute 'attribute' contains the OCCI HTTP Attribute. e.g. 'occi.compute.hostname="foobar"'
+    # the attribute 'json_result' contains an OCCI JSON object. e.g. {} or {'occi': {'compute': {'cores': 2, 'hostname': 'foobar'}}}
+    """
     attribute_partitioned = attribute.partition('=')
     attribute_name = attribute_partitioned[0]
     attribute_value = attribute_partitioned[2]
@@ -378,14 +384,21 @@ def cnv_attribute_from_http_to_json(attribute,json_result={}):
             if i < (len(attribute_name_partitioned) - 1):
                 a = a[attribute_name_partitioned[i]]
             else:
-                a[attribute_name_partitioned[i]] = json.loads(attribute_value)
+                try:
+                    a[attribute_name_partitioned[i]] = json.loads(attribute_value)
+                except Exception :
+                    a[attribute_name_partitioned[i]] = attribute_value
+
         else:
             if i < (len(attribute_name_partitioned) - 1):
                 a[attribute_name_partitioned[i]] = {}
                 a = a[attribute_name_partitioned[i]]
                 json_result.update(a)
             else:
-                a[attribute_name_partitioned[i]] = json.loads(attribute_value)
+                try:
+                    a[attribute_name_partitioned[i]] = json.loads(attribute_value)
+                except Exception :
+                    a[attribute_name_partitioned[i]] = attribute_value
 
     return json_result
 
