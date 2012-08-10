@@ -303,10 +303,33 @@ class MultiEntityInterface(object):
 
             var,self.res.status_code = self.manager.channel_post_multi(user_id,jBody,self.path_url)
 
-            if type(var) is not str:
-                self.res.body = json.dumps(var)
+            if self.res.status_code == return_code['OK, and location returned']:
+                if str(self.req.accept) == "application/occi+json":
+                    self.res.body = json.dumps(var)
+
+                elif str(self.req.accept) == "text/occi":
+                    #reformat the response to text/occi
+                    self.res.body = "OK"
+                    self.res.headers = self.text_occi_f.format_to_text_occi_locations(var)
+
+                elif str(self.req.accept) == "text/uri-list":
+                    #reformat the response to text/occi
+                    res,ok = self.text_uri_f.check_for_uri_locations(var)
+                    if ok is True:
+                        self.res.body = res
+                    else:
+                        self.res.content_type = "text/plain"
+                        self.res.body = self.text_plain_f.format_to_text_plain_locations(var)
+
+                else :
+                    #reformat the response to text/plain (default OCCI response format)
+                    self.res.content_type = "text/plain"
+                    self.res.body = self.text_plain_f.format_to_text_plain_locations(var)
+
             else:
-                self.res.body = var
+                self.res.content_type = "text/html"
+                self.res.body = str(var)
+
         else:
             self.res.body,self.res.status_code = self.manager.channel_trigger_actions(user_id,jBody,self.path_url,self.triggered_action)
 
