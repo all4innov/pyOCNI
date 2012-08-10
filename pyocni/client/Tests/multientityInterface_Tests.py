@@ -63,7 +63,7 @@ class test_post(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(pycurl.URL,'http://127.0.0.1:8090/compute/')
-        c.setopt(pycurl.HTTPHEADER, ['Accept: text/occi','Content-Type: text/occi','Category:compute; scheme=\"http://schemas.ogf.org/occi/infrastructure#\"; class=\"kind\";'])
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi','Category:compute; scheme=\"http://schemas.ogf.org/occi/infrastructure#\"; class=\"kind\";'])
 
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
         c.setopt(pycurl.POSTFIELDS,fake_data.entity_http)
