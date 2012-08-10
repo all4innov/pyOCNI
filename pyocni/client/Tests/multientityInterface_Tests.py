@@ -66,7 +66,7 @@ class test_post(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/occi','Content-Type: text/occi','Category:compute; scheme=\"http://schemas.ogf.org/occi/infrastructure#\"; class=\"kind\";'])
 
         c.setopt(pycurl.CUSTOMREQUEST, 'POST')
-        #c.setopt(pycurl.POSTFIELDS,fake_data.entity_http)
+        c.setopt(pycurl.POSTFIELDS,fake_data.entity_http)
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
