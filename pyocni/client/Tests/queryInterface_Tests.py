@@ -63,7 +63,7 @@ class test_get(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(c.URL,'http://127.0.0.1:8090/-/')
-        c.setopt(c.HTTPHEADER, ['Accept:application/occi+json','content-Type: application/occi+json'])
+        c.setopt(c.HTTPHEADER, ['Accept:text/plain','content-Type: application/occi+json'])
         c.setopt(c.VERBOSE, True)
         c.setopt(c.CUSTOMREQUEST, 'GET')
         c.setopt(c.USERPWD, 'user_1:password')
