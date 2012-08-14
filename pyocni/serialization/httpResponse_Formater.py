@@ -136,20 +136,22 @@ class To_HTTP_Text_OCCI():
         if var.has_key('kinds'):
             items = var['kinds']
             for item in items:
-                value += cnv_JSON_category(item,"kind") +",\n"
+                value = cnv_JSON_category(item,"kind") +",\n"
+                resp.headers.add('Category',value[:-2])
 
         if var.has_key('mixins'):
             items = var['mixins']
 
             for item in items:
-                value += cnv_JSON_category(item,"mixin") + ",\n"
+                value = cnv_JSON_category(item,"mixin") + ",\n"
+                resp.headers.add('Category',value[:-2])
 
         if var.has_key('actions'):
             items = var['actions']
             for item in items:
-                value += cnv_JSON_category(item,"action") + ",\n"
+                value = cnv_JSON_category(item,"action") + ",\n"
+                resp.headers.add('Category',value[:-2])
 
-        resp.headers.add('Category',value[:-2])
         return resp.headers
 
     def format_to_text_occi_entities(self, var):
