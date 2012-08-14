@@ -115,6 +115,7 @@ class test_get(TestCase):
         c = pycurl.Curl()
         c.setopt(pycurl.URL,"http://127.0.0.1:8090/compute/")
         c.setopt(pycurl.HTTPHEADER, ['Accept: text/occi','Content-Type: application/occi+json'])
+        c.setopt(c.VERBOSE,True)
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
         c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
