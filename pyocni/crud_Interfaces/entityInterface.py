@@ -377,7 +377,7 @@ class MultiEntityInterface(object):
         else:
             var,self.res.status_code = self.manager.channel_get_filtered_entities(self.path_url,user_id,jBody)
 
-        if self.res.status_code == return_code['OK, and location returned']:
+        if self.res.status_code == return_code['OK']:
             if str(self.req.accept) == "application/occi+json":
                 self.res.body = json.dumps(var)
 
