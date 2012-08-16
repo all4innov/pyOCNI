@@ -259,7 +259,10 @@ def recursive_for_attribute(attributes):
         if type(attributes[key]) is dict:
             items = recursive_for_attribute(attributes[key])
             for item in items:
-                att_http.append(key + "." + item)
+                if not (item.find('{')):
+                    att_http.append(key + item)
+                else:
+                    att_http.append(key + "." + item)
         else:
             attributes = treat_attribute_members(attributes)
             return attributes
