@@ -236,14 +236,14 @@ def treat_attribute_members(members):
 
         if key == "mutable":
             if members[key] is True:
-                to_return += "{mutable}"
+                to_return += ""
             else:
                 to_return += "{immutable}"
         elif key == "required":
             if members[key] is True:
                 to_return += "{required}"
             else:
-                to_return += "{not required}"
+                to_return += ""
         else:
             pass
 
@@ -266,8 +266,13 @@ def recursive_for_attribute(attributes):
         else:
             attributes = treat_attribute_members(attributes)
             return attributes
-
-    return att_http
+    final_att = list()
+    for item in att_http:
+        if item.endswith('.'):
+            final_att.append(item[:-1])
+        else:
+            final_att.append(item)
+    return final_att
 
 
 def treat_attribute_members_v2(attributes):
