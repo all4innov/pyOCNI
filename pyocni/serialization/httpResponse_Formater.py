@@ -116,7 +116,7 @@ class To_HTTP_Text_Plain():
         """
         locs = ""
         for item in var:
-            locs += "X-OCCI-Location: " + item + "\n"
+            locs += "Location: " + item + "\n"
         return locs
 
 
@@ -205,7 +205,7 @@ class To_HTTP_Text_OCCI():
         resp.headers.clear()
         for item in var:
             locs += item + ","
-        resp.headers.add("X-OCCI-Location",locs[:-1])
+        resp.headers.add("Location",locs[:-1])
         return resp.headers
 
 
