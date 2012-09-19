@@ -78,9 +78,9 @@ Example of installing couchdb using build-couchdb on Ubuntu (more details on: ht
     rake
     build/bin/couchdb
 
-To test CouchDB:           http://127.0.0.1:5984
+To test CouchDB:       http://127.0.0.1:5984
 
-To test the CouchDB GUI:   http://127.0.0.1:5984/_utils/
+To test CouchDB GUI:   http://127.0.0.1:5984/_utils/
 
 3.2. Install
 ------------
