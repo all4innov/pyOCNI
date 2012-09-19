@@ -37,7 +37,6 @@ from eventlet import wsgi
 from pyocni.pyocni_tools import ask_user_details as shell_ask
 
 
-
 # getting the Logger
 logger = config.logger
 

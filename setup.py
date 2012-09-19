@@ -34,7 +34,8 @@ setup(name='pyocni',
           'ZODB3',
           'httplib2',
           'couchdb',
-          'couchdbkit'
+          'couchdbkit',
+          'tornado'
           #'pack>=0.97',
           #'pack'
       ],
