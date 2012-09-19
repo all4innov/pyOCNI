@@ -66,12 +66,21 @@ This software needs this packages to run:
 * python <= 2.7
 * python-all-dev (for eventlet/greenlet install/make)
 * python-setuptools (to execute the setup.py file)
-* couchdb >= 1.2.0 (Easiest install: using build-couchdb https://github.com/iriscouch/build-couchdb )
+* couchdb >= 1.2.0:
+Example of installing couchdb using build-couchdb on Ubuntu (more details on: https://github.com/iriscouch/build-couchdb)
+::
+
+    sudo apt-get install help2man make gcc zlib1g-dev libssl-dev rake help2man
+    git clone git://github.com/iriscouch/build-couchdb
+    cd build-couchdb
+    git submodule init
+    git submodule update
+    rake
+    build/bin/couchdb
 
    To test CouchDB:           http://127.0.0.1:5984
 
    To test the CouchDB GUI:   http://127.0.0.1:5984/_utils/
-
 
 3.2. Install
 ------------
