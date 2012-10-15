@@ -1,0 +1,97 @@
+/*
+
+=1= A category can be a kind,mixin or an action
+=2= Multiple Kinds, Mixins and Actions can be created at the same time as long as categories mentionned in the object
+member[related] already exist in the database
+
+*/
+
+{
+    "kinds": [
+        {
+            "term": "compute",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+            "title": "Compute Resource",
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "hostname": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                            "minimum": "1",
+                            "maximum": "255"
+                        },
+                        "state": {
+                            "mutable": false,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "inactive|active|suspended|failed",
+                            "default": "inactive"
+                        }
+                    }
+                }
+            },
+            "actions": [
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop"
+            ],
+            "location": "/compute/"
+        },
+        {
+            "term": "networkinterface",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+            "title": "networkinterface link",
+            "location": "/networkinterface/"
+        }
+    ],
+    "mixins": [
+        {
+            "term": "medium",
+            "scheme": "http://example.com/template/resource#",
+            "title": "Medium VM",
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "speed": {
+                            "type": "number",
+                            "default": 2.8
+                        }
+                    }
+                }
+            },
+            "location": "/template/resource/medium/"
+        }
+    ],
+    "actions": [
+        {
+            "term": "stop",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Stop Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpioff|poweroff",
+                    "default": "poweroff"
+                }
+            }
+        },
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Start Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpion|poweron",
+                    "default": "poweron"
+                }
+            }
+        }
+    ]
+}

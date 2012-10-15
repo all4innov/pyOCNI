@@ -1,0 +1,16 @@
+/*
+
+=1= Delete of multiple kinds at the same time is possible
+=2= Term and scheme are the only required object members to delete a kind
+=3= A kind can be deleted only if there are no resources of it
+
+*/
+
+{
+    "kinds": [
+        {
+            "term": "compute",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#"
+        }
+    ]
+}

@@ -1,0 +1,9 @@
+Libnetvirt is the network virtualization library.
+Contact Daniel Turull <danieltt@kth.se>
+You can find more information about libnetvirt and download the source from
+https://github.com/danieltt/libnetvirt
+
+The source has been tested with Ubuntu 11.10 in x86_64 environment
+
+libnetvirt.py :         wrapper
+libnetvirt_backend.py : the backend

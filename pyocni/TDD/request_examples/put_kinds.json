@@ -1,0 +1,44 @@
+/*
+
+ =1= Multiple kinds can be updated at the same time
+ =2= Each description MUST at least contain term and scheme object members to be updated
+ =3= Kind descriptions must follow the OCCI JSON rendering draft
+ =4= Term, scheme and location are forbidden to change
+
+ */
+
+{
+    "kinds": [
+        {
+            "term": "compute",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+            "title": "Compute Resource",
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "hostname": {
+                            "mutable": true,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                            "minimum": "1",
+                            "maximum": "255"
+                        },
+                        "state": {
+                            "mutable": false,
+                            "required": false,
+                            "type": "string",
+                            "pattern": "inactive|active|suspended|failed",
+                            "default": "inactive"
+                        }
+                    }
+                }
+            },
+            "actions": [
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                "http://schemas.ogf.org/occi/infrastructure/compute/action#stop"
+            ],
+            "location": "/compute/"
+        }
+    ]
+}
