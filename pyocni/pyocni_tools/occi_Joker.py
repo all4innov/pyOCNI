@@ -82,7 +82,10 @@ def update_occi_entity_description(oldData,newData):
         except ValueError:
             try:
                 oldData_keys.index(key)
-                oldData[key] = newData[key]
+                if key == 'attributes':
+                    print "GOGOATTributes"
+                else:
+                    oldData[key] = newData[key]
             except ValueError:
                 #Keep the record of the keys(=parts) that couldn't be updated
                 logger.debug("update entity description : " + key + " could not be found")
@@ -339,3 +342,17 @@ def format_url_path(cat_path):
     loc = cat_path.split("/-/")
     new_path = config.PyOCNI_Server_Address+"/"+loc[1]
     return new_path
+
+
+def update_occi_entity_attributes(old_attr,new_attr):
+    """
+
+    """
+
+def look_for_update_key_values(new_attr):
+
+    for key in new_attr:
+        if type(new_attr[key]) is dict:
+            look_for_update_key_values(new_attr[key])
+        else:
+            return key

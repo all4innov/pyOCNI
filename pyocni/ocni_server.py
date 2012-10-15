@@ -21,15 +21,14 @@ Created on Jun 01, 2012
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
 @author: Houssem Medhioub
-@author: Daniel Turull (DELETE and PUT of OperationResource class)
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
 @version: 1.0
 @license: LGPL - Lesser General Public License
 """
-from pyocni.crud_Interfaces.entityInterface import SingleEntityInterface,MultiEntityInterface
-from pyocni.crud_Interfaces.queryInterface import QueryInterface
-from pyocni.crud_Interfaces.singleCategoryInterface import SingleCategoryInterface
+from pyocni.dispachers.single_entityDispatcher import SingleEntityDispatcher
+from pyocni.dispachers.multi_entityDispatcher import MultiEntityDispatcher
+from pyocni.dispachers.queryDispatcher import QueryDispatcher
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.DoItYourselfWebOb as url_mapper
 import eventlet
@@ -45,40 +44,9 @@ logger = config.logger
 OCNI_IP = config.OCNI_IP
 OCNI_PORT = config.OCNI_PORT
 
-
-# ======================================================================================
-# the Backend registry
-# ======================================================================================
-
-#result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-#                                     "   Do you want to register the dummy backend ?", "yes")
-#if result == 'yes':
-#    backend_registry().register_backend(dummy_backend())
-#result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-#                                     "   Do you want to register the OpenFlow backend ?", "no")
-#if result == 'yes':
-#    backend_registry().register_backend(openflow_backend())
-#result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-#                                     "    Do you want to register the L3VPN backend ?", "no")
-#if result == 'yes':
-#    backend_registry().register_backend(l3vpn_backend())
-#result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-#                                     "    Do you want to register the OpenNebula backend ?", "no")
-#if result == 'yes':
-#    backend_registry().register_backend(opennebula_backend())
-#result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-#                                     "    Do you want to register the OpenStack backend ?", "no")
-#if result == 'yes':
-#    backend_registry().register_backend(openstack_backend())
-#result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-#                                     "    Do you want to register the libnetvirt backend ?", "no")
-#if result == 'yes':
-#    backend_registry().register_backend(libnetvirt_backend())
-
-
-# ======================================================================================
-# The OCNI Server
-# ======================================================================================
+# ======================================================================================================================
+#                                                     The OCNI Server
+# ======================================================================================================================
 
 
 class ocni_server(object):
@@ -89,14 +57,12 @@ class ocni_server(object):
     """
 
 
-    operationQuery = url_mapper.rest_controller(QueryInterface)
-    operationSingleEntity = url_mapper.rest_controller(SingleEntityInterface)
-    operationMultiEntity = url_mapper.rest_controller(MultiEntityInterface)
-    operationSingleCategory = url_mapper.rest_controller(SingleCategoryInterface)
+    operationQuery = url_mapper.rest_controller(QueryDispatcher)
+    operationSingleEntity = url_mapper.rest_controller(SingleEntityDispatcher)
+    operationMultiEntity = url_mapper.rest_controller(MultiEntityDispatcher)
     app = url_mapper.Router()
 
     app.add_route('/-/',controller=operationQuery)
-    app.add_route('/-/{location}/',controller=operationSingleCategory)
     app.add_route('/{location}/',controller=operationMultiEntity)
     app.add_route('/{location}/{idontknow}/',controller=operationMultiEntity)
     app.add_route('/{location}/{idontknow}/{idontcare}/',controller=operationMultiEntity)
@@ -118,9 +84,8 @@ class ocni_server(object):
         print ("\n______________________________________________________________________________________\n"
                "The OCNI server is running at: " + config.OCNI_IP + ":"+config.OCNI_PORT)
         wsgi.server(eventlet.listen((config.OCNI_IP, int(config.OCNI_PORT))), self.app)
-
         print ("\n______________________________________________________________________________________\n"
-               "Closing correctly 'locations' and 'objects' Databases: ")
+               "Closing correctly PyOCNI server ")
 
 
 
