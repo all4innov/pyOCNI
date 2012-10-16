@@ -90,7 +90,7 @@ class CategoryJungler:
             if jreq.has_key('kinds'):
 
                 logger.debug("===== channel_register_categories ==== : Kinds channeled")
-                new_kinds,resp_code_k = self.manager_k.register_kinds(jreq['kinds'],db_occi_ids)
+                new_kinds,resp_code_k = self.manager_k.register_kinds(jreq['kinds'],db_occi_ids,db_occi_locs)
 
             else:
                 logger.debug("===== channel_register_categories ==== : no kinds found")
@@ -99,7 +99,7 @@ class CategoryJungler:
 
             if jreq.has_key('mixins'):
                 logger.debug("===== channel_register_categories ==== : Mixins channeled")
-                new_mixins,resp_code_m = self.manager_m.register_mixins(jreq['mixins'],db_occi_ids)
+                new_mixins,resp_code_m = self.manager_m.register_mixins(jreq['mixins'],db_occi_ids,db_occi_locs)
             else:
                 logger.debug("===== channel_register_categories ==== : No mixins found")
                 new_mixins= list()

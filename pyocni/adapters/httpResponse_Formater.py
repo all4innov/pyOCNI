@@ -31,7 +31,7 @@ try:
     import simplejson as json
 except ImportError:
     import json
-import pyocni.serialization.cnv_toHTTP as extractor
+import pyocni.adapters.cnv_toHTTP as extractor
 from webob import Response
 
 class To_HTTP_Text_Plain():

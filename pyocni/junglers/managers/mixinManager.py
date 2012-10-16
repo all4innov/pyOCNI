@@ -48,7 +48,7 @@ class MixinManager:
             return "An error has occurred",return_code['Internal Server Error']
 
 
-    def register_mixins(self,creator,descriptions,db_occi_ids,db_occi_locs):
+    def register_mixins(self,descriptions,db_occi_ids,db_occi_locs):
 
         """
         Add new mixins to the database

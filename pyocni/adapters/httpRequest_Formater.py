@@ -31,7 +31,7 @@ try:
     import simplejson as json
 except ImportError:
     import json
-import pyocni.serialization.cnv_toJSON as extractor
+import pyocni.adapters.cnv_toJSON as extractor
 import pyocni.pyocni_tools.uuid_Generator as generator
 
 class From_Text_Plain_to_JSON():

@@ -26,7 +26,7 @@ Created on 10 Dec, 2011
 """
 
 
-from pyocni.backend.backend import backend
+from pyocni.backends.backend import backend
 import pyocni.pyocni_tools.config as config
 # getting the Logger
 logger = config.logger

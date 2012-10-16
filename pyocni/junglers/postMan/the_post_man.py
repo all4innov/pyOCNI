@@ -27,38 +27,14 @@ Created on May 29, 2012
 @license: LGPL - Lesser General Public License
 """
 
-import logging.config
-from configobj import ConfigObj
-from couchdbkit import *
-import os
+import pyocni.pyocni_tools.config as config
 
-def get_absolute_path_from_relative_path(filename):
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), filename))
-
-
-
-# Loading the OCCI server configuration file
-config = ConfigObj(get_absolute_path_from_relative_path("../occi_server.conf"))
-OCNI_IP = config['OCNI_IP']
-OCNI_PORT = config['OCNI_PORT']
-
-# Loading the DB server configuration file
-DB_config = ConfigObj(get_absolute_path_from_relative_path("../couchdb_server.conf"))
-DB_IP = DB_config['CouchDB_IP']
-DB_PORT = DB_config['CouchDB_PORT']
-PyOCNI_DB = DB_config['CouchDB_PyOCNI']
-PyOCNI_Server_Address = 'http://' + str(OCNI_IP) + ':' + str(OCNI_PORT)
 
 class PostMan():
 
     def __init__(self):
 
-        try:
-            server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
-        except Exception:
-            raise Exception("Database is unreachable")
-
-        self.database = server.get_db(PyOCNI_DB)
+        self.database = config.get_PyOCNI_db()
 
     def save_registered_docs_in_db(self,docs):
 

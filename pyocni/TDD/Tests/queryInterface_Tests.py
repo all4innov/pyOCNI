@@ -33,7 +33,7 @@ import pycurl
 import time
 import StringIO
 from pyocni.TDD.fake_Data.initialize_fakeDB import init_fakeDB
-import timeit
+import pyocni.pyocni_tools.config as config
 
 def start_server():
 
@@ -53,8 +53,11 @@ class test_get(TestCase):
         self.p.start()
         time.sleep(0.5)
         init_fakeDB()
+        time.sleep(0.5)
 
     def tearDown(self):
+
+        config.purge_PyOCNI_db()
         self.p.terminate()
 
     def test_get_all_categories(self):

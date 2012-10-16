@@ -45,7 +45,7 @@ def add_fake_kind():
     c = pycurl.Curl()
     c.setopt(c.URL,'http://127.0.0.1:8090/-/')
     c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json','Accept: application/occi+json'])
-    c.setopt(c.POSTFIELDS,f_categories.get_a_kind())
+    c.setopt(c.POSTFIELDS,f_categories.kind)
     c.setopt(c.CUSTOMREQUEST, 'POST')
     c.perform()
 
@@ -53,7 +53,7 @@ def add_fake_mixin():
     c = pycurl.Curl()
     c.setopt(c.URL,'http://127.0.0.1:8090/-/')
     c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json','Accept: application/occi+json'])
-    c.setopt(c.POSTFIELDS,f_categories.get_a_mixin())
+    c.setopt(c.POSTFIELDS,f_categories.mixin)
     c.setopt(c.CUSTOMREQUEST, 'POST')
     c.perform()
 
@@ -61,7 +61,7 @@ def add_fake_action():
     c = pycurl.Curl()
     c.setopt(c.URL,'http://127.0.0.1:8090/-/')
     c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json','Accept: application/occi+json'])
-    c.setopt(c.POSTFIELDS,f_categories.get_an_action())
+    c.setopt(c.POSTFIELDS,f_categories.action)
     c.setopt(c.CUSTOMREQUEST, 'POST')
     c.perform()
 
@@ -69,6 +69,6 @@ def add_fake_resource():
     c = pycurl.Curl()
     c.setopt(c.URL,'http://127.0.0.1:8090/-/')
     c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json','Accept: application/occi+json'])
-    c.setopt(c.POSTFIELDS,f_entities.get_a_resource())
+    c.setopt(c.POSTFIELDS,f_entities.resource)
     c.setopt(c.CUSTOMREQUEST, 'POST')
     c.perform()

@@ -26,7 +26,7 @@ Created on Jun 12, 2012
 @version: 0.3
 @license: LGPL - Lesser General Public License
 """
-from pyocni.backend import dummy_backend,l3vpn_backend,libnetvirt_backend,openflow_backend,opennebula_backend,openstack_backend
+from pyocni.backends import dummy_backend,l3vpn_backend,libnetvirt_backend,openflow_backend,opennebula_backend,openstack_backend
 import pyocni.pyocni_tools.config as config
 try:
     import simplejson as json

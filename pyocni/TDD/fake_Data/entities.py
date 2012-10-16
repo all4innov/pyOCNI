@@ -26,55 +26,47 @@ Created on Jun 19, 2012
 @version: 0.3
 @license: LGPL - Lesser General Public License
 """
-import pyocni.pyocni_tools.uuid_Generator as uuid
 
-def get_a_resource():
-    guid = uuid.get_UUID()
-    post_resources= """{
-        "resources": [
-                {
-                "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
-                "mixins": [
-                    "http://example.com/template/resource#medium"
-                ],
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "speed": 2,
-                            "memory": 4,
-                            "cores": 2
-                        }
-                    },
-                    "org": {
-                        "other": {
-                            "occi": {
-                                "my_mixin": {
-                                    "my_attribute": "my_value"
-                                }
+
+
+resource= """{
+    "resources": [
+            {
+            "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
+            "mixins": [
+                "http://example.com/template/resource#medium"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "speed": 2,
+                        "memory": 4,
+                        "cores": 2
+                    }
+                },
+                "org": {
+                    "other": {
+                        "occi": {
+                            "my_mixin": {
+                                "my_attribute": "my_value"
                             }
                         }
                     }
-                },
-                "actions": [
-                        {
-                        "title": "Start My Server",
-                        "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
-                        "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                    }
-                ],
-                "id": "9930",
-                "title": "Compute resource",
-                "summary": "This is a compute resource"
-            }
-        ]
-    }
-    """
-associate_mixin = """
-{"Resource_Locations":["http://127.0.0.1:8090/user_1/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29","http://127.0.0.1:8090/user_1/compute/996ad860-2a9a-504f-8861-aeafd0b2ae30"]}
-"""
-put_on_mixin_path = """
-{"Resource_Locations":["http://127.0.0.1:8090/user_1/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29","http://127.0.0.1:8090/user_1/compute/996ad860-2a9a-504f-8861-aeafd0b2ae30"],
-"Mixin_Locations":[]}
+                }
+            },
+            "actions": [
+                    {
+                    "title": "Start My Server",
+                    "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                }
+            ],
+            "id": "9930",
+            "title": "Compute resource",
+            "summary": "This is a compute resource"
+        }
+    ]
+}
 """
 
 links ="""
