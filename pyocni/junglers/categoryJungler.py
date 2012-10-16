@@ -112,7 +112,7 @@ class CategoryJungler:
                 #Step[3]: Save the new categories in the database
                 categories = new_kinds + new_mixins + new_actions
                 self.PostMan.save_registered_docs_in_db(categories)
-
+                logger.debug("===== channel_register_categories ==== : Done with success")
                 return "",return_code['OK']
 
     def channel_get_all_categories(self):
@@ -129,6 +129,7 @@ class CategoryJungler:
 
             return return_code['Internal Server Error'],res
         else:
+            logger.debug("===== channel_get_all_categories ==== : Done with success")
             return return_code['OK'],res
 
 
@@ -148,23 +149,23 @@ class CategoryJungler:
         else:
 
             if jreq.has_key('kinds'):
-                logger.debug("===== Get filtered categories : Kinds filter is found and channeled =====")
+                logger.debug("===== Channel_get_filtered_categories: Kinds filter is found and channeled =====")
                 filtered_kinds,resp_code_k = self.manager_k.get_filtered_kinds(jreq['kinds'],res['kinds'])
             else:
-                logger.debug("===== Get filtered categories : No kind filter was found =====")
+                logger.debug("===== Channel_get_filtered_categories: No kind filter was found =====")
                 filtered_kinds = ""
                 resp_code_k = return_code['OK']
 
             if jreq.has_key('mixins'):
-                logger.debug("===== Get filtered categories : Mixins filter is found and channeled =====")
+                logger.debug("===== Channel_get_filtered_categories: Mixins filter is found and channeled =====")
                 filtered_mixins,resp_code_m = self.manager_m.get_filtered_mixins(jreq['mixins'],res['mixins'])
             else:
-                logger.debug("Get filtered categories : No mixin filter was found" )
+                logger.debug("Channel_get_filtered_categories: No mixin filter was found" )
                 filtered_mixins = ""
                 resp_code_m = return_code['OK']
 
             if jreq.has_key('actions'):
-                logger.debug("===== Get filtered categories : Actions filter is found and channeled =====")
+                logger.debug("===== Channel_get_filtered_categories: Actions filter is found and channeled =====")
                 filtered_actions,resp_code_a = self.manager_a.get_filtered_actions(jreq['actions'],res['actions'])
             else:
                 logger.debug("ch get filter : No actions found")
@@ -177,6 +178,7 @@ class CategoryJungler:
                 return "An error has occurred, please check logs for more details",return_code['Bad Request']
             else:
                 result = {'kinds': filtered_kinds, 'mixins': filtered_mixins, 'actions': filtered_actions}
+                logger.debug("===== channel_get_filtered_categories ==== : Done with success")
                 return result,return_code['OK']
 
     def channel_delete_categories(self,jreq):
@@ -197,29 +199,29 @@ class CategoryJungler:
 
         else:
             if jreq.has_key('kinds'):
-                logger.debug("===== Delete categories : Kind filter is found and channeled =====")
+                logger.debug("===== Channel_delete_categories : Kind filter is found and channeled =====")
                 delete_kinds,resp_code_k = self.manager_k.delete_kind_documents(jreq['kinds'],db_occi_id)
             else:
-                logger.debug("===== Delete categories : No Kind filter was found =====")
+                logger.debug("===== Channel_delete_categories : No Kind filter was found =====")
                 delete_kinds=list()
                 resp_code_k = return_code['OK']
 
             if jreq.has_key('mixins'):
 
                 db_mixin_entities = self.d_baker.bake_to_delete_categories_mixins(jreq['mixins'])
-                logger.debug("===== Delete categories : Mixin filter is found and channeled =====")
+                logger.debug("===== Channel_delete_categories : Mixin filter is found and channeled =====")
                 delete_mixins,to_update,resp_code_m = self.manager_m.delete_mixin_documents(jreq['mixins'],db_occi_id,db_mixin_entities)
             else:
-                logger.debug("===== Delete categories : No Mixin filter was found =====")
+                logger.debug("===== Channel_delete_categories : No Mixin filter was found =====")
                 delete_mixins=list()
                 to_update = list()
                 resp_code_m = return_code['OK']
 
             if jreq.has_key('actions'):
-                logger.debug("===== Delete categories : Action filter is found and channeled =====")
+                logger.debug("===== Channel_delete_categories : Action filter is found and channeled =====")
                 delete_actions,resp_code_a = self.manager_a.delete_action_documents(jreq['actions'],db_occi_id)
             else:
-                logger.debug("===== Delete categories : Action filter is found and channeled =====")
+                logger.debug("===== Channel_delete_categories : Action filter is found and channeled =====")
                 delete_actions = list()
                 resp_code_a = return_code['OK']
 
@@ -229,7 +231,8 @@ class CategoryJungler:
             categories = delete_kinds + delete_mixins + delete_actions
 
             self.PostMan.save_deleted_categories_in_db(categories)
-
+            self.postMan.save_updated_docs_in_db(to_update)
+            logger.debug("===== channel_delete_categories ==== : Done with success")
 
             return "",return_code['OK']
 
@@ -287,6 +290,7 @@ class CategoryJungler:
 
             categories = updated_kinds + updated_providers + updated_mixins + updated_actions
             self.PostMan.save_updated_docs_in_db(categories)
+            logger.debug("===== channel_update_categories ==== : Done with success")
 
             return "",return_code['OK']
 
@@ -294,21 +298,5 @@ class CategoryJungler:
 
 
 
-#=======================================================================================================================
-#                           Independant Functions
-#=======================================================================================================================
-#def create_temporary_db(data_1,data_2,new_data):
-#    """
-#    Add new_data to data
-#    Args:
-#        @param data_1: old data
-#        @param data_2: old data
-#        @param new_data: new data
-#    """
-#    for item in new_data:
-#        if item.has_key('OCCI_ID'):
-#            data_1.append(item['OCCI_ID'])
-#        elif item.has_key('OCCI_Location'):
-#            data_2.append(item['OCCI_Location'])
-#    return data_1,data_2
+
 

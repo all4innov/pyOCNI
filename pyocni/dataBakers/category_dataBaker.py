@@ -117,7 +117,7 @@ class CategoryDataBaker():
             db_occi_id = list()
             for q in query:
                 if q['key'] is not None:
-                    db_occi_id.append( { "_id" : q['key'],"_rev" : q['value'][0], "OCCI_ID" : q['value'][1],"Creator" : q['value'][2]})
+                    db_occi_id.append( { "_id" : q['key'],"_rev" : q['value'][0], "OCCI_ID" : q['value'][1]})
             return db_occi_id
 
     def bake_to_delete_categories_mixins(self,mixins):

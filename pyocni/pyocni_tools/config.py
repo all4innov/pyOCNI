@@ -104,7 +104,8 @@ def prepare_PyOCNI_db():
                             " emit([doc.OCCI_Location,doc.Creator],doc);});"
             },
             "for_delete_categories": {
-                "map": "(function(doc) { emit(doc._id,[doc._rev,doc.OCCI_ID, doc.Creator])});"
+                "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\"))"
+                       "emit(doc._id,[doc._rev,doc.OCCI_ID])});"
             },
             "for_register_categories" : {
                 "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "

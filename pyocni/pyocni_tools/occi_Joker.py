@@ -234,9 +234,9 @@ def make_category_location(occi_description):
     """
     try:
         loc = occi_description['location']
-        entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + loc
+        entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT  + loc
     except Exception as e:
-        logger.error("Entity location : " + e.message )
+        logger.error("===== Make_category_location ======: " + e.message )
         return  None
     return entity_location
 
@@ -252,19 +252,18 @@ def verify_occi_uniqueness(occi_term, db_categories):
         db_categories.index(occi_term)
         return False
     except ValueError as e:
-        logger.debug("Uniqueness : " + e.message )
+        logger.error("===== Verify_occi_uniqueness =====: " + e.message )
         return True
 
-def verify_exist_occi_id_creator(occi_id,creator,db_data):
+def verify_exist_occi_id(occi_id,db_data):
     """
     Verify the existence of a document with such an OCCI ID  and creator in db_data
     Args:
         @param occi_id: OCCI ID to be checked
-        @param creator: creator of the document
         @param db_data: Data to search in
     """
     for data in db_data:
-        if data['OCCI_ID'] == occi_id and data['Creator'] == creator:
+        if data['OCCI_ID'] == occi_id:
             return {"_id" : data['_id'],"_rev" : data['_rev']}
     return None
 
