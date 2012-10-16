@@ -38,7 +38,7 @@ def init_fakeDB():
     add_fake_action()
     add_fake_kind()
     add_fake_mixin()
-    pass
+
 
 def add_fake_kind():
 
@@ -67,7 +67,7 @@ def add_fake_action():
 
 def add_fake_resource():
     c = pycurl.Curl()
-    c.setopt(c.URL,'http://127.0.0.1:8090/-/')
+    c.setopt(c.URL,'http://127.0.0.1:8090/compute/')
     c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json','Accept: application/occi+json'])
     c.setopt(c.POSTFIELDS,f_entities.resource)
     c.setopt(c.CUSTOMREQUEST, 'POST')

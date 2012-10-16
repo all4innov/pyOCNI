@@ -33,7 +33,6 @@ try:
     import simplejson as json
 except ImportError:
     import json
-
 from pyocni.pyocni_tools.config import return_code
 from pyocni.adapters.i_ResponseAdapter import ResponseAdapter
 from pyocni.adapters.i_RequestAdapter import RequestAdapter
@@ -61,9 +60,10 @@ class QueryDispatcher(object):
 
         #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON) if there is a body:
 
-        if not (self.req.headers.contains("content_type")):
+        if not (self.req.headers.__contains__('content_type')):
 
             var,self.res.status_code = self.jungler.channel_get_all_categories()
+
 
         else:
 
@@ -76,13 +76,18 @@ class QueryDispatcher(object):
                 self.res.body = self.req.content_type + " is an unknown request content type"
 
             else:
-                    var,self.res.status_code = self.jungler.channel_get_filtered_categories(jreq)
+
+                var,self.res.status_code = self.jungler.channel_get_filtered_categories(jreq)
+
+
 
         #Step[3]: Adapt the response to the required accept-type
 
         if self.res.status_code == return_code['OK']:
 
-            self.res = self.res_adapter.convert_response_category_content(self.res,var)
+            #self.res = self.res_adapter.convert_response_category_content(self.res,var)
+            print "i am testing "
+            self.res.body = "hello"
         else:
             self.res.content_type = "text/html"
             self.res.body = var

@@ -57,7 +57,7 @@ class test_get(TestCase):
 
     def tearDown(self):
 
-        config.purge_PyOCNI_db()
+        #config.purge_PyOCNI_db()
         self.p.terminate()
 
     def test_get_all_categories(self):
@@ -73,7 +73,7 @@ class test_get(TestCase):
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
+        print " ========== Body content ==========\n " + content + " \n ==========\n"
 
 
 

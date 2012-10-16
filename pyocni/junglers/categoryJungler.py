@@ -126,11 +126,12 @@ class CategoryJungler:
 
         #Step[2]: Return all the results back to the dispatcher
         if res is None:
+            return res,return_code['Internal Server Error']
 
-            return return_code['Internal Server Error'],res
         else:
+
             logger.debug("===== channel_get_all_categories ==== : Done with success")
-            return return_code['OK'],res
+            return res,return_code['OK']
 
 
     def channel_get_filtered_categories(self,jreq):
