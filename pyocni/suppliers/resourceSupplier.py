@@ -38,15 +38,15 @@ class ResourceSupplier():
 
         self.database = config.prepare_PyOCNI_db()
 
-    def get_for_register_categories(self):
-
-        try:
-            query = self.database.view('/db_views/for_register_categories')
-        except Exception as e:
-            logger.error("===== Get_ids_and_location_categories : " + e.message + " ===== ")
-            return None
-
-        return query
+#    def get_for_register_categories(self):
+#
+#        try:
+#            query = self.database.view('/db_views/for_register_categories')
+#        except Exception as e:
+#            logger.error("===== Get_ids_and_location_categories : " + e.message + " ===== ")
+#            return None
+#
+#        return query
 
     def get_my_resources(self,path_url):
 

@@ -136,7 +136,7 @@ class ActionManager:
 
             occi_id = joker.get_description_id(desc)
 
-            action_id_rev = joker.verify_exist_occi_id_creator(occi_id,db_categories)
+            action_id_rev = joker.verify_exist_occi_id(occi_id,db_categories)
 
             if action_id_rev is not None:
                 message.append(action_id_rev)

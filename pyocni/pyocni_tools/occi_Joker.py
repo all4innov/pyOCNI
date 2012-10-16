@@ -283,17 +283,16 @@ def extract_doc(occi_id, db_data):
     return None
 
 
-def make_entity_location_from_url(creator, url_path, uuid):
+def make_entity_location_from_url(url_path, uuid):
     """
     Creates the location of the resource/link from the occi resource/link description
     Args:
         @param url_path: Kind OCCI location to which this resource/link instance belongs to
         @param uuid: UUID of the resource/link contained in the resource/link description
-        @param creator: ID creator of the resource/link instance
         @return :<string> Location of the resource/link
     """
-    kind_loc = url_path.split('/-/')[1]
-    entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + creator + "/" + kind_loc + uuid
+    kind_loc = url_path.split("http://" + config.OCNI_IP + ":" + config.OCNI_PORT )[1]
+    entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + kind_loc + uuid
     return entity_location
 
 

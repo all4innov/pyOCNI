@@ -34,7 +34,7 @@ except ImportError:
     import json
 
 from pyocni.suppliers.resourceSupplier import ResourceSupplier
-import pyocni.pyocni_tools.occi_Joker as joker
+
 
 # getting the Logger
 logger = config.logger
@@ -47,7 +47,7 @@ class ResourceDataBaker():
 
     def bake_to_put_single(self,path_url):
 
-        query1 = self.resource_sup.get_for_register_categories()
+        query1 = self.resource_sup.get_for_register_entities()
         if query1 is None:
             return None,None
         else:

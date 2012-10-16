@@ -148,7 +148,7 @@ def prepare_PyOCNI_db():
             },
             "for_update_entities":{
                 "map" :"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
-                        "emit ([doc.OCCI_Location,doc.Creator],doc)});"
+                        "emit (doc.OCCI_Location,doc)});"
             },
             "entities_of_mixin_v2":{
                 "map":"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
