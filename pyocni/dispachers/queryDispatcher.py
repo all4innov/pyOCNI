@@ -82,7 +82,7 @@ class QueryDispatcher(object):
 
         if self.res.status_code == return_code['OK']:
 
-            self.res = self.res_adapter.convert_response_category_content(self.res,self.req.accept,var)
+            self.res = self.res_adapter.convert_response_category_content(self.res,var)
         else:
             self.res.content_type = "text/html"
             self.res.body = var

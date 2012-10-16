@@ -68,7 +68,7 @@ class MultiEntityDispatcher(object):
                 var,self.res.status_code = self.jungler.channel_post_multi_resources(jBody,self.path_url)
 
                 if self.res.status_code == return_code['OK, and location returned']:
-                    self.res_adapter.convert_response_entity_content(var,self.res)
+                    self.res_adapter.convert_response_entity_multi_location_content(var,self.res)
 
                 else:
                     self.res.content_type = "text/html"
@@ -102,7 +102,7 @@ class MultiEntityDispatcher(object):
 
             if self.res.status_code == return_code['OK']:
 
-                self.res_adapter.convert_response_entity_content(var,self.res)
+                self.res_adapter.convert_response_entity_multi_location_content(var,self.res)
 
             else:
                 self.res.content_type = "text/html"
@@ -130,6 +130,7 @@ class MultiEntityDispatcher(object):
 
             #add the JSON to database along with other attributes
             self.res.body,self.res.status_code = self.jungler.channel_put_multi(jBody,self.path_url)
+
         return self.res
 
     def delete(self):

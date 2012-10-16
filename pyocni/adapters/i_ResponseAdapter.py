@@ -45,13 +45,13 @@ class ResponseAdapter():
         self.text_occi_f = To_HTTP_Text_OCCI()
         self.text_uri_f = To_HTTP_Text_URI_List()
 
-    def convert_response_category_content(self,res,accept_type,jdata):
+    def convert_response_category_content(self,res,jdata):
 
 
-        if str(accept_type) == "application/occi+json":
+        if str(res.content_type) == "application/occi+json":
             res.body = json.dumps(jdata)
 
-        elif str(accept_type) == "text/occi":
+        elif str(res.content_type) == "text/occi":
             #reformat the response to text/occi
             res.body = "OK"
             res.headers.extend(self.text_occi_f.format_to_text_occi_categories(jdata))
@@ -63,7 +63,8 @@ class ResponseAdapter():
 
         return res
 
-    def convert_response_entity_content(self,var,res):
+
+    def convert_response_entity_multi_location_content(self,var,res):
 
         if str(res.content_type) == "application/occi+json":
             res.body = json.dumps(var)
@@ -88,4 +89,37 @@ class ResponseAdapter():
             res.body = self.text_plain_f.format_to_text_plain_locations(var)
 
         return res
+
+    def convert_response_entity_location_content(self,var,res):
+
+        if str(res.content_type) == "application/occi+json":
+            res.body = var
+
+        elif str(res.content_type) == "text/occi":
+            #reformat the response to text/occi
+            res.body = "OK"
+            res.location = var
+
+        else :
+            #reformat the response to text/plain (default OCCI response format)
+            res.content_type = "text/plain"
+            res.location = var
+
+    def convert_response_entity_content(self, res, var):
+
+        if str(res.content_type) == "application/occi+json":
+            res.body = json.dumps(var)
+
+        elif str(res.content_type) == "text/occi":
+            #reformat the response to text/occi
+            res.body = "OK"
+            res.headers.extend(self.text_occi_f.format_to_text_occi_entities(var))
+
+        else :
+            #reformat the response to text/plain (default OCCI response format)
+            res.content_type = "text/plain"
+            body = self.text_plain_f.format_to_text_plain_entities(var)
+
+
+
 

@@ -90,7 +90,7 @@ class SingleEntityDispatcher(object):
 
             if self.res.status_code == return_code['OK, and location returned']:
 
-                self.res = self.res_adapter.convert_response_category_content(self.res,self.req.accept,var)
+                self.res = self.res_adapter.convert_response_entity_location_content(self.res,var)
             else:
                 self.res.content_type = "text/html"
                 self.res.body = var
@@ -109,7 +109,7 @@ class SingleEntityDispatcher(object):
 
         if self.res.status_code == return_code['OK']:
 
-            self.res = self.res_adapter.convert_response_category_content(self.res,self.req.accept,var)
+            self.res = self.res_adapter.convert_response_entity_content(self.res,var)
         else:
             self.res.content_type = "text/html"
             self.res.body = var
@@ -141,7 +141,7 @@ class SingleEntityDispatcher(object):
 
                 if self.res.status_code == return_code['OK, and location returned']:
 
-                    self.res = self.res_adapter.convert_response_category_content(self.res,self.req.accept,var)
+                    self.res = self.res_adapter.convert_response_entity_location_content(self.res,var)
                 else:
                     self.res.content_type = "text/html"
                     self.res.body = var
