@@ -52,12 +52,12 @@ class test_get(TestCase):
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
-        #init_fakeDB()
-        #time.sleep(0.5)
+        init_fakeDB()
+        time.sleep(0.5)
 
     def tearDown(self):
 
-        #config.purge_PyOCNI_db()
+        config.purge_PyOCNI_db()
         self.p.terminate()
 
     def test_get_all_categories(self):

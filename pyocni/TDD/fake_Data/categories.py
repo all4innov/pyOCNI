@@ -61,7 +61,7 @@ kind =\
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
             ],
             """ \
-            "\"location\": \"/compute\""\
+            "\"location\": \"/compute/\""\
         "}"\
     "]"\
 "}"

@@ -59,7 +59,7 @@ class SingleEntityDispatcher(object):
         self.triggered_action = None
 
         self.res = Response()
-        self.res.content_type = req.accept
+        self.res.content_type = str(req.accept)
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
 
         self.req_adapter = RequestAdapter()

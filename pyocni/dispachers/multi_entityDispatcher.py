@@ -29,7 +29,7 @@ class MultiEntityDispatcher(object):
         self.path_url = self.req.path_url
 
         self.res = Response()
-        self.res.content_type = req.accept
+        self.res.content_type = str(req.accept)
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
         
         self.req_adapter = RequestAdapter()

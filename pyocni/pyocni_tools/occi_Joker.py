@@ -252,7 +252,7 @@ def verify_occi_uniqueness(occi_term, db_categories):
         db_categories.index(occi_term)
         return False
     except ValueError as e:
-        logger.error("===== Verify_occi_uniqueness =====: " + e.message )
+        logger.info("===== Verify_occi_uniqueness =====: " + e.message )
         return True
 
 def verify_exist_occi_id(occi_id,db_data):
