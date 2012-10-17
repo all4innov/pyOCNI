@@ -83,8 +83,8 @@ def update_occi_entity_description(oldData,newData):
             try:
                 oldData_keys.index(key)
                 if key == 'attributes':
-                    oldData['attributes'] = complete_occi_description_with_default_attributes(oldData['attributes'],newData['attributes'])
-                    print oldData['attributes']
+                    oldData['attributes'] = complete_occi_description_with_default_attributes(newData['attributes'],oldData['attributes'])
+
                 else:
                     oldData[key] = newData[key]
             except ValueError:
@@ -353,10 +353,11 @@ def look_for_update_key_values(new_attr):
 
 
 def complete_occi_description_with_default_attributes(desc, default_attributes):
-
+    
     for key in desc.keys():
 
         if type(desc[key]) is dict:
+
             complete_occi_description_with_default_attributes(default_attributes[key],desc[key])
         else:
             default_attributes[key] = desc[key]

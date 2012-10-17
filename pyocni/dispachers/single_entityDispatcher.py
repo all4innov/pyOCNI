@@ -126,7 +126,7 @@ class SingleEntityDispatcher(object):
         #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
 
         jBody = self.req_adapter.convert_request_entity_content_v2(self.req)
-        
+
         if jBody is None:
 
             self.res.status_code = return_code['Not Acceptable']
