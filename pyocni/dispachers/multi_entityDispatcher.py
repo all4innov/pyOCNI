@@ -86,27 +86,26 @@ class MultiEntityDispatcher(object):
         """
 
         #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
-
-        jBody = self.req_adapter.convert_request_category_content(self.req)
-
-        if jBody is None:
-
-            self.res.status_code = return_code['Not Acceptable']
-            self.res.body = self.req.content_type + " is an unknown request content type"
+        if not (self.req.headers.__contains__('content_type')) or self.req.body is "":
+            var,self.res.status_code = self.jungler.channel_get_all_entities(self.path_url,"")
         else:
+            jBody = self.req_adapter.convert_request_category_content(self.req)
 
-            if jBody == "":
-                var,self.res.status_code = self.jungler.channel_get_all_entities(self.path_url,"")
+            if jBody is None:
+
+                self.res.status_code = return_code['Not Acceptable']
+                self.res.body = self.req.content_type + " is an unknown request content type"
+
             else:
                 var,self.res.status_code = self.jungler.channel_get_filtered_entities(self.path_url,jBody)
 
-            if self.res.status_code == return_code['OK']:
+        if self.res.status_code == return_code['OK']:
 
-                self.res_adapter.convert_response_entity_multi_location_content(var,self.res)
+            self.res_adapter.convert_response_entity_multi_location_content(var,self.res)
 
-            else:
-                self.res.content_type = "text/html"
-                self.res.body = str(var)
+        else:
+            self.res.content_type = "text/html"
+            self.res.body = str(var)
 
         return self.res
 

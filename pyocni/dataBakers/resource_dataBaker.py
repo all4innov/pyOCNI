@@ -206,8 +206,6 @@ class ResourceDataBaker():
 
     def bake_to_get_all_entities(self, cat_type,cat_id):
 
-
-
         if cat_type == "Kind":
 
             query = self.resource_sup.get_entities_of_kind(cat_id)
@@ -220,21 +218,10 @@ class ResourceDataBaker():
 
             return None
 
-
-        occi_descriptions = list()
-
-        for entity in query:
-            res = self.resource_sup.get_my_resources(entity['value'][0])
-
-            if res is None:
-                return None
-            else:
-                occi_descriptions.append(res['value'][1])
-
         to_return_res = list()
         to_return_link = list()
 
-        for entity in occi_descriptions:
+        for entity in query:
 
             if entity['value'][1] == "Resource":
                 to_return_res.append(entity['value'][0])

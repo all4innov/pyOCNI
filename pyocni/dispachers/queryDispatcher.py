@@ -60,7 +60,7 @@ class QueryDispatcher(object):
 
         #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON) if there is a body:
 
-        if not (self.req.headers.__contains__('content_type')):
+        if not (self.req.headers.__contains__('content_type')) or self.req.body is "":
 
             var,self.res.status_code = self.jungler.channel_get_all_categories()
 

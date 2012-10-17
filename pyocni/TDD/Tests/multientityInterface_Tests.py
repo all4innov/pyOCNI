@@ -120,32 +120,33 @@ class test_get(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(pycurl.URL,"http://127.0.0.1:8090/compute/")
-        c.setopt(pycurl.HTTPHEADER, ['Accept: text/occi','Content-Type: application/occi+json'])
+        c.setopt(pycurl.HTTPHEADER, ['Accept: text/plain'])
         c.setopt(c.VERBOSE,True)
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
-        c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
 
-    def test_get_filtred_entities(self):
-        """
-        get filtred resources & links
-        """
 
-        storage = StringIO.StringIO()
-        c = pycurl.Curl()
-        c.setopt(pycurl.URL,"http://127.0.0.1:8090/compute/")
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
-        c.setopt(pycurl.USERPWD, 'user_1:password')
-        c.setopt(pycurl.POSTFIELDS,fake_data.links)
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
+
+#    def test_get_filtred_entities(self):
+#        """
+#        get filtred resources & links
+#        """
+#
+#        storage = StringIO.StringIO()
+#        c = pycurl.Curl()
+#        c.setopt(pycurl.URL,"http://127.0.0.1:8090/compute/")
+#        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+#        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+#        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
+#        c.setopt(pycurl.USERPWD, 'user_1:password')
+#        c.setopt(pycurl.POSTFIELDS,fake_data.links)
+#        c.setopt(c.WRITEFUNCTION, storage.write)
+#        c.perform()
+#        content = storage.getvalue()
+#        print " ===== Body content =====\n " + content + " ==========\n"
 
 class test_put(TestCase):
     """
@@ -224,7 +225,7 @@ if __name__ == '__main__':
     put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
-#    runner.run(get_suite)
+    runner.run(get_suite)
 #    runner.run(delete_suite)
 #    runner.run(put_suite)
-    runner.run(post_suite)
+#    runner.run(post_suite)

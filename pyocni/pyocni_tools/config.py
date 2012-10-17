@@ -91,7 +91,7 @@ design_doc = {
         },
         "for_associate_mixin": {
             "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                   " emit([doc.OCCI_Location,doc.Creator],doc);});"
+                   " emit([doc.OCCI_Location,],doc);});"
         },
         "for_delete_categories": {
             "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\"))"
@@ -125,16 +125,9 @@ design_doc = {
             "map": "(function(doc) { if (doc.Type == \"Mixin\")"
                    "emit (doc.OCCI_Location,doc.OCCI_ID) });"
         },
-        "my_occi_locations":{
-            "map": "(function(doc) {emit (doc.OCCI_Location,doc.Creator) });"
-        },
         "my_resources":{
             "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                   "emit ([doc.OCCI_Location,doc.Creator],[doc.Type, doc.OCCI_Description]) });"
-        },
-        "for_delete_entities" :{
-            "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                   "emit (doc.Creator,[doc.OCCI_Location,doc._id,doc._rev]) });"
+                   "emit (doc.OCCI_Location,[doc.Type, doc.OCCI_Description]) });"
         },
         "for_update_entities":{
             "map" :"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
@@ -147,7 +140,7 @@ design_doc = {
         },
         "for_trigger_action": {
             "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                   "emit ([doc.OCCI_Location,doc.Creator],[doc.OCCI_Description.kind,doc.OCCI_Description.mixins]) });"
+                   "emit ([doc.OCCI_Location,],[doc.OCCI_Description.kind,doc.OCCI_Description.mixins]) });"
         },
         "actions_of_kind_mix": {
             "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\"))"
@@ -201,3 +194,15 @@ def purge_PyOCNI_db():
     except Exception as e:
         logger.error("===== Purge_PyOCNI_db: Database purge has failed + " + e.message + "=====")
 
+
+
+#=======================================================================================================================
+#
+#        "my_occi_locations":{
+#            "map": "(function(doc) {emit (doc.OCCI_Location,) });"
+#        }
+
+#"for_delete_entities" :{
+#                           "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+#                                  "emit (,[doc.OCCI_Location,doc._id,doc._rev]) });"
+#                       },

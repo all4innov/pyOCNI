@@ -138,7 +138,7 @@ class MultiEntityJungler(object):
             return "An error has occurred, please check log for more details",return_code['Internal Server Error']
         elif res is 0:
             # Retrieve the state of the name space hierarchy
-            logger.error("===== Channel_get_all_multi_entities ===== : This is a get on a path " + req_path)
+            logger.warning("===== Channel_get_all_multi_entities ===== : This is a get on a path " + req_path)
 
             var, resp_code = self.jungler_p.channel_get_on_path(req_path,jreq)
             return var, resp_code
@@ -147,9 +147,13 @@ class MultiEntityJungler(object):
 
             q = res.first()
             entities = self.rd_baker.bake_to_get_all_entities(q['value'][1],q['value'][0])
+
             if entities is None:
+
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
+
             else:
+
                 #backend_m.read_entities(occi_descriptions)
                 logger.debug("===== Channel_get_all_entities ==== : Finished with success")
                 return entities,return_code['OK']
