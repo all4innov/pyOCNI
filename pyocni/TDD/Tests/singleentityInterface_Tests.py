@@ -33,6 +33,7 @@ import pycurl
 import time
 import StringIO
 from pyocni.TDD.fake_Data.initialize_fakeDB import init_fakeDB
+from pyocni.TDD.fake_Data import entities
 import pyocni.pyocni_tools.config as config
 
 def start_server():
@@ -65,34 +66,33 @@ class test_post(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,'http://127.0.0.1:8090/bilel/vms/v02')
+        c.setopt(c.URL,'http://127.0.0.1:8090/compute/d4e49287-e8bd-4cd8-953a-b90f327084e5')
 
-        c.setopt(c.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi',fake_data.part_entity_http])
+        c.setopt(c.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi',entities.part_entity_http])
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.VERBOSE, True)
 
-        c.setopt(c.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
 
-    def test_trigger_action_resource(self):
-        """
-        register resources & links
-        """
-        storage = StringIO.StringIO()
-        c = pycurl.Curl()
-        c.setopt(c.URL,'http://127.0.0.1:8090/bilel/vms/v1?action=start')
-        c.setopt(c.HTTPHEADER, ['Accept:text/plain','content-Type: application/occi+json'])
-        c.setopt(c.VERBOSE, True)
-        c.setopt(c.CUSTOMREQUEST, 'POST')
-        c.setopt(c.POSTFIELDS,fake_data.trig_action)
-        c.setopt(c.USERPWD, 'user_1:password')
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
+#    def test_trigger_action_resource(self):
+#        """
+#        register resources & links
+#        """
+#        storage = StringIO.StringIO()
+#        c = pycurl.Curl()
+#        c.setopt(c.URL,'http://127.0.0.1:8090/bilel/vms/v1?action=start')
+#        c.setopt(c.HTTPHEADER, ['Accept:text/plain','content-Type: application/occi+json'])
+#        c.setopt(c.VERBOSE, True)
+#        c.setopt(c.CUSTOMREQUEST, 'POST')
+#        c.setopt(c.POSTFIELDS,fake_data.trig_action)
+#        c.setopt(c.USERPWD, 'user_1:password')
+#        c.setopt(c.WRITEFUNCTION, storage.write)
+#        c.perform()
+#        content = storage.getvalue()
+#        print " ===== Body content =====\n " + content + " ==========\n"
 
 
 
@@ -206,9 +206,9 @@ if __name__ == '__main__':
     get_suite = loader.loadTestsFromTestCase(test_get)
 #    delete_suite = loader.loadTestsFromTestCase(test_delete)
 #    put_suite = loader.loadTestsFromTestCase(test_put)
-#    post_suite = loader.loadTestsFromTestCase(test_post)
+    post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
-    runner.run(get_suite)
+#    runner.run(get_suite)
 #    runner.run(delete_suite)
 #    runner.run(put_suite)
-#    runner.run(post_suite)
+    runner.run(post_suite)

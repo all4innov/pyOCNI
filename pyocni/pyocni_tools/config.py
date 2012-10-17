@@ -151,6 +151,10 @@ design_doc = {
         "my_providers": {
             "map": "(function(doc) { if (doc.Type == \"Kind\")"
                    "emit (doc.OCCI_ID,doc.Provider)});"
+        },
+        "get_default_attributes_from_kind": {
+            "map": "(function(doc) { if (doc.Type == \"Kind\")"
+                   "emit (doc.OCCI_Location,doc.OCCI_Description.attributes)});"
         }
 
 

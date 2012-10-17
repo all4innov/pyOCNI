@@ -20,7 +20,7 @@ class ResourceManager(object):
     Manager of resource documents in the couch database.
     """
 
-    def register_resources(self,occi_descriptions,url_path,db_occi_ids_locs):
+    def register_resources(self,occi_descriptions,url_path,db_occi_ids_locs,default_attributes):
 
         """
         Add new resources to the database
@@ -29,6 +29,7 @@ class ResourceManager(object):
             @param occi_descriptions: the OCCI description of the new resources
             @param db_occi_ids_locs: OCCI IDs and OCCI Location extracted from the database
             @param url_path: URL path of the request
+            @param default_attributes: the default attributes extracted from kind
         """
         loc_res = list()
         kind_occi_id = None
@@ -52,6 +53,9 @@ class ResourceManager(object):
                         jData = dict()
                         jData['_id'] = uuid_Generator.get_UUID()
                         jData['OCCI_Location']= loc
+                        full_att = joker.complete_occi_description_with_default_attributes(desc['attributes'],default_attributes)
+                        desc['attributes'] = full_att
+                        print full_att
                         jData['OCCI_Description']= desc
                         jData['Type']= "Resource"
                         loc_res.append(jData)
@@ -152,14 +156,13 @@ class ResourceManager(object):
             logger.error("===== Update_resource: " + mesg+" =====")
             return list(),return_code['Not Found']
 
-    def partial_resource_update(self, old_data,occi_description, db_occi_ids_locs):
+    def partial_resource_update(self, old_data,occi_description):
         """
         Verifies the validity of a resource's new data
         Args:
 
             @param occi_description: Resource description
             @param old_data: Old resource description
-            @param db_occi_ids_locs: Ids and locations from the database
         """
 
         problems,updated_data = joker.update_occi_entity_description(old_data,occi_description)

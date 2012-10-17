@@ -126,7 +126,7 @@ class SingleEntityDispatcher(object):
         #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
 
         jBody = self.req_adapter.convert_request_entity_content_v2(self.req)
-
+        
         if jBody is None:
 
             self.res.status_code = return_code['Not Acceptable']
@@ -141,7 +141,7 @@ class SingleEntityDispatcher(object):
 
                 if self.res.status_code == return_code['OK, and location returned']:
 
-                    self.res = self.res_adapter.convert_response_entity_location_content(self.res,var)
+                    self.res = self.res_adapter.convert_response_entity_location_content(var,self.res)
                 else:
                     self.res.content_type = "text/html"
                     self.res.body = var

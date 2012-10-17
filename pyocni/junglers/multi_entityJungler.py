@@ -53,14 +53,16 @@ class MultiEntityJungler(object):
         if is_kind_loc is True:
             #Step[2a]: This is a create new resources request
             db_occi_ids_locs = self.rd_baker.bake_to_post_multi_resources_2a()
-
-            if db_occi_ids_locs is None:
+            default_attributes = self.rd_baker.bake_to_get_default_attributes(req_path)
+            if db_occi_ids_locs is None or default_attributes is None:
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
             else:
+                #Look for the default attributes to complete the attribute description of the resource:
+
                 if jreq.has_key('resources'):
 
                     logger.debug("===== Channel_post_multi_resources ==== : Post on kind path to create a new resource channeled")
-                    new_resources, resp_code_r = self.manager_r.register_resources(jreq['resources'],req_path,db_occi_ids_locs)
+                    new_resources, resp_code_r = self.manager_r.register_resources(jreq['resources'],req_path,db_occi_ids_locs,default_attributes)
                 else:
                     new_resources = list()
                     resp_code_r = return_code['OK, and location returned']

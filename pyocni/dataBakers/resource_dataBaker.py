@@ -108,13 +108,11 @@ class ResourceDataBaker():
 
             for q in query:
                 db_occi_ids_locs.append({"OCCI_ID" : q['key'],"OCCI_Location":q['value']})
-
             query2 = self.resource_sup.get_for_update_entities(path_url)
-
             if query2 is None:
                 return None,None
 
-            elif query2.count():
+            elif query2.count() is 0:
                 return db_occi_ids_locs,0
 
             else:
@@ -325,9 +323,96 @@ class ResourceDataBaker():
 
                 return entity_kind_ids,query2
 
+    def recursive_get_attribute_names(self,kind_attribute_description):
+
+        for key in kind_attribute_description.keys():
+            if type(kind_attribute_description[key]) is dict:
+                self.recursive_get_attribute_names(kind_attribute_description)
+                print "i am "
+
+    def bake_to_get_default_attributes(self, req_path):
+
+        query = self.resource_sup.get_default_attributes_from_kind(req_path)
+
+        if query is None:
+            return None
+        else:
+            res = recursive_for_default_attributes(query.first()['value'])
+
+            default = {}
+            for item in res:
+                default = (cnv_attribute_from_http_to_json(item+"=None",json_result=default))
+
+            return default
 
 
 
+
+
+#=======================================================================================================================
+#                                                   Independant functions
+#=======================================================================================================================
+def recursive_for_default_attributes(attributes):
+    """
+
+    """
+
+    att_http = list()
+    for key in attributes.keys():
+        if type(attributes[key]) is dict:
+            items = recursive_for_default_attributes(attributes[key])
+            for item in items:
+                if not (item.find('{')):
+                    att_http.append(key + item)
+                else:
+                    att_http.append(key + "." + item)
+        else:
+            attributes = [""]
+            return attributes
+    final_att = list()
+    for item in att_http:
+        if item.endswith('.'):
+            final_att.append(item[:-1])
+        else:
+            final_att.append(item)
+    return final_att
+
+def cnv_attribute_from_http_to_json(attribute,json_result={}):
+    """
+
+    method to convert and add one OCCI HTTP attribute to an OCCI JSON object
+
+    # the attribute 'attribute' contains the OCCI HTTP Attribute. e.g. 'occi.compute.hostname="foobar"'
+    # the attribute 'json_result' contains an OCCI JSON object. e.g. {} or {'occi': {'compute': {'cores': 2, 'hostname': 'foobar'}}}
+    """
+    attribute_partitioned = attribute.partition('=')
+    attribute_name = attribute_partitioned[0]
+    attribute_value = attribute_partitioned[2]
+    attribute_name_partitioned = attribute_name.split('.')
+
+    a = json_result
+    for i in range(len(attribute_name_partitioned)):
+        if a.has_key(attribute_name_partitioned[i]):
+            if i < (len(attribute_name_partitioned) - 1):
+                a = a[attribute_name_partitioned[i]]
+            else:
+                try:
+                    a[attribute_name_partitioned[i]] = json.loads(attribute_value)
+                except Exception :
+                    a[attribute_name_partitioned[i]] = attribute_value
+
+        else:
+            if i < (len(attribute_name_partitioned) - 1):
+                a[attribute_name_partitioned[i]] = {}
+                a = a[attribute_name_partitioned[i]]
+                json_result.update(a)
+            else:
+                try:
+                    a[attribute_name_partitioned[i]] = json.loads(attribute_value)
+                except Exception :
+                    a[attribute_name_partitioned[i]] = attribute_value
+
+    return json_result
 
 
 

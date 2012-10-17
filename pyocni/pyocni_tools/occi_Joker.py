@@ -83,7 +83,8 @@ def update_occi_entity_description(oldData,newData):
             try:
                 oldData_keys.index(key)
                 if key == 'attributes':
-                    print "GOGOATTributes"
+                    oldData['attributes'] = complete_occi_description_with_default_attributes(oldData['attributes'],newData['attributes'])
+                    print oldData['attributes']
                 else:
                     oldData[key] = newData[key]
             except ValueError:
@@ -342,11 +343,6 @@ def format_url_path(cat_path):
     return new_path
 
 
-def update_occi_entity_attributes(old_attr,new_attr):
-    """
-
-    """
-
 def look_for_update_key_values(new_attr):
 
     for key in new_attr:
@@ -354,3 +350,14 @@ def look_for_update_key_values(new_attr):
             look_for_update_key_values(new_attr[key])
         else:
             return key
+
+
+def complete_occi_description_with_default_attributes(desc, default_attributes):
+
+    for key in desc.keys():
+
+        if type(desc[key]) is dict:
+            complete_occi_description_with_default_attributes(default_attributes[key],desc[key])
+        else:
+            default_attributes[key] = desc[key]
+    return default_attributes

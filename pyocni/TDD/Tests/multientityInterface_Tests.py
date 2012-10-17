@@ -226,7 +226,7 @@ if __name__ == '__main__':
     put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
-    runner.run(get_suite)
+#    runner.run(get_suite)
 #    runner.run(delete_suite)
 #    runner.run(put_suite)
-#    runner.run(post_suite)
+    runner.run(post_suite)

@@ -105,6 +105,8 @@ class ResponseAdapter():
             res.content_type = "text/plain"
             res.location = var
 
+        return res
+
     def convert_response_entity_content(self, res, var):
 
 
