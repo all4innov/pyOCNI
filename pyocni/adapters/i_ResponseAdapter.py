@@ -47,7 +47,7 @@ class ResponseAdapter():
 
     def convert_response_category_content(self,res,jdata):
 
-        print str(res.content_type)
+
         if str(res.content_type) == "application/occi+json":
             res.body = json.dumps(jdata)
 

@@ -52,8 +52,8 @@ class test_get(TestCase):
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
-        init_fakeDB()
-        time.sleep(0.5)
+        #init_fakeDB()
+        #time.sleep(0.5)
 
     def tearDown(self):
 
@@ -64,10 +64,11 @@ class test_get(TestCase):
         """
         Get all kinds,mixins and actions
         """
+
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(c.URL,'http://127.0.0.1:8090/-/')
-        c.setopt(c.HTTPHEADER, ['Accept:application/occi+json'])
+        c.setopt(c.HTTPHEADER, ['Accept:text/plain'])
         c.setopt(c.VERBOSE, True)
         c.setopt(c.CUSTOMREQUEST, 'GET')
         c.setopt(c.WRITEFUNCTION, storage.write)
@@ -77,56 +78,56 @@ class test_get(TestCase):
 
 
 
-    def test_get_filter_categories_ok(self):
-        """
-        get all categories matching the terms contained in the request
-        """
-        storage = StringIO.StringIO()
-        c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
-        c.setopt(pycurl.POSTFIELDS,fake_data.post_categories)
-        c.setopt(pycurl.USERPWD, 'user_1:password')
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
-
-
-class test_delete(TestCase):
-    """
-    Tests DELETE request scenarios
-    """
-    def setUp(self):
-
-        """
-        Set up the test environment
-        """
-        self.p = Process(target = start_server)
-        self.p.start()
-        time.sleep(0.5)
-
-    def tearDown(self):
-        self.p.terminate()
-
-    def test_delete_categories(self):
-        """
-        delete a mixin
-        """
-        storage = StringIO.StringIO()
-        c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
-        c.setopt(pycurl.POSTFIELDS,fake_data.post_categories)
-        c.setopt(pycurl.USERPWD, 'user_1:password')
-        c.setopt(c.WRITEFUNCTION, storage.write)
-        c.perform()
-        content = storage.getvalue()
-        print " ===== Body content =====\n " + content + " ==========\n"
+#    def test_get_filter_categories_ok(self):
+#        """
+#        get all categories matching the terms contained in the request
+#        """
+#        storage = StringIO.StringIO()
+#        c = pycurl.Curl()
+#        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
+#        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+#        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+#        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
+#        c.setopt(pycurl.POSTFIELDS,fake_data.post_categories)
+#        c.setopt(pycurl.USERPWD, 'user_1:password')
+#        c.setopt(c.WRITEFUNCTION, storage.write)
+#        c.perform()
+#        content = storage.getvalue()
+#        print " ===== Body content =====\n " + content + " ==========\n"
+#
+#
+#class test_delete(TestCase):
+#    """
+#    Tests DELETE request scenarios
+#    """
+#    def setUp(self):
+#
+#        """
+#        Set up the test environment
+#        """
+#        self.p = Process(target = start_server)
+#        self.p.start()
+#        time.sleep(0.5)
+#
+#    def tearDown(self):
+#        self.p.terminate()
+#
+#    def test_delete_categories(self):
+#        """
+#        delete a mixin
+#        """
+#        storage = StringIO.StringIO()
+#        c = pycurl.Curl()
+#        c.setopt(pycurl.URL,'http://127.0.0.1:8090/-/')
+#        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
+#        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
+#        c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
+#        c.setopt(pycurl.POSTFIELDS,fake_data.post_categories)
+#        c.setopt(pycurl.USERPWD, 'user_1:password')
+#        c.setopt(c.WRITEFUNCTION, storage.write)
+#        c.perform()
+#        content = storage.getvalue()
+#        print " ===== Body content =====\n " + content + " ==========\n"
 
 
 
@@ -205,11 +206,11 @@ if __name__ == '__main__':
 
     #Create the testing suites
     get_suite = loader.loadTestsFromTestCase(test_get)
-    delete_suite = loader.loadTestsFromTestCase(test_delete)
-    post_suite = loader.loadTestsFromTestCase(test_post)
-    put_suite = loader.loadTestsFromTestCase(test_put)
+#    delete_suite = loader.loadTestsFromTestCase(test_delete)
+#    post_suite = loader.loadTestsFromTestCase(test_post)
+#    put_suite = loader.loadTestsFromTestCase(test_put)
     #Run tests
     runner.run(get_suite)
-    runner.run(post_suite)
-    runner.run(delete_suite)
-    runner.run(put_suite)
+#    runner.run(post_suite)
+#    runner.run(delete_suite)
+#    runner.run(put_suite)

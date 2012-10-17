@@ -46,7 +46,7 @@ class QueryDispatcher(object):
 
         self.req = req
         self.res = Response()
-        self.res.content_type = req.accept
+        self.res.content_type = str(req.accept)
         self.res.server = 'ocni-server/1.1 (linux) OCNI/1.1'
         self.req_adapter = RequestAdapter()
         self.res_adapter = ResponseAdapter()
@@ -63,7 +63,6 @@ class QueryDispatcher(object):
         if not (self.req.headers.__contains__('content_type')):
 
             var,self.res.status_code = self.jungler.channel_get_all_categories()
-
 
         else:
 
@@ -85,9 +84,8 @@ class QueryDispatcher(object):
 
         if self.res.status_code == return_code['OK']:
 
-            #self.res = self.res_adapter.convert_response_category_content(self.res,var)
-            print "i am testing "
-            self.res.body = "hello"
+            self.res = self.res_adapter.convert_response_category_content(self.res,var)
+
         else:
             self.res.content_type = "text/html"
             self.res.body = var
