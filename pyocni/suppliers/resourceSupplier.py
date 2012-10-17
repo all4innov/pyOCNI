@@ -51,7 +51,7 @@ class ResourceSupplier():
     def get_my_resources(self,path_url):
 
         try:
-            query = self.database.view('/db_views/my_resources',key=[path_url])
+            query = self.database.view('/db_views/my_resources',key=path_url)
         except Exception as e:
             logger.error("===== Get_resources : " + e.message + " ===== ")
             return None

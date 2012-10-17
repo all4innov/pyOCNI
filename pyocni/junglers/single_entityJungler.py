@@ -154,7 +154,9 @@ class SingleEntityJungler(object):
 
         else:
             logger.debug("===== Channel_get_single_resource ==== : Finished with success")
-            backend_m.read_entity(entity,entity['kind'])
+
+            #backend_m.read_entity(entity,entity['kind'])
+
             return res,return_code['OK']
 
     def channel_post_single_resource(self, jBody, path_url):

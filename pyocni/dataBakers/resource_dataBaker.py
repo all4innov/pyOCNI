@@ -81,7 +81,7 @@ class ResourceDataBaker():
 
     def bake_to_get_single_res(self, path_url):
 
-        query = self.resource_sup.get_my_resources()
+        query = self.resource_sup.get_my_resources(path_url)
 
         if query is None:
             return None,None

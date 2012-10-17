@@ -28,13 +28,15 @@ Created on Jun 27, 2012
 """
 from multiprocessing import Process
 from unittest import TestLoader,TextTestRunner,TestCase
-import pyocni.client.Tests.server_Mock as server
+from pyocni.TDD.fake_Data.server_Mock import ocni_server
 import pycurl
 import time
 import StringIO
-import pyocni.client.Tests.entities as fake_data
+from pyocni.TDD.fake_Data.initialize_fakeDB import init_fakeDB
+import pyocni.pyocni_tools.config as config
+
 def start_server():
-    ocni_server_instance = server.ocni_server()
+    ocni_server_instance = ocni_server()
     ocni_server_instance.run_server()
 
 class test_post(TestCase):
@@ -49,8 +51,12 @@ class test_post(TestCase):
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
+        #init_fakeDB()
+        time.sleep(0.5)
 
     def tearDown(self):
+
+        #config.purge_PyOCNI_db()
         self.p.terminate()
 
     def test_partial_update_entities(self):
@@ -64,7 +70,7 @@ class test_post(TestCase):
         c.setopt(c.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi',fake_data.part_entity_http])
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.VERBOSE, True)
-        #c.setopt(c.POSTFIELDS,fake_data.part_entity_http)
+
         c.setopt(c.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -102,9 +108,13 @@ class test_get(TestCase):
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
+        #init_fakeDB()
+        time.sleep(0.5)
 
     def tearDown(self):
+
         self.p.terminate()
+        #config.purge_PyOCNI_db()
 
     def test_get_entity(self):
         """
@@ -113,11 +123,10 @@ class test_get(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,"http://127.0.0.1:8090/bilel/vms/v05")
-        c.setopt(c.HTTPHEADER, ['Accept:text/plain','content-Type: application/occi+json'])
+        c.setopt(c.URL,"http://127.0.0.1:8090/compute/9930")
+        c.setopt(c.HTTPHEADER, ['Accept:text/occi'])
         c.setopt(c.VERBOSE, True)
         c.setopt(c.CUSTOMREQUEST, 'GET')
-        c.setopt(c.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
@@ -195,11 +204,11 @@ if __name__ == '__main__':
 
     #Create the testing suites
     get_suite = loader.loadTestsFromTestCase(test_get)
-    delete_suite = loader.loadTestsFromTestCase(test_delete)
-    put_suite = loader.loadTestsFromTestCase(test_put)
-    post_suite = loader.loadTestsFromTestCase(test_post)
+#    delete_suite = loader.loadTestsFromTestCase(test_delete)
+#    put_suite = loader.loadTestsFromTestCase(test_put)
+#    post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
     runner.run(get_suite)
-    runner.run(delete_suite)
-    runner.run(put_suite)
-    runner.run(post_suite)
+#    runner.run(delete_suite)
+#    runner.run(put_suite)
+#    runner.run(post_suite)

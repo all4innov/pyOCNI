@@ -107,6 +107,7 @@ class ResponseAdapter():
 
     def convert_response_entity_content(self, res, var):
 
+
         if str(res.content_type) == "application/occi+json":
             res.body = json.dumps(var)
 
@@ -118,7 +119,9 @@ class ResponseAdapter():
         else :
             #reformat the response to text/plain (default OCCI response format)
             res.content_type = "text/plain"
-            body = self.text_plain_f.format_to_text_plain_entities(var)
+            res.body = self.text_plain_f.format_to_text_plain_entities(var)
+
+        return res
 
 
 

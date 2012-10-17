@@ -102,7 +102,6 @@ class SingleEntityDispatcher(object):
         """
         Retrieve the representation of a resource
         """
-
         #add the JSON to database along with other attributes
 
         var,self.res.status_code = self.jungler.channel_get_single_resource(self.path_url)
@@ -110,6 +109,7 @@ class SingleEntityDispatcher(object):
         if self.res.status_code == return_code['OK']:
 
             self.res = self.res_adapter.convert_response_entity_content(self.res,var)
+
         else:
             self.res.content_type = "text/html"
             self.res.body = var
