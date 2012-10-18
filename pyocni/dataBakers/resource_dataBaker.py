@@ -75,9 +75,8 @@ class ResourceDataBaker():
             return None
         else:
             to_update = query.first()['value']
-            old_data = to_update['OCCI_Description']
 
-        return old_data
+        return to_update
 
     def bake_to_get_single_res(self, path_url):
 

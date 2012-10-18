@@ -185,12 +185,12 @@ class test_put(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,'http://127.0.0.1:8090/bilel/vms/v05')
-        c.setopt(c.VERBOSE, False)
-        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json','Content-Type: application/occi+json'])
-        c.setopt(pycurl.CUSTOMREQUEST, 'PUT')
-        c.setopt(pycurl.POSTFIELDS,fake_data.post_resources)
-        c.setopt(pycurl.USERPWD, 'user_1:password')
+        c.setopt(c.URL,'http://127.0.0.1:8090/compute/d4e49287-e8bd-4cd8-953a-b90f327084e5')
+
+        c.setopt(c.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi',entities.part_entity_http])
+        c.setopt(c.CUSTOMREQUEST, 'PUT')
+        c.setopt(c.VERBOSE, True)
+
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
@@ -203,12 +203,12 @@ if __name__ == '__main__':
     runner = TextTestRunner(verbosity=2)
 
     #Create the testing suites
-    get_suite = loader.loadTestsFromTestCase(test_get)
+#    get_suite = loader.loadTestsFromTestCase(test_get)
 #    delete_suite = loader.loadTestsFromTestCase(test_delete)
-#    put_suite = loader.loadTestsFromTestCase(test_put)
+    put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
 #    runner.run(get_suite)
 #    runner.run(delete_suite)
-#    runner.run(put_suite)
-    runner.run(post_suite)
+    runner.run(put_suite)
+#    runner.run(post_suite)

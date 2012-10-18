@@ -141,8 +141,8 @@ class ResourceManager(object):
             @param db_occi_ids_locs: Ids and locations from the database
         """
         #Verify if the kind of the resource exists in the database
-        ok_k = joker.verify_existences_beta([occi_description['kind']],db_occi_ids_locs)
-
+        #ok_k = joker.verify_existences_beta([occi_description['kind']],db_occi_ids_locs)
+        ok_k = True
         if ok_k is True:
 
             problems,occi_description = joker.update_occi_entity_description(old_description,occi_description)
@@ -150,10 +150,14 @@ class ResourceManager(object):
             if problems is False:
                 logger.debug("===== Update_resource: Resource sent for update =====")
                 return occi_description,return_code['OK, and location returned']
-
+            else:
+                logger.error("===== Update_partial_resource: Resource couldn't have been fully updated =====")
+                return list(),return_code['Conflict']
         else:
+
             mesg = "Kind description does not exist match"
-            logger.error("===== Update_resource: " + mesg+" =====")
+            logger.error("===== Update_resource: " + mesg +" =====")
+
             return list(),return_code['Not Found']
 
     def partial_resource_update(self, old_data,occi_description):
@@ -172,7 +176,7 @@ class ResourceManager(object):
             return updated_data,return_code['OK, and location returned']
         else:
             logger.error("===== Update_partial_resource: Resource couldn't have been fully updated =====")
-            return updated_data,False,return_code['Conflict']
+            return updated_data,return_code['Conflict']
 
 
 

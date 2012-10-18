@@ -90,7 +90,7 @@ class SingleEntityDispatcher(object):
 
             if self.res.status_code == return_code['OK, and location returned']:
 
-                self.res = self.res_adapter.convert_response_entity_location_content(self.res,var)
+                self.res = self.res_adapter.convert_response_entity_location_content(var,self.res)
             else:
                 self.res.content_type = "text/html"
                 self.res.body = var
