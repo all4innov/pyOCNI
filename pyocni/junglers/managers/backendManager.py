@@ -118,12 +118,12 @@ def delete_entity(entity,kind):
     backend.delete(entity)
 
 
-def create_entity(entity):
+def create_entity(entity,res_adr):
 
     kind = entity['OCCI_Description']['kind']
     provider = get_provider_of_a_kind(kind)
     backend = choose_appropriate_provider(provider)
-    backend.create(entity['OCCI_Description'])
+    backend.create(entity['OCCI_Description'],res_adr)
 
 
 def update_entity(old_data, new_data):
@@ -140,10 +140,10 @@ def read_entity(entity,kind):
     backend = choose_appropriate_provider(provider)
     backend.read(entity)
 
-def create_entities(entities):
+def create_entities(entities,res_adrs):
 
     for entity in entities:
-        create_entity(entity)
+        create_entity(entity,res_adrs.pop(0))
 
 
 def update_entities(old_docs, new_docs):
