@@ -94,6 +94,9 @@ class MultiEntityDispatcher(object):
         else:
             jBody = self.req_adapter.convert_request_entity_content_v2(self.req)
 
+            print "This is my JBody ==================================================="
+            print jBody
+
             if jBody is None:
 
                 self.res.status_code = return_code['Not Acceptable']
