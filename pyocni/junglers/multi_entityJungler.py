@@ -38,7 +38,7 @@ class MultiEntityJungler(object):
 
     def channel_post_multi_resources(self,jreq,req_path):
         """
-        Identifies the post path's goal : create a resource instance or update a mixin
+        Identifies the post path's goal : create a resource instance or update a mixin collection
         Args:
             @param jreq: Body content of the post request
             @param req_path: Address to which this post request was sent
@@ -86,13 +86,12 @@ class MultiEntityJungler(object):
                 self.PostMan.save_registered_docs_in_db(entities)
                 logger.debug("===== Channel_post_multi_resources ==== : Finished (2a) with success")
 
-
-
                 locations = list()
 
                 for item in entities:
                     locations.append(item['OCCI_Location'])
                     #return the locations of the resources
+
                 backend_m.create_entities(entities,locations)
 
                 return locations,return_code['OK, and location returned']

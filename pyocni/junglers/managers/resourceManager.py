@@ -55,7 +55,6 @@ class ResourceManager(object):
                         jData['OCCI_Location']= loc
                         full_att = joker.complete_occi_description_with_default_attributes(desc['attributes'],default_attributes)
                         desc['attributes'] = full_att
-                        print full_att
                         jData['OCCI_Description']= desc
                         jData['Type']= "Resource"
                         loc_res.append(jData)

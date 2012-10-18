@@ -33,7 +33,7 @@ logger = config.logger
 
 class dummy_backend(backend):
 
-    def create(self, entity):
+    def create(self, entity,hhh):
         '''
 
         Create an entity (Resource or Link)

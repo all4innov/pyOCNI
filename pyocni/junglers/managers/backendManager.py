@@ -142,8 +142,8 @@ def read_entity(entity,kind):
 
 def create_entities(entities,res_adrs):
 
-    for entity in entities:
-        create_entity(entity,res_adrs.pop(0))
+    for i in range(len(entities)):
+        create_entity(entities[i],res_adrs[i])
 
 
 def update_entities(old_docs, new_docs):
