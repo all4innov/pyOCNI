@@ -130,9 +130,6 @@ def is_this_attribute_exist(filter, desc):
 
     return exists
 
-
-
-
 def filter_occi_description(description,filter):
     """
     Checks if the occi description meets the filter values
@@ -146,6 +143,7 @@ def filter_occi_description(description,filter):
     desc_keys = description.keys()
 
     for key in filter_keys:
+
         if key=='attributes' and description['attributes'] is not None:
 
             exists = is_this_attribute_exist(filter['attributes'],description['attributes'])

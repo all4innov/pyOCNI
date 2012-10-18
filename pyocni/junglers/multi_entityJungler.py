@@ -197,8 +197,8 @@ class MultiEntityJungler(object):
 
                 result = filtered_res + filtered_links
 
-
-                occi_descriptions = self.rd_baker.bake_to_get_filtered_entities_2(result)
+                logger.debug("===== Channel_get_filtered_entities ==== : Finished with success")
+                #occi_descriptions = self.rd_baker.bake_to_get_filtered_entities_2(result)
 
                     #backend_m.read_entities(occi_descriptions)
                 return result,return_code['OK']
