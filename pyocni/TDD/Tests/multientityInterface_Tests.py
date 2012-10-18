@@ -121,11 +121,11 @@ class test_get(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(pycurl.URL,"http://127.0.0.1:8090/compute/")
-        c.setopt(pycurl.HTTPHEADER, ['Content-type: text/occi','Accept: text/plain',fake_entities.part_entity_http])
+        c.setopt(pycurl.HTTPHEADER, ['Content-type: text/plain','Accept: text/plain',fake_entities.part_entity_http])
         c.setopt(c.VERBOSE,True)
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
         c.setopt(c.WRITEFUNCTION, storage.write)
-        #c.setopt(pycurl.POSTFIELDS,fake_entities.part_entity_http)
+        c.setopt(pycurl.POSTFIELDS,fake_entities.part_entity_http)
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
