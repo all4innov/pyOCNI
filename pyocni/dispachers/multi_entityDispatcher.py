@@ -101,7 +101,7 @@ class MultiEntityDispatcher(object):
 
         if self.res.status_code == return_code['OK']:
 
-            self.res_adapter.convert_response_entity_multi_location_content(var,self.res)
+            self.res_adapter.convert_response_entity_multi_x_occi_location_content(var,self.res)
 
         else:
             self.res.content_type = "text/html"

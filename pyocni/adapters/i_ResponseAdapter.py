@@ -125,6 +125,31 @@ class ResponseAdapter():
 
         return res
 
+    def convert_response_entity_multi_x_occi_location_content(self, var, res):
+
+        if str(res.content_type) == "application/occi+json":
+            res.body = json.dumps(var)
+
+        elif str(res.content_type) == "text/occi":
+            #reformat the response to text/occi
+            res.body = "OK"
+            res.headers = self.text_occi_f.format_to_text_x_occi_locations(var)
+
+        elif str(res.content_type) == "text/uri-list":
+            #reformat the response to text/occi
+            res,ok = self.text_uri_f.check_for_uri_locations(var)
+            if ok is True:
+                res.body = res
+            else:
+                res.content_type = "text/plain"
+                res.body = self.text_plain_f.format_to_text_plain_x_locations(var)
+
+        else :
+            #reformat the response to text/plain (default OCCI response format)
+            res.content_type = "text/plain"
+            res.body = self.text_plain_f.format_to_text_plain_x_locations(var)
+
+        return res
 
 
 

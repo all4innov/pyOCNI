@@ -353,7 +353,7 @@ def look_for_update_key_values(new_attr):
 
 
 def complete_occi_description_with_default_attributes(desc, default_attributes):
-    
+
     for key in desc.keys():
 
         if type(desc[key]) is dict:

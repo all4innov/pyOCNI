@@ -51,9 +51,11 @@ class MultiEntityJungler(object):
             is_kind_loc = False
 
         if is_kind_loc is True:
+
             #Step[2a]: This is a create new resources request
             db_occi_ids_locs = self.rd_baker.bake_to_post_multi_resources_2a()
             default_attributes = self.rd_baker.bake_to_get_default_attributes(req_path)
+
             if db_occi_ids_locs is None or default_attributes is None:
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
             else:
@@ -149,7 +151,6 @@ class MultiEntityJungler(object):
 
             q = res.first()
             entities = self.rd_baker.bake_to_get_all_entities(q['value'][1],q['value'][0])
-
             if entities is None:
 
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
