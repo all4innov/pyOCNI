@@ -86,13 +86,14 @@ class MultiEntityJungler(object):
                 self.PostMan.save_registered_docs_in_db(entities)
                 logger.debug("===== Channel_post_multi_resources ==== : Finished (2a) with success")
 
-                backend_m.create_entities(entities)
+
 
                 locations = list()
 
                 for item in entities:
                     locations.append(item['OCCI_Location'])
                     #return the locations of the resources
+                backend_m.create_entities(entities,locations)
 
                 return locations,return_code['OK, and location returned']
 
