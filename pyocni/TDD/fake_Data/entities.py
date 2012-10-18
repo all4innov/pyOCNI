@@ -206,5 +206,5 @@ entity_http = "Category: compute; scheme=\"http://schemas.ogf.org/occi/infrastru
 
 
 part_entity_http = \
-              "X-OCCI-Attribute: occi.compute.cores=21"
+              "X-OCCI-Attribute: occi.compute.cores=20:2"
 

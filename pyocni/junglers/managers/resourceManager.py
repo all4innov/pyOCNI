@@ -91,15 +91,15 @@ class ResourceManager(object):
 
                 for filter in filters:
                     checks =joker.filter_occi_description(desc['OCCI_Description'],filter)
+
                     if checks is True:
                         var.append(desc['OCCI_ID'])
                         logger.debug("===== Get_filtered_resources: A resource document is found =====")
-                        break
 
             return var,return_code['OK']
 
         except Exception as e:
-            logger.error("Get_filtered_resources : " + e.message+ " =====")
+            logger.error("===== Get_filtered_resources : " + e.message+ " =====")
             return list(),return_code['Internal Server Error']
 
     def register_custom_resource(self, occi_description, path_url, db_occi_ids_locs):

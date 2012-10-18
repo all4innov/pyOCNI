@@ -113,6 +113,26 @@ def get_description_id(occi_description):
     res = desc_scheme+desc_term
     return res
 
+
+def is_this_attribute_exist(filter, desc):
+
+    for key in filter.keys():
+
+        if type(filter[key]) is dict:
+
+            exists = is_this_attribute_exist(desc[key],filter[key])
+
+        else:
+            if filter[key] == desc[key]:
+                return True
+            else:
+                return False
+
+    return exists
+
+
+
+
 def filter_occi_description(description,filter):
     """
     Checks if the occi description meets the filter values
@@ -121,21 +141,28 @@ def filter_occi_description(description,filter):
         @param filter: The filter description
         @return : Updated  a boolean (false if no match, true if there is a match)
     """
-
     #Try to get the keys from filter dictionary
     filter_keys = filter.keys()
     desc_keys = description.keys()
-    for key in filter_keys:
-        try:
-            desc_keys.index(key)
-            if description[key]!= filter[key]:
-                return False
-        except ValueError:
-            #Keep the record of the keys(=parts) that couldn't be updated
-            logger.debug("filter description : "+ key + " could not be found")
-            return False
 
-    return True
+    for key in filter_keys:
+        if key=='attributes' and description['attributes'] is not None:
+
+            exists = is_this_attribute_exist(filter['attributes'],description['attributes'])
+            return exists
+        else:
+            try:
+                desc_keys.index(key)
+                if description[key]!= filter[key]:
+                    return False
+                else:
+                    return True
+            except ValueError:
+                #Keep the record of the keys(=parts) that couldn't be updated
+                logger.debug("filter description : "+ key + " could not be found")
+                return False
+
+
 
 def verify_existences_alpha(description,db_data):
     """

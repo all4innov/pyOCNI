@@ -86,10 +86,13 @@ class MultiEntityDispatcher(object):
         """
 
         #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
-        if not (self.req.headers.__contains__('content_type')) or self.req.body is "":
+        #print (self.req.headers.__contains__('content_type'))
+
+        if  self.req.body is "":
+
             var,self.res.status_code = self.jungler.channel_get_all_entities(self.path_url,"")
         else:
-            jBody = self.req_adapter.convert_request_category_content(self.req)
+            jBody = self.req_adapter.convert_request_entity_content_v2(self.req)
 
             if jBody is None:
 

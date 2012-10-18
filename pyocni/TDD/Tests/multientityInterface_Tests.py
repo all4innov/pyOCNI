@@ -121,10 +121,11 @@ class test_get(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(pycurl.URL,"http://127.0.0.1:8090/compute/")
-        c.setopt(pycurl.HTTPHEADER, ['Accept: text/occi'])
+        c.setopt(pycurl.HTTPHEADER, ['Content-type: text/plain','Accept: text/plain'])
         c.setopt(c.VERBOSE,True)
         c.setopt(pycurl.CUSTOMREQUEST, 'GET')
         c.setopt(c.WRITEFUNCTION, storage.write)
+        c.setopt(pycurl.POSTFIELDS,fake_entities.part_entity_http)
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
@@ -226,7 +227,7 @@ if __name__ == '__main__':
     put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
-#    runner.run(get_suite)
+    runner.run(get_suite)
 #    runner.run(delete_suite)
 #    runner.run(put_suite)
-    runner.run(post_suite)
+#    runner.run(post_suite)

@@ -168,14 +168,14 @@ class MultiEntityJungler(object):
             @param req_path: Address to which this post request was sent
             @param terms: Terms to filter entities
         """
-
-
         entities,ok = self.channel_get_all_entities(req_path,terms)
         if ok == return_code['OK']:
             descriptions_res,descriptions_link = self.rd_baker.bake_to_get_filtered_entities(entities)
+
             if descriptions_res is None:
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
             else:
+
                 if terms.has_key('resources'):
                     logger.debug("===== Channel_get_filtered: Resources are sent to filter =====")
                     filtered_res,resp_code_r = self.manager_r.get_filtered_resources(terms['resources'],descriptions_res)

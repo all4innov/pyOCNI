@@ -265,6 +265,7 @@ class ResourceDataBaker():
 
         for entity in entities:
             query = self.resource_sup.get_for_get_filtered(entity)
+
             if query is None:
                 return None,None
             else:
@@ -273,7 +274,7 @@ class ResourceDataBaker():
                 else:
                     descriptions_link.append({'OCCI_ID' : entity,'OCCI_Description' : query.first()['value'][0]})
 
-            return descriptions_res,descriptions_link
+        return descriptions_res,descriptions_link
 
     def bake_to_get_filtered_entities_2(self, result):
 
