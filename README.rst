@@ -1,5 +1,5 @@
 ==========================================================
- PyOCNI - Python Open Cloud Networking Interface
+ pyOCNI - Python Open Cloud Networking Interface
 ==========================================================
 
 :Version: 0.3
