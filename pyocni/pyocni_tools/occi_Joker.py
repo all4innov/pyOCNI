@@ -47,7 +47,7 @@ def update_occi_category_description(oldData,newData):
         try:
             forbidden_keys.index(key)
             if oldData[key] != newData[key]:
-                logger.debug("update description : " + key + " is forbidden to change")
+                logger.error("===== Update OCCI category description : " + key + " is forbidden to change =====")
                 return True,None
         except ValueError:
             try:
@@ -55,7 +55,7 @@ def update_occi_category_description(oldData,newData):
                 oldData[key] = newData[key]
             except ValueError:
                 #Keep the record of the keys(=parts) that couldn't be updated
-                logger.debug("update category description : " + key + " could not be found")
+                logger.error("===== Update OCCI category description : " + key + " could not be found =====")
                 return True,None
 
     return False,oldData

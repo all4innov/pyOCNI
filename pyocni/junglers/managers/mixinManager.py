@@ -149,6 +149,7 @@ class MixinManager:
 
             if mixin_id_rev is not None:
                 db_entities,dissociated = self.dissociate_entities_belonging_to_mixin(occi_id,db_entities)
+
                 if dissociated is True:
                     mix_ref.append(mixin_id_rev)
                     event = "Mixin document " + occi_id + " is sent for delete "

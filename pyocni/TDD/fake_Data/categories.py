@@ -28,6 +28,10 @@ Created on Jun 19, 2012
 @license: LGPL - Lesser General Public License
 """
 
+#=======================================================================================================================
+#                                                           JSON format
+#=======================================================================================================================
+
 kind =\
     "{"\
     "\"kinds\": ["\
@@ -35,7 +39,7 @@ kind =\
             "\"term\": \"compute\","\
             """
             "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
+            "title": "Compute Resource no2",
             "attributes": {
                 "occi": {
                     "compute": {
@@ -82,7 +86,7 @@ mixin = """
                 "compute": {
                     "speed": {
                         "type": "number",
-                        "default": 2.8
+                        "default": 3.0
                     }
                 }
             }
@@ -105,7 +109,7 @@ action =\
         {
             "term": "start",
             "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-            "title": "Start Compute instance",
+            "title": "Start Compute instance now",
             "attributes": {
                 "method": {
                     "mutable": true,
@@ -151,11 +155,46 @@ provider_up = """
     }
 }"""
 
-#======================================================================================================================
 
-post_http_categories = "Category : my_stuff;\"" \
-                    "scheme=\"http://example.com/occi/my_stuff#\";"\
-                   "class=\"mixin\";"\
-                   "title=\"Storage Resource\";"\
-                   "location=\"/my_stuff/\";"\
-                   "attributes=\"occi.storage.size{required} occi.storage.state{immutable}\";"\
+
+
+
+#=======================================================================================================================
+#                                                           HTTP format
+#=======================================================================================================================
+
+kind_occci_id="""Category: compute;
+ scheme="http://schemas.ogf.org/occi/infrastructure#";
+ class=kind;
+"""
+#=======================================================================================================================
+
+mixin_occci_id="""Category: medium;
+ scheme="http://example.com/template/resource#";
+ class=mixin;
+"""
+#=======================================================================================================================
+
+action_occci_id="""Category: start;
+ scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#";
+ class=action;
+"""
+#=======================================================================================================================
+
+mixin_http = "Category : my_stuff;\""\
+             "scheme=\"http://example.com/occi/my_stuff#\";"\
+             "class=\"mixin\";"\
+             "title=\"Storage Resource\";"\
+             "location=\"/my_stuff/\";"\
+             "attributes=\"occi.storage.size{required} occi.storage.state{immutable}\";"\
+
+#=======================================================================================================================
+
+kind_http = "Category: compute;"\
+            "scheme=\"http://schemas.ogf.org/occi/infrastructure#\";"\
+            "class=\"kind\";"\
+            "title=\"Compute Resource type\";"\
+            "rel=\"http://schemas.ogf.org/occi/core#resource\";"\
+            "attributes=\"occi.compute.cores occi.compute.state{immutable}\";"\
+            "actions=\"http://schemas.ogf.org/occi/infrastructure/compute/action#stop\";"\
+            "location=\"http://example.com/compute/\""

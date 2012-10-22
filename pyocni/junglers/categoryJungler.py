@@ -231,8 +231,8 @@ class CategoryJungler:
 
             categories = delete_kinds + delete_mixins + delete_actions
 
-            self.PostMan.save_deleted_categories_in_db(categories)
-            self.postMan.save_updated_docs_in_db(to_update)
+            self.PostMan.save_deleted_categories_in_db(categories,to_update)
+
             logger.debug("===== channel_delete_categories ==== : Done with success")
 
             return "",return_code['OK']

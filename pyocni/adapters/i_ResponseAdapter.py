@@ -67,7 +67,8 @@ class ResponseAdapter():
     def convert_response_entity_multi_location_content(self,var,res):
 
         if str(res.content_type) == "application/occi+json":
-            res.body = json.dumps(var)
+            location_dict = {"Location":var}
+            res.body = json.dumps(location_dict)
 
         elif str(res.content_type) == "text/occi":
             #reformat the response to text/occi
@@ -128,7 +129,8 @@ class ResponseAdapter():
     def convert_response_entity_multi_x_occi_location_content(self, var, res):
 
         if str(res.content_type) == "application/occi+json":
-            res.body = json.dumps(var)
+            x_occi_location_dict = {"X-OCCI-Location":var}
+            res.body = json.dumps(x_occi_location_dict)
 
         elif str(res.content_type) == "text/occi":
             #reformat the response to text/occi

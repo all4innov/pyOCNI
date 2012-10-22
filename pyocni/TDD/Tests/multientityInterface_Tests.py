@@ -33,7 +33,7 @@ import pycurl
 import time
 import StringIO
 from pyocni.TDD.fake_Data.initialize_fakeDB import init_fakeDB
-import pyocni.TDD.fake_Data.entities as fake_entities
+import pyocni.TDD.fake_Data.entities as f_entities
 import pyocni.pyocni_tools.config as config
 
 
@@ -70,9 +70,9 @@ class test_post(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(c.URL,'http://127.0.0.1:8090/compute/')
-        c.setopt(c.HTTPHEADER, ['Accept:text/occi','Content-Type: text/plain'])
+        c.setopt(c.HTTPHEADER, ['Accept:application/occi+json','Content-Type: text/plain'])
         c.setopt(c.VERBOSE, True)
-        c.setopt(pycurl.POSTFIELDS,fake_entities.entity_http)
+        c.setopt(pycurl.POSTFIELDS,f_entities.entity_http)
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -113,20 +113,22 @@ class test_get(TestCase):
     def tearDown(self):
         self.p.terminate()
 
-    def test_get_all_entities(self):
+    def test_get_entities(self):
         """
         get resources & links
         """
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL,"http://127.0.0.1:8090/compute/")
-        c.setopt(pycurl.HTTPHEADER, ['Content-type: text/plain','Accept: text/plain',fake_entities.part_entity_http])
+
+        c.setopt(c.URL,"http://127.0.0.1:8090/compute/")
+        c.setopt(c.HTTPHEADER, ['Content-type: text/plain','Accept: text/occi',f_entities.x_occi_att])
         c.setopt(c.VERBOSE,True)
-        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
+        c.setopt(c.CUSTOMREQUEST, 'GET')
         c.setopt(c.WRITEFUNCTION, storage.write)
-        c.setopt(pycurl.POSTFIELDS,fake_entities.part_entity_http)
+        #c.setopt(c.POSTFIELDS,f_entities.x_occi_att)
         c.perform()
+
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
 
@@ -222,12 +224,12 @@ if __name__ == '__main__':
     runner = TextTestRunner(verbosity=2)
 
     #Create the testing suites
+
     get_suite = loader.loadTestsFromTestCase(test_get)
-#   delete_suite = loader.loadTestsFromTestCase(test_delete)
+    delete_suite = loader.loadTestsFromTestCase(test_delete)
     put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
+
     #Run tests
-#    runner.run(get_suite)
-#    runner.run(delete_suite)
-#    runner.run(put_suite)
-    runner.run(post_suite)
+
+    runner.run(get_suite)

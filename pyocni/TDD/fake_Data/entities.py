@@ -27,7 +27,9 @@ Created on Jun 19, 2012
 @license: LGPL - Lesser General Public License
 """
 
-
+#=======================================================================================================================
+#                                                           JSON format
+#=======================================================================================================================
 
 resource= """{
     "resources": [
@@ -68,8 +70,9 @@ resource= """{
     ]
 }
 """
+#=======================================================================================================================
 
-links ="""
+link ="""
 {
     "links": [
         {
@@ -98,78 +101,7 @@ links ="""
     ]
 }
 """
-
-
-part_links = """{
-    "links": [
-            {
-            "id": " try to change it",
-            "title": "My partial update test !",
-            "target": "http://127.0.0.1:8090/bilel/compute/vm1",
-            "source": "http://127.0.0.1:8090/bilel/compute2/vm2"
-        }
-    ]
-}
-"""
-part_resource ="""
-{
-    "resources": [
-        {
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "cores": 2
-                    }
-                }
-            }
-        }
-    ]
-}
-"""
-
-post_resources_link= """{
-    "resources": [
-            {
-            "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
-            "mixins": [
-                "http://example.com/template/resource#medium"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": 2,
-                        "memory": 4,
-                        "cores": 2
-                    }
-                },
-                "org": {
-                    "other": {
-                        "occi": {
-                            "my_mixin": {
-                                "my_attribute": "my_value"
-                            }
-                        }
-                    }
-                }
-            },
-            "actions": [
-                    {
-                    "title": "Start My Server",
-                    "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
-                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                }
-            ],
-            "links":{},
-            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae30",
-            "title": "Compute resource",
-            "summary": "This is a compute resource"
-        }
-    ]
-}
-"""
-
-
-
+#=======================================================================================================================
 
 trig_action = """
 {
@@ -192,19 +124,21 @@ trig_action = """
 }
 """
 
-entity_http2="""CATEGORY: compute;
- scheme="http://schemas.ogf.org/occi/infrastructure#";
- class=kind;
- rel="";
-"""
+
+
+#=======================================================================================================================
+#                                                           HTTP format
+#=======================================================================================================================
+
+
+
 entity_http = "Category: compute; scheme=\"http://schemas.ogf.org/occi/infrastructure#\"; class=\"kind\";"\
-      "Category: my_stuff; scheme=\"http://example.com/template/resource#\"; class=\"medium\";"\
-      "X-OCCI-Attribute: occi.compute.cores=2"\
-      "Link: </users/foo/compute/b9ff813e-fee5-4a9d-b839-673f39746096?action=start>;"\
-      "rel=\"http://schemas.ogf.org/occi/infrastructure/compute/action#start\""
+              "Category: my_stuff; scheme=\"http://example.com/template/resource#\"; class=\"medium\";"\
+              "X-OCCI-Attribute: occi.compute.cores=2"\
+              "Link: </users/foo/compute/b9ff813e-fee5-4a9d-b839-673f39746096?action=start>;"\
+              "rel=\"http://schemas.ogf.org/occi/infrastructure/compute/action#start\""
+
+#=======================================================================================================================
 
 
-
-part_entity_http = \
-              "X-OCCI-Attribute: occi.compute.cores=20:2"
-
+x_occi_att = "X-OCCI-Attribute: occi.compute.cores=20:2"

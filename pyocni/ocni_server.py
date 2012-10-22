@@ -63,12 +63,13 @@ class ocni_server(object):
     app = url_mapper.Router()
 
     app.add_route('/-/',controller=operationQuery)
+
     app.add_route('/{location}/',controller=operationMultiEntity)
     app.add_route('/{location}/{idontknow}/',controller=operationMultiEntity)
     app.add_route('/{location}/{idontknow}/{idontcare}/',controller=operationMultiEntity)
-    app.add_route('/{location}/{idontknow}/{idontcare}',controller=operationSingleEntity)
-    app.add_route('/{location}/{idontknow}',controller=operationSingleEntity)
 
+    app.add_route('/{location}/{idontknow}',controller=operationSingleEntity)
+    app.add_route('/{location}/{idontknow}/{idontcare}',controller=operationSingleEntity)
 
 
     def run_server(self):

@@ -122,8 +122,6 @@ class QueryDispatcher(object):
 
         #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
 
-        jBody=dict()
-
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
@@ -145,8 +143,6 @@ class QueryDispatcher(object):
 
         """
         #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
-
-        jBody=dict()
 
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
