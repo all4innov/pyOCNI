@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>pyocni.junglers.pathJungler</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >pyocni</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="pyocni-module.html">Package&nbsp;pyocni</a> ::
+        <a href="pyocni.junglers-module.html">Package&nbsp;junglers</a> ::
+        Module&nbsp;pathJungler
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="pyocni.junglers.pathJungler-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="pyocni.junglers.pathJungler-module.html">Module pyocni.junglers.pathJungler</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#  Copyright 2010-2012 Institut Mines-Telecom</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment">#  Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment">#  you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">#  You may obtain a copy of the License at</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#  http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment">#  Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment">#  distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring">Created on Jun 21, 2012</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">@author: Bilel Msekni</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">@contact: bilel.msekni@telecom-sudparis.eu</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">@author: Houssem Medhioub</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">@contact: houssem.medhioub@it-sudparis.eu</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring">@organization: Institut Mines-Telecom - Telecom SudParis</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-docstring">@license: Apache License, Version 2.0</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Package pyocni=pyocni-module.html"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-0', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package pyocni.pyocni_tools=pyocni.pyocni_tools-module.html"><a title="pyocni.pyocni_tools" class="py-name" href="#" onclick="return doclink('link-1', 'pyocni_tools', 'link-1');">pyocni_tools</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module pyocni.pyocni_tools.config=pyocni.pyocni_tools.config-module.html,Variable pyocni.pyocni_tools.config.config=pyocni.pyocni_tools.config-module.html#config"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-2', 'config', 'link-2');">config</a></tt> <tt class="py-keyword">as</tt> <tt id="link-3" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-3', 'config', 'link-2');">config</a></tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-4" class="py-name"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-4', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name"><a title="pyocni.pyocni_tools" class="py-name" href="#" onclick="return doclink('link-5', 'pyocni_tools', 'link-1');">pyocni_tools</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name" targets="Module pyocni.pyocni_tools.occi_Joker=pyocni.pyocni_tools.occi_Joker-module.html"><a title="pyocni.pyocni_tools.occi_Joker" class="py-name" href="#" onclick="return doclink('link-6', 'occi_Joker', 'link-6');">occi_Joker</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">joker</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-7" class="py-name"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-7', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Package pyocni.dataBakers=pyocni.dataBakers-module.html"><a title="pyocni.dataBakers" class="py-name" href="#" onclick="return doclink('link-8', 'dataBakers', 'link-8');">dataBakers</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Module pyocni.dataBakers.resource_dataBaker=pyocni.dataBakers.resource_dataBaker-module.html"><a title="pyocni.dataBakers.resource_dataBaker" class="py-name" href="#" onclick="return doclink('link-9', 'resource_dataBaker', 'link-9');">resource_dataBaker</a></tt> <tt class="py-keyword">import</tt> <tt id="link-10" class="py-name" targets="Class pyocni.dataBakers.resource_dataBaker.ResourceDataBaker=pyocni.dataBakers.resource_dataBaker.ResourceDataBaker-class.html"><a title="pyocni.dataBakers.resource_dataBaker.ResourceDataBaker" class="py-name" href="#" onclick="return doclink('link-10', 'ResourceDataBaker', 'link-10');">ResourceDataBaker</a></tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-11" class="py-name" targets="Package pyocni.junglers.postMan=pyocni.junglers.postMan-module.html"><a title="pyocni.junglers.postMan" class="py-name" href="#" onclick="return doclink('link-11', 'postMan', 'link-11');">postMan</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name" targets="Module pyocni.junglers.postMan.the_post_man=pyocni.junglers.postMan.the_post_man-module.html"><a title="pyocni.junglers.postMan.the_post_man" class="py-name" href="#" onclick="return doclink('link-12', 'the_post_man', 'link-12');">the_post_man</a></tt> <tt class="py-keyword">import</tt> <tt id="link-13" class="py-name" targets="Class pyocni.junglers.postMan.the_post_man.PostMan=pyocni.junglers.postMan.the_post_man.PostMan-class.html"><a title="pyocni.junglers.postMan.the_post_man.PostMan" class="py-name" href="#" onclick="return doclink('link-13', 'PostMan', 'link-13');">PostMan</a></tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">simplejson</tt> <tt class="py-keyword">as</tt> <tt class="py-name">json</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-keyword">except</tt> <tt class="py-name">ImportError</tt><tt class="py-op">:</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">json</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-14" class="py-name"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-14', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-15" class="py-name"><a title="pyocni.pyocni_tools" class="py-name" href="#" onclick="return doclink('link-15', 'pyocni_tools', 'link-1');">pyocni_tools</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-16', 'config', 'link-2');">config</a></tt> <tt class="py-keyword">import</tt> <tt id="link-17" class="py-name" targets="Variable pyocni.pyocni_tools.config.return_code=pyocni.pyocni_tools.config-module.html#return_code"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-17', 'return_code', 'link-17');">return_code</a></tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-comment"># getting the Logger</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt id="link-18" class="py-name" targets="Variable pyocni.TDD.fake_Data.server_Mock.logger=pyocni.TDD.fake_Data.server_Mock-module.html#logger,Variable pyocni.adapters.i_RequestAdapter.logger=pyocni.adapters.i_RequestAdapter-module.html#logger,Variable pyocni.backends.backend.logger=pyocni.backends.backend-module.html#logger,Variable pyocni.backends.dummy_backend.logger=pyocni.backends.dummy_backend-module.html#logger,Variable pyocni.backends.l3vpn_backend.logger=pyocni.backends.l3vpn_backend-module.html#logger,Variable pyocni.backends.libnetvirt_backend.logger=pyocni.backends.libnetvirt_backend-module.html#logger,Variable pyocni.backends.openflow_backend.logger=pyocni.backends.openflow_backend-module.html#logger,Variable pyocni.backends.opennebula_backend.logger=pyocni.backends.opennebula_backend-module.html#logger,Variable pyocni.backends.openstack_backend.logger=pyocni.backends.openstack_backend-module.html#logger,Variable pyocni.dataBakers.category_dataBaker.logger=pyocni.dataBakers.category_dataBaker-module.html#logger,Variable pyocni.dataBakers.resource_dataBaker.logger=pyocni.dataBakers.resource_dataBaker-module.html#logger,Variable pyocni.junglers.categoryJungler.logger=pyocni.junglers.categoryJungler-module.html#logger,Variable pyocni.junglers.managers.actionManager.logger=pyocni.junglers.managers.actionManager-module.html#logger,Variable pyocni.junglers.managers.backendManager.logger=pyocni.junglers.managers.backendManager-module.html#logger,Variable pyocni.junglers.managers.kindManager.logger=pyocni.junglers.managers.kindManager-module.html#logger,Variable pyocni.junglers.managers.mixinManager.logger=pyocni.junglers.managers.mixinManager-module.html#logger,Variable pyocni.junglers.managers.resourceManager.logger=pyocni.junglers.managers.resourceManager-module.html#logger,Variable pyocni.junglers.multi_entityJungler.logger=pyocni.junglers.multi_entityJungler-module.html#logger,Variable pyocni.junglers.pathJungler.logger=pyocni.junglers.pathJungler-module.html#logger,Variable pyocni.junglers.single_entityJungler.logger=pyocni.junglers.single_entityJungler-module.html#logger,Variable pyocni.ocni_server.logger=pyocni.ocni_server-module.html#logger,Variable pyocni.pyocni_tools.config.logger=pyocni.pyocni_tools.config-module.html#logger,Variable pyocni.pyocni_tools.couchdbdoc_Joker.logger=pyocni.pyocni_tools.couchdbdoc_Joker-module.html#logger,Variable pyocni.pyocni_tools.occi_Joker.logger=pyocni.pyocni_tools.occi_Joker-module.html#logger,Variable pyocni.suppliers.categorySupplier.logger=pyocni.suppliers.categorySupplier-module.html#logger,Variable pyocni.suppliers.resourceSupplier.logger=pyocni.suppliers.resourceSupplier-module.html#logger"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-18', 'logger', 'link-18');">logger</a></tt> <tt class="py-op">=</tt> <tt id="link-19" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-19', 'config', 'link-2');">config</a></tt><tt class="py-op">.</tt><tt id="link-20" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-20', 'logger', 'link-18');">logger</a></tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
+<a name="PathManager"></a><div id="PathManager-def"><a name="L38"></a><tt class="py-lineno"> 38</tt> <a class="py-toggle" href="#" id="PathManager-toggle" onclick="return toggle('PathManager');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.junglers.pathJungler.PathManager-class.html">PathManager</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PathManager-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="PathManager-expanded"><a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"><tt class="py-docstring">    dispachers operations on Path</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="PathManager.__init__"></a><div id="PathManager.__init__-def"><a name="L42"></a><tt class="py-lineno"> 42</tt> <a class="py-toggle" href="#" id="PathManager.__init__-toggle" onclick="return toggle('PathManager.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.pathJungler.PathManager-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PathManager.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="PathManager.__init__-expanded"><a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rd_baker</tt> <tt class="py-op">=</tt> <tt id="link-21" class="py-name"><a title="pyocni.dataBakers.resource_dataBaker.ResourceDataBaker" class="py-name" href="#" onclick="return doclink('link-21', 'ResourceDataBaker', 'link-10');">ResourceDataBaker</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-22" class="py-name"><a title="pyocni.junglers.postMan.the_post_man.PostMan" class="py-name" href="#" onclick="return doclink('link-22', 'PostMan', 'link-13');">PostMan</a></tt> <tt class="py-op">=</tt> <tt id="link-23" class="py-name"><a title="pyocni.junglers.postMan.the_post_man.PostMan" class="py-name" href="#" onclick="return doclink('link-23', 'PostMan', 'link-13');">PostMan</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"> </tt>
+<a name="PathManager.channel_get_on_path"></a><div id="PathManager.channel_get_on_path-def"><a name="L47"></a><tt class="py-lineno"> 47</tt> <a class="py-toggle" href="#" id="PathManager.channel_get_on_path-toggle" onclick="return toggle('PathManager.channel_get_on_path');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.pathJungler.PathManager-class.html#channel_get_on_path">channel_get_on_path</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt><tt class="py-param">req_path</tt><tt class="py-op">,</tt><tt class="py-param">terms</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PathManager.channel_get_on_path-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="PathManager.channel_get_on_path-expanded"><a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line"><tt class="py-docstring">        Channel the get request to the right method</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line"><tt class="py-docstring">        Args:</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line"><tt class="py-docstring">            @param req_path: Address to which this post request was sent</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"><tt class="py-docstring">            @param terms: Data provided for filtering</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line"> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-name">locations</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-name">query</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rd_baker</tt><tt class="py-op">.</tt><tt id="link-24" class="py-name" targets="Method pyocni.dataBakers.resource_dataBaker.ResourceDataBaker.bake_to_get_on_path()=pyocni.dataBakers.resource_dataBaker.ResourceDataBaker-class.html#bake_to_get_on_path"><a title="pyocni.dataBakers.resource_dataBaker.ResourceDataBaker.bake_to_get_on_path" class="py-name" href="#" onclick="return doclink('link-24', 'bake_to_get_on_path', 'link-24');">bake_to_get_on_path</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">terms</tt> <tt class="py-keyword">is</tt> <tt class="py-string">""</tt><tt class="py-op">:</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line"> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line"> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">query</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-string">"An error has occurred, please check log for more details"</tt><tt class="py-op">,</tt><tt id="link-25" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-25', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'Internal Server Error'</tt><tt class="py-op">]</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">                <tt class="py-keyword">for</tt> <tt class="py-name">q</tt> <tt class="py-keyword">in</tt> <tt class="py-name">query</tt><tt class="py-op">:</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">                    <tt class="py-name">str_loc</tt> <tt class="py-op">=</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">q</tt><tt class="py-op">[</tt><tt class="py-string">'key'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">str_loc</tt><tt class="py-op">.</tt><tt class="py-name">endswith</tt><tt class="py-op">(</tt><tt class="py-string">"/"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">                        <tt class="py-name">str_loc</tt> <tt class="py-op">=</tt> <tt class="py-name">joker</tt><tt class="py-op">.</tt><tt id="link-26" class="py-name" targets="Function pyocni.pyocni_tools.occi_Joker.format_url_path()=pyocni.pyocni_tools.occi_Joker-module.html#format_url_path"><a title="pyocni.pyocni_tools.occi_Joker.format_url_path" class="py-name" href="#" onclick="return doclink('link-26', 'format_url_path', 'link-26');">format_url_path</a></tt><tt class="py-op">(</tt><tt class="py-name">str_loc</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line"> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">                    <tt class="py-keyword">if</tt> <tt class="py-name">str_loc</tt><tt class="py-op">.</tt><tt class="py-name">find</tt><tt class="py-op">(</tt><tt class="py-name">req_path</tt><tt class="py-op">)</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                        <tt class="py-name">locations</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">str_loc</tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">            <tt id="link-27" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-27', 'logger', 'link-18');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">"===== Channel_get_on_Path: Finished with success ===== "</tt><tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-name">locations</tt><tt class="py-op">,</tt><tt id="link-28" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-28', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'OK'</tt><tt class="py-op">]</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">q</tt> <tt class="py-keyword">in</tt> <tt class="py-name">query</tt><tt class="py-op">:</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">                <tt class="py-name">str_loc</tt> <tt class="py-op">=</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">q</tt><tt class="py-op">[</tt><tt class="py-string">'key'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">str_loc</tt><tt class="py-op">.</tt><tt class="py-name">endswith</tt><tt class="py-op">(</tt><tt class="py-string">"/"</tt><tt class="py-op">)</tt> <tt class="py-keyword">is</tt> <tt class="py-name">False</tt> <tt class="py-keyword">and</tt> <tt class="py-name">str_loc</tt><tt class="py-op">.</tt><tt class="py-name">find</tt><tt class="py-op">(</tt><tt class="py-name">req_path</tt><tt class="py-op">)</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">                    <tt class="py-name">locations</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">str_loc</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">            <tt class="py-name">descriptions</tt> <tt class="py-op">=</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">rd_baker</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name" targets="Method pyocni.dataBakers.resource_dataBaker.ResourceDataBaker.bake_to_get_on_path_filtered()=pyocni.dataBakers.resource_dataBaker.ResourceDataBaker-class.html#bake_to_get_on_path_filtered"><a title="pyocni.dataBakers.resource_dataBaker.ResourceDataBaker.bake_to_get_on_path_filtered" class="py-name" href="#" onclick="return doclink('link-29', 'bake_to_get_on_path_filtered', 'link-29');">bake_to_get_on_path_filtered</a></tt><tt class="py-op">(</tt><tt class="py-name">locations</tt><tt class="py-op">)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">descriptions</tt> <tt class="py-keyword">is</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-string">"An error has occurred, please check log for more details"</tt><tt class="py-op">,</tt><tt id="link-30" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-30', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'Internal Server Error'</tt><tt class="py-op">]</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">            <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line"> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">terms</tt><tt class="py-op">.</tt><tt class="py-name">has_key</tt><tt class="py-op">(</tt><tt class="py-string">'resources'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">                    <tt class="py-name">result_res</tt><tt class="py-op">,</tt><tt class="py-name">resp_code_r</tt> <tt class="py-op">=</tt> <tt id="link-31" class="py-name" targets="Function pyocni.junglers.pathJungler.get_filtered()=pyocni.junglers.pathJungler-module.html#get_filtered"><a title="pyocni.junglers.pathJungler.get_filtered" class="py-name" href="#" onclick="return doclink('link-31', 'get_filtered', 'link-31');">get_filtered</a></tt><tt class="py-op">(</tt><tt class="py-name">terms</tt><tt class="py-op">[</tt><tt class="py-string">'resources'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-name">descriptions</tt><tt class="py-op">)</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">                <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">                    <tt class="py-name">result_res</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">                    <tt class="py-name">resp_code_r</tt> <tt class="py-op">=</tt> <tt id="link-32" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-32', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'OK'</tt><tt class="py-op">]</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">terms</tt><tt class="py-op">.</tt><tt class="py-name">has_key</tt><tt class="py-op">(</tt><tt class="py-string">'links'</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">                    <tt class="py-name">result_link</tt><tt class="py-op">,</tt><tt class="py-name">resp_code_l</tt> <tt class="py-op">=</tt> <tt id="link-33" class="py-name"><a title="pyocni.junglers.pathJungler.get_filtered" class="py-name" href="#" onclick="return doclink('link-33', 'get_filtered', 'link-31');">get_filtered</a></tt><tt class="py-op">(</tt><tt class="py-name">terms</tt><tt class="py-op">[</tt><tt class="py-string">'links'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-name">descriptions</tt><tt class="py-op">)</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">                <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">                    <tt class="py-name">result_link</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">                    <tt class="py-name">resp_code_l</tt> <tt class="py-op">=</tt> <tt id="link-34" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-34', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'OK'</tt><tt class="py-op">]</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">resp_code_l</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt id="link-35" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-35', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'OK'</tt><tt class="py-op">]</tt> <tt class="py-keyword">or</tt> <tt class="py-name">resp_code_r</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt id="link-36" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-36', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'OK'</tt><tt class="py-op">]</tt><tt class="py-op">:</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">                    <tt class="py-keyword">return</tt> <tt class="py-string">"An error has occurred, please check logs for more details"</tt><tt class="py-op">,</tt><tt id="link-37" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-37', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'Internal Server Error'</tt><tt class="py-op">]</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">                <tt class="py-name">result</tt> <tt class="py-op">=</tt> <tt class="py-name">result_res</tt> <tt class="py-op">+</tt> <tt class="py-name">result_link</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">                <tt id="link-38" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-38', 'logger', 'link-18');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">"===== Channel_get_on_Path: Finished with success ===== "</tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">result</tt><tt class="py-op">,</tt><tt id="link-39" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-39', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'OK'</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line"> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"> </tt>
+<a name="PathManager.channel_delete_on_path"></a><div id="PathManager.channel_delete_on_path-def"><a name="L108"></a><tt class="py-lineno">108</tt> <a class="py-toggle" href="#" id="PathManager.channel_delete_on_path-toggle" onclick="return toggle('PathManager.channel_delete_on_path');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.pathJungler.PathManager-class.html#channel_delete_on_path">channel_delete_on_path</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">req_path</tt><tt class="py-op">,</tt> <tt class="py-param">user_id</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="PathManager.channel_delete_on_path-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="PathManager.channel_delete_on_path-expanded"><a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-docstring">        Channel the get request to the right method</tt> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-docstring">        Args:</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"><tt class="py-docstring">            @param user_id: ID of the issuer of the post request</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line"><tt class="py-docstring">            @param req_path: Address to which this post request was sent</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line">        <tt class="py-name">database</tt> <tt class="py-op">=</tt> <tt id="link-40" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-40', 'config', 'link-2');">config</a></tt><tt class="py-op">.</tt><tt id="link-41" class="py-name" targets="Function pyocni.pyocni_tools.config.prepare_PyOCNI_db()=pyocni.pyocni_tools.config-module.html#prepare_PyOCNI_db"><a title="pyocni.pyocni_tools.config.prepare_PyOCNI_db" class="py-name" href="#" onclick="return doclink('link-41', 'prepare_PyOCNI_db', 'link-41');">prepare_PyOCNI_db</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">        <tt class="py-name">locations</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">        <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">            <tt class="py-name">query</tt> <tt class="py-op">=</tt> <tt class="py-name">database</tt><tt class="py-op">.</tt><tt class="py-name">view</tt><tt class="py-op">(</tt><tt class="py-string">'/db_views/for_delete_entities'</tt><tt class="py-op">,</tt><tt class="py-name">key</tt> <tt class="py-op">=</tt> <tt class="py-name">user_id</tt><tt class="py-op">)</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">        <tt class="py-keyword">except</tt> <tt class="py-name">Exception</tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">            <tt id="link-42" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-42', 'logger', 'link-18');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">error</tt><tt class="py-op">(</tt><tt class="py-string">"Delete on Path: "</tt> <tt class="py-op">+</tt> <tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">message</tt><tt class="py-op">)</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">"An error has occurred, please check log for more details"</tt><tt class="py-op">,</tt><tt id="link-43" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-43', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'Internal Server Error'</tt><tt class="py-op">]</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">q</tt> <tt class="py-keyword">in</tt> <tt class="py-name">query</tt><tt class="py-op">:</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line">            <tt class="py-name">str_loc</tt> <tt class="py-op">=</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">q</tt><tt class="py-op">[</tt><tt class="py-string">'value'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-name">str_loc</tt><tt class="py-op">.</tt><tt class="py-name">find</tt><tt class="py-op">(</tt><tt class="py-name">req_path</tt><tt class="py-op">)</tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">:</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">                <tt class="py-name">locations</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-op">{</tt><tt class="py-string">'_id'</tt><tt class="py-op">:</tt><tt class="py-name">q</tt><tt class="py-op">[</tt><tt class="py-string">'value'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-string">'_rev'</tt><tt class="py-op">:</tt><tt class="py-name">q</tt><tt class="py-op">[</tt><tt class="py-string">'value'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">2</tt><tt class="py-op">]</tt><tt class="py-op">}</tt><tt class="py-op">)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line"> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt id="link-44" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-44', 'logger', 'link-18');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">"Delete on Path: done with success"</tt><tt class="py-op">)</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-name">database</tt><tt class="py-op">.</tt><tt class="py-name">delete_docs</tt><tt class="py-op">(</tt><tt class="py-name">locations</tt><tt class="py-op">)</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-string">""</tt><tt class="py-op">,</tt><tt id="link-45" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-45', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'OK'</tt><tt class="py-op">]</tt> </tt>
+</div></div><a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"> </tt>
+<a name="L131"></a><tt class="py-lineno">131</tt>  <tt class="py-line"> </tt>
+<a name="get_filtered"></a><div id="get_filtered-def"><a name="L132"></a><tt class="py-lineno">132</tt> <a class="py-toggle" href="#" id="get_filtered-toggle" onclick="return toggle('get_filtered');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.pathJungler-module.html#get_filtered">get_filtered</a><tt class="py-op">(</tt><tt class="py-param">filters</tt><tt class="py-op">,</tt> <tt class="py-param">descriptions_entities</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_filtered-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_filtered-expanded"><a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line"><tt class="py-docstring">    Retrieve the resources  that match the filters provided</tt> </tt>
+<a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line"><tt class="py-docstring">    Args:</tt> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line"><tt class="py-docstring">        @param filters: Filters</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line"><tt class="py-docstring">        @param descriptions_entities: Entity descriptions</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">    <tt class="py-name">var</tt> <tt class="py-op">=</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-keyword">for</tt> <tt class="py-name">desc</tt> <tt class="py-keyword">in</tt> <tt class="py-name">descriptions_entities</tt><tt class="py-op">:</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line">            <tt class="py-keyword">for</tt> <tt class="py-name">filter</tt> <tt class="py-keyword">in</tt> <tt class="py-name">filters</tt><tt class="py-op">:</tt> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">                <tt class="py-name">checks</tt> <tt class="py-op">=</tt><tt class="py-name">joker</tt><tt class="py-op">.</tt><tt id="link-46" class="py-name" targets="Function pyocni.pyocni_tools.occi_Joker.filter_occi_description()=pyocni.pyocni_tools.occi_Joker-module.html#filter_occi_description"><a title="pyocni.pyocni_tools.occi_Joker.filter_occi_description" class="py-name" href="#" onclick="return doclink('link-46', 'filter_occi_description', 'link-46');">filter_occi_description</a></tt><tt class="py-op">(</tt><tt class="py-name">desc</tt><tt class="py-op">[</tt><tt class="py-string">'OCCI_Description'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt><tt class="py-name">filter</tt><tt class="py-op">)</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">checks</tt> <tt class="py-keyword">is</tt> <tt class="py-name">True</tt><tt class="py-op">:</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line">                    <tt class="py-name">var</tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">desc</tt><tt class="py-op">[</tt><tt class="py-string">'OCCI_ID'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">                    <tt id="link-47" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-47', 'logger', 'link-18');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">debug</tt><tt class="py-op">(</tt><tt class="py-string">"Entity filtered : document found"</tt><tt class="py-op">)</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">                    <tt class="py-keyword">break</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">var</tt><tt class="py-op">,</tt><tt id="link-48" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-48', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'OK'</tt><tt class="py-op">]</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt> <tt class="py-name">Exception</tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        <tt id="link-49" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.ocni_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-49', 'logger', 'link-18');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">error</tt><tt class="py-op">(</tt><tt class="py-string">"filtered entity : "</tt> <tt class="py-op">+</tt> <tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">message</tt><tt class="py-op">)</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">list</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">,</tt><tt id="link-50" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-50', 'return_code', 'link-17');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'Internal Server Error'</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >pyocni</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Oct 25 18:35:15 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

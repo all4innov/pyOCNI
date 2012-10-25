@@ -60,80 +60,62 @@
 </b></center><br />
 <h1 class="epydoc">Class Hierarchy</h1>
 <ul class="nomargin-top">
-    <li> <strong class="uidlink"><a href="pyocni.registry.categoryManager.ActionManager-class.html">pyocni.registry.categoryManager.ActionManager</a></strong>:
+    <li> <strong class="uidlink"><a href="pyocni.junglers.managers.actionManager.ActionManager-class.html">pyocni.junglers.managers.actionManager.ActionManager</a></strong>:
       <em class="summary">Manager for Action documents on couch database</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.categoryManager.CategoryManager-class.html">pyocni.registry.categoryManager.CategoryManager</a></strong>:
-      <em class="summary">Channel requests to their appropriate targets : Kinds, Mixins and 
-        Actions</em>
+    <li> <strong class="uidlink"><a href="pyocni.dataBakers.category_dataBaker.CategoryDataBaker-class.html">pyocni.dataBakers.category_dataBaker.CategoryDataBaker</a></strong>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.httpRequest_Formater.From_Text_OCCI_to_JSON-class.html">pyocni.serialization.httpRequest_Formater.From_Text_OCCI_to_JSON</a></strong>
+    <li> <strong class="uidlink"><a href="pyocni.junglers.categoryJungler.CategoryJungler-class.html">pyocni.junglers.categoryJungler.CategoryJungler</a></strong>:
+      <em class="summary">Extracts category (a.k.a Kinds, Mixins and Actions) data from the 
+        database</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.httpRequest_Formater.From_Text_Plain_to_JSON-class.html">pyocni.serialization.httpRequest_Formater.From_Text_Plain_to_JSON</a></strong>
+    <li> <strong class="uidlink"><a href="pyocni.suppliers.categorySupplier.CategorySupplier-class.html">pyocni.suppliers.categorySupplier.CategorySupplier</a></strong>:
+      <em class="summary">Consults the database to get the data asked for by the dataBakers</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.categoryManager.KindManager-class.html">pyocni.registry.categoryManager.KindManager</a></strong>:
+    <li> <strong class="uidlink"><a href="pyocni.adapters.httpRequest_Formater.From_Text_OCCI_to_JSON-class.html">pyocni.adapters.httpRequest_Formater.From_Text_OCCI_to_JSON</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.adapters.httpRequest_Formater.From_Text_Plain_to_JSON-class.html">pyocni.adapters.httpRequest_Formater.From_Text_Plain_to_JSON</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.junglers.managers.kindManager.KindManager-class.html">pyocni.junglers.managers.kindManager.KindManager</a></strong>:
       <em class="summary">Manager for Kind documents on couch database</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.categoryManager.MixinManager-class.html">pyocni.registry.categoryManager.MixinManager</a></strong>:
+    <li> <strong class="uidlink"><a href="pyocni.junglers.managers.mixinManager.MixinManager-class.html">pyocni.junglers.managers.mixinManager.MixinManager</a></strong>:
       <em class="summary">Manager for Mixin documents on couch database</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.singleCategoryManager.SingleCategoryManager-class.html">pyocni.registry.singleCategoryManager.SingleCategoryManager</a></strong>:
-      <em class="summary">Channel requests to their appropriate targets : Kinds, Mixins and 
-        Actions</em>
+    <li> <strong class="uidlink"><a href="pyocni.junglers.postMan.the_post_man.PostMan-class.html">pyocni.junglers.postMan.the_post_man.PostMan</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.adapters.i_RequestAdapter.RequestAdapter-class.html">pyocni.adapters.i_RequestAdapter.RequestAdapter</a></strong>:
+      <em class="summary">Converts the data contained inside the request to the occi+json 
+        data format.</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.dataBakers.resource_dataBaker.ResourceDataBaker-class.html">pyocni.dataBakers.resource_dataBaker.ResourceDataBaker</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.suppliers.resourceSupplier.ResourceSupplier-class.html">pyocni.suppliers.resourceSupplier.ResourceSupplier</a></strong>:
+      <em class="summary">Consults the database to get the data asked for by the dataBakers</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.adapters.i_ResponseAdapter.ResponseAdapter-class.html">pyocni.adapters.i_ResponseAdapter.ResponseAdapter</a></strong>:
+      <em class="summary">Converts the response data into the required data format.</em>
     </li>
     <li> <strong class="uidlink">unittest.TestCase</strong>
     </li>
     <li> <strong class="uidlink">unittest.TestCase</strong>
     </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink">unittest.TestCase</strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.httpResponse_Formater.To_HTTP_Text_OCCI-class.html">pyocni.serialization.httpResponse_Formater.To_HTTP_Text_OCCI</a></strong>:
+    <li> <strong class="uidlink"><a href="pyocni.adapters.httpResponse_Formater.To_HTTP_Text_OCCI-class.html">pyocni.adapters.httpResponse_Formater.To_HTTP_Text_OCCI</a></strong>:
       <em class="summary">formats JSON object to HTTP text/plain descriptions</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.httpResponse_Formater.To_HTTP_Text_Plain-class.html">pyocni.serialization.httpResponse_Formater.To_HTTP_Text_Plain</a></strong>:
+    <li> <strong class="uidlink"><a href="pyocni.adapters.httpResponse_Formater.To_HTTP_Text_Plain-class.html">pyocni.adapters.httpResponse_Formater.To_HTTP_Text_Plain</a></strong>:
       <em class="summary">formats JSON object to HTTP text/plain descriptions</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.httpResponse_Formater.To_HTTP_Text_URI_List-class.html">pyocni.serialization.httpResponse_Formater.To_HTTP_Text_URI_List</a></strong>:
+    <li> <strong class="uidlink"><a href="pyocni.adapters.httpResponse_Formater.To_HTTP_Text_URI_List-class.html">pyocni.adapters.httpResponse_Formater.To_HTTP_Text_URI_List</a></strong>:
       <em class="summary">formats JSON object to HTTP text/plain descriptions</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.backend.libnetvirt._object-class.html" onclick="show_private();">pyocni.backend.libnetvirt._object</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.registry.backend_registry-class.html">pyocni.registry.registry.backend_registry</a></strong>:
-      <em class="summary">A registry containing all the backends</em>
+    <li> <strong class="uidlink"><a href="pyocni.backends.libnetvirt._object-class.html" onclick="show_private();">pyocni.backends.libnetvirt._object</a></strong>
     </li>
     <li> <strong class="uidlink">object</strong>:
       <em class="summary">The most base type</em>
     <ul>
     <li> <strong class="uidlink"><a href="pyocni.pyocni_tools.routes_test.ocni_server.Application-class.html">pyocni.pyocni_tools.routes_test.ocni_server.Application</a></strong>:
       <em class="summary">Test application to call from router.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_core.Attribute-class.html">pyocni.specification.occi_core.Attribute</a></strong>:
-      <em class="summary">The attribute type used for the attributes list of category</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.Availability-class.html">pyocni.specification.ocni.Availability</a></strong>:
-      <em class="summary">Represent the entity of the availability interval</em>
     </li>
     <li> <strong class="uidlink">exceptions.BaseException</strong>:
       <em class="summary">Common base class for all exceptions</em>
@@ -144,196 +126,121 @@
     <li> <strong class="uidlink"><a href="pyocni.pyocni_tools.ocni_exceptions.AlreadyRegistered-class.html">pyocni.pyocni_tools.ocni_exceptions.AlreadyRegistered</a></strong>:
       <em class="summary">An exception of registered object</em>
     </li>
-    </ul>
+    <li> <strong class="uidlink">exceptions.StandardError</strong>:
+      <em class="summary">Base class for all standard Python exceptions that do not represent
+        interpreter exiting.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="exceptions.AssertionError-class.html">exceptions.AssertionError</a></strong>:
+      <em class="summary">Assertion failed.</em>
     </li>
     </ul>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.locationManager.EntityManager-class.html">pyocni.registry.locationManager.EntityManager</a></strong>:
-      <em class="summary">Manager of resource and link documents in the couch database.</em>
+    </ul>
+    </li>
+    </ul>
     </li>
     <li> <strong class="uidlink"><a href="pyocni.pyocni_tools.Enum.Enum-class.html">pyocni.pyocni_tools.Enum.Enum</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html">pyocni.pyocni_tools.routes_test.ocni_server.Hello2</a></strong>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.locationManager.LinkManager-class.html">pyocni.registry.locationManager.LinkManager</a></strong>:
+    <li> <strong class="uidlink"><a href="pyocni.junglers.managers.linkManager.LinkManager-class.html">pyocni.junglers.managers.linkManager.LinkManager</a></strong>:
       <em class="summary">Manager of link documents in the couch database.</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.entityManager.LinkManager-class.html">pyocni.registry.entityManager.LinkManager</a></strong>:
-      <em class="summary">Manager of link documents in the couch database.</em>
+    <li> <strong class="uidlink"><a href="pyocni.dispachers.multi_entityDispatcher.MultiEntityDispatcher-class.html">pyocni.dispachers.multi_entityDispatcher.MultiEntityDispatcher</a></strong>:
+      <em class="summary">Dispaches operation on kinds, mixins and actions</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.crud_Interfaces.entityInterface.MultiEntityInterface-class.html">pyocni.crud_Interfaces.entityInterface.MultiEntityInterface</a></strong>:
-      <em class="summary">CRUD operation on kinds, mixins and actions</em>
+    <li> <strong class="uidlink"><a href="pyocni.junglers.multi_entityJungler.MultiEntityJungler-class.html">pyocni.junglers.multi_entityJungler.MultiEntityJungler</a></strong>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.entityManager.MultiEntityManager-class.html">pyocni.registry.entityManager.MultiEntityManager</a></strong>
+    <li> <strong class="uidlink"><a href="pyocni.junglers.pathJungler.PathManager-class.html">pyocni.junglers.pathJungler.PathManager</a></strong>:
+      <em class="summary">dispachers operations on Path</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.crud_Interfaces.pathInterface.PathInterface-class.html">pyocni.crud_Interfaces.pathInterface.PathInterface</a></strong>:
-      <em class="summary">CRUD operation on kinds, mixins and actions</em>
+    <li> <strong class="uidlink"><a href="pyocni.dispachers.queryDispatcher.QueryDispatcher-class.html">pyocni.dispachers.queryDispatcher.QueryDispatcher</a></strong>:
+      <em class="summary">Dispatches operations concerning the Query Interface.</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.pathManager.PathManager-class.html">pyocni.registry.pathManager.PathManager</a></strong>:
-      <em class="summary">CRUD operations on Path</em>
+    <li> <strong class="uidlink"><a href="pyocni.junglers.managers.resourceManager.ResourceManager-class.html">pyocni.junglers.managers.resourceManager.ResourceManager</a></strong>:
+      <em class="summary">Manager of resource documents in the couch database.</em>
     </li>
-    <li> <strong class="uidlink">persistent.Persistent</strong>
-    <ul>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_core.Action-class.html">pyocni.specification.occi_core.Action</a></strong>:
-      <em class="summary">The Action type is an abstract type.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_core.Category-class.html">pyocni.specification.occi_core.Category</a></strong>:
-      <em class="summary">The Category type is the basis of the type identification mechanism
-        used by the OCCI classification system.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_core.Kind-class.html">pyocni.specification.occi_core.Kind</a></strong>:
-      <em class="summary">The kind type, together with the Mixin type, defines the 
-        classification system of the OCCI Core Model.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_core.Mixin-class.html">pyocni.specification.occi_core.Mixin</a></strong>:
-      <em class="summary">The Mixin type complements the Kind type in defining the OCCI Core Model type classification system.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.Ethernet-class.html">pyocni.specification.ocni.Ethernet</a></strong>:
-      <em class="summary">Ethernet Mixin</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_infrastructure.IPNetworkInterface-class.html">pyocni.specification.occi_infrastructure.IPNetworkInterface</a></strong>:
-      <em class="summary">Mixin
-In order to support L3/L4 capabilities (e.g.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_infrastructure.IPNetworking-class.html">pyocni.specification.occi_infrastructure.IPNetworking</a></strong>:
-      <em class="summary">Mixin In order to support L3/L4 capabilities (e.g.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.IPv4-class.html">pyocni.specification.ocni.IPv4</a></strong>:
-      <em class="summary">IPv4 Mixin</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.OpenFlowCloNeLink-class.html">pyocni.specification.ocni.OpenFlowCloNeLink</a></strong>:
-      <em class="summary">OpenFlow Mixin that can be applied on CloNeLink</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.OpenFlowCloNeNetworkInterface-class.html">pyocni.specification.ocni.OpenFlowCloNeNetworkInterface</a></strong>:
-      <em class="summary">OpenFlow Mixin that can be applied on CloNeNetworkInterface.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.OpenFlowCloNeNode-class.html">pyocni.specification.ocni.OpenFlowCloNeNode</a></strong>:
-      <em class="summary">OpenFlow Mixin that can be applied on CloNeNode</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.l3vpn-class.html">pyocni.specification.ocni.l3vpn</a></strong>:
-      <em class="summary">A Layer 3 VPN Mixin</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.libnetvirt-class.html">pyocni.specification.ocni.libnetvirt</a></strong>:
-      <em class="summary">Libnetvirt Mixin</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_infrastructure.os_tpl-class.html">pyocni.specification.occi_infrastructure.os_tpl</a></strong>:
-      <em class="summary">Mixin
-OCCI OS Template Mixin
-OS (Operating System) Templates allow clients specific what operating system must be installed
-    on a requested Compute resource.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_infrastructure.resource_tpl-class.html">pyocni.specification.occi_infrastructure.resource_tpl</a></strong>:
-      <em class="summary">Mixin
-OCCI Resource template Mixin
-A resource Template is a provider defined Mixin instance that refers to a preset Resource configuration.</em>
-    </li>
-    </ul>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_core.Entity-class.html">pyocni.specification.occi_core.Entity</a></strong>:
-      <em class="summary">The Entity type is an abstract type of the Resource type and the 
-        Link type.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_core.Link-class.html">pyocni.specification.occi_core.Link</a></strong>:
-      <em class="summary">An instance of the Link type defines a base association between two
-        Resource instances.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.CloNeComputeLink-class.html">pyocni.specification.ocni.CloNeComputeLink</a></strong>:
-      <em class="summary">Connects a CloNeNode instance to a Compute instance</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.CloNeNetworkInterface-class.html">pyocni.specification.ocni.CloNeNetworkInterface</a></strong>:
-      <em class="summary">Connects a CloNeNode instance to a CloNeLink instance</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.CloNeStorageLink-class.html">pyocni.specification.ocni.CloNeStorageLink</a></strong>:
-      <em class="summary">Connects a CloNeNode instance to a Storage instance</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.FNSInterface-class.html">pyocni.specification.ocni.FNSInterface</a></strong>:
-      <em class="summary">Connects a FlashNetworkSlice instance to a Resource instance</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_infrastructure.NetworkInterface-class.html">pyocni.specification.occi_infrastructure.NetworkInterface</a></strong>:
-      <em class="summary">The network_interface type represents an L2 client device (e.g.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_infrastructure.StorageLink-class.html">pyocni.specification.occi_infrastructure.StorageLink</a></strong>:
-      <em class="summary">The storage_link type represents a link from a resource to a target storage instance.</em>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_core.Resource-class.html">pyocni.specification.occi_core.Resource</a></strong>:
-      <em class="summary">The resource type inherits Entity and describes a concrete resource that can be inspired and manipulated.</em>
-    <ul>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.CloNeLink-class.html">pyocni.specification.ocni.CloNeLink</a></strong>:
-      <em class="summary">A network link of the Flash Network Slice</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.CloNeNode-class.html">pyocni.specification.ocni.CloNeNode</a></strong>:
-      <em class="summary">A networking resource of the Flash Network Slice</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_infrastructure.Compute-class.html">pyocni.specification.occi_infrastructure.Compute</a></strong>:
-      <em class="summary">The Compute type represents a generic information processing 
-        resource, e.g.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.FNS-class.html">pyocni.specification.ocni.FNS</a></strong>:
-      <em class="summary">A resource that provides a network service</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_infrastructure.Network-class.html">pyocni.specification.occi_infrastructure.Network</a></strong>:
-      <em class="summary">The network type represents a L2 networking entity (e.g.</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.occi_infrastructure.Storage-class.html">pyocni.specification.occi_infrastructure.Storage</a></strong>:
-      <em class="summary">The storage type represent resources that record information to a 
-        data storage device.</em>
-    </li>
-    </ul>
-    </li>
-    </ul>
-    </li>
-    </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.crud_Interfaces.queryInterface.QueryInterface-class.html">pyocni.crud_Interfaces.queryInterface.QueryInterface</a></strong>:
-      <em class="summary">CRUD operation on kinds, mixins and actions</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.crud_Interfaces.resourceInterface.ResourceInterface-class.html">pyocni.crud_Interfaces.resourceInterface.ResourceInterface</a></strong>:
-      <em class="summary">CRUD operation on kinds, mixins and actions</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.entityManager.ResourceManager-class.html">pyocni.registry.entityManager.ResourceManager</a></strong>:
-      <em class="summary">Manager of resource and link documents in the couch database.</em>
+    <li> <strong class="uidlink"><a href="pyocni.pyocni_tools.DoItYourselfWebOb.Router-class.html">pyocni.pyocni_tools.DoItYourselfWebOb.Router</a></strong>
     </li>
     <li> <strong class="uidlink"><a href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html">pyocni.pyocni_tools.routes_test.ocni_server.Router</a></strong>:
       <em class="summary">Test router.</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.pyocni_tools.DoItYourselfWebOb.Router-class.html">pyocni.pyocni_tools.DoItYourselfWebOb.Router</a></strong>
+    <li> <strong class="uidlink"><a href="routes.middleware.RoutesMiddleware-class.html">routes.middleware.RoutesMiddleware</a></strong>:
+      <em class="summary">Routing middleware that handles resolving the PATH_INFO in addition
+        to optionally recognizing method overriding.</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.crud_Interfaces.singleCategoryInterface.SingleCategoryInterface-class.html">pyocni.crud_Interfaces.singleCategoryInterface.SingleCategoryInterface</a></strong>
+    <li> <strong class="uidlink"><a href="pyocni.dispachers.single_entityDispatcher.SingleEntityDispatcher-class.html">pyocni.dispachers.single_entityDispatcher.SingleEntityDispatcher</a></strong>:
+      <em class="summary">dispachers operation on resources and links</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.crud_Interfaces.entityInterface.SingleEntityInterface-class.html">pyocni.crud_Interfaces.entityInterface.SingleEntityInterface</a></strong>:
-      <em class="summary">CRUD operation on resources and links</em>
+    <li> <strong class="uidlink"><a href="pyocni.junglers.single_entityJungler.SingleEntityJungler-class.html">pyocni.junglers.single_entityJungler.SingleEntityJungler</a></strong>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.entityManager.SingleEntityManager-class.html">pyocni.registry.entityManager.SingleEntityManager</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.serializer_http.action_serializer-class.html">pyocni.serialization.serializer_http.action_serializer</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.serializer_http.attributes_serializer-class.html">pyocni.serialization.serializer_http.attributes_serializer</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.backend.backend.backend-class.html">pyocni.backend.backend.backend</a></strong>:
-      <em class="summary">A simple and empty backend</em>
+    <li> <strong class="uidlink">routes.mapper.SubMapperParent</strong>:
+      <em class="summary">Base class for Mapper and SubMapper, both of which may be the 
+        parent of SubMapper objects</em>
     <ul>
-    <li> <strong class="uidlink"><a href="pyocni.backend.dummy_backend.dummy_backend-class.html">pyocni.backend.dummy_backend.dummy_backend</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.backend.l3vpn_backend.l3vpn_backend-class.html">pyocni.backend.l3vpn_backend.l3vpn_backend</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.backend.libnetvirt_backend.libnetvirt_backend-class.html">pyocni.backend.libnetvirt_backend.libnetvirt_backend</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.backend.openflow_backend.openflow_backend-class.html">pyocni.backend.openflow_backend.openflow_backend</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.backend.opennebula_backend.opennebula_backend-class.html">pyocni.backend.opennebula_backend.opennebula_backend</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.backend.openstack_backend.openstack_backend-class.html">pyocni.backend.openstack_backend.openstack_backend</a></strong>
+    <li> <strong class="uidlink"><a href="routes.mapper.Mapper-class.html">routes.mapper.Mapper</a></strong>:
+      <em class="summary">Mapper handles URL generation and URL recognition in a web 
+        application.</em>
     </li>
     </ul>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.registry.category_registry-class.html">pyocni.registry.registry.category_registry</a></strong>:
-      <em class="summary">A registry containing all the Kinds, Mixins and actions</em>
+    <li> <strong class="uidlink">unittest.case.TestCase</strong>:
+      <em class="summary">A class whose instances are single test cases.</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.singleentityInterface_Tests.test_delete-class.html">pyocni.TDD.Tests.singleentityInterface_Tests.test_delete</a></strong>:
+      <em class="summary">Tests DELETE request scenarios</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.serializer_http.category_serializer-class.html">pyocni.serialization.serializer_http.category_serializer</a></strong>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.queryInterface_Tests.test_delete-class.html">pyocni.TDD.Tests.queryInterface_Tests.test_delete</a></strong>:
+      <em class="summary">Tests DELETE request scenarios</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.multientityInterface_Tests.test_delete-class.html">pyocni.TDD.Tests.multientityInterface_Tests.test_delete</a></strong>:
+      <em class="summary">Tests DELETE request scenarios</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.singleentityInterface_Tests.test_get-class.html">pyocni.TDD.Tests.singleentityInterface_Tests.test_get</a></strong>:
+      <em class="summary">Tests GET request scenarios</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.queryInterface_Tests.test_get-class.html">pyocni.TDD.Tests.queryInterface_Tests.test_get</a></strong>:
+      <em class="summary">Tests GET request scenarios</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.multientityInterface_Tests.test_get-class.html">pyocni.TDD.Tests.multientityInterface_Tests.test_get</a></strong>:
+      <em class="summary">Tests GET request scenarios</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.multientityInterface_Tests.test_post-class.html">pyocni.TDD.Tests.multientityInterface_Tests.test_post</a></strong>:
+      <em class="summary">Tests POST request scenarios</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.singleentityInterface_Tests.test_post-class.html">pyocni.TDD.Tests.singleentityInterface_Tests.test_post</a></strong>:
+      <em class="summary">Tests POST request scenarios</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.queryInterface_Tests.test_post-class.html">pyocni.TDD.Tests.queryInterface_Tests.test_post</a></strong>:
+      <em class="summary">Tests POST request scenarios</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.singleentityInterface_Tests.test_put-class.html">pyocni.TDD.Tests.singleentityInterface_Tests.test_put</a></strong>:
+      <em class="summary">Tests PUT request scenarios</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.queryInterface_Tests.test_put-class.html">pyocni.TDD.Tests.queryInterface_Tests.test_put</a></strong>:
+      <em class="summary">Tests PUT request scenarios</em>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.Tests.multientityInterface_Tests.test_put-class.html">pyocni.TDD.Tests.multientityInterface_Tests.test_put</a></strong>:
+      <em class="summary">Tests PUT request scenarios</em>
+    </li>
+    </ul>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.backends.backend.backend-class.html">pyocni.backends.backend.backend</a></strong>:
+      <em class="summary">A simple and empty backend</em>
+    <ul>
+    <li> <strong class="uidlink"><a href="pyocni.backends.dummy_backend.dummy_backend-class.html">pyocni.backends.dummy_backend.dummy_backend</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.backends.l3vpn_backend.l3vpn_backend-class.html">pyocni.backends.l3vpn_backend.l3vpn_backend</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.backends.libnetvirt_backend.libnetvirt_backend-class.html">pyocni.backends.libnetvirt_backend.libnetvirt_backend</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.backends.openflow_backend.openflow_backend-class.html">pyocni.backends.openflow_backend.openflow_backend</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.backends.opennebula_backend.opennebula_backend-class.html">pyocni.backends.opennebula_backend.opennebula_backend</a></strong>
+    </li>
+    <li> <strong class="uidlink"><a href="pyocni.backends.openstack_backend.openstack_backend-class.html">pyocni.backends.openstack_backend.openstack_backend</a></strong>
+    </li>
+    </ul>
     </li>
     <li> <strong class="uidlink">dict</strong>:
       <em class="summary">dict() -&gt; new empty dictionary
@@ -355,58 +262,19 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
       <em class="summary">This class is used to convert between OCCI http object and OCCI 
         JSON object</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.l3vpn_elastisity-class.html">pyocni.specification.ocni.l3vpn_elastisity</a></strong>:
-      <em class="summary">A type that is used by L3VPN Mixin</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.l3vpn_scalability-class.html">pyocni.specification.ocni.l3vpn_scalability</a></strong>:
-      <em class="summary">A type that is used by L3VPN Mixin</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.l3vpn_service_description-class.html">pyocni.specification.ocni.l3vpn_service_description</a></strong>:
-      <em class="summary">A type that is used by L3VPN Mixin</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.l3vpn_service_type-class.html">pyocni.specification.ocni.l3vpn_service_type</a></strong>:
-      <em class="summary">A type that is used by L3VPN Mixin</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.libnetvirt_constraint-class.html">pyocni.specification.ocni.libnetvirt_constraint</a></strong>:
-      <em class="summary">A type that is used by libnetvirt Mixin</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.specification.ocni.libnetvirt_endpoint-class.html">pyocni.specification.ocni.libnetvirt_endpoint</a></strong>:
-      <em class="summary">A type that is used by libnetvirt Mixin</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.serializer_http.link_serializer-class.html">pyocni.serialization.serializer_http.link_serializer</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.registry.location_registry-class.html">pyocni.registry.registry.location_registry</a></strong>:
-      <em class="summary">A registry containing all the locations and objects</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.registry.location_registry_old-class.html">pyocni.registry.registry.location_registry_old</a></strong>:
-      <em class="summary">A registry containing all the locations and objects</em>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.serializer_http.location_serializer-class.html">pyocni.serialization.serializer_http.location_serializer</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.serializer_http.main_serializer-class.html">pyocni.serialization.serializer_http.main_serializer</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.client.Tests.server_Mock.ocni_server-class.html">pyocni.client.Tests.server_Mock.ocni_server</a></strong>:
-      <em class="summary">The main OCNI REST server</em>
-    </li>
     <li> <strong class="uidlink"><a href="pyocni.ocni_server.ocni_server-class.html">pyocni.ocni_server.ocni_server</a></strong>:
       <em class="summary">The main OCNI REST server</em>
     </li>
     <li> <strong class="uidlink"><a href="pyocni.pyocni_tools.routes_test.ocni_server-class.html">pyocni.pyocni_tools.routes_test.ocni_server</a></strong>:
       <em class="summary">Represent the main occi REST server</em>
     </li>
+    <li> <strong class="uidlink"><a href="pyocni.TDD.fake_Data.server_Mock.ocni_server-class.html">pyocni.TDD.fake_Data.server_Mock.ocni_server</a></strong>:
+      <em class="summary">The main OCNI REST server</em>
+    </li>
     <li> <strong class="uidlink"><a href="property-class.html">property</a></strong>:
       <em class="summary">property(fget=None, fset=None, fdel=None, doc=None) -&gt; property attribute</em>
     </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.serializer_http.text_occi_serializer-class.html">pyocni.serialization.serializer_http.text_occi_serializer</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.serializer_http.text_plain_serializer-class.html">pyocni.serialization.serializer_http.text_plain_serializer</a></strong>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.serialization.serializer_http.text_urilist_serializer-class.html">pyocni.serialization.serializer_http.text_urilist_serializer</a></strong>
-    </li>
     </ul>
-    </li>
-    <li> <strong class="uidlink"><a href="pyocni.registry.registry.serialization_registry-class.html">pyocni.registry.registry.serialization_registry</a></strong>:
-      <em class="summary">A registry containing all the serializers</em>
     </li>
 </ul>
 <!-- ==================== NAVIGATION BAR ==================== -->
@@ -440,7 +308,7 @@ dict(**kwargs) -&gt; new dictionary initialized with the name=value pairs
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Jul 23 11:54:51 2012
+    Generated by Epydoc 3.0.1 on Thu Oct 25 18:35:14 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

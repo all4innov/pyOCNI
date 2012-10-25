@@ -67,21 +67,22 @@
 <hr />
 <div class="fields">      <dl><dt>Authors:</dt>
         <dd>
-          Houssem Medhioub, Providence Salumu Munga,
-          Bilel Msekni (Database configuration)
+          Bilel Msekni,
+          Houssem Medhioub
         </dd>
       </dl>
-      <p><strong>Contact:</strong>
-        houssem.medhioub@it-sudparis.eu
-      </p>
+      <dl><dt>Contacts:</dt>
+        <dd>
+          bilel.msekni@telecom-sudparis.eu,
+          houssem.medhioub@it-sudparis.eu,
+          Providence Salumu Munga
+        </dd>
+      </dl>
       <p><strong>Organization:</strong>
         Institut Mines-Telecom - Telecom SudParis
       </p>
-      <p><strong>Version:</strong>
-        0.3
-      </p>
       <p><strong>License:</strong>
-        LGPL - Lesser General Public License
+        Apache License, Version 2.0
       </p>
 </div><!-- ==================== FUNCTIONS ==================== -->
 <a name="section-Functions"></a>
@@ -127,6 +128,23 @@
       to it.</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="pyocni.pyocni_tools.config-pysrc.html#prepare_PyOCNI_db">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="get_PyOCNI_db"></a><span class="summary-sig-name">get_PyOCNI_db</span>()</span><br />
+      Start the server and get the database.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyocni.pyocni_tools.config-pysrc.html#get_PyOCNI_db">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -252,6 +270,21 @@ _PURGE_DB': '0', 'CouchDB_PyOCNI': 'pyocni_db'})">ConfigObj({'CouchDB_IP': '127.
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
     </td><td class="summary">
+        <a href="pyocni.pyocni_tools.config-module.html#design_doc" class="summary-name">design_doc</a> = <code title="{'_id': '_design/db_views',
+ 'language': 'javascript',
+ 'type': 'DesignDoc',
+ 'views': {'actions_of_kind_mix': {'map': '(function(doc) { if ((doc.T\
+ype == &quot;Kind&quot;)||(doc.Type == &quot;Mixin&quot;)){doc_id = doc.OCCI_Description.s\
+cheme + doc.OCCI_Description.term; for (elem in doc.OCCI_Description.a\
+ctions) emit ([doc.OCCI_Description.actions[elem],doc_id],doc.Provider\
+) }});'},
+..."><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">_id</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">_design/db_views</code><code class="variable-quote">'</code><code class="variable-op">, </code><code class="variable-quote">'</code><code class="variable-string">language</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">javascri</code><code class="variable-ellipsis">...</code></code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
         <a name="__package__"></a><span class="summary-name">__package__</span> = <code title="'pyocni.pyocni_tools'"><code class="variable-quote">'</code><code class="variable-string">pyocni.pyocni_tools</code><code class="variable-quote">'</code></code>
     </td>
   </tr>
@@ -338,6 +371,32 @@ _PURGE_DB': '0', 'CouchDB_PyOCNI': 'pyocni_db'})
   </dl>
 </td></tr></table>
 </div>
+<a name="design_doc"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <h3 class="epydoc">design_doc</h3>
+  
+  <dl class="fields">
+  </dl>
+  <dl class="fields">
+    <dt>Value:</dt>
+      <dd><table><tr><td><pre class="variable">
+<code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">_id</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">_design/db_views</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">language</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">javascript</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">type</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">DesignDoc</code><code class="variable-quote">'</code><code class="variable-op">,</code>
+ <code class="variable-quote">'</code><code class="variable-string">views</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">actions_of_kind_mix</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-group">{</code><code class="variable-quote">'</code><code class="variable-string">map</code><code class="variable-quote">'</code><code class="variable-op">: </code><code class="variable-quote">'</code><code class="variable-string">(function(doc) { if ((doc.T</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">ype == &quot;Kind&quot;)||(doc.Type == &quot;Mixin&quot;)){doc_id = doc.OCCI_Description.s</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">cheme + doc.OCCI_Description.term; for (elem in doc.OCCI_Description.a</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">ctions) emit ([doc.OCCI_Description.actions[elem],doc_id],doc.Provider</code><span class="variable-linewrap"><img src="crarr.png" alt="\" /></span>
+<code class="variable-string">) }});</code><code class="variable-quote">'</code><code class="variable-group">}</code><code class="variable-op">,</code>
+<code class="variable-ellipsis">...</code>
+</pre></td></tr></table>
+</dd>
+  </dl>
+</td></tr></table>
+</div>
 <br />
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
@@ -370,7 +429,7 @@ _PURGE_DB': '0', 'CouchDB_PyOCNI': 'pyocni_db'})
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Jul 23 11:54:51 2012
+    Generated by Epydoc 3.0.1 on Thu Oct 25 18:35:15 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

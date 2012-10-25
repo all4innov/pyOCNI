@@ -63,7 +63,7 @@
   </tr>
 </table>
 <!-- ==================== CLASS DESCRIPTION ==================== -->
-<h1 class="epydoc">Class Router</h1><p class="nomargin-top"><span class="codelink"><a href="pyocni.pyocni_tools.routes_test-pysrc.html#ocni_server.Router">source&nbsp;code</a></span></p>
+<h1 class="epydoc">Class Router</h1><p class="nomargin-top"></p>
 <pre class="base-tree">
 object --+
          |
@@ -90,6 +90,23 @@ object --+
     </table>
   </td>
 </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      x.__init__(...) initializes x; see help(type(x)) for signature</td>
+          <td align="right" valign="top">
+            
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
 <tr class="private">
     <td width="15%" align="right" valign="top" class="summary">
       <span class="summary-type">&nbsp;</span>
@@ -100,7 +117,7 @@ object --+
         <span class="summary-sig-arg">req</span>)</span><br />
       Dispatch the request to the appropriate controller.</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="pyocni.pyocni_tools.routes_test-pysrc.html#ocni_server.Router._dispatch">source&nbsp;code</a></span>
+            
             
           </td>
         </tr>
@@ -118,24 +135,7 @@ object --+
         <span class="summary-sig-arg">env</span>,
         <span class="summary-sig-arg">start_response</span>)</span></td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="pyocni.pyocni_tools.routes_test-pysrc.html#ocni_server.Router.application">source&nbsp;code</a></span>
             
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      x.__init__(...) initializes x; see help(type(x)) for signature</td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pyocni.pyocni_tools.routes_test-pysrc.html#ocni_server.Router.__init__">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -205,29 +205,6 @@ object --+
   </td>
 </tr>
 </table>
-<a name="_dispatch"></a>
-<div class="private">
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">_dispatch</span>(<span class="sig-arg">self</span>,
-        <span class="sig-arg">req</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    ><span class="codelink"><a href="pyocni.pyocni_tools.routes_test-pysrc.html#ocni_server.Router._dispatch">source&nbsp;code</a></span>&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Dispatch the request to the appropriate controller.</p>
-  <p>Called by self._router after matching the incoming request to a route 
-  and putting the information into req.environ.  Either returns 404 or the 
-  routed WSGI app's response.</p>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
-</div>
 <a name="__init__"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
@@ -239,7 +216,7 @@ object --+
     <br /><em class="fname">(Constructor)</em>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="pyocni.pyocni_tools.routes_test-pysrc.html#ocni_server.Router.__init__">source&nbsp;code</a></span>&nbsp;
+    >&nbsp;
     </td>
   </tr></table>
   
@@ -249,6 +226,29 @@ object --+
         object.__init__
         <dd><em class="note">(inherited documentation)</em></dd>
     </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="_dispatch"></a>
+<div class="private">
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">_dispatch</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">req</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    >&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Dispatch the request to the appropriate controller.</p>
+  <p>Called by self._router after matching the incoming request to a route 
+  and putting the information into req.environ.  Either returns 404 or the 
+  routed WSGI app's response.</p>
+  <dl class="fields">
   </dl>
 </td></tr></table>
 </div>
@@ -284,7 +284,7 @@ object --+
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Jul 23 11:54:51 2012
+    Generated by Epydoc 3.0.1 on Thu Oct 25 18:35:15 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"
