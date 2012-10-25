@@ -37,34 +37,36 @@ def init_fakeDB():
 
 
 def add_fake_kind():
-
     c = pycurl.Curl()
-    c.setopt(c.URL,'http://127.0.0.1:8090/-/')
-    c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json','Accept: application/occi+json'])
-    c.setopt(c.POSTFIELDS,f_categories.kind)
+    c.setopt(c.URL, 'http://127.0.0.1:8090/-/')
+    c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json', 'Accept: application/occi+json'])
+    c.setopt(c.POSTFIELDS, f_categories.kind)
     c.setopt(c.CUSTOMREQUEST, 'POST')
     c.perform()
+
 
 def add_fake_mixin():
     c = pycurl.Curl()
-    c.setopt(c.URL,'http://127.0.0.1:8090/-/')
-    c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json','Accept: application/occi+json'])
-    c.setopt(c.POSTFIELDS,f_categories.mixin)
+    c.setopt(c.URL, 'http://127.0.0.1:8090/-/')
+    c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json', 'Accept: application/occi+json'])
+    c.setopt(c.POSTFIELDS, f_categories.mixin)
     c.setopt(c.CUSTOMREQUEST, 'POST')
     c.perform()
+
 
 def add_fake_action():
     c = pycurl.Curl()
-    c.setopt(c.URL,'http://127.0.0.1:8090/-/')
-    c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json','Accept: application/occi+json'])
-    c.setopt(c.POSTFIELDS,f_categories.action)
+    c.setopt(c.URL, 'http://127.0.0.1:8090/-/')
+    c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json', 'Accept: application/occi+json'])
+    c.setopt(c.POSTFIELDS, f_categories.action)
     c.setopt(c.CUSTOMREQUEST, 'POST')
     c.perform()
 
+
 def add_fake_resource():
     c = pycurl.Curl()
-    c.setopt(c.URL,'http://127.0.0.1:8090/compute/')
-    c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json','Accept: application/occi+json'])
-    c.setopt(c.POSTFIELDS,f_entities.resource)
+    c.setopt(c.URL, 'http://127.0.0.1:8090/compute/')
+    c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json', 'Accept: application/occi+json'])
+    c.setopt(c.POSTFIELDS, f_entities.resource)
     c.setopt(c.CUSTOMREQUEST, 'POST')
     c.perform()

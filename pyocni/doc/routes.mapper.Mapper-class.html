@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ascii"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-          "DTD/xhtml1-transitional.dtd">
+        "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>routes.mapper.Mapper</title>
-  <link rel="stylesheet" href="epydoc.css" type="text/css" />
-  <script type="text/javascript" src="epydoc.js"></script>
+    <title>routes.mapper.Mapper</title>
+    <link rel="stylesheet" href="epydoc.css" type="text/css"/>
+    <script type="text/javascript" src="epydoc.js"></script>
 </head>
 
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
@@ -13,56 +13,67 @@
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
-  <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <tr valign="middle">
+        <!-- Home link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Tree link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Tree link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Index link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Index link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Help link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Help link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Project homepage -->
-      <th class="navbar" align="right" width="100%">
-        <table border="0" cellpadding="0" cellspacing="0">
-          <tr><th class="navbar" align="center"
-            >pyocni</th>
-          </tr></table></th>
-  </tr>
+        <!-- Project homepage -->
+        <th class="navbar" align="right" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="navbar" align="center"
+                            >pyocni
+                    </th>
+                </tr>
+            </table>
+        </th>
+    </tr>
 </table>
 <table width="100%" cellpadding="0" cellspacing="0">
-  <tr valign="top">
-    <td width="100%">
+    <tr valign="top">
+        <td width="100%">
       <span class="breadcrumbs">
         routes ::
         mapper ::
         Mapper ::
         Class&nbsp;Mapper
       </span>
-    </td>
-    <td>
-      <table cellpadding="0" cellspacing="0">
-        <!-- hide/show private -->
-        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
-    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
-        <tr><td align="right"><span class="options"
-            >[<a href="frames.html" target="_top">frames</a
-            >]&nbsp;|&nbsp;<a href="routes.mapper.Mapper-class.html"
-            target="_top">no&nbsp;frames</a>]</span></td></tr>
-      </table>
-    </td>
-  </tr>
+        </td>
+        <td>
+            <table cellpadding="0" cellspacing="0">
+                <!-- hide/show private -->
+                <tr>
+                    <td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+                                                                onclick="toggle_private();">hide&nbsp;private</a>]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right"><span class="options"
+                            >[<a href="frames.html" target="_top">frames</a
+                            >]&nbsp;|&nbsp;<a href="routes.mapper.Mapper-class.html"
+                                              target="_top">no&nbsp;frames</a>]</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
 <!-- ==================== CLASS DESCRIPTION ==================== -->
-<h1 class="epydoc">Class Mapper</h1><p class="nomargin-top"></p>
+<h1 class="epydoc">Class Mapper</h1>
+
+<p class="nomargin-top"></p>
 <pre class="base-tree">
      object --+    
               |    
@@ -71,420 +82,480 @@ SubMapperParent --+
                  <strong class="uidshort">Mapper</strong>
 </pre>
 
-<hr />
-<p>Mapper handles URL generation and URL recognition in a web 
-  application.</p>
-  <p>Mapper is built handling dictionary's. It is assumed that the web 
-  application will handle the dictionary returned by URL recognition to 
-  dispatch appropriately.</p>
-  <p>URL generation is done by passing keyword parameters into the generate
-  function, a URL is then returned.</p>
+<hr/>
+<p>Mapper handles URL generation and URL recognition in a web
+    application.</p>
+
+<p>Mapper is built handling dictionary's. It is assumed that the web
+    application will handle the dictionary returned by URL recognition to
+    dispatch appropriately.</p>
+
+<p>URL generation is done by passing keyword parameters into the generate
+    function, a URL is then returned.</p>
 
 <!-- ==================== INSTANCE METHODS ==================== -->
 <a name="section-InstanceMethods"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Instance Methods</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-InstanceMethods"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
+    <td colspan="2" class="table-header">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr valign="top">
+                <td align="left"><span class="table-header">Instance Methods</span></td>
+                <td align="right" valign="top"
+                        ><span class="options">[<a href="#section-InstanceMethods"
+                                                   class="privatelink" onclick="toggle_private();"
+                        >hide private</a>]</span></td>
+            </tr>
+        </table>
+    </td>
 </tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#__init__"
+                                                 class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">controller_scan</span>=<span class="summary-sig-default">&lt;function controller_scan at 0x317f488&gt;</span>,
         <span class="summary-sig-arg">directory</span>=<span class="summary-sig-default">None</span>,
         <span class="summary-sig-arg">always_scan</span>=<span class="summary-sig-default">False</span>,
         <span class="summary-sig-arg">register</span>=<span class="summary-sig-default">True</span>,
-        <span class="summary-sig-arg">explicit</span>=<span class="summary-sig-default">True</span>)</span><br />
-      Create a new Mapper instance</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-sig-arg">explicit</span>=<span class="summary-sig-default">True</span>)</span><br/>
+                    Create a new Mapper instance
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
+</tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#__str__" class="summary-sig-name">__str__</a>(<span class="summary-sig-arg">self</span>)</span><br />
-      Generates a tabular string representation.</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-type">&nbsp;</span>
     </td>
-  </tr>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#__str__"
+                                                 class="summary-sig-name">__str__</a>(<span
+                        class="summary-sig-arg">self</span>)</span><br/>
+                    Generates a tabular string representation.
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
+    </td>
+</tr>
 <tr class="private">
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_create_gens"></a><span class="summary-sig-name">_create_gens</span>(<span class="summary-sig-arg">self</span>)</span><br />
-      Create the generation hashes for route lookups</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-type">&nbsp;</span>
     </td>
-  </tr>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a name="_create_gens"></a><span
+                        class="summary-sig-name">_create_gens</span>(<span
+                        class="summary-sig-arg">self</span>)</span><br/>
+                    Create the generation hashes for route lookups
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
+    </td>
+</tr>
 <tr class="private">
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_create_regs"></a><span class="summary-sig-name">_create_regs</span>(<span class="summary-sig-arg">self</span>,
-        <span class="summary-sig-arg">clist</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Creates regular expressions for all connected routes</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-type">&nbsp;</span>
     </td>
-  </tr>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a name="_create_regs"></a><span
+                        class="summary-sig-name">_create_regs</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">clist</span>=<span class="summary-sig-default">None</span>)</span><br/>
+                    Creates regular expressions for all connected routes
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
+    </td>
+</tr>
 <tr class="private">
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_envdel"></a><span class="summary-sig-name">_envdel</span>(<span class="summary-sig-arg">self</span>)</span></td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-type">&nbsp;</span>
     </td>
-  </tr>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a name="_envdel"></a><span class="summary-sig-name">_envdel</span>(<span
+                        class="summary-sig-arg">self</span>)</span></td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
+    </td>
+</tr>
 <tr class="private">
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_envget"></a><span class="summary-sig-name">_envget</span>(<span class="summary-sig-arg">self</span>)</span></td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-type">&nbsp;</span>
     </td>
-  </tr>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a name="_envget"></a><span class="summary-sig-name">_envget</span>(<span
+                        class="summary-sig-arg">self</span>)</span></td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
+    </td>
+</tr>
 <tr class="private">
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_envset"></a><span class="summary-sig-name">_envset</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a name="_envset"></a><span class="summary-sig-name">_envset</span>(<span
+                        class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">env</span>)</span></td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
+</tr>
 <tr class="private">
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#_match" class="summary-sig-name" onclick="show_private();">_match</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#_match" class="summary-sig-name"
+                                                 onclick="show_private();">_match</a>(<span
+                        class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">url</span>,
-        <span class="summary-sig-arg">environ</span>)</span><br />
-      Internal Route matcher</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-sig-arg">environ</span>)</span><br/>
+                    Internal Route matcher
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
+</tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#connect" class="summary-sig-name">connect</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#connect"
+                                                 class="summary-sig-name">connect</a>(<span
+                        class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">*args</span>,
-        <span class="summary-sig-arg">**kargs</span>)</span><br />
-      Create and connect a new Route to the Mapper.</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-sig-arg">**kargs</span>)</span><br/>
+                    Create and connect a new Route to the Mapper.
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
+</tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="create_regs"></a><span class="summary-sig-name">create_regs</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a name="create_regs"></a><span
+                        class="summary-sig-name">create_regs</span>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">*args</span>,
-        <span class="summary-sig-arg">**kwargs</span>)</span><br />
-      Atomically creates regular expressions for all connected routes</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-sig-arg">**kwargs</span>)</span><br/>
+                    Atomically creates regular expressions for all connected routes
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
+</tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#extend" class="summary-sig-name">extend</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#extend" class="summary-sig-name">extend</a>(<span
+                        class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">routes</span>,
-        <span class="summary-sig-arg">path_prefix</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>)</span><br />
-      Extends the mapper routes with a list of Route objects</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-sig-arg">path_prefix</span>=<span class="summary-sig-default"><code class="variable-quote">'</code><code
+                            class="variable-string"></code><code class="variable-quote">'</code></span>)</span><br/>
+                    Extends the mapper routes with a list of Route objects
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
+</tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#generate" class="summary-sig-name">generate</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#generate"
+                                                 class="summary-sig-name">generate</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">*args</span>,
-        <span class="summary-sig-arg">**kargs</span>)</span><br />
-      Generate a route from a set of keywords</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-sig-arg">**kargs</span>)</span><br/>
+                    Generate a route from a set of keywords
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
+</tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#match" class="summary-sig-name">match</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#match" class="summary-sig-name">match</a>(<span
+                        class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">url</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">environ</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Match a URL against against one of the routes contained.</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-sig-arg">environ</span>=<span class="summary-sig-default">None</span>)</span><br/>
+                    Match a URL against against one of the routes contained.
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
+</tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#redirect" class="summary-sig-name">redirect</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#redirect"
+                                                 class="summary-sig-name">redirect</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">match_path</span>,
         <span class="summary-sig-arg">destination_path</span>,
         <span class="summary-sig-arg">*args</span>,
-        <span class="summary-sig-arg">**kwargs</span>)</span><br />
-      Add a redirect route to the mapper</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-sig-arg">**kwargs</span>)</span><br/>
+                    Add a redirect route to the mapper
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
+</tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#resource" class="summary-sig-name">resource</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#resource"
+                                                 class="summary-sig-name">resource</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">member_name</span>,
         <span class="summary-sig-arg">collection_name</span>,
-        <span class="summary-sig-arg">**kwargs</span>)</span><br />
-      Generate routes for a controller resource</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-sig-arg">**kwargs</span>)</span><br/>
+                    Generate routes for a controller resource
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
+</tr>
 <tr>
     <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#routematch" class="summary-sig-name">routematch</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-type">&nbsp;</span>
+    </td>
+    <td class="summary">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td><span class="summary-sig"><a href="routes.mapper.Mapper-class.html#routematch"
+                                                 class="summary-sig-name">routematch</a>(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">url</span>=<span class="summary-sig-default">None</span>,
-        <span class="summary-sig-arg">environ</span>=<span class="summary-sig-default">None</span>)</span><br />
-      Match a URL against against one of the routes contained.</td>
-          <td align="right" valign="top">
-            
-            
-          </td>
-        </tr>
-      </table>
-      
+        <span class="summary-sig-arg">environ</span>=<span class="summary-sig-default">None</span>)</span><br/>
+                    Match a URL against against one of the routes contained.
+                </td>
+                <td align="right" valign="top">
+
+
+                </td>
+            </tr>
+        </table>
+
     </td>
-  </tr>
-  <tr>
+</tr>
+<tr>
     <td colspan="2" class="summary">
-    <p class="indent-wrapped-lines"><b>Inherited from <code>SubMapperParent</code></b>:
-      <code>collection</code>,
-      <code>submapper</code>
-      </p>
-    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
-      <code>__delattr__</code>,
-      <code>__format__</code>,
-      <code>__getattribute__</code>,
-      <code>__hash__</code>,
-      <code>__new__</code>,
-      <code>__reduce__</code>,
-      <code>__reduce_ex__</code>,
-      <code>__repr__</code>,
-      <code>__setattr__</code>,
-      <code>__sizeof__</code>,
-      <code>__subclasshook__</code>
-      </p>
+        <p class="indent-wrapped-lines"><b>Inherited from <code>SubMapperParent</code></b>:
+            <code>collection</code>,
+            <code>submapper</code>
+        </p>
+
+        <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+            <code>__delattr__</code>,
+            <code>__format__</code>,
+            <code>__getattribute__</code>,
+            <code>__hash__</code>,
+            <code>__new__</code>,
+            <code>__reduce__</code>,
+            <code>__reduce_ex__</code>,
+            <code>__repr__</code>,
+            <code>__setattr__</code>,
+            <code>__sizeof__</code>,
+            <code>__subclasshook__</code>
+        </p>
     </td>
-  </tr>
+</tr>
 </table>
 <!-- ==================== PROPERTIES ==================== -->
 <a name="section-Properties"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
-<tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Properties</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-Properties"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
-</tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="routes.mapper.Mapper-class.html#environ" class="summary-name">environ</a>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" class="summary">
-    <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
-      <code>__class__</code>
-      </p>
-    </td>
-  </tr>
+    <tr bgcolor="#70b0f0" class="table-header">
+        <td colspan="2" class="table-header">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr valign="top">
+                    <td align="left"><span class="table-header">Properties</span></td>
+                    <td align="right" valign="top"
+                            ><span class="options">[<a href="#section-Properties"
+                                                       class="privatelink" onclick="toggle_private();"
+                            >hide private</a>]</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a href="routes.mapper.Mapper-class.html#environ" class="summary-name">environ</a>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" class="summary">
+            <p class="indent-wrapped-lines"><b>Inherited from <code>object</code></b>:
+                <code>__class__</code>
+            </p>
+        </td>
+    </tr>
 </table>
 <!-- ==================== METHOD DETAILS ==================== -->
 <a name="section-MethodDetails"></a>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
-<tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Method Details</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-MethodDetails"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
-</tr>
+    <tr bgcolor="#70b0f0" class="table-header">
+        <td colspan="2" class="table-header">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr valign="top">
+                    <td align="left"><span class="table-header">Method Details</span></td>
+                    <td align="right" valign="top"
+                            ><span class="options">[<a href="#section-MethodDetails"
+                                                       class="privatelink" onclick="toggle_private();"
+                            >hide private</a>]</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
 <a name="__init__"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr valign="top">
+                        <td>
+                            <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span
+                                    class="sig-arg">self</span>,
         <span class="sig-arg">controller_scan</span>=<span class="sig-default">&lt;function controller_scan at 0x317f488&gt;</span>,
         <span class="sig-arg">directory</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">always_scan</span>=<span class="sig-default">False</span>,
         <span class="sig-arg">register</span>=<span class="sig-default">True</span>,
         <span class="sig-arg">explicit</span>=<span class="sig-default">True</span>)</span>
-    <br /><em class="fname">(Constructor)</em>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
+                                <br/><em class="fname">(Constructor)</em>
+                            </h3>
+                        </td>
+                        <td align="right" valign="top"
+                                >&nbsp;
+                        </td>
+                    </tr>
+                </table>
   
   <pre class="literalblock">
 Create a new Mapper instance
@@ -552,76 +623,102 @@ initialization (ie, map.ATTRIBUTE = 'something'):
     generation to use the route. Defaults to False.
 
 </pre>
-  <dl class="fields">
-    <dt>Overrides:
-        object.__init__
-    </dt>
-  </dl>
-</td></tr></table>
+                <dl class="fields">
+                    <dt>Overrides:
+                        object.__init__
+                    </dt>
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <a name="__str__"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">__str__</span>(<span class="sig-arg">self</span>)</span>
-    <br /><em class="fname">(Informal representation operator)</em>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Generates a tabular string representation.</p>
-  <dl class="fields">
-    <dt>Overrides:
-        object.__str__
-    </dt>
-  </dl>
-</td></tr></table>
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr valign="top">
+                        <td>
+                            <h3 class="epydoc"><span class="sig"><span class="sig-name">__str__</span>(<span
+                                    class="sig-arg">self</span>)</span>
+                                <br/><em class="fname">(Informal representation operator)</em>
+                            </h3>
+                        </td>
+                        <td align="right" valign="top"
+                                >&nbsp;
+                        </td>
+                    </tr>
+                </table>
+
+                <p>Generates a tabular string representation.</p>
+                <dl class="fields">
+                    <dt>Overrides:
+                        object.__str__
+                    </dt>
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <a name="_match"></a>
+
 <div class="private">
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">_match</span>(<span class="sig-arg">self</span>,
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr valign="top">
+                        <td>
+                            <h3 class="epydoc"><span class="sig"><span class="sig-name">_match</span>(<span
+                                    class="sig-arg">self</span>,
         <span class="sig-arg">url</span>,
         <span class="sig-arg">environ</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Internal Route matcher</p>
-  <p>Matches a URL against a route, and returns a tuple of the match dict 
-  and the route object if a match is successfull, otherwise it returns 
-  empty.</p>
-  <p>For internal use only.</p>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
+                            </h3>
+                        </td>
+                        <td align="right" valign="top"
+                                >&nbsp;
+                        </td>
+                    </tr>
+                </table>
+
+                <p>Internal Route matcher</p>
+
+                <p>Matches a URL against a route, and returns a tuple of the match dict
+                    and the route object if a match is successfull, otherwise it returns
+                    empty.</p>
+
+                <p>For internal use only.</p>
+                <dl class="fields">
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <a name="connect"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">connect</span>(<span class="sig-arg">self</span>,
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr valign="top">
+                        <td>
+                            <h3 class="epydoc"><span class="sig"><span class="sig-name">connect</span>(<span
+                                    class="sig-arg">self</span>,
         <span class="sig-arg">*args</span>,
         <span class="sig-arg">**kargs</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
+                            </h3>
+                        </td>
+                        <td align="right" valign="top"
+                                >&nbsp;
+                        </td>
+                    </tr>
+                </table>
   
   <pre class="literalblock">
 Create and connect a new Route to the Mapper.
@@ -640,30 +737,42 @@ Usage:
     m.connect('home', '', controller='blog', action='view', section='home')
 
 </pre>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
+                <dl class="fields">
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <a name="extend"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">extend</span>(<span class="sig-arg">self</span>,
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr valign="top">
+                        <td>
+                            <h3 class="epydoc"><span class="sig"><span class="sig-name">extend</span>(<span
+                                    class="sig-arg">self</span>,
         <span class="sig-arg">routes</span>,
-        <span class="sig-arg">path_prefix</span>=<span class="sig-default"><code class="variable-quote">'</code><code class="variable-string"></code><code class="variable-quote">'</code></span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Extends the mapper routes with a list of Route objects</p>
-  <p>If a path_prefix is provided, all the routes will have their path 
-  prepended with the path_prefix.</p>
-  <p>Example:</p>
+        <span class="sig-arg">path_prefix</span>=<span class="sig-default"><code class="variable-quote">'</code><code
+                                        class="variable-string"></code><code
+                                        class="variable-quote">'</code></span>)</span>
+                            </h3>
+                        </td>
+                        <td align="right" valign="top"
+                                >&nbsp;
+                        </td>
+                    </tr>
+                </table>
+
+                <p>Extends the mapper routes with a list of Route objects</p>
+
+                <p>If a path_prefix is provided, all the routes will have their path
+                    prepended with the path_prefix.</p>
+
+                <p>Example:</p>
 <pre class="literalblock">
    &gt;&gt;&gt; map = Mapper(controller_scan=None)
    &gt;&gt;&gt; map.connect('home', '/', controller='home', action='splash')
@@ -680,31 +789,39 @@ Usage:
    &gt;&gt;&gt; map.matchlist[2].routepath == '/subapp/index.htm'
    True
 </pre>
-  <p>.. note:</p>
+                <p>.. note:</p>
 <pre class="literalblock">
    This function does not merely extend the mapper with the
    given list of routes, it actually creates new routes with
    identical calling arguments.
 </pre>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
+                <dl class="fields">
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <a name="generate"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">generate</span>(<span class="sig-arg">self</span>,
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr valign="top">
+                        <td>
+                            <h3 class="epydoc"><span class="sig"><span class="sig-name">generate</span>(<span
+                                    class="sig-arg">self</span>,
         <span class="sig-arg">*args</span>,
         <span class="sig-arg">**kargs</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
+                            </h3>
+                        </td>
+                        <td align="right" valign="top"
+                                >&nbsp;
+                        </td>
+                    </tr>
+                </table>
   
   <pre class="literalblock">
 Generate a route from a set of keywords
@@ -716,25 +833,33 @@ Returns the url text, or None if no URL could be generated.
     m.generate(controller='content',action='view',id=10)
 
 </pre>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
+                <dl class="fields">
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <a name="match"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">match</span>(<span class="sig-arg">self</span>,
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr valign="top">
+                        <td>
+                            <h3 class="epydoc"><span class="sig"><span class="sig-name">match</span>(<span
+                                    class="sig-arg">self</span>,
         <span class="sig-arg">url</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">environ</span>=<span class="sig-default">None</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
+                            </h3>
+                        </td>
+                        <td align="right" valign="top"
+                                >&nbsp;
+                        </td>
+                    </tr>
+                </table>
   
   <pre class="literalblock">
 Match a URL against against one of the routes contained.
@@ -746,65 +871,85 @@ Will return None if no valid match is found.
     resultdict = m.match('/joe/sixpack')
 
 </pre>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
+                <dl class="fields">
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <a name="redirect"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">redirect</span>(<span class="sig-arg">self</span>,
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr valign="top">
+                        <td>
+                            <h3 class="epydoc"><span class="sig"><span class="sig-name">redirect</span>(<span
+                                    class="sig-arg">self</span>,
         <span class="sig-arg">match_path</span>,
         <span class="sig-arg">destination_path</span>,
         <span class="sig-arg">*args</span>,
         <span class="sig-arg">**kwargs</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
-  
-  <p>Add a redirect route to the mapper</p>
-  <p>Redirect routes bypass the wrapped WSGI application and instead result
-  in a redirect being issued by the RoutesMiddleware. As such, this method 
-  is only meaningful when using RoutesMiddleware.</p>
-  <p>By default, a 302 Found status code is used, this can be changed by 
-  providing a ``_redirect_code`` keyword argument which will then be used 
-  instead. Note that the entire status code string needs to be present.</p>
-  <p>When using keyword arguments, all arguments that apply to matching 
-  will be used for the match, while generation specific options will be 
-  used during generation. Thus all options normally available to connected 
-  Routes may be used with redirect routes as well.</p>
-  <p>Example:</p>
+                            </h3>
+                        </td>
+                        <td align="right" valign="top"
+                                >&nbsp;
+                        </td>
+                    </tr>
+                </table>
+
+                <p>Add a redirect route to the mapper</p>
+
+                <p>Redirect routes bypass the wrapped WSGI application and instead result
+                    in a redirect being issued by the RoutesMiddleware. As such, this method
+                    is only meaningful when using RoutesMiddleware.</p>
+
+                <p>By default, a 302 Found status code is used, this can be changed by
+                    providing a ``_redirect_code`` keyword argument which will then be used
+                    instead. Note that the entire status code string needs to be present.</p>
+
+                <p>When using keyword arguments, all arguments that apply to matching
+                    will be used for the match, while generation specific options will be
+                    used during generation. Thus all options normally available to connected
+                    Routes may be used with redirect routes as well.</p>
+
+                <p>Example:</p>
 <pre class="literalblock">
    map = Mapper()
    map.redirect('/legacyapp/archives/{url:.*}, '/archives/{url})
    map.redirect('/home/index', '/', _redirect_code='301 Moved Permanently')
 </pre>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
+                <dl class="fields">
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <a name="resource"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">resource</span>(<span class="sig-arg">self</span>,
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr valign="top">
+                        <td>
+                            <h3 class="epydoc"><span class="sig"><span class="sig-name">resource</span>(<span
+                                    class="sig-arg">self</span>,
         <span class="sig-arg">member_name</span>,
         <span class="sig-arg">collection_name</span>,
         <span class="sig-arg">**kwargs</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
+                            </h3>
+                        </td>
+                        <td align="right" valign="top"
+                                >&nbsp;
+                        </td>
+                    </tr>
+                </table>
   
   <pre class="literalblock">
 Generate routes for a controller resource
@@ -937,25 +1082,33 @@ All keyword arguments are optional.
         '/regions/51/locations'
 
 </pre>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
+                <dl class="fields">
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <a name="routematch"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-  <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">routematch</span>(<span class="sig-arg">self</span>,
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr valign="top">
+                        <td>
+                            <h3 class="epydoc"><span class="sig"><span class="sig-name">routematch</span>(<span
+                                    class="sig-arg">self</span>,
         <span class="sig-arg">url</span>=<span class="sig-default">None</span>,
         <span class="sig-arg">environ</span>=<span class="sig-default">None</span>)</span>
-  </h3>
-  </td><td align="right" valign="top"
-    >&nbsp;
-    </td>
-  </tr></table>
+                            </h3>
+                        </td>
+                        <td align="right" valign="top"
+                                >&nbsp;
+                        </td>
+                    </tr>
+                </table>
   
   <pre class="literalblock">
 Match a URL against against one of the routes contained.
@@ -968,99 +1121,111 @@ result dict and a route object is returned.
     resultdict, route_obj = m.match('/joe/sixpack')
 
 </pre>
-  <dl class="fields">
-  </dl>
-</td></tr></table>
+                <dl class="fields">
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
-<br />
+<br/>
 <!-- ==================== PROPERTY DETAILS ==================== -->
 <a name="section-PropertyDetails"></a>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
-<tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Property Details</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-PropertyDetails"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
-</tr>
+    <tr bgcolor="#70b0f0" class="table-header">
+        <td colspan="2" class="table-header">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr valign="top">
+                    <td align="left"><span class="table-header">Property Details</span></td>
+                    <td align="right" valign="top"
+                            ><span class="options">[<a href="#section-PropertyDetails"
+                                                       class="privatelink" onclick="toggle_private();"
+                            >hide private</a>]</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
 <a name="environ"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <h3 class="epydoc">environ</h3>
-  
-  <dl class="fields">
-    <dt>Get Method:</dt>
-    <dd class="value"><span class="summary-sig">_envget(<span class="summary-sig-arg">self</span>)</span>
-    </dd>
-    <dt>Set Method:</dt>
-    <dd class="value"><span class="summary-sig">_envset(<span class="summary-sig-arg">self</span>,
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <h3 class="epydoc">environ</h3>
+
+                <dl class="fields">
+                    <dt>Get Method:</dt>
+                    <dd class="value"><span class="summary-sig">_envget(<span
+                            class="summary-sig-arg">self</span>)</span>
+                    </dd>
+                    <dt>Set Method:</dt>
+                    <dd class="value"><span class="summary-sig">_envset(<span class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">env</span>)</span>
-    </dd>
-    <dt>Delete Method:</dt>
-    <dd class="value"><span class="summary-sig">_envdel(<span class="summary-sig-arg">self</span>)</span>
-    </dd>
-  </dl>
-</td></tr></table>
+                    </dd>
+                    <dt>Delete Method:</dt>
+                    <dd class="value"><span class="summary-sig">_envdel(<span
+                            class="summary-sig-arg">self</span>)</span>
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
-<br />
+<br/>
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
-  <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <tr valign="middle">
+        <!-- Home link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Tree link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Tree link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Index link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Index link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Help link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Help link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Project homepage -->
-      <th class="navbar" align="right" width="100%">
-        <table border="0" cellpadding="0" cellspacing="0">
-          <tr><th class="navbar" align="center"
-            >pyocni</th>
-          </tr></table></th>
-  </tr>
+        <!-- Project homepage -->
+        <th class="navbar" align="right" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="navbar" align="center"
+                            >pyocni
+                    </th>
+                </tr>
+            </table>
+        </th>
+    </tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
-  <tr>
-    <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Oct 25 18:35:15 2012
-    </td>
-    <td align="right" class="footer">
-      <a target="mainFrame" href="http://epydoc.sourceforge.net"
-        >http://epydoc.sourceforge.net</a>
-    </td>
-  </tr>
+    <tr>
+        <td align="left" class="footer">
+            Generated by Epydoc 3.0.1 on Thu Oct 25 18:35:15 2012
+        </td>
+        <td align="right" class="footer">
+            <a target="mainFrame" href="http://epydoc.sourceforge.net"
+                    >http://epydoc.sourceforge.net</a>
+        </td>
+    </tr>
 </table>
 
 <script type="text/javascript">
-  <!--
-  // Private objects are initially displayed (because if
-  // javascript is turned off then we want them to be
-  // visible); but by default, we want to hide them.  So hide
-  // them unless we have a cookie that says to show them.
-  checkCookie();
-  // -->
+    <!--
+    // Private objects are initially displayed (because if
+    // javascript is turned off then we want them to be
+    // visible); but by default, we want to hide them.  So hide
+    // them unless we have a cookie that says to show them.
+    checkCookie();
+    // -->
 </script>
 </body>
 </html>

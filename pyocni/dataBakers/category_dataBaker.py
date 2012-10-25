@@ -24,6 +24,7 @@ Created on Oct 03, 2012
 """
 
 import pyocni.pyocni_tools.config as config
+
 try:
     import simplejson as json
 except ImportError:
@@ -35,11 +36,9 @@ import pyocni.pyocni_tools.occi_Joker as joker
 logger = config.logger
 
 class CategoryDataBaker():
-
     #DataBaker's role is to prepare the data for Junglers
 
     def __init__(self):
-
         self.category_sup = CategorySupplier()
 
     def bake_to_get_all_categories(self):
@@ -57,7 +56,6 @@ class CategoryDataBaker():
         #Step[2]: Adapt categories to the required format
 
         if query is None:
-
             return None
 
         else:
@@ -76,7 +74,6 @@ class CategoryDataBaker():
         return result
 
     def bake_to_register_categories(self):
-
         query = self.category_sup.get_ids_and_location_categories()
 
         if query is None:
@@ -86,13 +83,12 @@ class CategoryDataBaker():
             db_occi_locs = list()
 
             for q in query:
-                db_occi_ids.append( q['key'])
+                db_occi_ids.append(q['key'])
                 db_occi_locs.append(q['value'])
 
-            return db_occi_ids,db_occi_locs
+            return db_occi_ids, db_occi_locs
 
     def bake_to_update_categories(self):
-
         query = self.category_sup.get_ids_and_docs_categories()
 
         if query is None:
@@ -100,12 +96,11 @@ class CategoryDataBaker():
         else:
             db_occi_id_doc = list()
             for q in query:
-                db_occi_id_doc.append( { "OCCI_ID" : q['key'],"Doc" : q['value']})
+                db_occi_id_doc.append({"OCCI_ID": q['key'], "Doc": q['value']})
 
             return db_occi_id_doc
 
     def bake_to_delete_categories(self):
-
         query = self.category_sup.get_ids_categories()
         if query is None:
             return None
@@ -113,15 +108,13 @@ class CategoryDataBaker():
             db_occi_id = list()
             for q in query:
                 if q['key'] is not None:
-                    db_occi_id.append( { "_id" : q['key'],"_rev" : q['value'][0], "OCCI_ID" : q['value'][1]})
+                    db_occi_id.append({"_id": q['key'], "_rev": q['value'][0], "OCCI_ID": q['value'][1]})
             return db_occi_id
 
-    def bake_to_delete_categories_mixins(self,mixins):
-
+    def bake_to_delete_categories_mixins(self, mixins):
         db_mixin_entities = list()
 
         for mix in mixins:
-
             occi_id = joker.get_description_id(mix)
             query = self.category_sup.get_entities_of_mixin(occi_id)
 

@@ -31,12 +31,11 @@ class CategorySupplier():
     """
     Consults the database to get the data asked for by the dataBakers
     """
-    def __init__(self):
 
+    def __init__(self):
         self.database = config.prepare_PyOCNI_db()
 
     def get_all_categories(self):
-
         try:
             query = self.database.view('/db_views/for_get_categories')
         except Exception as e:
@@ -46,7 +45,6 @@ class CategorySupplier():
         return query
 
     def get_ids_and_location_categories(self):
-
         try:
             query = self.database.view('/db_views/for_register_categories')
         except Exception as e:
@@ -56,7 +54,6 @@ class CategorySupplier():
         return query
 
     def get_ids_and_docs_categories(self):
-
         try:
             query = self.database.view('/db_views/for_update_categories')
         except Exception as e:
@@ -66,7 +63,6 @@ class CategorySupplier():
         return query
 
     def get_ids_categories(self):
-
         try:
             query = self.database.view('/db_views/for_delete_categories')
         except Exception as e:
@@ -76,9 +72,8 @@ class CategorySupplier():
         return query
 
     def get_entities_of_mixin(self, occi_id):
-
         try:
-            query = self.database.view('/db_views/entities_of_mixin_v2',key =occi_id)
+            query = self.database.view('/db_views/entities_of_mixin_v2', key=occi_id)
         except Exception as e:
             logger.error("===== Get_entities_of_mixin : " + e.message + " ===== ")
             return None

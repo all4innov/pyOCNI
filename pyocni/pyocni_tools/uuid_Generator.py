@@ -25,17 +25,16 @@ import uuid
 
 
 def get_UUID():
-
     """
     There are many ways to generate a uuid
     This example is using the generate random uuid method
 
     """
-    _uuid=None
-    _uuid=str(uuid.uuid4())
+    _uuid = None
+    _uuid = str(uuid.uuid4())
     return _uuid
 
 
-if __name__== "__main__":
-    _uuid=str(uuid.uuid4())
-    print "New UUID = "+_uuid
+if __name__ == "__main__":
+    _uuid = str(uuid.uuid4())
+    print "New UUID = " + _uuid

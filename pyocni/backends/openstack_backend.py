@@ -21,7 +21,6 @@ Created on Dec 10, 2011
 @license: Apache License, Version 2.0
 """
 
-
 from pyocni.backends.backend import backend
 import pyocni.pyocni_tools.config as config
 # getting the Logger

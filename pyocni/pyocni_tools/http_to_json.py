@@ -67,7 +67,7 @@ class http_json(object):
                 else:
                     try:
                         a[attribute_name_partitioned[i]] = json.loads(attribute_value)
-                    except Exception :
+                    except Exception:
                         a[attribute_name_partitioned[i]] = attribute_value
             else:
                 if i < (len(attribute_name_partitioned) - 1):
@@ -77,7 +77,7 @@ class http_json(object):
                 else:
                     try:
                         a[attribute_name_partitioned[i]] = json.loads(attribute_value)
-                    except Exception :
+                    except Exception:
                         a[attribute_name_partitioned[i]] = attribute_value
 
         pprint.pprint(" =============== Sending ===============")

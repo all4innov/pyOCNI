@@ -26,16 +26,16 @@ from optparse import OptionParser
 
 parser = OptionParser()
 parser.add_option('-c', '--config_file',
-                  default='./OCCILogging.conf',
-                  help='Configuration file path',
-                  type='string',
-                  action='store',
-                  dest='config_file')
+    default='./OCCILogging.conf',
+    help='Configuration file path',
+    type='string',
+    action='store',
+    dest='config_file')
 parser.add_option('-o', '--output_file',
-                  default='',
-                  help='log file',
-                  type='string',
-                  action='store',
-                  dest='output_file')
+    default='',
+    help='log file',
+    type='string',
+    action='store',
+    dest='output_file')
 (options, args) = parser.parse_args()
 Parameters = options

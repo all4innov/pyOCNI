@@ -27,30 +27,23 @@ import pyocni.pyocni_tools.config as config
 
 
 class PostMan():
-
     def __init__(self):
-
         self.database = config.get_PyOCNI_db()
 
-    def save_registered_docs_in_db(self,docs):
-
-        self.database.save_docs(docs,use_uuids=True, all_or_nothing=True)
+    def save_registered_docs_in_db(self, docs):
+        self.database.save_docs(docs, use_uuids=True, all_or_nothing=True)
 
     def save_updated_docs_in_db(self, categories):
+        self.database.save_docs(categories, force_update=True, all_or_nothing=True)
 
-        self.database.save_docs(categories,force_update=True, all_or_nothing=True)
-
-    def save_deleted_categories_in_db(self, categories,to_update):
-
+    def save_deleted_categories_in_db(self, categories, to_update):
         self.database.delete_docs(categories)
-        self.database.save_docs(to_update,force_update=True, all_or_nothing=True)
+        self.database.save_docs(to_update, force_update=True, all_or_nothing=True)
 
     def save_custom_resource(self, entity):
-
-        self.database.save_doc(entity,use_uuids=True, all_or_nothing=True)
+        self.database.save_doc(entity, use_uuids=True, all_or_nothing=True)
 
     def delete_single_resource_in_db(self, res_value):
-
         self.database.delete_doc(res_value)
 
 

@@ -30,8 +30,7 @@ import pyocni.pyocni_tools.config as config
 logger = config.logger
 
 class dummy_backend(backend):
-
-    def create(self, entity,hhh):
+    def create(self, entity, hhh):
         '''
 
         Create an entity (Resource or Link)

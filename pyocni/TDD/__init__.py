@@ -24,6 +24,7 @@ Created on Feb 25, 2011
 """
 
 import eventlet.patcher
+
 httplib2 = eventlet.patcher.import_patched("httplib2")
 
 import pprint
@@ -33,14 +34,14 @@ if __name__ == '__main__':
     #h.add_credentials('name', 'password')
 
     #    ====== Retrieval of all registered Kinds and Mixins  ======
-        #curl -X GET -H 'accept: application/occi+json' -v http://127.0.0.1:8090/-/
+    #curl -X GET -H 'accept: application/occi+json' -v http://127.0.0.1:8090/-/
 
     print ('========================================================================================================')
     print ('sending the request: Retrieval of all registered Kinds and Mixins...')
     resp, content = h.request('http://127.0.0.1:8090/-/',
-                              'GET',
-                              headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
-                              body='')
+        'GET',
+        headers={'content-type': 'application/occi+json', 'accept': 'application/occi+json'},
+        body='')
     print('********** The response header **********')
     pprint.pprint(resp)
     print('********** The content **********')

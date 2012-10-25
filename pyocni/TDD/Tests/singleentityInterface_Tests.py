@@ -23,7 +23,7 @@ Created on Jun 27, 2012
 @license: Apache License, Version 2.0
 """
 from multiprocessing import Process
-from unittest import TestLoader,TextTestRunner,TestCase
+from unittest import TestLoader, TextTestRunner, TestCase
 from pyocni.TDD.fake_Data.server_Mock import ocni_server
 import pycurl
 import time
@@ -36,23 +36,23 @@ def start_server():
     ocni_server_instance = ocni_server()
     ocni_server_instance.run_server()
 
+
 class test_post(TestCase):
     """
     Tests POST request scenarios
     """
-    def setUp(self):
 
+    def setUp(self):
         """
         Set up the test environment
         """
-        self.p = Process(target = start_server)
+        self.p = Process(target=start_server)
         self.p.start()
         time.sleep(0.5)
         #init_fakeDB()
         time.sleep(0.5)
 
     def tearDown(self):
-
         #config.purge_PyOCNI_db()
         self.p.terminate()
 
@@ -62,9 +62,9 @@ class test_post(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,'http://127.0.0.1:8090/compute/d4e49287-e8bd-4cd8-953a-b90f327084e5')
+        c.setopt(c.URL, 'http://127.0.0.1:8090/compute/d4e49287-e8bd-4cd8-953a-b90f327084e5')
 
-        c.setopt(c.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi',entities.part_entity_http])
+        c.setopt(c.HTTPHEADER, ['Accept: text/plain', 'Content-Type: text/occi', entities.part_entity_http])
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.VERBOSE, True)
 
@@ -96,19 +96,18 @@ class test_get(TestCase):
     """
     Tests GET request scenarios
     """
-    def setUp(self):
 
+    def setUp(self):
         """
         Set up the test environment
         """
-        self.p = Process(target = start_server)
+        self.p = Process(target=start_server)
         self.p.start()
         time.sleep(0.5)
         #init_fakeDB()
         time.sleep(0.5)
 
     def tearDown(self):
-
         self.p.terminate()
         #config.purge_PyOCNI_db()
 
@@ -119,7 +118,7 @@ class test_get(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,"http://127.0.0.1:8090/compute/9930")
+        c.setopt(c.URL, "http://127.0.0.1:8090/compute/9930")
         c.setopt(c.HTTPHEADER, ['Accept:text/occi'])
         c.setopt(c.VERBOSE, True)
         c.setopt(c.CUSTOMREQUEST, 'GET')
@@ -128,16 +127,17 @@ class test_get(TestCase):
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
 
+
 class test_delete(TestCase):
     """
     Tests DELETE request scenarios
     """
-    def setUp(self):
 
+    def setUp(self):
         """
         Set up the test environment
         """
-        self.p = Process(target = start_server)
+        self.p = Process(target=start_server)
         self.p.start()
         time.sleep(0.5)
 
@@ -151,7 +151,7 @@ class test_delete(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,"http://127.0.0.1:8090/bilel/vms/v01")
+        c.setopt(c.URL, "http://127.0.0.1:8090/bilel/vms/v01")
         c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json', 'Accept: application/occi+json'])
         c.setopt(c.CUSTOMREQUEST, 'DELETE')
         c.setopt(c.USERPWD, 'user_1:password')
@@ -160,16 +160,17 @@ class test_delete(TestCase):
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
 
+
 class test_put(TestCase):
     """
     Tests PUT request scenarios
     """
-    def setUp(self):
 
+    def setUp(self):
         """
         Set up the test environment
         """
-        self.p = Process(target = start_server)
+        self.p = Process(target=start_server)
         self.p.start()
         time.sleep(0.5)
 
@@ -181,9 +182,9 @@ class test_put(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,'http://127.0.0.1:8090/compute/d4e49287-e8bd-4cd8-953a-b90f327084e5')
+        c.setopt(c.URL, 'http://127.0.0.1:8090/compute/d4e49287-e8bd-4cd8-953a-b90f327084e5')
 
-        c.setopt(c.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi',entities.part_entity_http])
+        c.setopt(c.HTTPHEADER, ['Accept: text/plain', 'Content-Type: text/occi', entities.part_entity_http])
         c.setopt(c.CUSTOMREQUEST, 'PUT')
         c.setopt(c.VERBOSE, True)
 
@@ -193,18 +194,17 @@ class test_put(TestCase):
         print " ===== Body content =====\n " + content + " ==========\n"
 
 if __name__ == '__main__':
-
     #Create the testing tools
     loader = TestLoader()
     runner = TextTestRunner(verbosity=2)
 
     #Create the testing suites
-#    get_suite = loader.loadTestsFromTestCase(test_get)
-#    delete_suite = loader.loadTestsFromTestCase(test_delete)
+    #    get_suite = loader.loadTestsFromTestCase(test_get)
+    #    delete_suite = loader.loadTestsFromTestCase(test_delete)
     put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
-#    runner.run(get_suite)
-#    runner.run(delete_suite)
+    #    runner.run(get_suite)
+    #    runner.run(delete_suite)
     runner.run(put_suite)
-#    runner.run(post_suite)
+    #    runner.run(post_suite)

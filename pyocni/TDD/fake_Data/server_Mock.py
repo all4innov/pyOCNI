@@ -52,21 +52,19 @@ class ocni_server(object):
 
     """
 
-
     operationQuery = url_mapper.rest_controller(QueryDispatcher)
     operationSingleEntity = url_mapper.rest_controller(SingleEntityDispatcher)
     operationMultiEntity = url_mapper.rest_controller(MultiEntityDispatcher)
     app = url_mapper.Router()
 
-    app.add_route('/-/',controller=operationQuery)
+    app.add_route('/-/', controller=operationQuery)
 
-    app.add_route('/{location}/',controller=operationMultiEntity)
-    app.add_route('/{location}/{idontknow}/',controller=operationMultiEntity)
-    app.add_route('/{location}/{idontknow}/{idontcare}/',controller=operationMultiEntity)
+    app.add_route('/{location}/', controller=operationMultiEntity)
+    app.add_route('/{location}/{idontknow}/', controller=operationMultiEntity)
+    app.add_route('/{location}/{idontknow}/{idontcare}/', controller=operationMultiEntity)
 
-    app.add_route('/{location}/{idontcare}',controller=operationSingleEntity)
-    app.add_route('/{location}/{idontknow}/{idontcare}',controller=operationSingleEntity)
-
+    app.add_route('/{location}/{idontcare}', controller=operationSingleEntity)
+    app.add_route('/{location}/{idontknow}/{idontcare}', controller=operationSingleEntity)
 
 
     def run_server(self):
@@ -75,21 +73,19 @@ class ocni_server(object):
         to run the server
 
         """
-#        result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-#                                             "   Do you want to purge all databases (DB  reinitialization)?", "no")
-#        if result == 'yes':
-#            config.purge_PyOCNI_db()
+        #        result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+        #                                             "   Do you want to purge all databases (DB  reinitialization)?", "no")
+        #        if result == 'yes':
+        #            config.purge_PyOCNI_db()
 
         print ("\n______________________________________________________________________________________\n"
-               "The OCNI server is running at: " + config.OCNI_IP + ":"+config.OCNI_PORT)
+               "The OCNI server is running at: " + config.OCNI_IP + ":" + config.OCNI_PORT)
         wsgi.server(eventlet.listen((config.OCNI_IP, int(config.OCNI_PORT))), self.app)
         print ("\n______________________________________________________________________________________\n"
                "Closing correctly PyOCNI server ")
 
 
-
 if __name__ == '__main__':
-
     ocni_server_instance = ocni_server()
     ocni_server_instance.run_server()
 

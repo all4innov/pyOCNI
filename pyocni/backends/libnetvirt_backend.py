@@ -36,7 +36,6 @@ except ImportError:
     logger.error("Libnetvirt not present. Add libnetvirt library to enable this backend")
 
 class libnetvirt_backend(backend):
-
     def ep_check(self, ep):
         '''
         
@@ -44,31 +43,30 @@ class libnetvirt_backend(backend):
         
         '''
         if ep.ocni_libnetvirt_endpoint_vlan == '':
-                ep.ocni_libnetvirt_endpoint_vlan = 0xffff
+            ep.ocni_libnetvirt_endpoint_vlan = 0xffff
         if ep.ocni_libnetvirt_endpoint_mpls == '':
-                ep.ocni_libnetvirt_endpoint_mpls = 0
+            ep.ocni_libnetvirt_endpoint_mpls = 0
         if ep.ocni_libnetvirt_endpoint_port == '':
-                ep.ocni_libnetvirt_endpoint_port = 0
-        if ep.ocni_libnetvirt_endpoint_swid  == '':
-                ep.ocni_libnetvirt_endpoint_swid = 0
-                
+            ep.ocni_libnetvirt_endpoint_port = 0
+        if ep.ocni_libnetvirt_endpoint_swid == '':
+            ep.ocni_libnetvirt_endpoint_swid = 0
+
         return ep
 
     def diff(self, endpoints_old, endpoints_new):
-                
         '''
         
         Return the list of nodes to add and remove
         
-        '''  
+        '''
         e1 = set(endpoints_old)
         e2 = set(endpoints_new)
         inter = e1.intersection(e2)
         add = e2.difference(inter)
-        rem = e1.difference(inter)  
-        
-        return add,rem
-    
+        rem = e1.difference(inter)
+
+        return add, rem
+
     def create(self, entity):
         '''
 
@@ -76,44 +74,44 @@ class libnetvirt_backend(backend):
 
         '''
         logger.debug('The create operation of the libnetvirt_backend')
-        
+
         # Check if the mixin is libnetvirt
         if str(entity.mixins[0]['term']) != 'libnetvirt':
             return
-        
+
         # Initialize and connect libnetvirt
         info = libnetvirt.libnetvirt_init(libnetvirt.DRIVER_OF_NOX)
-        con = libnetvirt.libnetvirt_connect(info, 
-                                      entity.ocni_libnetvirt_of_controller, 
-                                      int(entity.ocni_libnetvirt_of_controller_port))
-        
+        con = libnetvirt.libnetvirt_connect(info,
+            entity.ocni_libnetvirt_of_controller,
+            int(entity.ocni_libnetvirt_of_controller_port))
+
         if con < 0:
             logger.error('Error while connecting to libnetvirt driver')
             return
 
         # Create FNS
         fns = libnetvirt.create_local_fns(int(entity.ocni_libnetvirt_uuid),
-                                          len(entity.ocni_libnetvirt_endpoint),
-                                          entity.occi_core_id)
+            len(entity.ocni_libnetvirt_endpoint),
+            entity.occi_core_id)
         # Loop with all the endpoints
         index = 0
         for ep in entity.ocni_libnetvirt_endpoint:
             ep = self.ep_check(ep)
-            
+
             libnetvirt.add_local_epoint(fns, index,
-                                        long(ep.ocni_libnetvirt_endpoint_uuid),
-                                        int(ep.ocni_libnetvirt_endpoint_swid),
-                                        int(ep.ocni_libnetvirt_endpoint_port),
-                                        int(ep.ocni_libnetvirt_endpoint_vlan),
-                                        int(ep.ocni_libnetvirt_endpoint_mpls))
+                long(ep.ocni_libnetvirt_endpoint_uuid),
+                int(ep.ocni_libnetvirt_endpoint_swid),
+                int(ep.ocni_libnetvirt_endpoint_port),
+                int(ep.ocni_libnetvirt_endpoint_vlan),
+                int(ep.ocni_libnetvirt_endpoint_mpls))
             index = index + 1
-          
+
         # Send command
-        libnetvirt.libnetvirt_create_fns(info,fns)
-        
+        libnetvirt.libnetvirt_create_fns(info, fns)
+
         # Stop communication        
         libnetvirt.libnetvirt_stop(info)
-        
+
 
     def read(self, entity):
         '''
@@ -130,78 +128,78 @@ class libnetvirt_backend(backend):
 
         '''
         logger.debug('The update operation of the libnetvirt_backend')
-        
+
         if old_entity == None:
             self.create(new_entity)
             return
-        
+
         # Find the difference
         ep_add, ep_rem = self.diff(old_entity.ocni_libnetvirt_endpoint,
-                     new_entity.ocni_libnetvirt_endpoint)
-        
+            new_entity.ocni_libnetvirt_endpoint)
+
         #ep_rem = self.diff(new_entity.ocni_libnetvirt_endpoint,
         #             old_entity.ocni_libnetvirt_endpoint)
-        
-        
+
+
         # Nothing to be change
         if len(ep_add) == 0 and len(ep_rem) == 0:
             return
-        
+
         # Initialize and connect libnetvirt
         info = libnetvirt.libnetvirt_init(libnetvirt.DRIVER_OF_NOX)
-        con = libnetvirt.libnetvirt_connect(info, 
-                                      new_entity.ocni_libnetvirt_of_controller, 
-                                      int(new_entity.ocni_libnetvirt_of_controller_port))
-            
+        con = libnetvirt.libnetvirt_connect(info,
+            new_entity.ocni_libnetvirt_of_controller,
+            int(new_entity.ocni_libnetvirt_of_controller_port))
+
         if con < 0:
             logger.error('Error while connecting to libnetvirt driver')
             return
-        
+
         if len(ep_add) > 0:
             # Modify add
             logger.debug('Adding endpoint to FNS')
             logger.debug(ep_add)
             fns = libnetvirt.create_local_fns(int(new_entity.ocni_libnetvirt_uuid),
-                                          len(ep_add),
-                                          new_entity.occi_core_id)
+                len(ep_add),
+                new_entity.occi_core_id)
             # Loop with all the endpoints
             index = 0
             for ep in ep_add:
                 ep = self.ep_check(ep)
-            
-                libnetvirt.add_local_epoint(fns, index, 
-                                            long(ep.ocni_libnetvirt_endpoint_uuid),
-                                            int(ep.ocni_libnetvirt_endpoint_swid),
-                                            int(ep.ocni_libnetvirt_endpoint_port),
-                                            int(ep.ocni_libnetvirt_endpoint_vlan),
-                                            int(ep.ocni_libnetvirt_endpoint_mpls))
+
+                libnetvirt.add_local_epoint(fns, index,
+                    long(ep.ocni_libnetvirt_endpoint_uuid),
+                    int(ep.ocni_libnetvirt_endpoint_swid),
+                    int(ep.ocni_libnetvirt_endpoint_port),
+                    int(ep.ocni_libnetvirt_endpoint_vlan),
+                    int(ep.ocni_libnetvirt_endpoint_mpls))
                 index = index + 1
-            
-            libnetvirt.libnetvirt_modify_fns_add(info,fns);
-            
+
+            libnetvirt.libnetvirt_modify_fns_add(info, fns);
+
         if len(ep_rem) > 0:
             # Modify remove
             logger.debug('Removing endpoints to FNS')
             logger.debug(ep_rem)
             fns = libnetvirt.create_local_fns(int(new_entity.ocni_libnetvirt_uuid),
-                                          len(ep_rem),
-                                          new_entity.occi_core_id)
+                len(ep_rem),
+                new_entity.occi_core_id)
             # Loop with all the endpoints
             index = 0
             for ep in ep_rem:
                 ep = self.ep_check(ep)
-            
-                libnetvirt.add_local_epoint(fns, index, 
-                                            long(ep.ocni_libnetvirt_endpoint_uuid),
-                                            int(ep.ocni_libnetvirt_endpoint_swid),
-                                            int(ep.ocni_libnetvirt_endpoint_port),
-                                            int(ep.ocni_libnetvirt_endpoint_vlan),
-                                            int(ep.ocni_libnetvirt_endpoint_mpls))
+
+                libnetvirt.add_local_epoint(fns, index,
+                    long(ep.ocni_libnetvirt_endpoint_uuid),
+                    int(ep.ocni_libnetvirt_endpoint_swid),
+                    int(ep.ocni_libnetvirt_endpoint_port),
+                    int(ep.ocni_libnetvirt_endpoint_vlan),
+                    int(ep.ocni_libnetvirt_endpoint_mpls))
                 index = index + 1
-            
-            libnetvirt.libnetvirt_modify_fns_del(info,fns);
-            
-        
+
+            libnetvirt.libnetvirt_modify_fns_del(info, fns);
+
+
         # Stop communication        
         libnetvirt.libnetvirt_stop(info)
 
@@ -219,27 +217,27 @@ class libnetvirt_backend(backend):
         if str(entity.mixins[0]['term']) != 'libnetvirt':
             logger.error('Entity is not libnetvirt mixin')
             return
-        
+
         # Initialize and connect libnetvirt
         info = libnetvirt.libnetvirt_init(libnetvirt.DRIVER_OF_NOX)
-        con = libnetvirt.libnetvirt_connect(info, 
-                                      entity.ocni_libnetvirt_of_controller, 
-                                      int(entity.ocni_libnetvirt_of_controller_port))
-            
+        con = libnetvirt.libnetvirt_connect(info,
+            entity.ocni_libnetvirt_of_controller,
+            int(entity.ocni_libnetvirt_of_controller_port))
+
         if con < 0:
             logger.error('Error while connecting to libnetvirt driver')
             return
-        
+
         fns = libnetvirt.create_local_fns(int(entity.ocni_libnetvirt_uuid),
-                                          0,
-                                          entity.occi_core_id)
-        
-         # Send command
-        libnetvirt.libnetvirt_remove_fns(info,fns);
+            0,
+            entity.occi_core_id)
+
+        # Send command
+        libnetvirt.libnetvirt_remove_fns(info, fns);
         logger.debug('Removing fns sent')
         # Stop communication        
         libnetvirt.libnetvirt_stop(info)
-        
+
 
     def action(self, entity, action):
         '''

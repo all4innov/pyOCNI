@@ -25,6 +25,7 @@ Created on Jun 19, 2012
 
 from webob import Response
 from pyocni.junglers.categoryJungler import CategoryJungler
+
 try:
     import simplejson as json
 except ImportError:
@@ -38,8 +39,8 @@ class QueryDispatcher(object):
         Dispatches operations concerning the Query Interface.
 
     """
-    def __init__(self,req):
 
+    def __init__(self, req):
         self.req = req
         self.res = Response()
         self.res.content_type = str(req.accept)
@@ -49,7 +50,6 @@ class QueryDispatcher(object):
         self.jungler = CategoryJungler()
 
     def get(self):
-
         """
         Retrieval of all registered Kinds, mixins and actions
         """
@@ -57,30 +57,25 @@ class QueryDispatcher(object):
         #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON) if there is a body:
 
         if not (self.req.headers.__contains__('content_type')) or self.req.body is "":
-
-            var,self.res.status_code = self.jungler.channel_get_all_categories()
+            var, self.res.status_code = self.jungler.channel_get_all_categories()
 
         else:
-
             jreq = self.req_adapter.convert_request_category_content(self.req)
 
             #Step[2]: Treat the converted data:
             if jreq is None:
-
                 self.res.status_code = return_code['Not Acceptable']
                 self.res.body = self.req.content_type + " is an unknown request content type"
 
             else:
-
-                var,self.res.status_code = self.jungler.channel_get_filtered_categories(jreq)
+                var, self.res.status_code = self.jungler.channel_get_filtered_categories(jreq)
 
 
 
         #Step[3]: Adapt the response to the required accept-type
 
         if self.res.status_code == return_code['OK']:
-
-            self.res = self.res_adapter.convert_response_category_content(self.res,var)
+            self.res = self.res_adapter.convert_response_category_content(self.res, var)
 
         else:
             self.res.content_type = "text/html"
@@ -99,18 +94,16 @@ class QueryDispatcher(object):
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
-
             self.res.status_code = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
             #add the JSON to database along with other attributes
-            self.res.body,self.res.status_code = self.jungler.channel_register_categories(jBody)
+            self.res.body, self.res.status_code = self.jungler.channel_register_categories(jBody)
 
         return self.res
 
     def put(self):
-
         """
         Update the document specific to the id provided in the request with new data
 
@@ -121,7 +114,6 @@ class QueryDispatcher(object):
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
-
             self.res.status_code = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
@@ -143,13 +135,11 @@ class QueryDispatcher(object):
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
-
             self.res.status_code = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
-
-            self.res.body,self.res.status_code= self.jungler.channel_delete_categories(jBody)
+            self.res.body, self.res.status_code = self.jungler.channel_delete_categories(jBody)
 
         return self.res
 

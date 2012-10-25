@@ -33,6 +33,7 @@ class LinkManager(object):
     Manager of link documents in the couch database.
     """
     pass
+
 #    def register_links_explicit(self,creator,occi_descriptions,url_path,db_occi_ids_locs):
 #        """
 #        Add new links to database

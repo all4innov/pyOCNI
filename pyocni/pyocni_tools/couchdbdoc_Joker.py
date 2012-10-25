@@ -27,7 +27,7 @@ import pyocni.pyocni_tools.config as config
 # getting the Logger
 logger = config.logger
 
-def update_kind_provider(old_provider,new_provider):
+def update_kind_provider(old_provider, new_provider):
     """
     Update only a part of the provider description
     Args:
@@ -46,6 +46,6 @@ def update_kind_provider(old_provider,new_provider):
         except Exception:
             #Keep the record of the keys(=parts) that couldn't be updated
             logger.debug("update description : " + key + " could not be found")
-            return None,True
+            return None, True
 
-    return old_provider,False
+    return old_provider, False

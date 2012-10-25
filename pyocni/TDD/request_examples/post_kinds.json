@@ -7,43 +7,43 @@
  */
 
 {
-    "kinds": [
+    "kinds":[
         {
-            "term": "compute",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "Compute Resource",
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "hostname": {
-                            "mutable": true,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                            "minimum": "1",
-                            "maximum": "255"
+            "term":"compute",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure#",
+            "title":"Compute Resource",
+            "attributes":{
+                "occi":{
+                    "compute":{
+                        "hostname":{
+                            "mutable":true,
+                            "required":false,
+                            "type":"string",
+                            "pattern":"(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                            "minimum":"1",
+                            "maximum":"255"
                         },
-                        "state": {
-                            "mutable": false,
-                            "required": false,
-                            "type": "string",
-                            "pattern": "inactive|active|suspended|failed",
-                            "default": "inactive"
+                        "state":{
+                            "mutable":false,
+                            "required":false,
+                            "type":"string",
+                            "pattern":"inactive|active|suspended|failed",
+                            "default":"inactive"
                         }
                     }
                 }
             },
-            "actions": [
+            "actions":[
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#stop"
             ],
-            "location": "/compute/"
+            "location":"/compute/"
         },
         {
-            "term": "networkinterface",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-            "title": "networkinterface link",
-            "location": "/networkinterface/"
+            "term":"networkinterface",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure#",
+            "title":"networkinterface link",
+            "location":"/networkinterface/"
         }
     ]
 }

@@ -78,9 +78,9 @@ design_doc = {
     "language": "javascript",
     "type": "DesignDoc",
     "views": {
-        "for_get_categories":{
-            "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
-                  "emit (doc.Type, doc.OCCI_Description) });"
+        "for_get_categories": {
+            "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                   "emit (doc.Type, doc.OCCI_Description) });"
         },
         "for_update_categories": {
             "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
@@ -94,9 +94,9 @@ design_doc = {
             "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\"))"
                    "emit(doc._id,[doc._rev,doc.OCCI_ID])});"
         },
-        "for_register_categories" : {
-            "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
-                  "emit (doc.OCCI_ID,doc.OCCI_Location) });"
+        "for_register_categories": {
+            "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                   "emit (doc.OCCI_ID,doc.OCCI_Location) });"
         },
         "for_register_entities": {
             "map": "(function(doc) { emit (doc.OCCI_ID,doc.OCCI_Location) });"
@@ -118,22 +118,22 @@ design_doc = {
             "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
                    "emit (doc.OCCI_Location,[doc.OCCI_Description,doc.Type]) });"
         },
-        "my_mixins":{
+        "my_mixins": {
             "map": "(function(doc) { if (doc.Type == \"Mixin\")"
                    "emit (doc.OCCI_Location,doc.OCCI_ID) });"
         },
-        "my_resources":{
+        "my_resources": {
             "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
                    "emit (doc.OCCI_Location,[doc.Type, doc.OCCI_Description]) });"
         },
-        "for_update_entities":{
-            "map" :"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
+        "for_update_entities": {
+            "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
                    "emit (doc.OCCI_Location,doc)});"
         },
-        "entities_of_mixin_v2":{
-            "map":"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                  "{for (elem in doc.OCCI_Description.mixins)"
-                  "emit (doc.OCCI_Description.mixins[elem],doc) }});"
+        "entities_of_mixin_v2": {
+            "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                   "{for (elem in doc.OCCI_Description.mixins)"
+                   "emit (doc.OCCI_Description.mixins[elem],doc) }});"
         },
         "for_trigger_action": {
             "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
@@ -155,7 +155,6 @@ design_doc = {
         }
 
 
-
     }
 
 }
@@ -167,11 +166,10 @@ def prepare_PyOCNI_db():
     try:
         server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
         database = server.get_or_create_db(PyOCNI_DB)
-        database.save_doc(design_doc,force_update=True)
+        database.save_doc(design_doc, force_update=True)
         return database
     except Exception as e:
-        logger.error("===== Prepare_PyOCNI_db : Database prepare has failed "+ e.message+ "=====")
-
+        logger.error("===== Prepare_PyOCNI_db : Database prepare has failed " + e.message + "=====")
 
 
 def get_PyOCNI_db():
@@ -183,12 +181,10 @@ def get_PyOCNI_db():
         database = server.get_or_create_db(PyOCNI_DB)
         return database
     except Exception as e:
-        logger.error("===== Get_PyOCNI_db : Database prepare has failed "+ e.message+ "=====")
-
+        logger.error("===== Get_PyOCNI_db : Database prepare has failed " + e.message + "=====")
 
 
 def purge_PyOCNI_db():
-
     try:
         server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
         server.delete_db(PyOCNI_DB)
@@ -197,13 +193,13 @@ def purge_PyOCNI_db():
 
 
 
-#=======================================================================================================================
-#
-#        "my_occi_locations":{
-#            "map": "(function(doc) {emit (doc.OCCI_Location,) });"
-#        }
+        #=======================================================================================================================
+        #
+        #        "my_occi_locations":{
+        #            "map": "(function(doc) {emit (doc.OCCI_Location,) });"
+        #        }
 
-#"for_delete_entities" :{
-#                           "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-#                                  "emit (,[doc.OCCI_Location,doc._id,doc._rev]) });"
-#                       },
+        #"for_delete_entities" :{
+        #                           "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+        #                                  "emit (,[doc.OCCI_Location,doc._id,doc._rev]) });"
+        #                       },

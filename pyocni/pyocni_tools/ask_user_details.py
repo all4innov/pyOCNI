@@ -33,9 +33,9 @@ def query_yes_no_quit(question, default="yes"):
 
     The "answer" return value is one of "yes", "no" or "quit".
     """
-    valid = {"yes":"yes",   "y":"yes",    "ye":"yes",
-             "no":"no",     "n":"no",
-             "quit":"quit", "qui":"quit", "qu":"quit", "q":"quit"}
+    valid = {"yes": "yes", "y": "yes", "ye": "yes",
+             "no": "no", "n": "no",
+             "quit": "quit", "qui": "quit", "qu": "quit", "q": "quit"}
     if default == None:
         prompt = " [y/n/q] : "
     elif default == "yes":
