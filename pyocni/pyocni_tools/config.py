@@ -73,8 +73,95 @@ return_code = {'OK': 200,
                'Service Unavailable': 503}
 
 # ======================================================================================
-# Prepare the PyOCNI database
+#                                   PyOCNI database
 # ======================================================================================
+
+design_doc = {
+    "_id": "_design/db_views",
+    "language": "javascript",
+    "type": "DesignDoc",
+    "views": {
+        "for_get_categories":{
+            "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                  "emit (doc.Type, doc.OCCI_Description) });"
+        },
+        "for_update_categories": {
+            "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                   "emit (doc.OCCI_ID,doc) });"
+        },
+        "for_associate_mixin": {
+            "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                   " emit([doc.OCCI_Location,],doc);});"
+        },
+        "for_delete_categories": {
+            "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\"))"
+                   "emit(doc._id,[doc._rev,doc.OCCI_ID])});"
+        },
+        "for_register_categories" : {
+            "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
+                  "emit (doc.OCCI_ID,doc.OCCI_Location) });"
+        },
+        "for_register_entities": {
+            "map": "(function(doc) { emit (doc.OCCI_ID,doc.OCCI_Location) });"
+        },
+        "for_get_entities": {
+            "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\"))"
+                   "emit (doc.OCCI_Location,[doc.OCCI_ID,doc.Type]) });"
+        },
+        "entities_of_kind": {
+            "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                   "emit (doc.OCCI_Description.kind,[doc.OCCI_Location,doc.Type]) });"
+        },
+        "entities_of_mixin": {
+            "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                   "{for (elem in doc.OCCI_Description.mixins) "
+                   "emit (doc.OCCI_Description.mixins[elem],[doc.OCCI_Location,doc.Type]) }});"
+        },
+        "for_get_filtered": {
+            "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                   "emit (doc.OCCI_Location,[doc.OCCI_Description,doc.Type]) });"
+        },
+        "my_mixins":{
+            "map": "(function(doc) { if (doc.Type == \"Mixin\")"
+                   "emit (doc.OCCI_Location,doc.OCCI_ID) });"
+        },
+        "my_resources":{
+            "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                   "emit (doc.OCCI_Location,[doc.Type, doc.OCCI_Description]) });"
+        },
+        "for_update_entities":{
+            "map" :"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
+                   "emit (doc.OCCI_Location,doc)});"
+        },
+        "entities_of_mixin_v2":{
+            "map":"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                  "{for (elem in doc.OCCI_Description.mixins)"
+                  "emit (doc.OCCI_Description.mixins[elem],doc) }});"
+        },
+        "for_trigger_action": {
+            "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                   "emit ([doc.OCCI_Location,],[doc.OCCI_Description.kind,doc.OCCI_Description.mixins]) });"
+        },
+        "actions_of_kind_mix": {
+            "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\"))"
+                   "{doc_id = doc.OCCI_Description.scheme + doc.OCCI_Description.term; "
+                   "for (elem in doc.OCCI_Description.actions) "
+                   "emit ([doc.OCCI_Description.actions[elem],doc_id],doc.Provider) }});"
+        },
+        "my_providers": {
+            "map": "(function(doc) { if (doc.Type == \"Kind\")"
+                   "emit (doc.OCCI_ID,doc.Provider)});"
+        },
+        "get_default_attributes_from_kind": {
+            "map": "(function(doc) { if (doc.Type == \"Kind\")"
+                   "emit (doc.OCCI_Location,doc.OCCI_Description.attributes)});"
+        }
+
+
+
+    }
+
+}
 
 def prepare_PyOCNI_db():
     """
@@ -82,110 +169,44 @@ def prepare_PyOCNI_db():
     """
     try:
         server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
-    except Exception:
-        logger.error("CategoryManager : Database is unreachable")
-        raise Exception("Database is unreachable")
-    database = server.get_or_create_db(PyOCNI_DB)
-    design_doc = {
-        "_id": "_design/db_views",
-        "language": "javascript",
-        "type": "DesignDoc",
-        "views": {
-            "for_get_categories":{
-                "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
-                      "emit (doc.Type, doc.OCCI_Description) });"
-            },
-            "for_update_categories": {
-                "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
-                       "emit (doc.OCCI_ID,doc) });"
-            },
-            "for_associate_mixin": {
-                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                            " emit([doc.OCCI_Location,doc.Creator],doc);});"
-            },
-            "for_delete_categories": {
-                "map": "(function(doc) { emit(doc._id,[doc._rev,doc.OCCI_ID, doc.Creator])});"
-            },
-            "for_register_categories" : {
-                "map":"(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\")||(doc.Type == \"Action\")) "
-                      "emit (doc.OCCI_ID,doc.OCCI_Location) });"
-            },
-            "for_register_entities": {
-                "map": "(function(doc) { emit (doc.OCCI_ID,doc.OCCI_Location) });"
-            },
-            "for_get_entities": {
-                "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\"))"
-                       "emit (doc.OCCI_Location,[doc.OCCI_ID,doc.Type]) });"
-            },
-            "entities_of_kind": {
-                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                       "emit (doc.OCCI_Description.kind,[doc.OCCI_Location,doc.Type]) });"
-            },
-            "entities_of_mixin": {
-                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                       "{for (elem in doc.OCCI_Description.mixins) "
-                       "emit (doc.OCCI_Description.mixins[elem],[doc.OCCI_Location,doc.Type]) }});"
-            },
-            "for_get_filtered": {
-                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                       "emit (doc.OCCI_Location,[doc.OCCI_Description,doc.Type]) });"
-            },
-            "my_mixins":{
-                "map": "(function(doc) { if (doc.Type == \"Mixin\")"
-                       "emit (doc.OCCI_Location,doc.OCCI_ID) });"
-            },
-            "my_occi_locations":{
-                "map": "(function(doc) {emit (doc.OCCI_Location,doc.Creator) });"
-            },
-            "my_resources":{
-                "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                       "emit ([doc.OCCI_Location,doc.Creator],[doc.Type, doc.OCCI_Description]) });"
-            },
-            "for_delete_entities" :{
-                "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                       "emit (doc.Creator,[doc.OCCI_Location,doc._id,doc._rev]) });"
-            },
-            "for_update_entities":{
-                "map" :"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\")) "
-                        "emit ([doc.OCCI_Location,doc.Creator],doc)});"
-            },
-            "entities_of_mixin_v2":{
-                "map":"(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                    "{for (elem in doc.OCCI_Description.mixins)"
-                    "emit (doc.OCCI_Description.mixins[elem],doc) }});"
-            },
-            "for_trigger_action": {
-                "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                       "emit ([doc.OCCI_Location,doc.Creator],[doc.OCCI_Description.kind,doc.OCCI_Description.mixins]) });"
-            },
-            "actions_of_kind_mix": {
-                "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\"))"
-                    "{doc_id = doc.OCCI_Description.scheme + doc.OCCI_Description.term; "
-                    "for (elem in doc.OCCI_Description.actions) "
-                    "emit ([doc.OCCI_Description.actions[elem],doc_id],doc.Provider) }});"
-            },
-            "my_providers": {
-                "map": "(function(doc) { if (doc.Type == \"Kind\")"
-                       "emit (doc.OCCI_ID,doc.Provider)});"
-            }
+        database = server.get_or_create_db(PyOCNI_DB)
+        database.save_doc(design_doc,force_update=True)
+        return database
+    except Exception as e:
+        logger.error("===== Prepare_PyOCNI_db : Database prepare has failed "+ e.message+ "=====")
 
 
 
-        }
+def get_PyOCNI_db():
+    """
+    Start the server and get the database.
+    """
+    try:
+        server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
+        database = server.get_or_create_db(PyOCNI_DB)
+        return database
+    except Exception as e:
+        logger.error("===== Get_PyOCNI_db : Database prepare has failed "+ e.message+ "=====")
 
-    }
-    database.save_doc(design_doc,force_update=True)
-    return database
+
 
 def purge_PyOCNI_db():
 
     try:
         server = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
-    except Exception:
-        logger.error("Database is unreachable")
-
-    try:
         server.delete_db(PyOCNI_DB)
-    except Exception:
-        logger.debug("No DB named: '" + PyOCNI_DB + "' to delete.")
-        server.create_db(PyOCNI_DB)
+    except Exception as e:
+        logger.error("===== Purge_PyOCNI_db: Database purge has failed + " + e.message + "=====")
+
+
+
+#=======================================================================================================================
+#
+#        "my_occi_locations":{
+#            "map": "(function(doc) {emit (doc.OCCI_Location,) });"
+#        }
+
+#"for_delete_entities" :{
+#                           "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+#                                  "emit (,[doc.OCCI_Location,doc._id,doc._rev]) });"
+#                       },

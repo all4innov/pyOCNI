@@ -47,7 +47,7 @@ def update_occi_category_description(oldData,newData):
         try:
             forbidden_keys.index(key)
             if oldData[key] != newData[key]:
-                logger.debug("update description : " + key + " is forbidden to change")
+                logger.error("===== Update OCCI category description : " + key + " is forbidden to change =====")
                 return True,None
         except ValueError:
             try:
@@ -55,7 +55,7 @@ def update_occi_category_description(oldData,newData):
                 oldData[key] = newData[key]
             except ValueError:
                 #Keep the record of the keys(=parts) that couldn't be updated
-                logger.debug("update category description : " + key + " could not be found")
+                logger.error("===== Update OCCI category description : " + key + " could not be found =====")
                 return True,None
 
     return False,oldData
@@ -72,21 +72,26 @@ def update_occi_entity_description(oldData,newData):
     #Try to get the keys from occi entity description dictionary
     oldData_keys = oldData.keys()
     newData_keys = newData.keys()
-    forbidden_keys = ["id","kind"]
+#    forbidden_keys = ["id","kind"]
+#    for key in newData_keys:
+#        try:
+#            forbidden_keys.index(key)
+#            if oldData[key] != newData[key]:
+#                logger.debug("update description : " + key + " is forbidden to change")
+#                return True,None
+#        except ValueError:
     for key in newData_keys:
         try:
-            forbidden_keys.index(key)
-            if oldData[key] != newData[key]:
-                logger.debug("update description : " + key + " is forbidden to change")
-                return True,None
-        except ValueError:
-            try:
-                oldData_keys.index(key)
+            oldData_keys.index(key)
+            if key == 'attributes':
+                oldData['attributes'] = complete_occi_description_with_default_attributes(newData['attributes'],oldData['attributes'])
+
+            else:
                 oldData[key] = newData[key]
-            except ValueError:
-                #Keep the record of the keys(=parts) that couldn't be updated
-                logger.debug("update entity description : " + key + " could not be found")
-                return True,None
+        except ValueError:
+            #Keep the record of the keys(=parts) that couldn't be updated
+            logger.debug("update entity description : " + key + " could not be found")
+            return True,None
 
     return False,oldData
 
@@ -108,6 +113,23 @@ def get_description_id(occi_description):
     res = desc_scheme+desc_term
     return res
 
+
+def is_this_attribute_exist(filter, desc):
+
+    for key in filter.keys():
+
+        if type(filter[key]) is dict:
+
+            exists = is_this_attribute_exist(desc[key],filter[key])
+
+        else:
+            if filter[key] == desc[key]:
+                return True
+            else:
+                return False
+
+    return exists
+
 def filter_occi_description(description,filter):
     """
     Checks if the occi description meets the filter values
@@ -116,21 +138,29 @@ def filter_occi_description(description,filter):
         @param filter: The filter description
         @return : Updated  a boolean (false if no match, true if there is a match)
     """
-
     #Try to get the keys from filter dictionary
     filter_keys = filter.keys()
     desc_keys = description.keys()
-    for key in filter_keys:
-        try:
-            desc_keys.index(key)
-            if description[key]!= filter[key]:
-                return False
-        except ValueError:
-            #Keep the record of the keys(=parts) that couldn't be updated
-            logger.debug("filter description : "+ key + " could not be found")
-            return False
 
-    return True
+    for key in filter_keys:
+
+        if key=='attributes' and description['attributes'] is not None:
+
+            exists = is_this_attribute_exist(filter['attributes'],description['attributes'])
+            return exists
+        else:
+            try:
+                desc_keys.index(key)
+                if description[key]!= filter[key]:
+                    return False
+                else:
+                    return True
+            except ValueError:
+                #Keep the record of the keys(=parts) that couldn't be updated
+                logger.debug("filter description : "+ key + " could not be found")
+                return False
+
+
 
 def verify_existences_alpha(description,db_data):
     """
@@ -231,9 +261,9 @@ def make_category_location(occi_description):
     """
     try:
         loc = occi_description['location']
-        entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/-" + loc
+        entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT  + loc
     except Exception as e:
-        logger.error("Entity location : " + e.message )
+        logger.error("===== Make_category_location ======: " + e.message )
         return  None
     return entity_location
 
@@ -249,19 +279,18 @@ def verify_occi_uniqueness(occi_term, db_categories):
         db_categories.index(occi_term)
         return False
     except ValueError as e:
-        logger.debug("Uniqueness : " + e.message )
+        logger.info("===== Verify_occi_uniqueness =====: " + e.message )
         return True
 
-def verify_exist_occi_id_creator(occi_id,creator,db_data):
+def verify_exist_occi_id(occi_id,db_data):
     """
     Verify the existence of a document with such an OCCI ID  and creator in db_data
     Args:
         @param occi_id: OCCI ID to be checked
-        @param creator: creator of the document
         @param db_data: Data to search in
     """
     for data in db_data:
-        if data['OCCI_ID'] == occi_id and data['Creator'] == creator:
+        if data['OCCI_ID'] == occi_id:
             return {"_id" : data['_id'],"_rev" : data['_rev']}
     return None
 
@@ -281,17 +310,16 @@ def extract_doc(occi_id, db_data):
     return None
 
 
-def make_entity_location_from_url(creator, url_path, uuid):
+def make_entity_location_from_url(url_path, uuid):
     """
     Creates the location of the resource/link from the occi resource/link description
     Args:
         @param url_path: Kind OCCI location to which this resource/link instance belongs to
         @param uuid: UUID of the resource/link contained in the resource/link description
-        @param creator: ID creator of the resource/link instance
         @return :<string> Location of the resource/link
     """
-    kind_loc = url_path.split('/-/')[1]
-    entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + creator + "/" + kind_loc + uuid
+    kind_loc = url_path.split("http://" + config.OCNI_IP + ":" + config.OCNI_PORT )[1]
+    entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + kind_loc + uuid
     return entity_location
 
 
@@ -310,7 +338,6 @@ def make_implicit_link_location(uuid, kind_id, creator, db_occi_ids_locs):
         if occi_id_loc['OCCI_ID'] == kind_id:
             kind_loc = occi_id_loc['OCCI_Location'].split('/-/')[1]
             entity_location = "http://" + config.OCNI_IP + ":" + config.OCNI_PORT + "/" + creator + "/" + kind_loc + uuid
-
             return entity_location
 
     return None
@@ -340,3 +367,24 @@ def format_url_path(cat_path):
     loc = cat_path.split("/-/")
     new_path = config.PyOCNI_Server_Address+"/"+loc[1]
     return new_path
+
+
+def look_for_update_key_values(new_attr):
+
+    for key in new_attr:
+        if type(new_attr[key]) is dict:
+            look_for_update_key_values(new_attr[key])
+        else:
+            return key
+
+
+def complete_occi_description_with_default_attributes(desc, default_attributes):
+
+    for key in desc.keys():
+
+        if type(desc[key]) is dict:
+
+            complete_occi_description_with_default_attributes(default_attributes[key],desc[key])
+        else:
+            default_attributes[key] = desc[key]
+    return default_attributes
