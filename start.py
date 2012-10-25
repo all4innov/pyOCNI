@@ -23,6 +23,6 @@ Created on Jun 01, 2012
 @license: Apache License, Version 2.0
 """
 
-import pyocni.ocni_server as ocni_server
-ocni = ocni_server.ocni_server()
-ocni.run_server()
+import pyocni.occi_server as occi_server
+occi = occi_server.occi_server()
+occi.run_server()

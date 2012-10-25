@@ -45,7 +45,7 @@ OCNI_PORT = config.OCNI_PORT
 # ======================================================================================================================
 
 
-class ocni_server(object):
+class occi_server(object):
     """
 
     The main OCNI REST server
@@ -86,5 +86,5 @@ class ocni_server(object):
 
 
 if __name__ == '__main__':
-    ocni_server_instance = ocni_server()
-    ocni_server_instance.run_server()
+    occi_server_instance = occi_server()
+    occi_server_instance.run_server()
