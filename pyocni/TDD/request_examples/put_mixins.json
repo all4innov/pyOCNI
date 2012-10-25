@@ -7,22 +7,22 @@
  */
 
 {
-    "mixins": [
+    "mixins":[
         {
-            "term": "medium",
-            "scheme": "http://example.com/template/resource#",
-            "title": "Medium VM",
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": {
-                            "type": "number",
-                            "default": 2.8
+            "term":"medium",
+            "scheme":"http://example.com/template/resource#",
+            "title":"Medium VM",
+            "attributes":{
+                "occi":{
+                    "compute":{
+                        "speed":{
+                            "type":"number",
+                            "default":2.8
                         }
                     }
                 }
             },
-            "location": "/template/resource/medium/"
+            "location":"/template/resource/medium/"
         }
     ]
 }

@@ -5,9 +5,9 @@
  */
 
 {
-    "kinds": [
+    "kinds":[
         {
-            "actions": [
+            "actions":[
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
                 "http://schemas.ogf.org/occi/infrastructure/compute/action#stop"
             ]

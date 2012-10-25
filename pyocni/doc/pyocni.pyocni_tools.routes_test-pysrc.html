@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ascii"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-          "DTD/xhtml1-transitional.dtd">
+        "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>pyocni.pyocni_tools.routes_test</title>
-  <link rel="stylesheet" href="epydoc.css" type="text/css" />
-  <script type="text/javascript" src="epydoc.js"></script>
+    <title>pyocni.pyocni_tools.routes_test</title>
+    <link rel="stylesheet" href="epydoc.css" type="text/css"/>
+    <script type="text/javascript" src="epydoc.js"></script>
 </head>
 
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
@@ -13,243 +13,582 @@
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
-  <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <tr valign="middle">
+        <!-- Home link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Tree link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Tree link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Index link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Index link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Help link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Help link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Project homepage -->
-      <th class="navbar" align="right" width="100%">
-        <table border="0" cellpadding="0" cellspacing="0">
-          <tr><th class="navbar" align="center"
-            >pyocni</th>
-          </tr></table></th>
-  </tr>
+        <!-- Project homepage -->
+        <th class="navbar" align="right" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="navbar" align="center"
+                            >pyocni
+                    </th>
+                </tr>
+            </table>
+        </th>
+    </tr>
 </table>
 <table width="100%" cellpadding="0" cellspacing="0">
-  <tr valign="top">
-    <td width="100%">
+    <tr valign="top">
+        <td width="100%">
       <span class="breadcrumbs">
         <a href="pyocni-module.html">Package&nbsp;pyocni</a> ::
         <a href="pyocni.pyocni_tools-module.html">Package&nbsp;pyocni_tools</a> ::
         Module&nbsp;routes_test
       </span>
-    </td>
-    <td>
-      <table cellpadding="0" cellspacing="0">
-        <!-- hide/show private -->
-        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
-    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
-        <tr><td align="right"><span class="options"
-            >[<a href="frames.html" target="_top">frames</a
-            >]&nbsp;|&nbsp;<a href="pyocni.pyocni_tools.routes_test-pysrc.html"
-            target="_top">no&nbsp;frames</a>]</span></td></tr>
-      </table>
-    </td>
-  </tr>
+        </td>
+        <td>
+            <table cellpadding="0" cellspacing="0">
+                <!-- hide/show private -->
+                <tr>
+                    <td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+                                                                onclick="toggle_private();">hide&nbsp;private</a>]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right"><span class="options"
+                            >[<a href="frames.html" target="_top">frames</a
+                            >]&nbsp;|&nbsp;<a href="pyocni.pyocni_tools.routes_test-pysrc.html"
+                                              target="_top">no&nbsp;frames</a>]</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
-<h1 class="epydoc">Source Code for <a href="pyocni.pyocni_tools.routes_test-module.html">Module pyocni.pyocni_tools.routes_test</a></h1>
+<h1 class="epydoc">Source Code for <a href="pyocni.pyocni_tools.routes_test-module.html">Module
+    pyocni.pyocni_tools.routes_test</a></h1>
 <pre class="py-src">
-<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment"># still a FAILED WORK :(</tt> </tt>
-<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">routes</tt> </tt>
-<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">routes</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Mapper</tt> </tt>
-<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">routes</tt><tt class="py-op">.</tt><tt class="py-name">middleware</tt> <tt class="py-keyword">import</tt> <tt class="py-name">RoutesMiddleware</tt> </tt>
-<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">eventlet</tt> </tt>
-<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"> </tt>
-<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">eventlet</tt> <tt class="py-keyword">import</tt> <tt class="py-name">wsgi</tt> </tt>
-<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">webob</tt> </tt>
-<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">webob</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Request</tt><tt class="py-op">,</tt> <tt class="py-name">Response</tt> </tt>
-<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">webob</tt> <tt class="py-keyword">import</tt> <tt class="py-name">exc</tt> </tt>
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"><tt class="py-comment"># still a FAILED WORK :(</tt>
+</tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt
+        class="py-name">routes</tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt
+        class="py-name">routes</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Mapper</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt
+        class="py-name">routes</tt><tt class="py-op">.</tt><tt class="py-name">middleware</tt> <tt class="py-keyword">import</tt>
+    <tt class="py-name">RoutesMiddleware</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt
+        class="py-name">eventlet</tt> </tt>
+<a name="L6"></a><tt class="py-lineno"> 6</tt>  <tt class="py-line"> </tt>
+<a name="L7"></a><tt class="py-lineno"> 7</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt
+        class="py-name">eventlet</tt> <tt class="py-keyword">import</tt> <tt class="py-name">wsgi</tt> </tt>
+<a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt
+        class="py-name">webob</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt
+        class="py-name">webob</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Request</tt><tt class="py-op">,</tt>
+    <tt class="py-name">Response</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt
+        class="py-name">webob</tt> <tt class="py-keyword">import</tt> <tt class="py-name">exc</tt> </tt>
 <a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
 <a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server"></a><div id="ocni_server-def"><a name="L13"></a><tt class="py-lineno"> 13</tt> <a class="py-toggle" href="#" id="ocni_server-toggle" onclick="return toggle('ocni_server');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server-class.html">ocni_server</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="ocni_server-expanded"><a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
-<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring">    Represent the main occi REST server</tt> </tt>
-<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
-<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Application"></a><div id="ocni_server.Application-def"><a name="L20"></a><tt class="py-lineno"> 20</tt> <a class="py-toggle" href="#" id="ocni_server.Application-toggle" onclick="return toggle('ocni_server.Application');">-</a><tt class="py-line">    <tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Application-class.html">Application</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Application-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ocni_server.Application-expanded"><a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line">        <tt class="py-docstring">"""Test application to call from router."""</tt> </tt>
-<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Application.__call__"></a><div id="ocni_server.Application.__call__-def"><a name="L23"></a><tt class="py-lineno"> 23</tt> <a class="py-toggle" href="#" id="ocni_server.Application.__call__-toggle" onclick="return toggle('ocni_server.Application.__call__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Application-class.html#__call__">__call__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">environ</tt><tt class="py-op">,</tt> <tt class="py-param">start_response</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Application.__call__-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div><div id="ocni_server.Application.__call__-expanded"><a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">            <tt class="py-name">start_response</tt><tt class="py-op">(</tt><tt class="py-string">"200"</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
-<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-op">[</tt><tt class="py-string">'Router result'</tt><tt class="py-op">]</tt> </tt>
-</div></div><a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Router"></a><div id="ocni_server.Router-def"><a name="L27"></a><tt class="py-lineno"> 27</tt> <a class="py-toggle" href="#" id="ocni_server.Router-toggle" onclick="return toggle('ocni_server.Router');">-</a><tt class="py-line">    <tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html">Router</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Router-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ocni_server.Router-expanded"><a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-docstring">"""Test router."""</tt> </tt>
-<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Router._dispatch"></a><div id="ocni_server.Router._dispatch-def"><a name="L30"></a><tt class="py-lineno"> 30</tt> <a class="py-toggle" href="#" id="ocni_server.Router._dispatch-toggle" onclick="return toggle('ocni_server.Router._dispatch');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#_dispatch">_dispatch</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">req</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Router._dispatch-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div><div id="ocni_server.Router._dispatch-expanded"><a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">            <tt class="py-docstring">"""Dispatch the request to the appropriate controller.</tt> </tt>
-<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-docstring">            Called by self._router after matching the incoming request to a route</tt> </tt>
-<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-docstring">            and putting the information into req.environ.  Either returns 404</tt> </tt>
-<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt class="py-docstring">            or the routed WSGI app's response.</tt> </tt>
-<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-docstring">            """</tt> </tt>
-<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">            <tt class="py-name">match</tt> <tt class="py-op">=</tt> <tt class="py-name">req</tt><tt class="py-op">.</tt><tt class="py-name">environ</tt><tt class="py-op">[</tt><tt class="py-string">'wsgiorg.routing_args'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
-<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">            <tt class="py-keyword">if</tt> <tt class="py-keyword">not</tt> <tt class="py-name">match</tt><tt class="py-op">:</tt> </tt>
-<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">webob</tt><tt class="py-op">.</tt><tt class="py-name">exc</tt><tt class="py-op">.</tt><tt class="py-name">HTTPNotFound</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">            <tt id="link-0" class="py-name" targets="Variable pyocni.ocni_server.ocni_server.app=pyocni.ocni_server.ocni_server-class.html#app,Variable pyocni.pyocni_tools.routes_test.ocni_server.app=pyocni.pyocni_tools.routes_test.ocni_server-class.html#app"><a title="pyocni.ocni_server.ocni_server.app
-pyocni.pyocni_tools.routes_test.ocni_server.app" class="py-name" href="#" onclick="return doclink('link-0', 'app', 'link-0');">app</a></tt> <tt class="py-op">=</tt> <tt class="py-name">match</tt><tt class="py-op">[</tt><tt class="py-string">'controller'</tt><tt class="py-op">]</tt> </tt>
-<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt id="link-1" class="py-name"><a title="pyocni.ocni_server.ocni_server.app
-pyocni.pyocni_tools.routes_test.ocni_server.app" class="py-name" href="#" onclick="return doclink('link-1', 'app', 'link-0');">app</a></tt> </tt>
-</div><a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Router.application"></a><div id="ocni_server.Router.application-def"><a name="L44"></a><tt class="py-lineno"> 44</tt> <a class="py-toggle" href="#" id="ocni_server.Router.application-toggle" onclick="return toggle('ocni_server.Router.application');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#application">application</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">env</tt><tt class="py-op">,</tt> <tt class="py-param">start_response</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Router.application-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div><div id="ocni_server.Router.application-expanded"><a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">            <tt class="py-name">start_response</tt><tt class="py-op">(</tt><tt class="py-string">'200 OK'</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">(</tt><tt class="py-string">'Content-Type'</tt><tt class="py-op">,</tt> <tt class="py-string">'text/plain'</tt><tt class="py-op">)</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
-<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-op">[</tt><tt class="py-string">'Hello, Houssem!\r\n'</tt><tt class="py-op">]</tt> </tt>
-</div><a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Router.__init__"></a><div id="ocni_server.Router.__init__-def"><a name="L48"></a><tt class="py-lineno"> 48</tt> <a class="py-toggle" href="#" id="ocni_server.Router.__init__-toggle" onclick="return toggle('ocni_server.Router.__init__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Router.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div><div id="ocni_server.Router.__init__-expanded"><a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">            <tt class="py-name">mapper</tt> <tt class="py-op">=</tt> <tt class="py-name">routes</tt><tt class="py-op">.</tt><tt class="py-name">Mapper</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">            <tt class="py-name">mapper</tt><tt class="py-op">.</tt><tt class="py-name">connect</tt><tt class="py-op">(</tt><tt class="py-string">"/"</tt><tt class="py-op">,</tt> <tt id="link-2" class="py-name" targets="Function pyocni.pyocni_tools.DoItYourselfWebOb.controller()=pyocni.pyocni_tools.DoItYourselfWebOb-module.html#controller"><a title="pyocni.pyocni_tools.DoItYourselfWebOb.controller" class="py-name" href="#" onclick="return doclink('link-2', 'controller', 'link-2');">controller</a></tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Method pyocni.pyocni_tools.routes_test.ocni_server.Router.application()=pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#application"><a title="pyocni.pyocni_tools.routes_test.ocni_server.Router.application" class="py-name" href="#" onclick="return doclink('link-3', 'application', 'link-3');">application</a></tt><tt class="py-op">)</tt> </tt>
-<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">_router</tt> <tt class="py-op">=</tt> <tt class="py-name">routes</tt><tt class="py-op">.</tt><tt class="py-name">middleware</tt><tt class="py-op">.</tt><tt class="py-name">RoutesMiddleware</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-4" class="py-name" targets="Method pyocni.pyocni_tools.routes_test.ocni_server.Router._dispatch()=pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#_dispatch"><a title="pyocni.pyocni_tools.routes_test.ocni_server.Router._dispatch" class="py-name" href="#" onclick="return doclink('link-4', '_dispatch', 'link-4');">_dispatch</a></tt><tt class="py-op">,</tt> <tt class="py-name">mapper</tt><tt class="py-op">)</tt> </tt>
-</div></div><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
-<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-comment">#    def application(self, env, start_response):</tt> </tt>
-<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">        <tt class="py-comment">#        map = Mapper()</tt> </tt>
-<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">        <tt class="py-comment">#        map.connect("/", controller=self.Hello)#, action="post")#, conditions=dict(method=["GET"]))</tt> </tt>
-<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
-<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-comment">#        self.Hello = RoutesMiddleware(self.Hello, map)</tt> </tt>
-<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
-<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">        <tt class="py-comment">#        req = Request.blank('/')</tt> </tt>
-<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-comment">#        req.body = 'name=Houssem'</tt> </tt>
-<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">        <tt class="py-comment">#        resp = req.get_response(self.Hello)</tt> </tt>
-<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt class="py-comment">#        print (resp)</tt> </tt>
-<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">        <tt class="py-comment">#        return resp</tt> </tt>
-<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
-<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">        <tt class="py-comment">#    class Hello(object):</tt> </tt>
-<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-comment">#        def __init__(self, req):</tt> </tt>
-<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-comment">#            self.request = req</tt> </tt>
-<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
-<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt class="py-comment">#        def post(self):</tt> </tt>
-<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-comment">#            return 'Hello from POST %s!' % self.request.params['name']</tt> </tt>
-<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
-<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-comment">#        def get(self):</tt> </tt>
-<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-comment">#            return 'Hello from GET'</tt> </tt>
-<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
-<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">        <tt class="py-comment">#        def put(self):</tt> </tt>
-<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">        <tt class="py-comment">#            return 'Hello from PUT %s!' % self.request.params['name']</tt> </tt>
-<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line">        <tt class="py-comment">#</tt> </tt>
-<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">        <tt class="py-comment">#        def delete(self):</tt> </tt>
-<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">        <tt class="py-comment">#            return 'Hello from DELETE'</tt> </tt>
-<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Hello2"></a><div id="ocni_server.Hello2-def"><a name="L81"></a><tt class="py-lineno"> 81</tt> <a class="py-toggle" href="#" id="ocni_server.Hello2-toggle" onclick="return toggle('ocni_server.Hello2');">-</a><tt class="py-line">    <tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html">Hello2</a><tt class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Hello2-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ocni_server.Hello2-expanded"><a name="ocni_server.Hello2.__init__"></a><div id="ocni_server.Hello2.__init__-def"><a name="L82"></a><tt class="py-lineno"> 82</tt> <a class="py-toggle" href="#" id="ocni_server.Hello2.__init__-toggle" onclick="return toggle('ocni_server.Hello2.__init__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">req</tt><tt class="py-op">,</tt> <tt class="py-param">action</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Hello2.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div><div id="ocni_server.Hello2.__init__-expanded"><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">a</tt> <tt class="py-op">=</tt> <tt id="link-5" class="py-name" targets="Method pyocni.backend.backend.backend.action()=pyocni.backend.backend.backend-class.html#action"><a title="pyocni.backend.backend.backend.action" class="py-name" href="#" onclick="return doclink('link-5', 'action', 'link-5');">action</a></tt> </tt>
-<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">request</tt> <tt class="py-op">=</tt> <tt class="py-name">req</tt> </tt>
-</div><a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Hello2.post"></a><div id="ocni_server.Hello2.post-def"><a name="L86"></a><tt class="py-lineno"> 86</tt> <a class="py-toggle" href="#" id="ocni_server.Hello2.post-toggle" onclick="return toggle('ocni_server.Hello2.post');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#post">post</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Hello2.post-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div><div id="ocni_server.Hello2.post-expanded"><a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">'Hello2 from POST %s!'</tt> <tt class="py-op">%</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">params</tt><tt class="py-op">[</tt><tt class="py-string">'name'</tt><tt class="py-op">]</tt> </tt>
-</div><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Hello2.get"></a><div id="ocni_server.Hello2.get-def"><a name="L89"></a><tt class="py-lineno"> 89</tt> <a class="py-toggle" href="#" id="ocni_server.Hello2.get-toggle" onclick="return toggle('ocni_server.Hello2.get');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#get">get</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Hello2.get-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div><div id="ocni_server.Hello2.get-expanded"><a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">'Hello2 from GET: 33333333 '</tt> <tt class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">a</tt><tt class="py-op">)</tt> </tt>
-</div><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Hello2.put"></a><div id="ocni_server.Hello2.put-def"><a name="L92"></a><tt class="py-lineno"> 92</tt> <a class="py-toggle" href="#" id="ocni_server.Hello2.put-toggle" onclick="return toggle('ocni_server.Hello2.put');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#put">put</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Hello2.put-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div><div id="ocni_server.Hello2.put-expanded"><a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">'Hello2 from PUT %s!'</tt> <tt class="py-op">%</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">params</tt><tt class="py-op">[</tt><tt class="py-string">'name'</tt><tt class="py-op">]</tt> </tt>
-</div><a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.Hello2.delete"></a><div id="ocni_server.Hello2.delete-def"><a name="L95"></a><tt class="py-lineno"> 95</tt> <a class="py-toggle" href="#" id="ocni_server.Hello2.delete-toggle" onclick="return toggle('ocni_server.Hello2.delete');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#delete">delete</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.Hello2.delete-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div><div id="ocni_server.Hello2.delete-expanded"><a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">            <tt class="py-keyword">return</tt> <tt class="py-string">'Hello2 from DELETE'</tt> </tt>
-</div></div><a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line"> </tt>
-<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">routes</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Mapper</tt> </tt>
-<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"> </tt>
-<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">    <tt id="link-6" class="py-name" targets="Variable pyocni.pyocni_tools.routes_test.ocni_server.map=pyocni.pyocni_tools.routes_test.ocni_server-class.html#map"><a title="pyocni.pyocni_tools.routes_test.ocni_server.map" class="py-name" href="#" onclick="return doclink('link-6', 'map', 'link-6');">map</a></tt> <tt class="py-op">=</tt> <tt class="py-name">Mapper</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">    <tt id="link-7" class="py-name"><a title="pyocni.pyocni_tools.routes_test.ocni_server.map" class="py-name" href="#" onclick="return doclink('link-7', 'map', 'link-6');">map</a></tt><tt class="py-op">.</tt><tt class="py-name">connect</tt><tt class="py-op">(</tt><tt class="py-name">None</tt><tt class="py-op">,</tt> <tt class="py-string">"/error/{action}/"</tt><tt class="py-op">,</tt> <tt id="link-8" class="py-name"><a title="pyocni.pyocni_tools.DoItYourselfWebOb.controller" class="py-name" href="#" onclick="return doclink('link-8', 'controller', 'link-2');">controller</a></tt><tt class="py-op">=</tt><tt class="py-string">"Hello2"</tt><tt class="py-op">)</tt> </tt>
-<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">    <tt class="py-keyword">from</tt> <tt class="py-name">routes</tt><tt class="py-op">.</tt><tt class="py-name">middleware</tt> <tt class="py-keyword">import</tt> <tt class="py-name">RoutesMiddleware</tt> </tt>
-<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"> </tt>
-<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">    <tt id="link-9" class="py-name"><a title="pyocni.ocni_server.ocni_server.app
-pyocni.pyocni_tools.routes_test.ocni_server.app" class="py-name" href="#" onclick="return doclink('link-9', 'app', 'link-0');">app</a></tt> <tt class="py-op">=</tt> <tt class="py-name">RoutesMiddleware</tt><tt class="py-op">(</tt><tt id="link-10" class="py-name" targets="Class pyocni.pyocni_tools.routes_test.ocni_server.Application=pyocni.pyocni_tools.routes_test.ocni_server.Application-class.html"><a title="pyocni.pyocni_tools.routes_test.ocni_server.Application" class="py-name" href="#" onclick="return doclink('link-10', 'Application', 'link-10');">Application</a></tt><tt class="py-op">,</tt> <tt id="link-11" class="py-name"><a title="pyocni.pyocni_tools.routes_test.ocni_server.map" class="py-name" href="#" onclick="return doclink('link-11', 'map', 'link-6');">map</a></tt><tt class="py-op">)</tt> </tt>
-<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"> </tt>
-<a name="ocni_server.run_server"></a><div id="ocni_server.run_server-def"><a name="L106"></a><tt class="py-lineno">106</tt> <a class="py-toggle" href="#" id="ocni_server.run_server-toggle" onclick="return toggle('ocni_server.run_server');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.pyocni_tools.routes_test.ocni_server-class.html#run_server">run_server</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
-</div><div id="ocni_server.run_server-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="ocni_server.run_server-expanded"><a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
-<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"><tt class="py-docstring">        to run the server</tt> </tt>
-<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
-<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
-<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line"> </tt>
-<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-comment">#result = webob.Request.blank('/').get_response(self.Router())</tt> </tt>
-<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">        <tt class="py-comment">#print result</tt> </tt>
-<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"> </tt>
-<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line">        <tt class="py-name">eventlet</tt><tt class="py-op">.</tt><tt class="py-name">wsgi</tt><tt class="py-op">.</tt><tt class="py-name">server</tt><tt class="py-op">(</tt><tt class="py-name">eventlet</tt><tt class="py-op">.</tt><tt class="py-name">listen</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-string">''</tt><tt class="py-op">,</tt> <tt class="py-number">8090</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="pyocni.ocni_server.ocni_server.app
-pyocni.pyocni_tools.routes_test.ocni_server.app" class="py-name" href="#" onclick="return doclink('link-12', 'app', 'link-0');">app</a></tt><tt class="py-op">)</tt> </tt>
-<a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">        <tt class="py-keyword">pass</tt> </tt>
-</div></div><a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"> </tt>
+<a name="ocni_server"></a><div id="ocni_server-def"><a name="L13"></a><tt class="py-lineno"> 13</tt> <a
+        class="py-toggle" href="#" id="ocni_server-toggle" onclick="return toggle('ocni_server');">-</a><tt
+        class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name"
+                                                             href="pyocni.pyocni_tools.routes_test.ocni_server-class.html">ocni_server</a><tt
+        class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="ocni_server-collapsed" style="display:none;" pad="+++" indent="++++"></div><div
+        id="ocni_server-expanded"><a name="L14"></a><tt class="py-lineno"> 14</tt> <tt class="py-line"> <tt
+        class="py-docstring">"""</tt> </tt>
+    <a name="L15"></a><tt class="py-lineno"> 15</tt> <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+    <a name="L16"></a><tt class="py-lineno"> 16</tt> <tt class="py-line"><tt class="py-docstring"> Represent the main
+        occi REST server</tt> </tt>
+    <a name="L17"></a><tt class="py-lineno"> 17</tt> <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+    <a name="L18"></a><tt class="py-lineno"> 18</tt> <tt class="py-line"><tt class="py-docstring"> """</tt> </tt>
+    <a name="L19"></a><tt class="py-lineno"> 19</tt> <tt class="py-line"> </tt>
+    <a name="ocni_server.Application"></a>
+
+    <div id="ocni_server.Application-def"><a name="L20"></a><tt class="py-lineno"> 20</tt> <a class="py-toggle" href="#"
+                                                                                              id="ocni_server.Application-toggle"
+                                                                                              onclick="return toggle('ocni_server.Application');">-</a><tt
+            class="py-line"> <tt class="py-keyword">class</tt> <a class="py-def-name"
+                                                                  href="pyocni.pyocni_tools.routes_test.ocni_server.Application-class.html">Application</a><tt
+            class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>
+    </tt>
+    </div>
+    <div id="ocni_server.Application-collapsed" style="display:none;" pad="+++" indent="++++++++"></div>
+    <div id="ocni_server.Application-expanded"><a name="L21"></a><tt class="py-lineno"> 21</tt> <tt class="py-line"> <tt
+            class="py-docstring">"""Test application to call from router."""</tt> </tt>
+        <a name="L22"></a><tt class="py-lineno"> 22</tt> <tt class="py-line"> </tt>
+        <a name="ocni_server.Application.__call__"></a>
+
+        <div id="ocni_server.Application.__call__-def"><a name="L23"></a><tt class="py-lineno"> 23</tt> <a
+                class="py-toggle" href="#" id="ocni_server.Application.__call__-toggle"
+                onclick="return toggle('ocni_server.Application.__call__');">-</a><tt class="py-line"> <tt
+                class="py-keyword">def</tt> <a class="py-def-name"
+                                               href="pyocni.pyocni_tools.routes_test.ocni_server.Application-class.html#__call__">__call__</a><tt
+                class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt
+                class="py-param">environ</tt><tt class="py-op">,</tt> <tt class="py-param">start_response</tt><tt
+                class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+        </div>
+        <div id="ocni_server.Application.__call__-collapsed" style="display:none;" pad="+++"
+             indent="++++++++++++++++"></div>
+        <div id="ocni_server.Application.__call__-expanded"><a name="L24"></a><tt class="py-lineno"> 24</tt> <tt
+                class="py-line"> <tt class="py-name">start_response</tt><tt class="py-op">(</tt><tt class="py-string">"200"</tt><tt
+                class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+            <a name="L25"></a><tt class="py-lineno"> 25</tt> <tt class="py-line"> <tt class="py-keyword">return</tt> <tt
+                    class="py-op">[</tt><tt class="py-string">'Router result'</tt><tt class="py-op">]</tt> </tt>
+        </div>
+    </div>
+    <a name="L26"></a><tt class="py-lineno"> 26</tt> <tt class="py-line"> </tt>
+    <a name="ocni_server.Router"></a>
+
+    <div id="ocni_server.Router-def"><a name="L27"></a><tt class="py-lineno"> 27</tt> <a class="py-toggle" href="#"
+                                                                                         id="ocni_server.Router-toggle"
+                                                                                         onclick="return toggle('ocni_server.Router');">-</a><tt
+            class="py-line"> <tt class="py-keyword">class</tt> <a class="py-def-name"
+                                                                  href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html">Router</a><tt
+            class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>
+    </tt>
+    </div>
+    <div id="ocni_server.Router-collapsed" style="display:none;" pad="+++" indent="++++++++"></div>
+    <div id="ocni_server.Router-expanded"><a name="L28"></a><tt class="py-lineno"> 28</tt> <tt class="py-line"> <tt
+            class="py-docstring">"""Test router."""</tt> </tt>
+        <a name="L29"></a><tt class="py-lineno"> 29</tt> <tt class="py-line"> </tt>
+        <a name="ocni_server.Router._dispatch"></a>
+
+        <div id="ocni_server.Router._dispatch-def"><a name="L30"></a><tt class="py-lineno"> 30</tt> <a class="py-toggle"
+                                                                                                       href="#"
+                                                                                                       id="ocni_server.Router._dispatch-toggle"
+                                                                                                       onclick="return toggle('ocni_server.Router._dispatch');">-</a><tt
+                class="py-line"> <tt class="py-keyword">def</tt> <a class="py-def-name"
+                                                                    href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#_dispatch">_dispatch</a><tt
+                class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">req</tt><tt
+                class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+        </div>
+        <div id="ocni_server.Router._dispatch-collapsed" style="display:none;" pad="+++"
+             indent="++++++++++++++++"></div>
+        <div id="ocni_server.Router._dispatch-expanded"><a name="L31"></a><tt class="py-lineno"> 31</tt> <tt
+                class="py-line"> <tt class="py-docstring">"""Dispatch the request to the appropriate controller.</tt>
+        </tt>
+            <a name="L32"></a><tt class="py-lineno"> 32</tt> <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+            <a name="L33"></a><tt class="py-lineno"> 33</tt> <tt class="py-line"><tt class="py-docstring"> Called by
+                self._router after matching the incoming request to a route</tt> </tt>
+            <a name="L34"></a><tt class="py-lineno"> 34</tt> <tt class="py-line"><tt class="py-docstring"> and putting
+                the information into req.environ. Either returns 404</tt> </tt>
+            <a name="L35"></a><tt class="py-lineno"> 35</tt> <tt class="py-line"><tt class="py-docstring"> or the routed
+                WSGI app's response.</tt> </tt>
+            <a name="L36"></a><tt class="py-lineno"> 36</tt> <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+            <a name="L37"></a><tt class="py-lineno"> 37</tt> <tt class="py-line"><tt class="py-docstring"> """</tt>
+            </tt>
+            <a name="L38"></a><tt class="py-lineno"> 38</tt> <tt class="py-line"> <tt class="py-name">match</tt> <tt
+                    class="py-op">=</tt> <tt class="py-name">req</tt><tt class="py-op">.</tt><tt
+                    class="py-name">environ</tt><tt class="py-op">[</tt><tt
+                    class="py-string">'wsgiorg.routing_args'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt
+                    class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+            <a name="L39"></a><tt class="py-lineno"> 39</tt> <tt class="py-line"> <tt class="py-keyword">if</tt> <tt
+                    class="py-keyword">not</tt> <tt class="py-name">match</tt><tt class="py-op">:</tt> </tt>
+            <a name="L40"></a><tt class="py-lineno"> 40</tt> <tt class="py-line"> <tt class="py-keyword">return</tt> <tt
+                    class="py-name">webob</tt><tt class="py-op">.</tt><tt class="py-name">exc</tt><tt
+                    class="py-op">.</tt><tt class="py-name">HTTPNotFound</tt><tt class="py-op">(</tt><tt
+                    class="py-op">)</tt> </tt>
+            <a name="L41"></a><tt class="py-lineno"> 41</tt> <tt class="py-line"> <tt id="link-0" class="py-name"
+                                                                                      targets="Variable pyocni.client.Tests.server_Mock.ocni_server.app=pyocni.client.Tests.server_Mock.ocni_server-class.html#app,Variable pyocni.ocni_server.ocni_server.app=pyocni.ocni_server.ocni_server-class.html#app,Variable pyocni.pyocni_tools.routes_test.ocni_server.app=pyocni.pyocni_tools.routes_test.ocni_server-class.html#app"><a
+                    title="pyocni.client.Tests.server_Mock.ocni_server.app
+pyocni.ocni_server.ocni_server.app
+pyocni.pyocni_tools.routes_test.ocni_server.app" class="py-name" href="#"
+                    onclick="return doclink('link-0', 'app', 'link-0');">app</a></tt> <tt class="py-op">=</tt> <tt
+                    class="py-name">match</tt><tt class="py-op">[</tt><tt class="py-string">'controller'</tt><tt
+                    class="py-op">]</tt> </tt>
+            <a name="L42"></a><tt class="py-lineno"> 42</tt> <tt class="py-line"> <tt class="py-keyword">return</tt> <tt
+                    id="link-1" class="py-name"><a title="pyocni.client.Tests.server_Mock.ocni_server.app
+pyocni.ocni_server.ocni_server.app
+pyocni.pyocni_tools.routes_test.ocni_server.app" class="py-name" href="#"
+                                                   onclick="return doclink('link-1', 'app', 'link-0');">app</a></tt>
+            </tt>
+        </div>
+        <a name="L43"></a><tt class="py-lineno"> 43</tt> <tt class="py-line"> </tt>
+        <a name="ocni_server.Router.application"></a>
+
+        <div id="ocni_server.Router.application-def"><a name="L44"></a><tt class="py-lineno"> 44</tt> <a
+                class="py-toggle" href="#" id="ocni_server.Router.application-toggle"
+                onclick="return toggle('ocni_server.Router.application');">-</a><tt class="py-line"> <tt
+                class="py-keyword">def</tt> <a class="py-def-name"
+                                               href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#application">application</a><tt
+                class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">env</tt><tt
+                class="py-op">,</tt> <tt class="py-param">start_response</tt><tt class="py-op">)</tt><tt
+                class="py-op">:</tt> </tt>
+        </div>
+        <div id="ocni_server.Router.application-collapsed" style="display:none;" pad="+++"
+             indent="++++++++++++++++"></div>
+        <div id="ocni_server.Router.application-expanded"><a name="L45"></a><tt class="py-lineno"> 45</tt> <tt
+                class="py-line"> <tt class="py-name">start_response</tt><tt class="py-op">(</tt><tt class="py-string">'200
+            OK'</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-op">(</tt><tt class="py-string">'Content-Type'</tt><tt
+                class="py-op">,</tt> <tt class="py-string">'text/plain'</tt><tt class="py-op">)</tt><tt
+                class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+            <a name="L46"></a><tt class="py-lineno"> 46</tt> <tt class="py-line"> <tt class="py-keyword">return</tt> <tt
+                    class="py-op">[</tt><tt class="py-string">'Hello, Houssem!\r\n'</tt><tt class="py-op">]</tt> </tt>
+        </div>
+        <a name="L47"></a><tt class="py-lineno"> 47</tt> <tt class="py-line"> </tt>
+        <a name="ocni_server.Router.__init__"></a>
+
+        <div id="ocni_server.Router.__init__-def"><a name="L48"></a><tt class="py-lineno"> 48</tt> <a class="py-toggle"
+                                                                                                      href="#"
+                                                                                                      id="ocni_server.Router.__init__-toggle"
+                                                                                                      onclick="return toggle('ocni_server.Router.__init__');">-</a><tt
+                class="py-line"> <tt class="py-keyword">def</tt> <a class="py-def-name"
+                                                                    href="pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#__init__">__init__</a><tt
+                class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+        </div>
+        <div id="ocni_server.Router.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div>
+        <div id="ocni_server.Router.__init__-expanded"><a name="L49"></a><tt class="py-lineno"> 49</tt> <tt
+                class="py-line"> <tt class="py-name">mapper</tt> <tt class="py-op">=</tt> <tt
+                class="py-name">routes</tt><tt class="py-op">.</tt><tt class="py-name">Mapper</tt><tt
+                class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+            <a name="L50"></a><tt class="py-lineno"> 50</tt> <tt class="py-line"> <tt class="py-name">mapper</tt><tt
+                    class="py-op">.</tt><tt class="py-name">connect</tt><tt class="py-op">(</tt><tt class="py-string">"/"</tt><tt
+                    class="py-op">,</tt> <tt id="link-2" class="py-name"
+                                             targets="Function pyocni.pyocni_tools.DoItYourselfWebOb.controller()=pyocni.pyocni_tools.DoItYourselfWebOb-module.html#controller"><a
+                    title="pyocni.pyocni_tools.DoItYourselfWebOb.controller" class="py-name" href="#"
+                    onclick="return doclink('link-2', 'controller', 'link-2');">controller</a></tt><tt
+                    class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-3"
+                                                                                                 class="py-name"
+                                                                                                 targets="Method pyocni.pyocni_tools.routes_test.ocni_server.Router.application()=pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#application"><a
+                    title="pyocni.pyocni_tools.routes_test.ocni_server.Router.application" class="py-name" href="#"
+                    onclick="return doclink('link-3', 'application', 'link-3');">application</a></tt><tt
+                    class="py-op">)</tt> </tt>
+            <a name="L51"></a><tt class="py-lineno"> 51</tt> <tt class="py-line"> <tt class="py-name">self</tt><tt
+                    class="py-op">.</tt><tt class="py-name">_router</tt> <tt class="py-op">=</tt> <tt class="py-name">routes</tt><tt
+                    class="py-op">.</tt><tt class="py-name">middleware</tt><tt class="py-op">.</tt><tt class="py-name">RoutesMiddleware</tt><tt
+                    class="py-op">(</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-4"
+                                                                                                 class="py-name"
+                                                                                                 targets="Method pyocni.pyocni_tools.routes_test.ocni_server.Router._dispatch()=pyocni.pyocni_tools.routes_test.ocni_server.Router-class.html#_dispatch"><a
+                    title="pyocni.pyocni_tools.routes_test.ocni_server.Router._dispatch" class="py-name" href="#"
+                    onclick="return doclink('link-4', '_dispatch', 'link-4');">_dispatch</a></tt><tt
+                    class="py-op">,</tt> <tt class="py-name">mapper</tt><tt class="py-op">)</tt> </tt>
+        </div>
+    </div>
+    <a name="L52"></a><tt class="py-lineno"> 52</tt> <tt class="py-line"> </tt>
+    <a name="L53"></a><tt class="py-lineno"> 53</tt> <tt class="py-line"> <tt class="py-comment"># def application(self,
+        env, start_response):</tt> </tt>
+    <a name="L54"></a><tt class="py-lineno"> 54</tt> <tt class="py-line"> <tt class="py-comment"># map = Mapper()</tt>
+    </tt>
+    <a name="L55"></a><tt class="py-lineno"> 55</tt> <tt class="py-line"> <tt class="py-comment"># map.connect("/",
+        controller=self.Hello)#, action="post")#, conditions=dict(method=["GET"]))</tt> </tt>
+    <a name="L56"></a><tt class="py-lineno"> 56</tt> <tt class="py-line"> <tt class="py-comment">#</tt> </tt>
+    <a name="L57"></a><tt class="py-lineno"> 57</tt> <tt class="py-line"> <tt class="py-comment"># self.Hello =
+        RoutesMiddleware(self.Hello, map)</tt> </tt>
+    <a name="L58"></a><tt class="py-lineno"> 58</tt> <tt class="py-line"> <tt class="py-comment">#</tt> </tt>
+    <a name="L59"></a><tt class="py-lineno"> 59</tt> <tt class="py-line"> <tt class="py-comment"># req =
+        Request.blank('/')</tt> </tt>
+    <a name="L60"></a><tt class="py-lineno"> 60</tt> <tt class="py-line"> <tt class="py-comment"># req.body =
+        'name=Houssem'</tt> </tt>
+    <a name="L61"></a><tt class="py-lineno"> 61</tt> <tt class="py-line"> <tt class="py-comment"># resp =
+        req.get_response(self.Hello)</tt> </tt>
+    <a name="L62"></a><tt class="py-lineno"> 62</tt> <tt class="py-line"> <tt class="py-comment"># print (resp)</tt>
+    </tt>
+    <a name="L63"></a><tt class="py-lineno"> 63</tt> <tt class="py-line"> <tt class="py-comment"># return resp</tt>
+    </tt>
+    <a name="L64"></a><tt class="py-lineno"> 64</tt> <tt class="py-line"> <tt class="py-comment">#</tt> </tt>
+    <a name="L65"></a><tt class="py-lineno"> 65</tt> <tt class="py-line"> <tt class="py-comment"># class
+        Hello(object):</tt> </tt>
+    <a name="L66"></a><tt class="py-lineno"> 66</tt> <tt class="py-line"> <tt class="py-comment"># def __init__(self,
+        req):</tt> </tt>
+    <a name="L67"></a><tt class="py-lineno"> 67</tt> <tt class="py-line"> <tt class="py-comment"># self.request =
+        req</tt> </tt>
+    <a name="L68"></a><tt class="py-lineno"> 68</tt> <tt class="py-line"> <tt class="py-comment">#</tt> </tt>
+    <a name="L69"></a><tt class="py-lineno"> 69</tt> <tt class="py-line"> <tt class="py-comment"># def post(self):</tt>
+    </tt>
+    <a name="L70"></a><tt class="py-lineno"> 70</tt> <tt class="py-line"> <tt class="py-comment"># return 'Hello from
+        POST %s!' % self.request.params['name']</tt> </tt>
+    <a name="L71"></a><tt class="py-lineno"> 71</tt> <tt class="py-line"> <tt class="py-comment">#</tt> </tt>
+    <a name="L72"></a><tt class="py-lineno"> 72</tt> <tt class="py-line"> <tt class="py-comment"># def get(self):</tt>
+    </tt>
+    <a name="L73"></a><tt class="py-lineno"> 73</tt> <tt class="py-line"> <tt class="py-comment"># return 'Hello from
+        GET'</tt> </tt>
+    <a name="L74"></a><tt class="py-lineno"> 74</tt> <tt class="py-line"> <tt class="py-comment">#</tt> </tt>
+    <a name="L75"></a><tt class="py-lineno"> 75</tt> <tt class="py-line"> <tt class="py-comment"># def put(self):</tt>
+    </tt>
+    <a name="L76"></a><tt class="py-lineno"> 76</tt> <tt class="py-line"> <tt class="py-comment"># return 'Hello from
+        PUT %s!' % self.request.params['name']</tt> </tt>
+    <a name="L77"></a><tt class="py-lineno"> 77</tt> <tt class="py-line"> <tt class="py-comment">#</tt> </tt>
+    <a name="L78"></a><tt class="py-lineno"> 78</tt> <tt class="py-line"> <tt class="py-comment"># def
+        delete(self):</tt> </tt>
+    <a name="L79"></a><tt class="py-lineno"> 79</tt> <tt class="py-line"> <tt class="py-comment"># return 'Hello from
+        DELETE'</tt> </tt>
+    <a name="L80"></a><tt class="py-lineno"> 80</tt> <tt class="py-line"> </tt>
+    <a name="ocni_server.Hello2"></a>
+
+    <div id="ocni_server.Hello2-def"><a name="L81"></a><tt class="py-lineno"> 81</tt> <a class="py-toggle" href="#"
+                                                                                         id="ocni_server.Hello2-toggle"
+                                                                                         onclick="return toggle('ocni_server.Hello2');">-</a><tt
+            class="py-line"> <tt class="py-keyword">class</tt> <a class="py-def-name"
+                                                                  href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html">Hello2</a><tt
+            class="py-op">(</tt><tt class="py-base-class">object</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>
+    </tt>
+    </div>
+    <div id="ocni_server.Hello2-collapsed" style="display:none;" pad="+++" indent="++++++++"></div>
+    <div id="ocni_server.Hello2-expanded"><a name="ocni_server.Hello2.__init__"></a>
+
+        <div id="ocni_server.Hello2.__init__-def"><a name="L82"></a><tt class="py-lineno"> 82</tt> <a class="py-toggle"
+                                                                                                      href="#"
+                                                                                                      id="ocni_server.Hello2.__init__-toggle"
+                                                                                                      onclick="return toggle('ocni_server.Hello2.__init__');">-</a><tt
+                class="py-line"> <tt class="py-keyword">def</tt> <a class="py-def-name"
+                                                                    href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#__init__">__init__</a><tt
+                class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">req</tt><tt
+                class="py-op">,</tt> <tt class="py-param">action</tt><tt class="py-op">)</tt><tt class="py-op">:</tt>
+        </tt>
+        </div>
+        <div id="ocni_server.Hello2.__init__-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div>
+        <div id="ocni_server.Hello2.__init__-expanded"><a name="L83"></a><tt class="py-lineno"> 83</tt> <tt
+                class="py-line"> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">a</tt> <tt
+                class="py-op">=</tt> <tt id="link-5" class="py-name"
+                                         targets="Method pyocni.backend.backend.backend.action()=pyocni.backend.backend.backend-class.html#action,Method pyocni.backend.dummy_backend.dummy_backend.action()=pyocni.backend.dummy_backend.dummy_backend-class.html#action,Method pyocni.backend.l3vpn_backend.l3vpn_backend.action()=pyocni.backend.l3vpn_backend.l3vpn_backend-class.html#action,Method pyocni.backend.libnetvirt_backend.libnetvirt_backend.action()=pyocni.backend.libnetvirt_backend.libnetvirt_backend-class.html#action,Method pyocni.backend.openflow_backend.openflow_backend.action()=pyocni.backend.openflow_backend.openflow_backend-class.html#action,Method pyocni.backend.opennebula_backend.opennebula_backend.action()=pyocni.backend.opennebula_backend.opennebula_backend-class.html#action,Method pyocni.backend.openstack_backend.openstack_backend.action()=pyocni.backend.openstack_backend.openstack_backend-class.html#action"><a
+                title="pyocni.backend.backend.backend.action
+pyocni.backend.dummy_backend.dummy_backend.action
+pyocni.backend.l3vpn_backend.l3vpn_backend.action
+pyocni.backend.libnetvirt_backend.libnetvirt_backend.action
+pyocni.backend.openflow_backend.openflow_backend.action
+pyocni.backend.opennebula_backend.opennebula_backend.action
+pyocni.backend.openstack_backend.openstack_backend.action" class="py-name" href="#"
+                onclick="return doclink('link-5', 'action', 'link-5');">action</a></tt> </tt>
+            <a name="L84"></a><tt class="py-lineno"> 84</tt> <tt class="py-line"> <tt class="py-name">self</tt><tt
+                    class="py-op">.</tt><tt class="py-name">request</tt> <tt class="py-op">=</tt> <tt class="py-name">req</tt>
+            </tt>
+        </div>
+        <a name="L85"></a><tt class="py-lineno"> 85</tt> <tt class="py-line"> </tt>
+        <a name="ocni_server.Hello2.post"></a>
+
+        <div id="ocni_server.Hello2.post-def"><a name="L86"></a><tt class="py-lineno"> 86</tt> <a class="py-toggle"
+                                                                                                  href="#"
+                                                                                                  id="ocni_server.Hello2.post-toggle"
+                                                                                                  onclick="return toggle('ocni_server.Hello2.post');">-</a><tt
+                class="py-line"> <tt class="py-keyword">def</tt> <a class="py-def-name"
+                                                                    href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#post">post</a><tt
+                class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+        </div>
+        <div id="ocni_server.Hello2.post-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div>
+        <div id="ocni_server.Hello2.post-expanded"><a name="L87"></a><tt class="py-lineno"> 87</tt> <tt class="py-line">
+            <tt class="py-keyword">return</tt> <tt class="py-string">'Hello2 from POST %s!'</tt> <tt
+                class="py-op">%</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt
+                class="py-name">request</tt><tt class="py-op">.</tt><tt class="py-name">params</tt><tt
+                class="py-op">[</tt><tt class="py-string">'name'</tt><tt class="py-op">]</tt> </tt>
+        </div>
+        <a name="L88"></a><tt class="py-lineno"> 88</tt> <tt class="py-line"> </tt>
+        <a name="ocni_server.Hello2.get"></a>
+
+        <div id="ocni_server.Hello2.get-def"><a name="L89"></a><tt class="py-lineno"> 89</tt> <a class="py-toggle"
+                                                                                                 href="#"
+                                                                                                 id="ocni_server.Hello2.get-toggle"
+                                                                                                 onclick="return toggle('ocni_server.Hello2.get');">-</a><tt
+                class="py-line"> <tt class="py-keyword">def</tt> <a class="py-def-name"
+                                                                    href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#get">get</a><tt
+                class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+        </div>
+        <div id="ocni_server.Hello2.get-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div>
+        <div id="ocni_server.Hello2.get-expanded"><a name="L90"></a><tt class="py-lineno"> 90</tt> <tt class="py-line">
+            <tt class="py-keyword">return</tt> <tt class="py-string">'Hello2 from GET: 33333333 '</tt> <tt
+                class="py-op">+</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt
+                class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">a</tt><tt class="py-op">)</tt>
+        </tt>
+        </div>
+        <a name="L91"></a><tt class="py-lineno"> 91</tt> <tt class="py-line"> </tt>
+        <a name="ocni_server.Hello2.put"></a>
+
+        <div id="ocni_server.Hello2.put-def"><a name="L92"></a><tt class="py-lineno"> 92</tt> <a class="py-toggle"
+                                                                                                 href="#"
+                                                                                                 id="ocni_server.Hello2.put-toggle"
+                                                                                                 onclick="return toggle('ocni_server.Hello2.put');">-</a><tt
+                class="py-line"> <tt class="py-keyword">def</tt> <a class="py-def-name"
+                                                                    href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#put">put</a><tt
+                class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+        </div>
+        <div id="ocni_server.Hello2.put-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div>
+        <div id="ocni_server.Hello2.put-expanded"><a name="L93"></a><tt class="py-lineno"> 93</tt> <tt class="py-line">
+            <tt class="py-keyword">return</tt> <tt class="py-string">'Hello2 from PUT %s!'</tt> <tt class="py-op">%</tt>
+            <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">request</tt><tt
+                class="py-op">.</tt><tt class="py-name">params</tt><tt class="py-op">[</tt><tt
+                class="py-string">'name'</tt><tt class="py-op">]</tt> </tt>
+        </div>
+        <a name="L94"></a><tt class="py-lineno"> 94</tt> <tt class="py-line"> </tt>
+        <a name="ocni_server.Hello2.delete"></a>
+
+        <div id="ocni_server.Hello2.delete-def"><a name="L95"></a><tt class="py-lineno"> 95</tt> <a class="py-toggle"
+                                                                                                    href="#"
+                                                                                                    id="ocni_server.Hello2.delete-toggle"
+                                                                                                    onclick="return toggle('ocni_server.Hello2.delete');">-</a><tt
+                class="py-line"> <tt class="py-keyword">def</tt> <a class="py-def-name"
+                                                                    href="pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#delete">delete</a><tt
+                class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+        </div>
+        <div id="ocni_server.Hello2.delete-collapsed" style="display:none;" pad="+++" indent="++++++++++++++++"></div>
+        <div id="ocni_server.Hello2.delete-expanded"><a name="L96"></a><tt class="py-lineno"> 96</tt> <tt
+                class="py-line"> <tt class="py-keyword">return</tt> <tt class="py-string">'Hello2 from DELETE'</tt>
+        </tt>
+        </div>
+    </div>
+    <a name="L97"></a><tt class="py-lineno"> 97</tt> <tt class="py-line"> </tt>
+    <a name="L98"></a><tt class="py-lineno"> 98</tt> <tt class="py-line"> <tt class="py-keyword">from</tt> <tt
+            class="py-name">routes</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Mapper</tt> </tt>
+    <a name="L99"></a><tt class="py-lineno"> 99</tt> <tt class="py-line"> </tt>
+    <a name="L100"></a><tt class="py-lineno">100</tt> <tt class="py-line"> <tt id="link-6" class="py-name"
+                                                                               targets="Variable pyocni.pyocni_tools.routes_test.ocni_server.map=pyocni.pyocni_tools.routes_test.ocni_server-class.html#map"><a
+            title="pyocni.pyocni_tools.routes_test.ocni_server.map" class="py-name" href="#"
+            onclick="return doclink('link-6', 'map', 'link-6');">map</a></tt> <tt class="py-op">=</tt> <tt
+            class="py-name">Mapper</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+    <a name="L101"></a><tt class="py-lineno">101</tt> <tt class="py-line"> <tt id="link-7" class="py-name"><a
+            title="pyocni.pyocni_tools.routes_test.ocni_server.map" class="py-name" href="#"
+            onclick="return doclink('link-7', 'map', 'link-6');">map</a></tt><tt class="py-op">.</tt><tt
+            class="py-name">connect</tt><tt class="py-op">(</tt><tt class="py-name">None</tt><tt class="py-op">,</tt>
+        <tt class="py-string">"/error/{action}/"</tt><tt class="py-op">,</tt> <tt id="link-8" class="py-name"><a
+                title="pyocni.pyocni_tools.DoItYourselfWebOb.controller" class="py-name" href="#"
+                onclick="return doclink('link-8', 'controller', 'link-2');">controller</a></tt><tt
+                class="py-op">=</tt><tt class="py-string">"Hello2"</tt><tt class="py-op">)</tt> </tt>
+    <a name="L102"></a><tt class="py-lineno">102</tt> <tt class="py-line"> <tt class="py-keyword">from</tt> <tt
+            class="py-name">routes</tt><tt class="py-op">.</tt><tt class="py-name">middleware</tt> <tt
+            class="py-keyword">import</tt> <tt class="py-name">RoutesMiddleware</tt> </tt>
+    <a name="L103"></a><tt class="py-lineno">103</tt> <tt class="py-line"> </tt>
+    <a name="L104"></a><tt class="py-lineno">104</tt> <tt class="py-line"> <tt id="link-9" class="py-name"><a title="pyocni.client.Tests.server_Mock.ocni_server.app
+pyocni.ocni_server.ocni_server.app
+pyocni.pyocni_tools.routes_test.ocni_server.app" class="py-name" href="#"
+                                                                                                              onclick="return doclink('link-9', 'app', 'link-0');">app</a></tt>
+        <tt class="py-op">=</tt> <tt class="py-name">RoutesMiddleware</tt><tt class="py-op">(</tt><tt id="link-10"
+                                                                                                      class="py-name"
+                                                                                                      targets="Class pyocni.pyocni_tools.routes_test.ocni_server.Application=pyocni.pyocni_tools.routes_test.ocni_server.Application-class.html"><a
+                title="pyocni.pyocni_tools.routes_test.ocni_server.Application" class="py-name" href="#"
+                onclick="return doclink('link-10', 'Application', 'link-10');">Application</a></tt><tt
+                class="py-op">,</tt> <tt id="link-11" class="py-name"><a
+                title="pyocni.pyocni_tools.routes_test.ocni_server.map" class="py-name" href="#"
+                onclick="return doclink('link-11', 'map', 'link-6');">map</a></tt><tt class="py-op">)</tt> </tt>
+    <a name="L105"></a><tt class="py-lineno">105</tt> <tt class="py-line"> </tt>
+    <a name="ocni_server.run_server"></a>
+
+    <div id="ocni_server.run_server-def"><a name="L106"></a><tt class="py-lineno">106</tt> <a class="py-toggle" href="#"
+                                                                                              id="ocni_server.run_server-toggle"
+                                                                                              onclick="return toggle('ocni_server.run_server');">-</a><tt
+            class="py-line"> <tt class="py-keyword">def</tt> <a class="py-def-name"
+                                                                href="pyocni.pyocni_tools.routes_test.ocni_server-class.html#run_server">run_server</a><tt
+            class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+    </div>
+    <div id="ocni_server.run_server-collapsed" style="display:none;" pad="+++" indent="++++++++"></div>
+    <div id="ocni_server.run_server-expanded"><a name="L107"></a><tt class="py-lineno">107</tt> <tt class="py-line"> <tt
+            class="py-docstring">"""</tt> </tt>
+        <a name="L108"></a><tt class="py-lineno">108</tt> <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+        <a name="L109"></a><tt class="py-lineno">109</tt> <tt class="py-line"><tt class="py-docstring"> to run the
+            server</tt> </tt>
+        <a name="L110"></a><tt class="py-lineno">110</tt> <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+        <a name="L111"></a><tt class="py-lineno">111</tt> <tt class="py-line"><tt class="py-docstring"> """</tt> </tt>
+        <a name="L112"></a><tt class="py-lineno">112</tt> <tt class="py-line"> </tt>
+        <a name="L113"></a><tt class="py-lineno">113</tt> <tt class="py-line"> <tt class="py-comment">#result =
+            webob.Request.blank('/').get_response(self.Router())</tt> </tt>
+        <a name="L114"></a><tt class="py-lineno">114</tt> <tt class="py-line"> <tt class="py-comment">#print result</tt>
+        </tt>
+        <a name="L115"></a><tt class="py-lineno">115</tt> <tt class="py-line"> </tt>
+        <a name="L116"></a><tt class="py-lineno">116</tt> <tt class="py-line"> <tt class="py-name">eventlet</tt><tt
+                class="py-op">.</tt><tt class="py-name">wsgi</tt><tt class="py-op">.</tt><tt class="py-name">server</tt><tt
+                class="py-op">(</tt><tt class="py-name">eventlet</tt><tt class="py-op">.</tt><tt
+                class="py-name">listen</tt><tt class="py-op">(</tt><tt class="py-op">(</tt><tt class="py-string">''</tt><tt
+                class="py-op">,</tt> <tt class="py-number">8090</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt
+                class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt id="link-12"
+                                                                                              class="py-name"><a title="pyocni.client.Tests.server_Mock.ocni_server.app
+pyocni.ocni_server.ocni_server.app
+pyocni.pyocni_tools.routes_test.ocni_server.app" class="py-name" href="#"
+                                                                                                                 onclick="return doclink('link-12', 'app', 'link-0');">app</a></tt><tt
+                class="py-op">)</tt> </tt>
+        <a name="L117"></a><tt class="py-lineno">117</tt> <tt class="py-line"> <tt class="py-keyword">pass</tt> </tt>
+    </div>
+</div><a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"> </tt>
 <a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"> </tt>
-<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"><tt class="py-comment">#req2 = Request.blank('/')</tt> </tt>
-<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"><tt class="py-comment">#req2.body = 'name=Houssem'</tt> </tt>
-<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line"><tt class="py-comment">#resp2 = req2.get_response()</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"><tt class="py-comment">#req2 =
+    Request.blank('/')</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line"><tt class="py-comment">#req2.body =
+    'name=Houssem'</tt> </tt>
+<a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line"><tt class="py-comment">#resp2 =
+    req2.get_response()</tt> </tt>
 <a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line"><tt class="py-comment">#print (resp2)</tt> </tt>
-<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'__main__'</tt><tt class="py-op">:</tt> </tt>
-<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">    <tt class="py-name">ocni_server_instance</tt> <tt class="py-op">=</tt> <tt id="link-13" class="py-name" targets="Module pyocni.ocni_server=pyocni.ocni_server-module.html,Class pyocni.ocni_server.ocni_server=pyocni.ocni_server.ocni_server-class.html,Class pyocni.pyocni_tools.routes_test.ocni_server=pyocni.pyocni_tools.routes_test.ocni_server-class.html"><a title="pyocni.ocni_server
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt
+        class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'__main__'</tt><tt
+        class="py-op">:</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line"> <tt class="py-name">ocni_server_instance</tt>
+    <tt class="py-op">=</tt> <tt id="link-13" class="py-name"
+                                 targets="Class pyocni.client.Tests.server_Mock.ocni_server=pyocni.client.Tests.server_Mock.ocni_server-class.html,Module pyocni.ocni_server=pyocni.ocni_server-module.html,Class pyocni.ocni_server.ocni_server=pyocni.ocni_server.ocni_server-class.html,Class pyocni.pyocni_tools.routes_test.ocni_server=pyocni.pyocni_tools.routes_test.ocni_server-class.html"><a
+            title="pyocni.client.Tests.server_Mock.ocni_server
+pyocni.ocni_server
 pyocni.ocni_server.ocni_server
-pyocni.pyocni_tools.routes_test.ocni_server" class="py-name" href="#" onclick="return doclink('link-13', 'ocni_server', 'link-13');">ocni_server</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
-<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">    <tt class="py-name">ocni_server_instance</tt><tt class="py-op">.</tt><tt id="link-14" class="py-name" targets="Method pyocni.ocni_server.ocni_server.run_server()=pyocni.ocni_server.ocni_server-class.html#run_server,Method pyocni.pyocni_tools.routes_test.ocni_server.run_server()=pyocni.pyocni_tools.routes_test.ocni_server-class.html#run_server"><a title="pyocni.ocni_server.ocni_server.run_server
-pyocni.pyocni_tools.routes_test.ocni_server.run_server" class="py-name" href="#" onclick="return doclink('link-14', 'run_server', 'link-14');">run_server</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+pyocni.pyocni_tools.routes_test.ocni_server" class="py-name" href="#"
+            onclick="return doclink('link-13', 'ocni_server', 'link-13');">ocni_server</a></tt><tt
+            class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line"> <tt class="py-name">ocni_server_instance</tt><tt
+        class="py-op">.</tt><tt id="link-14" class="py-name"
+                                targets="Method pyocni.client.Tests.server_Mock.ocni_server.run_server()=pyocni.client.Tests.server_Mock.ocni_server-class.html#run_server,Method pyocni.ocni_server.ocni_server.run_server()=pyocni.ocni_server.ocni_server-class.html#run_server,Method pyocni.pyocni_tools.routes_test.ocni_server.run_server()=pyocni.pyocni_tools.routes_test.ocni_server-class.html#run_server"><a
+        title="pyocni.client.Tests.server_Mock.ocni_server.run_server
+pyocni.ocni_server.ocni_server.run_server
+pyocni.pyocni_tools.routes_test.ocni_server.run_server" class="py-name" href="#"
+        onclick="return doclink('link-14', 'run_server', 'link-14');">run_server</a></tt><tt class="py-op">(</tt><tt
+        class="py-op">)</tt> </tt>
 <a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line"> </tt><script type="text/javascript">
-<!--
-expandto(location.href);
-// -->
+    <!--
+    expandto(location.href);
+    // -->
 </script>
 </pre>
-<br />
+<br/>
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
-  <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <tr valign="middle">
+        <!-- Home link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Tree link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Tree link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Index link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Index link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Help link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Help link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Project homepage -->
-      <th class="navbar" align="right" width="100%">
-        <table border="0" cellpadding="0" cellspacing="0">
-          <tr><th class="navbar" align="center"
-            >pyocni</th>
-          </tr></table></th>
-  </tr>
+        <!-- Project homepage -->
+        <th class="navbar" align="right" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="navbar" align="center"
+                            >pyocni
+                    </th>
+                </tr>
+            </table>
+        </th>
+    </tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
-  <tr>
-    <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Thu Dec  1 19:36:00 2011
-    </td>
-    <td align="right" class="footer">
-      <a target="mainFrame" href="http://epydoc.sourceforge.net"
-        >http://epydoc.sourceforge.net</a>
-    </td>
-  </tr>
+    <tr>
+        <td align="left" class="footer">
+            Generated by Epydoc 3.0.1 on Mon Jul 23 11:54:52 2012
+        </td>
+        <td align="right" class="footer">
+            <a target="mainFrame" href="http://epydoc.sourceforge.net"
+                    >http://epydoc.sourceforge.net</a>
+        </td>
+    </tr>
 </table>
 
 <script type="text/javascript">
-  <!--
-  // Private objects are initially displayed (because if
-  // javascript is turned off then we want them to be
-  // visible); but by default, we want to hide them.  So hide
-  // them unless we have a cookie that says to show them.
-  checkCookie();
-  // -->
+    <!--
+    // Private objects are initially displayed (because if
+    // javascript is turned off then we want them to be
+    // visible); but by default, we want to hide them.  So hide
+    // them unless we have a cookie that says to show them.
+    checkCookie();
+    // -->
 </script>
 </body>
 </html>

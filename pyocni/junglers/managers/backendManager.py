@@ -1,19 +1,16 @@
-# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
-
-# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
+#  Copyright 2010-2012 Institut Mines-Telecom
 #
-# This library is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as
-# published by the Free Software Foundation, either version 3 of
-# the License, or (at your option) any later version.
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
 #
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+#  http://www.apache.org/licenses/LICENSE-2.0
 #
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library.  If not, see <http://www.gnu.org/licenses/>.
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
 """
 Created on Jun 12, 2012
@@ -23,11 +20,12 @@ Created on Jun 12, 2012
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
-@version: 0.3
-@license: LGPL - Lesser General Public License
+@license: Apache License, Version 2.0
 """
-from pyocni.backends import dummy_backend,l3vpn_backend,libnetvirt_backend,openflow_backend,opennebula_backend,openstack_backend
+
+from pyocni.backends import dummy_backend, l3vpn_backend, libnetvirt_backend, openflow_backend, opennebula_backend, openstack_backend
 import pyocni.pyocni_tools.config as config
+
 try:
     import simplejson as json
 except ImportError:
@@ -49,11 +47,11 @@ def trigger_action_on_multi_resource(data):
         @param data: Data provided for triggering the action
     """
     for item in data:
-        trigger_action_on_a_resource(item['resource_url'],item['action'],item['provider'][0])
-    return "",return_code['OK']
+        trigger_action_on_a_resource(item['resource_url'], item['action'], item['provider'][0])
+    return "", return_code['OK']
+
 
 def choose_appropriate_provider(provider):
-
     backend = None
 
     if provider == "dummy":
@@ -71,7 +69,8 @@ def choose_appropriate_provider(provider):
 
     return backend
 
-def trigger_action_on_a_resource(path_url,action,provider):
+
+def trigger_action_on_a_resource(path_url, action, provider):
     """
     Send the action triggering request to the appropriate provider
      Args:
@@ -81,15 +80,14 @@ def trigger_action_on_a_resource(path_url,action,provider):
     """
     backend = choose_appropriate_provider(provider)
     if backend is not None:
-
-        backend.action(path_url,action)
+        backend.action(path_url, action)
         return "", return_code['Accepted']
     else:
         logger.error("trigger action_on_resource : Unknown provider")
         return " An error has occurred, please check logs for more details", return_code['Not Found']
 
-def get_provider_of_a_kind(kind):
 
+def get_provider_of_a_kind(kind):
     database = config.prepare_PyOCNI_db()
 
     provider = None
@@ -110,50 +108,42 @@ def get_provider_of_a_kind(kind):
     return provider['local'][0]
 
 
-
-def delete_entity(entity,kind):
-
+def delete_entity(entity, kind):
     provider = get_provider_of_a_kind(kind)
     backend = choose_appropriate_provider(provider)
     backend.delete(entity)
 
 
-def create_entity(entity,res_adr):
-
+def create_entity(entity, res_adr):
     kind = entity['OCCI_Description']['kind']
     provider = get_provider_of_a_kind(kind)
     backend = choose_appropriate_provider(provider)
-    backend.create(entity['OCCI_Description'],res_adr)
+    backend.create(entity['OCCI_Description'], res_adr)
 
 
 def update_entity(old_data, new_data):
-
     kind = old_data['kind']
     provider = get_provider_of_a_kind(kind)
     backend = choose_appropriate_provider(provider)
-    backend.update(old_data,new_data)
+    backend.update(old_data, new_data)
 
 
-def read_entity(entity,kind):
-
+def read_entity(entity, kind):
     provider = get_provider_of_a_kind(kind)
     backend = choose_appropriate_provider(provider)
     backend.read(entity)
 
-def create_entities(entities,res_adrs):
 
+def create_entities(entities, res_adrs):
     for i in range(len(entities)):
-        create_entity(entities[i],res_adrs[i])
+        create_entity(entities[i], res_adrs[i])
 
 
 def update_entities(old_docs, new_docs):
-
-
     for i in range(len(old_docs)):
-        update_entity(old_docs[i],new_docs[i])
+        update_entity(old_docs[i], new_docs[i])
 
 
 def read_entities(entities):
-
-        for i in range(len(entities)):
-            read_entity(entities[i],entities[i]['kind'])
+    for i in range(len(entities)):
+        read_entity(entities[i], entities[i]['kind'])

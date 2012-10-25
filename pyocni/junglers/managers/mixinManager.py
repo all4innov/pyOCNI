@@ -1,13 +1,37 @@
+#  Copyright 2010-2012 Institut Mines-Telecom
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+"""
+Created on Jun 01, 2012
+
+@author: Bilel Msekni
+@contact: bilel.msekni@telecom-sudparis.eu
+@author: Houssem Medhioub
+@contact: houssem.medhioub@it-sudparis.eu
+@organization: Institut Mines-Telecom - Telecom SudParis
+@license: Apache License, Version 2.0
+"""
+
 import pyocni.pyocni_tools.config as config
 import pyocni.pyocni_tools.occi_Joker as joker
 
-
 import pyocni.pyocni_tools.uuid_Generator as uuid_Generator
+
 try:
     import simplejson as json
 except ImportError:
     import json
-
 
 from pyocni.pyocni_tools.config import return_code
 
@@ -22,7 +46,7 @@ class MixinManager:
     """
 
 
-    def get_filtered_mixins(self,jfilters,db_mixins):
+    def get_filtered_mixins(self, jfilters, db_mixins):
         """
         Returns mixin documents matching the filter provided
         Args:
@@ -35,21 +59,20 @@ class MixinManager:
         try:
             for elem in db_mixins:
                 for jfilter in jfilters:
-                    ok = joker.filter_occi_description(elem,jfilter)
+                    ok = joker.filter_occi_description(elem, jfilter)
                     if ok is True:
                         var.append(elem)
                         logger.debug("===== Get_filtered_mixins: A Mixin document is found =====")
                         break
 
-            return var,return_code['OK']
+            return var, return_code['OK']
 
         except Exception as e:
-            logger.error("===== Get_filtered_mixins:" + e.message+ " =====")
-            return "An error has occurred",return_code['Internal Server Error']
+            logger.error("===== Get_filtered_mixins:" + e.message + " =====")
+            return "An error has occurred", return_code['Internal Server Error']
 
 
-    def register_mixins(self,descriptions,db_occi_ids,db_occi_locs):
-
+    def register_mixins(self, descriptions, db_occi_ids, db_occi_locs):
         """
         Add new mixins to the database
         Args:
@@ -61,37 +84,35 @@ class MixinManager:
         resp_code = return_code['OK']
         for desc in descriptions:
             occi_id = joker.get_description_id(desc)
-            ok_k = joker.verify_occi_uniqueness(occi_id,db_occi_ids)
+            ok_k = joker.verify_occi_uniqueness(occi_id, db_occi_ids)
 
             if ok_k is True:
-
                 occi_loc = joker.make_category_location(desc)
-                ok_loc = joker.verify_occi_uniqueness(occi_loc,db_occi_locs)
+                ok_loc = joker.verify_occi_uniqueness(occi_loc, db_occi_locs)
 
                 if ok_loc is True:
-
-                            jData = dict()
-                            jData['_id'] = uuid_Generator.get_UUID()
-                            jData['OCCI_Location']= occi_loc
-                            jData['OCCI_Description']= desc
-                            jData['OCCI_ID'] = occi_id
-                            jData['Type']= "Mixin"
-                            loc_res.append(jData)
+                    jData = dict()
+                    jData['_id'] = uuid_Generator.get_UUID()
+                    jData['OCCI_Location'] = occi_loc
+                    jData['OCCI_Description'] = desc
+                    jData['OCCI_ID'] = occi_id
+                    jData['Type'] = "Mixin"
+                    loc_res.append(jData)
 
                 else:
                     message = "Location conflict, Mixin will not be created."
                     logger.error("===== Register Mixin : " + message + " =====")
                     resp_code = return_code['Conflict']
-                    return list(),resp_code
+                    return list(), resp_code
             else:
                 message = "This Mixin description already exists in document."
-                logger.error(" ====== Register Mixin : " + message+ " =====")
+                logger.error(" ====== Register Mixin : " + message + " =====")
                 resp_code = return_code['Conflict']
-                return list(),resp_code
+                return list(), resp_code
 
-        return loc_res,resp_code
+        return loc_res, resp_code
 
-    def update_OCCI_mixin_descriptions(self,new_data,db_data):
+    def update_OCCI_mixin_descriptions(self, new_data, db_data):
         """
         Updates the OCCI description field of the mixin which document OCCI_ID is equal to OCCI_ID contained in data
         (Should only be done by the creator of the mixin document)
@@ -106,31 +127,30 @@ class MixinManager:
 
         for desc in new_data:
             occi_id = joker.get_description_id(desc)
-            old_doc = joker.extract_doc(occi_id,db_data)
+            old_doc = joker.extract_doc(occi_id, db_data)
 
             if old_doc is not None:
+                problems, occi_description = joker.update_occi_category_description(old_doc['OCCI_Description'], desc)
 
-                    problems,occi_description= joker.update_occi_category_description(old_doc['OCCI_Description'],desc)
+                if problems is True:
+                    message = "Mixin OCCI description " + occi_id + " has not been totally updated."
+                    logger.error("===== update_OCCI_mixin_descriptions: " + message + " ===== ")
+                    return list(), return_code['Bad Request']
 
-                    if problems is True:
-                        message = "Mixin OCCI description " + occi_id + " has not been totally updated."
-                        logger.error("===== update_OCCI_mixin_descriptions: " + message + " ===== ")
-                        return list(),return_code['Bad Request']
-
-                    else:
-                        message = "Mixin OCCI description " + occi_id + " has been updated successfully"
-                        old_doc['OCCI_Description'] = occi_description
-                        to_update.append(old_doc)
-                        logger.debug("===== update_OCCI_mixin_descriptions: " + message + " ===== ")
+                else:
+                    message = "Mixin OCCI description " + occi_id + " has been updated successfully"
+                    old_doc['OCCI_Description'] = occi_description
+                    to_update.append(old_doc)
+                    logger.debug("===== update_OCCI_mixin_descriptions: " + message + " ===== ")
 
             else:
                 message = "Mixin document " + occi_id + " couldn\'t be found "
-                logger.error("===== update_OCCI_mixin_descriptions: "+ message + " ===== ")
-                return list(),return_code['Not Found']
+                logger.error("===== update_OCCI_mixin_descriptions: " + message + " ===== ")
+                return list(), return_code['Not Found']
 
-        return to_update,resp_code
+        return to_update, resp_code
 
-    def delete_mixin_documents(self,descriptions,db_categories,db_entities):
+    def delete_mixin_documents(self, descriptions, db_categories, db_entities):
         """
         Delete mixin documents that is related to the scheme + term contained in the description provided
         Args:
@@ -145,10 +165,10 @@ class MixinManager:
 
         for desc in descriptions:
             occi_id = joker.get_description_id(desc)
-            mixin_id_rev = joker.verify_exist_occi_id(occi_id,db_categories)
+            mixin_id_rev = joker.verify_exist_occi_id(occi_id, db_categories)
 
             if mixin_id_rev is not None:
-                db_entities,dissociated = self.dissociate_entities_belonging_to_mixin(occi_id,db_entities)
+                db_entities, dissociated = self.dissociate_entities_belonging_to_mixin(occi_id, db_entities)
 
                 if dissociated is True:
                     mix_ref.append(mixin_id_rev)
@@ -157,14 +177,13 @@ class MixinManager:
                 else:
                     event = "Unable to delete because this mixin document " + occi_id + " still has resources depending on it. "
                     logger.error(" ===== Delete_mixin_documents : " + event + " =====")
-                    return list(),list(), return_code['Bad Request']
+                    return list(), list(), return_code['Bad Request']
             else:
                 event = "Could not find this mixin document " + occi_id
                 logger.error("===== Delete_mixin_documents : " + event + " =====")
-                return list(),list(), return_code['Bad Request']
+                return list(), list(), return_code['Bad Request']
 
-
-        return mix_ref,db_entities,res_code
+        return mix_ref, db_entities, res_code
 
     def dissociate_entities_belonging_to_mixin(self, occi_id, db_entities):
         """
@@ -179,6 +198,6 @@ class MixinManager:
                 item['OCCI_Description']['mixins'].remove(occi_id)
             except ValueError as e:
                 logger.debug("===== dissociate_entities_belonging_to_mixin " + e.message + " =====")
-        return db_entities,True
+        return db_entities, True
 
 
