@@ -40,7 +40,8 @@ except ImportError:
 #=======================================================================================================================
 class MultiEntityDispatcher(object):
     """
-    Dispaches operation on kinds, mixins and actions
+
+
     """
 
     def __init__(self, req, location=None, idontknow=None, idontcare=None):
@@ -112,7 +113,7 @@ class MultiEntityDispatcher(object):
         #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
 
         if  self.req.content_type == 'text/occi' or (
-        self.req.body != "") or self.req.content_type == 'application/occi+json':
+        self.req.body != ""):
             jBody = self.req_adapter.convert_request_entity_content_v2(self.req)
 
             if jBody is None:

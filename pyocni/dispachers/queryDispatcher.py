@@ -56,10 +56,7 @@ class QueryDispatcher(object):
 
         #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON) if there is a body:
 
-        if not (self.req.headers.__contains__('content_type')) or self.req.body is "":
-            var, self.res.status_code = self.jungler.channel_get_all_categories()
-
-        else:
+        if  self.req.content_type == 'text/occi' or (self.req.body != ""):
             jreq = self.req_adapter.convert_request_category_content(self.req)
 
             #Step[2]: Treat the converted data:
@@ -69,6 +66,10 @@ class QueryDispatcher(object):
 
             else:
                 var, self.res.status_code = self.jungler.channel_get_filtered_categories(jreq)
+
+        else:
+            var, self.res.status_code = self.jungler.channel_get_all_categories()
+
 
 
 
