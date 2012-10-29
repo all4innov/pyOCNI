@@ -41,7 +41,6 @@ except ImportError:
 class SingleEntityDispatcher(object):
     """
 
-        dispachers operation on resources and links
 
     """
 
