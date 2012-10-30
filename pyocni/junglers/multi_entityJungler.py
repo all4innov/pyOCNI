@@ -102,8 +102,8 @@ class MultiEntityJungler(object):
                     new_links = list()
                     resp_code_l = return_code['OK, and location returned']
 
-                if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code[
-                                                                                                     'OK, and location returned']:
+                if resp_code_r is not return_code['OK, and location returned']\
+                or resp_code_l is not return_code['OK, and location returned']:
                     return "An error has occurred, please check log for more details", return_code['Bad Request']
 
                 #Step[3a]: Save the new resources

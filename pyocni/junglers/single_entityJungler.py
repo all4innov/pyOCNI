@@ -89,8 +89,8 @@ class SingleEntityJungler(object):
                 else:
                     resp_code_l = return_code['OK, and location returned']
 
-                if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code[
-                                                                                                     'OK, and location returned']:
+                if resp_code_r is not return_code['OK, and location returned'] \
+                or resp_code_l is not return_code['OK, and location returned']:
                     return "An error has occurred, please check log for more details", return_code['Bad Request']
 
                 self.PostMan.save_custom_resource(entity)
@@ -121,8 +121,8 @@ class SingleEntityJungler(object):
                     else:
                         resp_code_l = return_code['OK, and location returned']
 
-                    if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code[
-                                                                                                         'OK, and location returned']:
+                    if resp_code_r is not return_code['OK, and location returned'] \
+                    or resp_code_l is not return_code['OK, and location returned']:
                         return "An error has occurred, please check log for more details", return_code['Bad Request']
 
                     olddoc['OCCI_Description'] = entity
@@ -194,8 +194,8 @@ class SingleEntityJungler(object):
                 logger.debug("===== Channel_post_single_resource ==== : No Link was found")
                 resp_code_l = return_code['OK, and location returned']
 
-            if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code[
-                                                                                                 'OK, and location returned']:
+            if resp_code_r is not return_code['OK, and location returned'] \
+            or resp_code_l is not return_code['OK, and location returned']:
                 return "An error has occurred, please check log for more details", return_code['Bad Request']
 
             old_doc['OCCI_Description'] = entity

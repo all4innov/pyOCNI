@@ -23,7 +23,8 @@ Created on Jun 12, 2012
 @license: Apache License, Version 2.0
 """
 
-from pyocni.backends import dummy_backend, l3vpn_backend, libnetvirt_backend, openflow_backend, opennebula_backend, openstack_backend
+#from pyocni.backends import dummy_backend, l3vpn_backend, libnetvirt_backend, openflow_backend, opennebula_backend, openstack_backend
+from pyocni.backends import dummy_backend, l3vpn_backend, openflow_backend, opennebula_backend, openstack_backend
 import pyocni.pyocni_tools.config as config
 
 try:
@@ -58,8 +59,8 @@ def choose_appropriate_provider(provider):
         backend = dummy_backend.dummy_backend()
     elif provider == "l3vpn":
         backend = l3vpn_backend.l3vpn_backend()
-    elif provider == "libnetvirt":
-        backend = libnetvirt_backend.libnetvirt_backend()
+#    elif provider == "libnetvirt":
+#        backend = libnetvirt_backend.libnetvirt_backend()
     elif provider == "openflow":
         backend = openflow_backend.openflow_backend()
     elif provider == "opennebula":

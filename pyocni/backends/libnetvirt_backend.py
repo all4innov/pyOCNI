@@ -31,7 +31,7 @@ import pyocni.pyocni_tools.config as config
 # getting the Logger
 logger = config.logger
 try:
-    import libnetvirt
+    import pyocni.backends.libnetvirt
 except ImportError:
     logger.error("Libnetvirt not present. Add libnetvirt library to enable this backend")
 

@@ -175,7 +175,8 @@ class MixinManager:
                     event = "Mixin document " + occi_id + " is sent for delete "
                     logger.debug("===== Delete_mixin_documents : " + event + " =====")
                 else:
-                    event = "Unable to delete because this mixin document " + occi_id + " still has resources depending on it. "
+                    event = "Unable to delete because this mixin document " + occi_id + \
+                            " still has resources depending on it. "
                     logger.error(" ===== Delete_mixin_documents : " + event + " =====")
                     return list(), list(), return_code['Bad Request']
             else:

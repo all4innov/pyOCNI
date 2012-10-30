@@ -96,8 +96,8 @@ class CategoryJungler:
                 new_mixins = list()
                 resp_code_m = return_code['OK']
 
-            if resp_code_a is not return_code['OK'] or resp_code_k is not return_code['OK'] or resp_code_m is not
-               return_code['OK']:
+            if resp_code_a is not return_code['OK'] or resp_code_k is not return_code['OK']\
+            or resp_code_m is not return_code['OK']:
                 return "An error has occurred, please check log for more details", return_code['Bad Request']
 
             else:
@@ -164,8 +164,8 @@ class CategoryJungler:
 
             #Step[3]: send them back to the dispatcher
 
-            if resp_code_a is not return_code['OK'] or resp_code_k is not return_code['OK'] or resp_code_m is not
-               return_code['OK']:
+            if resp_code_a is not return_code['OK'] or resp_code_k is not return_code['OK']\
+            or resp_code_m is not return_code['OK']:
                 return "An error has occurred, please check logs for more details", return_code['Bad Request']
             else:
                 result = {'kinds': filtered_kinds, 'mixins': filtered_mixins, 'actions': filtered_actions}
@@ -215,8 +215,8 @@ class CategoryJungler:
                 delete_actions = list()
                 resp_code_a = return_code['OK']
 
-            if resp_code_a is not return_code['OK'] or resp_code_k is not return_code['OK'] or resp_code_m is not
-               return_code['OK']:
+            if resp_code_a is not return_code['OK'] or resp_code_k is not return_code['OK']\
+            or resp_code_m is not return_code['OK']:
                 return "An error has occurred, please check log for more details", return_code['Bad Request']
 
             categories = delete_kinds + delete_mixins + delete_actions
@@ -277,8 +277,8 @@ class CategoryJungler:
                 updated_mixins = list()
                 resp_code_m = return_code['OK']
 
-            if resp_code_a is not return_code['OK'] or resp_code_k is not return_code['OK'] or resp_code_m is not
-               return_code['OK'] or resp_code_p is not return_code['OK']:
+            if resp_code_a is not return_code['OK'] or resp_code_k is not return_code['OK']\
+               or resp_code_m is not return_code['OK'] or resp_code_p is not return_code['OK']:
                 return "An error has occurred, please check log for more details", return_code['Bad Request']
 
             categories = updated_kinds + updated_providers + updated_mixins + updated_actions
