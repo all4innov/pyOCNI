@@ -30,7 +30,8 @@ import pyocni.pyocni_tools.config as config
 logger = config.logger
 
 class dummy_backend(backend):
-    def create(self, entity, hhh):
+
+    def create(self, entity):
         '''
 
         Create an entity (Resource or Link)
@@ -69,4 +70,8 @@ class dummy_backend(backend):
         Perform an action on an Entity
 
         '''
+
+        print "i got entity = " + str(entity)
+        print "i got to do action = " + action
+        
         logger.debug('The Entity\'s action operation of the dummy_backend')

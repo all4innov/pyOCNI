@@ -33,7 +33,7 @@ import pycurl
 import time
 import StringIO
 from pyocni.TDD.fake_Data.initialize_fakeDB import init_fakeDB
-from pyocni.TDD.fake_Data import entities
+from pyocni.TDD.fake_Data import entities, categories
 import pyocni.pyocni_tools.config as config
 
 def start_server():
@@ -60,41 +60,22 @@ class test_post(TestCase):
         #config.purge_PyOCNI_db()
         self.p.terminate()
 
-    def test_partial_update_entities(self):
+    def test_post_entities(self):
         """
         register resources & links
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,'http://127.0.0.1:8090/compute/d4e49287-e8bd-4cd8-953a-b90f327084e5')
+        c.setopt(c.URL,'http://127.0.0.1:8090/compute/258af9df-dcba-4ff5-89f6-2c5f17c46e6f?action=stop')
 
-        c.setopt(c.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi',entities.part_entity_http])
+        c.setopt(c.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi'])
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.VERBOSE, True)
-
+        c.setopt(c.POSTFIELDS,categories.action_occci_id)
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
-
-#    def test_trigger_action_resource(self):
-#        """
-#        register resources & links
-#        """
-#        storage = StringIO.StringIO()
-#        c = pycurl.Curl()
-#        c.setopt(c.URL,'http://127.0.0.1:8090/bilel/vms/v1?action=start')
-#        c.setopt(c.HTTPHEADER, ['Accept:text/plain','content-Type: application/occi+json'])
-#        c.setopt(c.VERBOSE, True)
-#        c.setopt(c.CUSTOMREQUEST, 'POST')
-#        c.setopt(c.POSTFIELDS,fake_data.trig_action)
-#        c.setopt(c.USERPWD, 'user_1:password')
-#        c.setopt(c.WRITEFUNCTION, storage.write)
-#        c.perform()
-#        content = storage.getvalue()
-#        print " ===== Body content =====\n " + content + " ==========\n"
-
-
 
 class test_get(TestCase):
     """
@@ -203,12 +184,10 @@ if __name__ == '__main__':
     runner = TextTestRunner(verbosity=2)
 
     #Create the testing suites
-#    get_suite = loader.loadTestsFromTestCase(test_get)
-#    delete_suite = loader.loadTestsFromTestCase(test_delete)
+    get_suite = loader.loadTestsFromTestCase(test_get)
+    delete_suite = loader.loadTestsFromTestCase(test_delete)
     put_suite = loader.loadTestsFromTestCase(test_put)
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
-#    runner.run(get_suite)
-#    runner.run(delete_suite)
-    runner.run(put_suite)
-#    runner.run(post_suite)
+
+    runner.run(post_suite)

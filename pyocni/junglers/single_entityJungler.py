@@ -260,7 +260,7 @@ class SingleEntityJungler(object):
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
             else:
-                resp, resp_code = backend_m.trigger_action_on_a_resource(path_url,jBody['action'][0],provider['local'][0])
+                resp, resp_code = backend_m.trigger_action_on_a_resource(value_res[1],triggered_action,provider['local'][0])
                 logger.debug("===== Channel_triggered_action_single ==== : Finished with success")
                 return resp,return_code['OK']
 
