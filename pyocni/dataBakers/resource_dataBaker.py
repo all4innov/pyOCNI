@@ -145,12 +145,12 @@ class ResourceDataBaker():
 
     def bake_to_get_provider(self,kind_id):
 
-        query = self.resource_sup.get_providers(kind_id)
+        query = self.resource_sup.get_actions_of_kind_mix(kind_id)
 
         if query is None:
             return None
         else:
-            return query.first()['value']
+            return query['value']
 
     def bake_to_post_multi_resources_2a(self):
 

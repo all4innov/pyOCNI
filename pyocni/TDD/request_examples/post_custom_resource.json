@@ -7,40 +7,40 @@
  */
 
 {
-    "resources": [
+    "resources":[
         {
-            "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
-            "mixins": [
+            "kind":"http: //schemas.ogf.org/occi/infrastructure#compute",
+            "mixins":[
                 "http://example.com/template/resource#medium"
             ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": 2,
-                        "memory": 4,
-                        "cores": 2
+            "attributes":{
+                "occi":{
+                    "compute":{
+                        "speed":2,
+                        "memory":4,
+                        "cores":2
                     }
                 },
-                "org": {
-                    "other": {
-                        "occi": {
-                            "my_mixin": {
-                                "my_attribute": "my_value"
+                "org":{
+                    "other":{
+                        "occi":{
+                            "my_mixin":{
+                                "my_attribute":"my_value"
                             }
                         }
                     }
                 }
             },
-            "actions": [
+            "actions":[
                 {
-                    "title": "Start My Server",
-                    "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
-                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                    "title":"Start My Server",
+                    "href":"/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                    "category":"http://schemas.ogf.org/occi/infrastructure/compute/action#start"
                 }
             ],
-            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
-            "title": "Compute resource",
-            "summary": "This is a compute resource"
+            "id":"996ad860-2a9a-504f-8861-aeafd0b2ae29",
+            "title":"Compute resource",
+            "summary":"This is a compute resource"
         }
     ]
 }

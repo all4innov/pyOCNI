@@ -1,8 +1,10 @@
 ==========================================================
- PyOCNI - Python Open Cloud Networking Interface
+ pyOCNI - Python Open Cloud Networking Interface
 ==========================================================
 
-:Version: 0.3
+:Version: 0.4
+:Source: https://github.com/jordan-developer/pyOCNI
+:Keywords: OCNI, OCCI, REST, Interface, HTTP, JSON, CouchDB, Eventlet, Webob, Cloud Computing, Cloud Networking
 
 Developers
 ==========
@@ -11,7 +13,7 @@ Copyright (C) Houssem Medhioub <houssem.medhioub@it-sudparis.eu>
 
 Copyright (C) Bilel Msekni <bilel.msekni@telecom-sudparis.eu>
 
-Redistribution of this software is permitted under the terms of the **LGPL** License
+Redistribution of this software is permitted under the terms of the Apache License, Version 2.0
 
 Table of Contents
 =================
@@ -38,17 +40,13 @@ Table of Contents
 0. What is it?
 ==============
 
-PyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI with a JSON serialization and a cloud networking extension.
+pyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI with a JSON serialization and a cloud networking extension.
 
 
 1. The Latest Version
 =====================
 
-version 0.3
-
-11 Jan 2012
-
-status: Still an ongoing work
+version 0.4
 
 
 2. API Documentation
@@ -66,12 +64,21 @@ This software needs this packages to run:
 * python <= 2.7
 * python-all-dev (for eventlet/greenlet install/make)
 * python-setuptools (to execute the setup.py file)
-* couchdb >= 1.2.0 (Easiest install: using build-couchdb https://github.com/iriscouch/build-couchdb )
+* couchdb >= 1.2.0:
+Example of installing couchdb using build-couchdb on Ubuntu (more details on: https://github.com/iriscouch/build-couchdb)
+::
 
-   To test CouchDB:           http://127.0.0.1:5984
+    sudo apt-get install help2man make gcc zlib1g-dev libssl-dev rake help2man
+    git clone git://github.com/iriscouch/build-couchdb
+    cd build-couchdb
+    git submodule init
+    git submodule update
+    rake
+    build/bin/couchdb
 
-   To test the CouchDB GUI:   http://127.0.0.1:5984/_utils/
+To test CouchDB:       http://127.0.0.1:5984
 
+To test CouchDB GUI:   http://127.0.0.1:5984/_utils/
 
 3.2. Install
 ------------
@@ -95,7 +102,7 @@ This software needs this packages to run:
 4. HowTo use (examples. The json files are at the end of this README)
 =====================================================================
 
-In order to use PyOCNI, you must respect certain rules :
+In order to use pyOCNI, you must respect certain rules :
 
 #. All data must follow the JSON format declared by OCCI [occi+json], any detected conflict will cancel the request.
 #. Kinds, Mixins and Actions can be created, retrieved, updated or deleted (CRUD) on the fly.
@@ -104,7 +111,7 @@ In order to use PyOCNI, you must respect certain rules :
 #. PyOCNI_Server_Address + Location : OCCI_Location of (Kind/Mixin) description
 
 
-These are some commands that you can use with PyOCNI
+These are some commands that you can use with pyOCNI
 
 ________________________________________________________________________________________________________________________
 
@@ -285,20 +292,20 @@ If you want export the use of your service through OCCI, two parts should be dev
 
 ::
 
-  Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
+  Copyright 2010-2012 Institut Mines-Telecom
 
-  This library is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Lesser General Public License as
-  published by the Free Software Foundation, either version 3 of
-  the License, or (at your option) any later version.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Lesser General Public License for more details.
+  http://www.apache.org/licenses/LICENSE-2.0
 
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library. If not, see <http://www.gnu.org/licenses/>.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
 
 7. Contacts
 ===========

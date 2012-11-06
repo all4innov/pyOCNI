@@ -180,18 +180,7 @@ class ResourceSupplier():
 
         return query
 
-    def get_providers(self, kind_id):
 
-        try:
-
-            query = self.database.view('/db_views/my_providers',key=kind_id)
-
-        except Exception as e:
-
-            logger.error("===== Get_for_get_filtered : " + e.message + " ===== ")
-            return None
-
-        return query
 
 def recursive_for_attribute(attributes):
     """

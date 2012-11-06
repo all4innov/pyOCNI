@@ -7,17 +7,17 @@
  */
 
 {
-    "providers": [
+    "providers":[
         {
-            "Provider": {
-                "local": [
+            "Provider":{
+                "local":[
                     "Houssem"
                 ],
-                "remote": [
+                "remote":[
                     "Bilel"
                 ]
             },
-            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#compute"
+            "OCCI_ID":"http://schemas.ogf.org/occi/infrastructure#compute"
         }
     ]
 }

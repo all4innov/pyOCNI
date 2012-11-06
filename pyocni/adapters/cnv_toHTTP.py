@@ -1,19 +1,16 @@
-# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
-
-# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
+#  Copyright 2010-2012 Institut Mines-Telecom
 #
-# This library is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as
-# published by the Free Software Foundation, either version 3 of
-# the License, or (at your option) any later version.
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
 #
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+#  http://www.apache.org/licenses/LICENSE-2.0
 #
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library.  If not, see <http://www.gnu.org/licenses/>.
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
 """
 Created on Jun 21, 2012
@@ -23,8 +20,7 @@ Created on Jun 21, 2012
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
-@version: 0.3
-@license: LGPL - Lesser General Public License
+@license: Apache License, Version 2.0
 """
 
 try:
@@ -44,6 +40,7 @@ def extract_term_from_category(json_object):
     else:
         return None
 
+
 def extract_scheme_from_category(json_object):
     """
     returns the scheme from a json representation
@@ -54,6 +51,7 @@ def extract_scheme_from_category(json_object):
         return json_object['scheme']
     else:
         return None
+
 
 def extract_location_from_category(json_object):
     """
@@ -66,6 +64,7 @@ def extract_location_from_category(json_object):
     else:
         return None
 
+
 def extract_title_from_category(json_object):
     """
     returns the title from a json representation
@@ -77,6 +76,7 @@ def extract_title_from_category(json_object):
     else:
         return None
 
+
 def extract_related_from_category(json_object):
     """
     returns the related from a json representation
@@ -85,13 +85,14 @@ def extract_related_from_category(json_object):
     """
     if json_object.has_key('related'):
         items = json_object['related']
-        rel =""
+        rel = ""
         for item in items:
-            rel += item +","
+            rel += item + ","
         rel = rel[:-1]
     else:
         rel = None
     return rel
+
 
 def extract_actions_from_category(json_object):
     """
@@ -103,11 +104,12 @@ def extract_actions_from_category(json_object):
         items = json_object['actions']
         actions = ""
         for item in items:
-            actions += item +","
+            actions += item + ","
         actions = actions[:-1]
     else:
         actions = None
     return actions
+
 
 def extract_attributes_from_category(json_object):
     """
@@ -120,11 +122,12 @@ def extract_attributes_from_category(json_object):
         attributes = recursive_for_attribute(items)
         htt_att = ""
         for att in attributes:
-            htt_att += att +","
+            htt_att += att + ","
         attributes = htt_att[:-1]
     else:
         attributes = None
     return attributes
+
 
 def extract_kind_from_entity(json_object):
     """
@@ -134,10 +137,11 @@ def extract_kind_from_entity(json_object):
     """
     if json_object.has_key('kind'):
         kind_id = json_object['kind']
-        kind_scheme,kind_term = kind_id.split('#')
-        return kind_term + "; scheme=\"" + kind_scheme +"\"; class=\"kind\";"
+        kind_scheme, kind_term = kind_id.split('#')
+        return kind_term + "; scheme=\"" + kind_scheme + "\"; class=\"kind\";"
     else:
         return None
+
 
 def extract_mixin_from_entity(json_object):
     """
@@ -149,11 +153,12 @@ def extract_mixin_from_entity(json_object):
         mix_http = list()
         mixins = json_object['mixin']
         for item in mixins:
-            mix_scheme,mix_term = item.split('#')
-            mix_http.append( mix_term + "; scheme=\"" + mix_scheme +"\"; class=\"mixin\";")
+            mix_scheme, mix_term = item.split('#')
+            mix_http.append(mix_term + "; scheme=\"" + mix_scheme + "\"; class=\"mixin\";")
         return mix_http
     else:
         return None
+
 
 def extract_id_from_entity(json_object):
     """
@@ -166,6 +171,7 @@ def extract_id_from_entity(json_object):
     else:
         return None
 
+
 def extract_title_from_entity(json_object):
     """
     returns title of the entity
@@ -177,6 +183,7 @@ def extract_title_from_entity(json_object):
     else:
         return None
 
+
 def extract_actions_from_entity(json_object):
     """
     returns actions of the entity
@@ -187,10 +194,11 @@ def extract_actions_from_entity(json_object):
         items = json_object['actions']
         actions = list()
         for item in items:
-            actions.append("<" + item['href'] + ">; rel=\"" + item['category'] +"\"")
+            actions.append("<" + item['href'] + ">; rel=\"" + item['category'] + "\"")
         return actions
     else:
         return None
+
 
 def extract_internal_link_from_entity(json_object):
     """
@@ -206,7 +214,7 @@ def extract_internal_link_from_entity(json_object):
             rel = "|zala|"
             category = item['kind']
             self = "|zolo|"
-            link = "<" + uri + ">; rel=\"" + rel +"\"; self=\"" + self + "\"; category=\"" + category + "\";"
+            link = "<" + uri + ">; rel=\"" + rel + "\"; self=\"" + self + "\"; category=\"" + category + "\";"
             if item.has_key('attributes'):
                 attributes = recursive_for_attribute_v2(item['attributes'])
                 for att in attributes:
@@ -215,6 +223,7 @@ def extract_internal_link_from_entity(json_object):
         return links
     else:
         return None
+
 
 def extract_attributes_from_entity(json_object):
     """
@@ -229,11 +238,10 @@ def extract_attributes_from_entity(json_object):
     else:
         return None
 
-def treat_attribute_members(members):
 
+def treat_attribute_members(members):
     to_return = ""
     for key in members.keys():
-
         if key == "mutable":
             if members[key] is True:
                 to_return += ""
@@ -248,6 +256,7 @@ def treat_attribute_members(members):
             pass
 
     return [to_return]
+
 
 def recursive_for_attribute(attributes):
     """
@@ -278,7 +287,7 @@ def recursive_for_attribute(attributes):
 def treat_attribute_members_v2(attributes):
     to_return = list()
     for key in attributes.keys():
-        to_return.append(key + "=\"" + str(attributes[key]) +"\"")
+        to_return.append(key + "=\"" + str(attributes[key]) + "\"")
     return to_return
 
 
@@ -303,7 +312,6 @@ def recursive_for_attribute_v2(attributes):
 if __name__ == '__main__':
     print '====== Test ======'
 
-
     att = """
 
 {
@@ -326,7 +334,7 @@ if __name__ == '__main__':
 }
 
 """
-    attold ="""
+    attold = """
     {"occi": {
         "compute": {
             "hostname": {
@@ -349,7 +357,7 @@ if __name__ == '__main__':
 """
     att_obj = json.loads(att)
     res = recursive_for_attribute_v2(att_obj)
-#    json_mixin = json.loads(mixin)
-#    res = convert_json_action_to_http_action(json_mixin)
+    #    json_mixin = json.loads(mixin)
+    #    res = convert_json_action_to_http_action(json_mixin)
 
     print res

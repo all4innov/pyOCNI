@@ -8,21 +8,21 @@
  */
 
 {
-    "resources": [
+    "resources":[
         {
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": 2,
-                        "memory": 4,
-                        "cores": 2
+            "attributes":{
+                "occi":{
+                    "compute":{
+                        "speed":2,
+                        "memory":4,
+                        "cores":2
                     }
                 },
-                "org": {
-                    "other": {
-                        "occi": {
-                            "my_mixin": {
-                                "my_attribute": "my_value"
+                "org":{
+                    "other":{
+                        "occi":{
+                            "my_mixin":{
+                                "my_attribute":"my_value"
                             }
                         }
                     }

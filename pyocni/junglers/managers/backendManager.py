@@ -71,19 +71,18 @@ def choose_appropriate_provider(provider):
 
     return backend
 
-def trigger_action_on_a_resource(entity,provider,action):
+def trigger_action_on_a_resource(path_url,action,provider):
     """
     Send the action triggering request to the appropriate provider
      Args:
-        @param entity: Resource URL Path
+        @param path_url: Resource URL Path
         @param action: Action description
         @param provider: Provider of the resource
     """
     backend = choose_appropriate_provider(provider)
-
     if backend is not None:
 
-        backend.action(entity,action)
+        backend.action(path_url,action)
         return "", return_code['Accepted']
     else:
         logger.error("trigger action_on_resource : Unknown provider")

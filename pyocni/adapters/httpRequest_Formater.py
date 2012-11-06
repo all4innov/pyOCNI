@@ -1,19 +1,16 @@
-# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
-
-# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
+#  Copyright 2010-2012 Institut Mines-Telecom
 #
-# This library is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as
-# published by the Free Software Foundation, either version 3 of
-# the License, or (at your option) any later version.
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
 #
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+#  http://www.apache.org/licenses/LICENSE-2.0
 #
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library.  If not, see <http://www.gnu.org/licenses/>.
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
 """
 Created on Jun 21, 2012
@@ -23,8 +20,7 @@ Created on Jun 21, 2012
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
-@version: 0.3
-@license: LGPL - Lesser General Public License
+@license: Apache License, Version 2.0
 """
 
 try:
@@ -35,7 +31,6 @@ import pyocni.adapters.cnv_toJSON as extractor
 import pyocni.pyocni_tools.uuid_Generator as generator
 
 class From_Text_Plain_to_JSON():
-
     def format_text_plain_categories_to_json(self, var):
         """
         Converts a HTTP text/plain category into a JSON category
@@ -49,14 +44,13 @@ class From_Text_Plain_to_JSON():
         act_list = list()
 
         for item in res:
-
-            term,scheme,ht_class,title,rel,location,attributes,actions = extractor.splitter(item)
+            term, scheme, ht_class, title, rel, location, attributes, actions = extractor.splitter(item)
             if ht_class == "kind":
-                kind_list.append(assemble_category(term,scheme,title,rel,location,attributes,actions))
+                kind_list.append(assemble_category(term, scheme, title, rel, location, attributes, actions))
             elif ht_class == "mixin":
-                mix_list.append(assemble_category(term,scheme,title,rel,location,attributes,actions))
+                mix_list.append(assemble_category(term, scheme, title, rel, location, attributes, actions))
             elif ht_class == "action":
-                act_list.append(assemble_category(term,scheme,title,rel,location,attributes,actions))
+                act_list.append(assemble_category(term, scheme, title, rel, location, attributes, actions))
 
         categories = dict()
         if len(kind_list) is not 0:
@@ -71,8 +65,7 @@ class From_Text_Plain_to_JSON():
         return categories
 
     def format_text_plain_entity_to_json(self, body):
-
-        kind,mixins,attributes,actions,links = extractor.get_entity_members_from_body(body)
+        kind, mixins, attributes, actions, links = extractor.get_entity_members_from_body(body)
         entity = dict()
 
         if kind is not None:
@@ -92,11 +85,10 @@ class From_Text_Plain_to_JSON():
 
         entity['id'] = generator.get_UUID()
 
-        return {'resources' : [entity]}
+        return {'resources': [entity]}
 
     def format_text_plain_entity_to_json_v2(self, body):
-
-        kind,mixins,attributes,actions,links = extractor.get_entity_members_from_body(body)
+        kind, mixins, attributes, actions, links = extractor.get_entity_members_from_body(body)
         entity = dict()
 
         if kind is not None:
@@ -114,12 +106,10 @@ class From_Text_Plain_to_JSON():
         if len(links) is not 0:
             entity['links'] = links
 
-        return {'resources' : [entity]}
-
+        return {'resources': [entity]}
 
 
 class From_Text_OCCI_to_JSON():
-
     def format_text_occi_categories_to_json(self, var):
         """
         Converts a HTTP text/plain category into a JSON category
@@ -133,14 +123,13 @@ class From_Text_OCCI_to_JSON():
         act_list = list()
 
         for item in res:
-
-            term,scheme,ht_class,title,rel,location,attributes,actions = extractor.splitter(item)
+            term, scheme, ht_class, title, rel, location, attributes, actions = extractor.splitter(item)
             if ht_class == "kind":
-                kind_list.append(assemble_category(term,scheme,title,rel,location,attributes,actions))
+                kind_list.append(assemble_category(term, scheme, title, rel, location, attributes, actions))
             elif ht_class == "mixin":
-                mix_list.append(assemble_category(term,scheme,title,rel,location,attributes,actions))
+                mix_list.append(assemble_category(term, scheme, title, rel, location, attributes, actions))
             elif ht_class == "action":
-                act_list.append(assemble_category(term,scheme,title,rel,location,attributes,actions))
+                act_list.append(assemble_category(term, scheme, title, rel, location, attributes, actions))
 
         categories = dict()
         if len(kind_list) is not 0:
@@ -155,8 +144,7 @@ class From_Text_OCCI_to_JSON():
         return categories
 
     def format_text_occi_entity_to_json(self, headers):
-
-        kind,mixins,attributes,actions,links = extractor.get_entity_members_from_headers(headers)
+        kind, mixins, attributes, actions, links = extractor.get_entity_members_from_headers(headers)
         entity = dict()
 
         if kind is not None:
@@ -176,11 +164,10 @@ class From_Text_OCCI_to_JSON():
 
         entity['id'] = generator.get_UUID()
 
-        return {'resources' : [entity]}
+        return {'resources': [entity]}
 
     def format_text_occi_entity_to_json_v2(self, headers):
-
-        kind,mixins,attributes,actions,links = extractor.get_entity_members_from_headers(headers)
+        kind, mixins, attributes, actions, links = extractor.get_entity_members_from_headers(headers)
         entity = dict()
 
         if kind is not None:
@@ -198,10 +185,10 @@ class From_Text_OCCI_to_JSON():
         if len(links) is not 0:
             entity['links'] = links
 
-        return {'resources' : [entity]}
+        return {'resources': [entity]}
 
 
-def assemble_category(term,scheme,title,rel,location,attributes,actions):
+def assemble_category(term, scheme, title, rel, location, attributes, actions):
     """
     Creates a JSON category object
     """
@@ -215,7 +202,7 @@ def assemble_category(term,scheme,title,rel,location,attributes,actions):
     if rel is not None:
         category['related'] = extractor.create_JSON_format_relateds(rel)
     if attributes is not None:
-        category['attributes'] = extractor.create_JSON_format_attributes (attributes)
+        category['attributes'] = extractor.create_JSON_format_attributes(attributes)
     if actions is not None:
         category['actions'] = extractor.create_JSON_format_actions(actions)
     if location is not None:

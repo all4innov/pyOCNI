@@ -1,32 +1,27 @@
-# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
-
-# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
+#  Copyright 2010-2012 Institut Mines-Telecom
 #
-# This library is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as
-# published by the Free Software Foundation, either version 3 of
-# the License, or (at your option) any later version.
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
 #
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+#  http://www.apache.org/licenses/LICENSE-2.0
 #
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library.  If not, see <http://www.gnu.org/licenses/>.
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
 
 """
-Created on Oct 02, 2012
+Created on Oct 02 2012
 
 @author: Bilel Msekni
 @contact: bilel.msekni@telecom-sudparis.eu
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
-@version: 0.3
-@license: LGPL - Lesser General Public License
+@license: Apache License, Version 2.0
 """
-
 
 from httpRequest_Formater import From_Text_Plain_to_JSON
 from httpRequest_Formater import From_Text_OCCI_to_JSON
@@ -42,13 +37,12 @@ class RequestAdapter():
     """
     Converts the data contained inside the request to the occi+json data format.
     """
-    def __init__(self):
 
+    def __init__(self):
         self.from_text_plain_f = From_Text_Plain_to_JSON()
         self.from_text_occi_f = From_Text_OCCI_to_JSON()
 
-    def convert_request_category_content(self,req):
-
+    def convert_request_category_content(self, req):
         if req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
             jdata = self.from_text_plain_f.format_text_plain_categories_to_json(req.body)
@@ -69,8 +63,7 @@ class RequestAdapter():
 
         return jdata
 
-    def convert_request_entity_content(self,req):
-
+    def convert_request_entity_content(self, req):
         if req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
             jdata = self.from_text_plain_f.format_text_plain_entity_to_json(req.body)
@@ -91,7 +84,7 @@ class RequestAdapter():
 
         return jdata
 
-    def convert_request_entity_content_v2(self,req):
+    def convert_request_entity_content_v2(self, req):
         '''
         Used only for partial update.
         '''
@@ -115,7 +108,8 @@ class RequestAdapter():
             jdata = None
 
         return jdata
-#=======================================================================================================================
+
+    #=======================================================================================================================
 #Register the Request adapter class under the I_RequestAdapter abstract base class
 #=======================================================================================================================
 

@@ -5,27 +5,27 @@
 
  */
 
- {
-    "kinds": [
+{
+    "kinds":[
         {
-            "term": "compute",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure#"
+            "term":"compute",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure#"
         }
     ],
-    "mixins": [
+    "mixins":[
         {
-            "term": "medium",
-            "scheme": "http://example.com/template/resource#"
+            "term":"medium",
+            "scheme":"http://example.com/template/resource#"
         }
     ],
-    "actions": [
+    "actions":[
         {
-            "term": "stop",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
+            "term":"stop",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure/compute/action#"
         },
         {
-            "term": "start",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
+            "term":"start",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure/compute/action#"
         }
     ]
 }
