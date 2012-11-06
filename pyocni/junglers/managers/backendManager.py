@@ -71,18 +71,19 @@ def choose_appropriate_provider(provider):
 
     return backend
 
-def trigger_action_on_a_resource(path_url,action,provider):
+def trigger_action_on_a_resource(path_url,action,provider,attributes):
     """
     Send the action triggering request to the appropriate provider
      Args:
         @param path_url: Resource URL Path
         @param action: Action description
         @param provider: Provider of the resource
+        @param attributes: Attributes sent with the request
     """
     backend = choose_appropriate_provider(provider)
     if backend is not None:
 
-        backend.action(path_url,action)
+        backend.action(path_url,action,attributes)
         return "", return_code['Accepted']
     else:
         logger.error("trigger action_on_resource : Unknown provider")

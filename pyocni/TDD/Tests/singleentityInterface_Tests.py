@@ -67,11 +67,10 @@ class test_post(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(c.URL,'http://127.0.0.1:8090/compute/258af9df-dcba-4ff5-89f6-2c5f17c46e6f?action=stop')
-
-        c.setopt(c.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi'])
+        c.setopt(c.HTTPHEADER, ['Accept: application/occi+json','Content-Type: text/plain'])
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.VERBOSE, True)
-        c.setopt(c.POSTFIELDS,categories.action_occci_id)
+        c.setopt(c.POSTFIELDS,categories.action_att_http)
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()

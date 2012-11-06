@@ -64,7 +64,7 @@ class dummy_backend(backend):
         '''
         logger.debug('The delete operation of the dummy_backend')
 
-    def action(self, entity, action):
+    def action(self, entity, action, attributes):
         '''
 
         Perform an action on an Entity
@@ -73,5 +73,7 @@ class dummy_backend(backend):
 
         print "i got entity = " + str(entity)
         print "i got to do action = " + action
-        
+        print " my attributes are = "
+        print attributes
+
         logger.debug('The Entity\'s action operation of the dummy_backend')
