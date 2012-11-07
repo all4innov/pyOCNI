@@ -71,7 +71,7 @@ class backend(object):
         '''
         logger.debug('The delete operation is not implemented yet')
 
-    def action(self, entity, action):
+    def action(self, entity, action, attributes):
         '''
 
         Perform an action on an Entity

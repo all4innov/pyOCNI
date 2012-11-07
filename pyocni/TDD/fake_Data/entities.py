@@ -99,26 +99,6 @@ link = """
 """
 #=======================================================================================================================
 
-trig_action = """
-{
-    "actions": [
-        {
-            "term": "start",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-            "title": "Start Compute instance",
-            "attributes": {
-                "method": {
-                    "mutable": true,
-                    "required": false,
-                    "type": "string",
-                    "pattern": "graceful|acpion|poweron",
-                    "default": "poweron"
-                }
-            }
-        }
-    ]
-}
-"""
 
 
 

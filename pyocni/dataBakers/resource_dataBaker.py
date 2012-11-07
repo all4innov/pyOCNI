@@ -1,16 +1,19 @@
-#  Copyright 2010-2012 Institut Mines-Telecom
+# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
 #
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
+# This library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
 #
-#  http://www.apache.org/licenses/LICENSE-2.0
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 #
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Created on Oct 03, 2012
@@ -20,11 +23,11 @@ Created on Oct 03, 2012
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
-@license: Apache License, Version 2.0
+@version: 0.3
+@license: LGPL - Lesser General Public License
 """
 
 import pyocni.pyocni_tools.config as config
-
 try:
     import simplejson as json
 except ImportError:
@@ -37,31 +40,38 @@ from pyocni.suppliers.resourceSupplier import ResourceSupplier
 logger = config.logger
 
 class ResourceDataBaker():
+
     def __init__(self):
+
         self.resource_sup = ResourceSupplier()
 
-    def bake_to_put_single(self, path_url):
+    def bake_to_put_single(self,path_url):
+
         query1 = self.resource_sup.get_for_register_entities()
         if query1 is None:
-            return None, None
+            return None,None
         else:
+
             db_occi_ids_locs = list()
 
             for q in query1:
-                db_occi_ids_locs.append({"OCCI_ID": q['key'], "OCCI_Location": q['value']})
+                db_occi_ids_locs.append({"OCCI_ID" : q['key'],"OCCI_Location":q['value']})
 
             query2 = self.resource_sup.get_my_resources(path_url)
             if query2 is None:
-                return None, None
+                return None,None
             else:
+
                 db_nb_resources = query2.count()
 
-            return db_occi_ids_locs, db_nb_resources
+            return db_occi_ids_locs,db_nb_resources
 
-    def bake_to_put_single_updateCase(self, path_url):
+    def bake_to_put_single_updateCase(self,path_url):
+
         query = self.resource_sup.get_for_update_entities(path_url)
 
         if query is None:
+
             return None
         else:
             to_update = query.first()['value']
@@ -69,75 +79,81 @@ class ResourceDataBaker():
         return to_update
 
     def bake_to_get_single_res(self, path_url):
+
         query = self.resource_sup.get_my_resources(path_url)
 
         if query is None:
-            return None, None
+            return None,None
         else:
             if query.count() is 0:
-                return 0, 0
+                return 0,0
             else:
                 if query.first()['value'][0] == "Resource":
-                    res = {"resources": [query.first()['value'][1]]}
+                    res = { "resources": [query.first()['value'][1]]}
                 else:
-                    res = {"links": [query.first()['value'][1]]}
+                    res = { "links": [query.first()['value'][1]]}
 
-                return res, query.first()['value'][1]
+                return res,query.first()['value'][1]
 
     def bake_to_post_single(self, path_url):
+
         query = self.resource_sup.get_for_register_entities()
 
         if query is None:
-            return None, None
+            return None,None
 
         else:
             db_occi_ids_locs = list()
 
             for q in query:
-                db_occi_ids_locs.append({"OCCI_ID": q['key'], "OCCI_Location": q['value']})
+                db_occi_ids_locs.append({"OCCI_ID" : q['key'],"OCCI_Location":q['value']})
             query2 = self.resource_sup.get_for_update_entities(path_url)
             if query2 is None:
-                return None, None
+                return None,None
 
             elif query2.count() is 0:
-                return db_occi_ids_locs, 0
+                return db_occi_ids_locs,0
 
             else:
-                return db_occi_ids_locs, query2.first()['value']
+                return db_occi_ids_locs,query2.first()['value']
 
     def bake_to_delete_single_resource(self, path_url):
+
         query = self.resource_sup.get_for_update_entities(path_url)
 
         if query is None:
-            return None, None
+            return None,None
 
         elif query.count() is 0:
-            return 0, None
+            return 0,None
 
         else:
-            return query.count(), query.first()['value']
+            return query.count(),query.first()['value']
 
     def bake_to_trigger_action_on_single_resource(self, path_url):
+
         query = self.resource_sup.get_for_trigger_action(path_url)
 
         if query is None:
-            return None, None
+            return None,None
 
         elif query.count() is 0:
-            return 0, None
+            return 0,None
 
         else:
             return query.count(), query.first()['value']
 
-    def bake_to_get_provider(self, kind_id):
-        query = self.resource_sup.get_actions_of_kind_mix(kind_id)
+    def bake_to_get_provider(self,kind_id):
+
+        query = self.resource_sup.get_providers(kind_id)
 
         if query is None:
             return None
         else:
-            return query['value']
+            return query.first()['value']
 
     def bake_to_post_multi_resources_2a(self):
+
         query = self.resource_sup.get_for_register_entities()
 
         if query is None:
@@ -145,56 +161,65 @@ class ResourceDataBaker():
         else:
             db_occi_ids_locs = list()
             for q in query:
-                db_occi_ids_locs.append({"OCCI_ID": q['key'], "OCCI_Location": q['value']})
+                db_occi_ids_locs.append({"OCCI_ID" : q['key'],"OCCI_Location":q['value']})
 
             return  db_occi_ids_locs
 
-    def bake_to_post_multi_resources_2b(self, url_path):
+    def bake_to_post_multi_resources_2b(self,url_path):
+
         query = self.resource_sup.get_my_mixins(url_path)
 
         if query is None:
-            return None, None
+            return None,None
 
         elif query.count() is 0:
-            return 0, None
+            return 0,None
 
         else:
             return query.count(), query.first()['value']
 
 
-    def bake_to_post_multi_resources_2b2(self, OCCI_locations):
+    def bake_to_post_multi_resources_2b2(self,OCCI_locations):
+
         db_docs = list()
 
         for item in OCCI_locations:
-            query = self.resource_sup.get_for_associate_mixin(item)
 
-            if query is None:
-                return None
+           query = self.resource_sup.get_for_associate_mixin(item)
 
-            elif query.count() is 0:
-                logger.error("===== bake_to_post_multi_resources_2b2  : " + item + "was not found =====")
-                return None
+           if query is None:
+               return None
 
-            else:
+           elif query.count() is 0:
+
+               logger.error("===== bake_to_post_multi_resources_2b2  : " + item + "was not found =====")
+               return None
+
+           else:
                 q = query.first()
                 db_docs.append(q['value'])
 
         return db_docs
 
-    def bake_to_get_all_entities(self, cat_type, cat_id):
+    def bake_to_get_all_entities(self, cat_type,cat_id):
+
         if cat_type == "Kind":
+
             query = self.resource_sup.get_entities_of_kind(cat_id)
 
         elif cat_type == "Mixin":
+
             query = self.resource_sup.get_entities_of_mixin(cat_id)
 
         else:
+
             return None
 
         to_return_res = list()
         to_return_link = list()
 
         for entity in query:
+
             if entity['value'][1] == "Resource":
                 to_return_res.append(entity['value'][0])
             else:
@@ -205,6 +230,7 @@ class ResourceDataBaker():
         return result
 
     def bake_to_channel_get_all_entities(self, req_path):
+
         query = self.resource_sup.get_for_get_entities(req_path)
 
         if query is None:
@@ -215,22 +241,25 @@ class ResourceDataBaker():
             return query
 
     def bake_to_get_on_path(self):
+
         query = self.resource_sup.get_my_occi_locations()
 
         return query
 
-    def bake_to_get_on_path_filtered(self, locations):
+    def bake_to_get_on_path_filtered(self,locations):
+
         descriptions = list()
         for loc in locations:
             query = self.resource_sup.get_my_resources(loc)
             if query is None:
                 return None
             else:
-                descriptions.append({'OCCI_Description': query.first()['value'], 'OCCI_ID': loc})
+                descriptions.append({'OCCI_Description' : query.first()['value'],'OCCI_ID':loc})
 
         return descriptions
 
     def bake_to_get_filtered_entities(self, entities):
+
         descriptions_res = list()
         descriptions_link = list()
 
@@ -238,19 +267,21 @@ class ResourceDataBaker():
             query = self.resource_sup.get_for_get_filtered(entity)
 
             if query is None:
-                return None, None
+                return None,None
             else:
                 if query.first()['value'][1] == "Resource":
-                    descriptions_res.append({'OCCI_ID': entity, 'OCCI_Description': query.first()['value'][0]})
+                    descriptions_res.append({'OCCI_ID' : entity,'OCCI_Description' : query.first()['value'][0]})
                 else:
-                    descriptions_link.append({'OCCI_ID': entity, 'OCCI_Description': query.first()['value'][0]})
+                    descriptions_link.append({'OCCI_ID' : entity,'OCCI_Description' : query.first()['value'][0]})
 
-        return descriptions_res, descriptions_link
+        return descriptions_res,descriptions_link
 
     def bake_to_get_filtered_entities_2(self, result):
+
         occi_descriptions = list()
 
         for item in result:
+
             res = self.resource_sup.get_my_resources(item)
             if res is None:
                 return None
@@ -260,13 +291,14 @@ class ResourceDataBaker():
         return occi_descriptions
 
     def bake_to_channel_trigger_actions(self, req_url):
+
         query = self.resource_sup.get_for_get_entities(req_url)
 
         if query is None:
-            return None, None
+            return None,None
 
         elif query.count() is 0:
-            return 0, 0
+            return 0,0
 
         else:
             occi_id = query.first()['value'][0]
@@ -280,7 +312,7 @@ class ResourceDataBaker():
                 query2 = self.resource_sup.get_entities_of_mixin(occi_id)
 
             if query2 is None:
-                return None, None
+                return None,None
 
             else:
                 entity_kind_ids = list()
@@ -289,15 +321,17 @@ class ResourceDataBaker():
                     query3 = self.resource_sup.get_for_trigger_action(entity)
                     entity_kind_ids.append(query3.first()['value'][0])
 
-                return entity_kind_ids, query2
+                return entity_kind_ids,query2
 
-    def recursive_get_attribute_names(self, kind_attribute_description):
+    def recursive_get_attribute_names(self,kind_attribute_description):
+
         for key in kind_attribute_description.keys():
             if type(kind_attribute_description[key]) is dict:
                 self.recursive_get_attribute_names(kind_attribute_description)
                 print "i am "
 
     def bake_to_get_default_attributes(self, req_path):
+
         query = self.resource_sup.get_default_attributes_from_kind(req_path)
 
         if query is None:
@@ -307,9 +341,12 @@ class ResourceDataBaker():
 
             default = {}
             for item in res:
-                default = (cnv_attribute_from_http_to_json(item + "=None", json_result=default))
+                default = (cnv_attribute_from_http_to_json(item+"=None",json_result=default))
 
             return default
+
+
+
 
 
 #=======================================================================================================================
@@ -340,8 +377,7 @@ def recursive_for_default_attributes(attributes):
             final_att.append(item)
     return final_att
 
-
-def cnv_attribute_from_http_to_json(attribute, json_result={}):
+def cnv_attribute_from_http_to_json(attribute,json_result={}):
     """
 
     method to convert and add one OCCI HTTP attribute to an OCCI JSON object
@@ -362,7 +398,7 @@ def cnv_attribute_from_http_to_json(attribute, json_result={}):
             else:
                 try:
                     a[attribute_name_partitioned[i]] = json.loads(attribute_value)
-                except Exception:
+                except Exception :
                     a[attribute_name_partitioned[i]] = attribute_value
 
         else:
@@ -373,7 +409,7 @@ def cnv_attribute_from_http_to_json(attribute, json_result={}):
             else:
                 try:
                     a[attribute_name_partitioned[i]] = json.loads(attribute_value)
-                except Exception:
+                except Exception :
                     a[attribute_name_partitioned[i]] = attribute_value
 
     return json_result

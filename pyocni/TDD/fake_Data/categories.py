@@ -150,7 +150,40 @@ provider_up = """
     }
 }"""
 
-
+action_plus_attributes =\
+"""
+            {
+                "actions": [
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Start Compute instance now",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpion|poweron",
+                    "default": "poweron"
+                }
+            }
+        }
+    ],
+    "attributes": {
+                "occi": {
+                    "infrastructure": {
+                        "networkinterface": {
+                            "interface": "eth0",
+                            "mac": "00:80:41:ae:fd:7e",
+                            "address": "192.168.0.100",
+                            "gateway": "192.168.0.1",
+                            "allocation": "dynamic"
+                        }
+                    }
+                }
+            }
+}
+"""
 
 
 
@@ -193,3 +226,10 @@ kind_http = "Category: compute;"\
             "attributes=\"occi.compute.cores occi.compute.state{immutable}\";"\
             "actions=\"http://schemas.ogf.org/occi/infrastructure/compute/action#stop\";"\
             "location=\"http://example.com/compute/\""
+#=======================================================================================================================
+
+action_att_http = """Category: start;
+ scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#";
+ class=action;
+ X-OCCI-Attribute: occi.compute.cores=20:2
+"""

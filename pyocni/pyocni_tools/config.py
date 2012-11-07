@@ -137,7 +137,7 @@ design_doc = {
         },
         "for_trigger_action": {
             "map": "(function(doc) { if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-                   "emit ([doc.OCCI_Location,],[doc.OCCI_Description.kind,doc.OCCI_Description.mixins]) });"
+                   "emit (doc.OCCI_Location,[doc.OCCI_Description.kind,doc.OCCI_Description]) });"
         },
         "actions_of_kind_mix": {
             "map": "(function(doc) { if ((doc.Type == \"Kind\")||(doc.Type == \"Mixin\"))"
