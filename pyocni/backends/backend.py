@@ -30,7 +30,7 @@ import commands
 logger = config.logger
 
 
-class backend(object):
+class backend_interface(object):
     '''
 
     A simple and empty backend

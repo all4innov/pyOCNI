@@ -24,12 +24,12 @@ Created on Nov 10, 2011
 """
 
 #import pyocni.backend.backend as backend
-from pyocni.backends.backend import backend
+from pyocni.backends.backend import backend_interface
 import pyocni.pyocni_tools.config as config
 # getting the Logger
 logger = config.logger
 
-class dummy_backend(backend):
+class backend(backend_interface):
 
     def create(self, entity):
         '''
