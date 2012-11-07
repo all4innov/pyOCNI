@@ -2,8 +2,12 @@
     "backends":
             [
                 {
-                    "dummy_backend": "dummy_backend",
-                    "path": "/MyPycharmProjects/pyOCNI/pyocni/backends/dummy_backend.py"
+                    "name": "dummy_backend",
+                    "path": "/home/houssem/MyPycharmProjects/pyOCNI/pyocni/backends/dummy_backend.py"
+                },
+                {
+                    "name": "backend1",
+                    "path": "/home/houssem//MyPycharmProjects/pyOCNI/pyocni/backends/backend1.py"
                 }
             ]
 }

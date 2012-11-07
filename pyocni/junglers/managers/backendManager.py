@@ -22,8 +22,18 @@ Created on Jun 12, 2012
 @organization: Institut Mines-Telecom - Telecom SudParis
 @license: Apache License, Version 2.0
 """
-from pyocni.backends import dummy_backend,l3vpn_backend,libnetvirt_backend,openflow_backend,opennebula_backend,openstack_backend
+
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
+import imp
+
+#from pyocni.backends import dummy_backend,l3vpn_backend,libnetvirt_backend,openflow_backend,opennebula_backend,openstack_backend
 import pyocni.pyocni_tools.config as config
+
+
 
 try:
     import simplejson as json
@@ -53,18 +63,29 @@ def trigger_action_on_multi_resource(data):
 def choose_appropriate_provider(provider):
     backend = None
 
-    if provider == "dummy":
-        backend = dummy_backend.dummy_backend()
-    elif provider == "l3vpn":
-        backend = l3vpn_backend.l3vpn_backend()
-    elif provider == "libnetvirt":
-        backend = libnetvirt_backend.libnetvirt_backend()
-    elif provider == "openflow":
-        backend = openflow_backend.openflow_backend()
-    elif provider == "opennebula":
-        backend = opennebula_backend.opennebula_backend()
-    elif provider == "openstack":
-        backend = openstack_backend.openstack_backend()
+    backends_json_data = open(config.BACKENDS_FILE)
+    backends_list = json.load(backends_json_data)
+    backends_json_data.close()
+
+    for i in backends_list["backends"]:
+        if i["name"] == provider:
+            #print i["path"]
+            backend_instance = imp.load_source('', i["path"])
+            backend = backend_instance.backend()
+            backend.create('a')
+
+    #    if provider == "dummy":
+    #        backend = dummy_backend.dummy_backend()
+    #    elif provider == "l3vpn":
+    #        backend = l3vpn_backend.l3vpn_backend()
+    #    elif provider == "libnetvirt":
+    #        backend = libnetvirt_backend.libnetvirt_backend()
+    #    elif provider == "openflow":
+    #        backend = openflow_backend.openflow_backend()
+    #    elif provider == "opennebula":
+    #        backend = opennebula_backend.opennebula_backend()
+    #    elif provider == "openstack":
+    #        backend = openstack_backend.openstack_backend()
 
     return backend
 
@@ -154,5 +175,8 @@ def update_entities(old_docs, new_docs):
 
 def read_entities(entities):
 
-        for i in range(len(entities)):
-            read_entity(entities[i],entities[i]['kind'])
+    for i in range(len(entities)):
+        read_entity(entities[i],entities[i]['kind'])
+
+if __name__ == "__main__":
+    choose_appropriate_provider("dummy_backend")
