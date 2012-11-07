@@ -1,0 +1,9 @@
+{
+    "backends":
+            [
+                {
+                    "dummy_backend": "dummy_backend",
+                    "path": "/MyPycharmProjects/pyOCNI/pyocni/backends/dummy_backend.py"
+                }
+            ]
+}
