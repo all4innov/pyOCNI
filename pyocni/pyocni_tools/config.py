@@ -38,9 +38,10 @@ logging.config.fileConfig(get_absolute_path_from_relative_path("../OCCILogging.c
 logger = logging.getLogger("OCCILogging")
 
 # Loading the OCCI server configuration file
-config = ConfigObj(get_absolute_path_from_relative_path("../occi_server.conf"))
-OCNI_IP = config['OCNI_IP']
-OCNI_PORT = config['OCNI_PORT']
+occi_config = ConfigObj(get_absolute_path_from_relative_path("../occi_server.conf"))
+OCNI_IP = occi_config['OCNI_IP']
+OCNI_PORT = occi_config['OCNI_PORT']
+BACKENDS_FILE = occi_config['backends_file']
 
 # Loading the DB server configuration file
 DB_config = ConfigObj(get_absolute_path_from_relative_path("../couchdb_server.conf"))
