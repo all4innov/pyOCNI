@@ -73,16 +73,22 @@ class occi_server(object):
         to run the server
 
         """
-        result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
-                                             "   Do you want to purge all databases (DB  reinitialization)?", "no")
-        if result == 'yes':
-            config.purge_PyOCNI_db()
 
-        print ("\n______________________________________________________________________________________\n"
-               "The OCNI server is running at: " + config.OCNI_IP + ":" + config.OCNI_PORT)
-        wsgi.server(eventlet.listen((config.OCNI_IP, int(config.OCNI_PORT))), self.app)
-        print ("\n______________________________________________________________________________________\n"
-               "Closing correctly PyOCNI server ")
+        db_status = config.check_db()
+        if db_status == 1:
+            result = shell_ask.query_yes_no_quit(" \n_______________________________________________________________\n"
+                                                 "   Do you want to purge all databases (DB  reinitialization)?", "no")
+            if result == 'yes':
+                config.purge_PyOCNI_db()
+
+            print ("\n______________________________________________________________________________________\n"
+                   "The OCNI server is running at: " + config.OCNI_IP + ":" + config.OCNI_PORT)
+            wsgi.server(eventlet.listen((config.OCNI_IP, int(config.OCNI_PORT))), self.app)
+            print ("\n______________________________________________________________________________________\n"
+                   "Closing correctly PyOCNI server ")
+        else:
+            print ("\n______________________________________________________________________________________\n"
+                   "The Database is OFF. Please start it before running pyOCNI.")
 
 
 if __name__ == '__main__':

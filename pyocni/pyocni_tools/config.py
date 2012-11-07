@@ -191,7 +191,14 @@ def purge_PyOCNI_db():
     except Exception as e:
         logger.error("===== Purge_PyOCNI_db: Database purge has failed + " + e.message + "=====")
 
-
+def check_db():
+     s = Server('http://' + str(DB_IP) + ':' + str(DB_PORT))
+     if len(s.info())>0:
+        logger.info("===== The DB is ON  =====" + str(s.info()))
+        return 1
+     else:
+        logger.warning("===== The DB is OFF:  ")
+        return 0
 
         #=======================================================================================================================
         #

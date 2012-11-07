@@ -1,16 +1,19 @@
-#  Copyright 2010-2012 Institut Mines-Telecom
+# -*- Mode: python; py-indent-offset: 4; indent-tabs-mode: nil; coding: utf-8; -*-
+
+# Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
 #
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
+# This library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
 #
-#  http://www.apache.org/licenses/LICENSE-2.0
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
 #
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
+# You should have received a copy of the GNU Lesser General Public License
+# along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 """
 Created on Jun 12, 2012
@@ -20,7 +23,8 @@ Created on Jun 12, 2012
 @author: Houssem Medhioub
 @contact: houssem.medhioub@it-sudparis.eu
 @organization: Institut Mines-Telecom - Telecom SudParis
-@license: Apache License, Version 2.0
+@version: 0.3
+@license: LGPL - Lesser General Public License
 """
 
 import pyocni.pyocni_tools.config as config
@@ -32,7 +36,6 @@ from pyocni.pyocni_tools.config import return_code
 
 from pyocni.junglers.managers.linkManager import LinkManager
 from pyocni.junglers.managers.resourceManager import ResourceManager
-
 try:
     import simplejson as json
 except ImportError:
@@ -91,8 +94,14 @@ class SingleEntityJungler(object):
                 else:
                     resp_code_l = return_code['OK, and location returned']
 
+<<<<<<< HEAD
+                if resp_code_r is not return_code['OK, and location returned'] \
+                or resp_code_l is not return_code['OK, and location returned']:
+                    return "An error has occurred, please check log for more details", return_code['Bad Request']
+=======
                 if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
                     return "An error has occurred, please check log for more details",return_code['Bad Request']
+>>>>>>> 9ca69327281cac5bc0908e15da4e730a2f7213ff
 
                 self.PostMan.save_custom_resource(entity)
                 logger.debug("===== Channel_put_single_resource ==== : Finished (2a) with success")
@@ -120,8 +129,14 @@ class SingleEntityJungler(object):
                     else:
                         resp_code_l = return_code['OK, and location returned']
 
+<<<<<<< HEAD
+                    if resp_code_r is not return_code['OK, and location returned'] \
+                    or resp_code_l is not return_code['OK, and location returned']:
+                        return "An error has occurred, please check log for more details", return_code['Bad Request']
+=======
                     if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
                         return "An error has occurred, please check log for more details",return_code['Bad Request']
+>>>>>>> 9ca69327281cac5bc0908e15da4e730a2f7213ff
 
                     olddoc['OCCI_Description'] = entity
 
@@ -195,9 +210,15 @@ class SingleEntityJungler(object):
                 logger.debug("===== Channel_post_single_resource ==== : No Link was found")
                 resp_code_l = return_code['OK, and location returned']
 
+<<<<<<< HEAD
+            if resp_code_r is not return_code['OK, and location returned'] \
+            or resp_code_l is not return_code['OK, and location returned']:
+                return "An error has occurred, please check log for more details", return_code['Bad Request']
+=======
             if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
 
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
+>>>>>>> 9ca69327281cac5bc0908e15da4e730a2f7213ff
 
             old_doc['OCCI_Description'] = entity
             self.PostMan.save_updated_docs_in_db(old_doc)
