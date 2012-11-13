@@ -331,25 +331,44 @@ Full update of the mixin collection of multiple resources::
 
    curl -X PUT -d@associate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
-* Create a Resource with a custom URL path::
+* Response::
 
-   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user_id}/{my_custom_resource_id}
+   N/A
 
-* Get a Resource::
+Dissociate resource from mixins::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+   curl -X DELETE -d@associate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
+
+* Response::
+   
+   N/A
+
+4.1. Single resource management
+----------------------
+
+Create a Resource with a custom URL path::
+
+   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{my_custom_resource_id}
+
+* Response::
+
+   N/A
+
+Get a Resource::
+
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{resource-id}
 
 * Full Update a Resource::
 
-   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{resource-id}
 
 * Partial Update a Resource::
 
-   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{resource-id}
 
 * Delete a Resource::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{resource-id}
 
 
 
