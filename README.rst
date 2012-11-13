@@ -512,3 +512,50 @@ Some of pyocni's needs might be:
 10. JSON example files of the HowTo 
 ===================================
 
+* filter_categories.json::
+
+   Uploading
+
+* put_categories.json::
+
+   Uploading
+
+* delete_categories.json::
+
+   Uploading
+
+* get_resources.json::
+
+   Uploading
+
+* post_resources.json::
+
+   Uploading
+
+* trigger_action.json::
+
+   Uploading
+
+* associate_mixin.json::
+
+   Uploading
+
+* associate_mixin.json::
+
+   Uploading
+
+* associate_mixin.json::
+
+   Uploading
+
+* post_custom_resource.json::
+
+   Uploading
+
+* full_update_resource.json::
+
+   Uploading
+
+* partial_update_resource.json::
+
+   Uploading
