@@ -113,8 +113,8 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 4.1. Category management
 ----------------------
 
-Retrieval of all registered Categories (Kinds, Mixins and Actions)::
-   
+1. Retrieval of all registered Categories (Kinds, Mixins and Actions)::
+
     curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
 * Response::
@@ -189,7 +189,7 @@ Retrieval of all registered Categories (Kinds, Mixins and Actions)::
            ]
        }
 
-Retrieval of specific Kinds, Mixins and Actions using filtering::
+2. Retrieval of specific Kinds, Mixins and Actions using filtering::
 
    curl -X GET -d@filter_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
@@ -213,7 +213,7 @@ Retrieval of specific Kinds, Mixins and Actions using filtering::
         }
     ]
    
-Update of Categories (Kinds and/or Mixins and/or Actions)::
+3. Update of Categories (Kinds and/or Mixins and/or Actions)::
 
    curl -X PUT -d@put_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
@@ -221,7 +221,7 @@ Update of Categories (Kinds and/or Mixins and/or Actions)::
 
    N/A
 
-Deletion of Categories (Kinds and/or Mixins and/or Actions)::
+4. Deletion of Categories (Kinds and/or Mixins and/or Actions)::
 
    curl -X DELETE -d@delete_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
@@ -233,7 +233,7 @@ Deletion of Categories (Kinds and/or Mixins and/or Actions)::
 4.2. Path management
 ----------------------
 
-Get Resources,Links and URLs below a path ::
+1. Get Resources,Links and URLs below a path ::
 
    curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{path}
 
@@ -245,7 +245,7 @@ Get Resources,Links and URLs below a path ::
     "http://localhost:8090/{path}/user/"
    ]
 
-Get Resources and Links below a path::
+2. Get Resources and Links below a path::
 
    curl -X GET -d@get_res_link_b_path.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{primary}/{secondary}
 
@@ -259,7 +259,7 @@ Get Resources and Links below a path::
     ]
    }
 
-Delete all Resources and Links below a path::
+3. Delete all Resources and Links below a path::
 
    curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{primary}/{secondary}
 
@@ -270,7 +270,7 @@ Delete all Resources and Links below a path::
 4.3. Multiple resource management
 ----------------------
 
-Get multiple resources of a kind/mixin::
+1. Get multiple resources of a kind/mixin::
  
    curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
 
@@ -284,7 +284,7 @@ Get multiple resources of a kind/mixin::
     ]
    }
 
-Get specific resources of a kind/mixin::
+2. Get specific resources of a kind/mixin::
 
    curl -X GET -d@get_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
 
@@ -297,7 +297,7 @@ Get specific resources of a kind/mixin::
     ]
    }
 
-Create multiple resources of a kind::
+3. Create multiple resources of a kind::
 
    curl -X POST -d@post_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
 
@@ -311,7 +311,7 @@ Create multiple resources of a kind::
     ]
 }
 
-Trigger an action on multiple resources of a kind/mixin::
+4. Trigger an action on multiple resources of a kind/mixin::
 
    curl -X POST -d@trigger_action.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/?action={action_name}
 
@@ -319,7 +319,7 @@ Trigger an action on multiple resources of a kind/mixin::
 
    N/A   
 
-Associate a mixin to multiple resources::
+3. Associate a mixin to multiple resources::
 
    curl -X POST -d@associate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
@@ -327,7 +327,7 @@ Associate a mixin to multiple resources::
 
    N/A
 
-Full update of the mixin collection of multiple resources::
+5. Full update of the mixin collection of multiple resources::
 
    curl -X PUT -d@associate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
@@ -335,7 +335,7 @@ Full update of the mixin collection of multiple resources::
 
    N/A
 
-Dissociate resource from mixins::
+6. Dissociate resource from mixins::
 
    curl -X DELETE -d@associate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
@@ -346,7 +346,7 @@ Dissociate resource from mixins::
 4.4. Single resource management
 ----------------------
 
-Create a Resource with a custom URL path::
+1. Create a Resource with a custom URL path::
 
    curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{my_custom_resource_id}
 
@@ -354,7 +354,7 @@ Create a Resource with a custom URL path::
 
    N/A
 
-Get a Resource::
+2. Get a Resource::
 
    curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind}/{resource-id}
 
@@ -415,7 +415,7 @@ Get a Resource::
     ]
 }
 
-Full Update of a Resource::
+3. Full Update of a Resource::
 
    curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{resource-id}
 
@@ -427,7 +427,7 @@ Full Update of a Resource::
     ]
    }
 
-Partial Update of a Resource::
+4. Partial Update of a Resource::
 
    curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{resource-id}
 
@@ -439,7 +439,15 @@ Partial Update of a Resource::
     ]
 }
 
-Delete a Resource::
+5. Trigger an action on a resource::
+
+   curl -X POST -d@action_on_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{resource-id}?action={action_name}
+
+* Response::
+
+   N/A
+
+6. Delete a Resource::
 
    curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{resource-id}
 
