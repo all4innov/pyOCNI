@@ -256,9 +256,9 @@ Get Resources and Links below a path::
 
    {
     "X-OCCI-Location": [
-        "http: //example.com/vms/foo/vm1",
-        "http: //example.com/vms/foo/vm2",
-        "http: //example.com/vms/foo/vm3"
+       " http://localhost:8090/{primary}/{secondary}/vm1",
+        "http://localhost:8090/{primary}/{secondary}/vm2",
+        "http://localhost:8090/{primary}/{secondary}/vm3"
     ]
    }
 
@@ -277,9 +277,46 @@ ________________________________________________________________________________
 4.1. Multiple resource management
 ----------------------
 
-* Create Resources of a kind::
+Get multiple resources of a kind/mixin::
+ 
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
 
-   curl -X POST -d@post_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/
+* Response::
+
+       {
+    "X-OCCI-Location": [
+        http://localhost:8090/{kind_location}/vm1",
+        http://localhost:8090/{kind_location}/vm2",
+        http://localhost:8090/{kind_location}/vm3"
+    ]
+   }
+
+Get specific resources of a kind/mixin::
+
+   curl -X GET -d@get_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
+
+* Response::
+
+    {
+    "X-OCCI-Location": [
+        http://localhost:8090/{kind_location}/vm1",
+        http://localhost:8090/{kind_location}/vm2"
+    ]
+   }
+
+Create multiple resources of a kind::
+
+   curl -X POST -d@post_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
+
+* Response::
+
+   {
+    "Location": [
+        "http://localhost:8090/{kind}/resource1_id",
+        "http://localhost:8090/{kind}/resource2_id",
+        "http://localhost:8090/{kind}/resource3_id/"
+    ]
+}
 
 * Create a Resource with a custom URL path::
 
@@ -301,33 +338,6 @@ ________________________________________________________________________________
 
    curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user-id}/{resource-id}
 
-________________________________________________________________________________________________________________________
-
-________________________________________________________________________________________________________________________
-
-* Create Links of a kind::
-
-   curl -X POST -d@post_links.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{link}/
-
-* Create a Link with a custom resource path::
-
-   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{my_custom_link_path}
-
-* Get a Link::
-
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{link}/{user-id}/{link-id}
-
-* Full update a Link::
-
-   curl -X PUT -d@full_update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{link}/{user-id}/{link-id}
-
-* Patial update a Link::
-
-   curl -X POST -d@partial_update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{link}/{user-id}/{link-id}
-
-* Delete a link::
-
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{link}/{user-id}/{link-id}
 
 
 5. For developers
