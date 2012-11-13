@@ -233,53 +233,49 @@ ________________________________________________________________________________
 
 ________________________________________________________________________________________________________________________
 
-4.1. Kind management
+4.1. Path management
 ----------------------
 
-* Create Kinds::
-
-   curl -X POST -d@post_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v 'http://localhost:8090/-/'
-
-* Retrieval of a registered Kind::
-
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/{resource}/
-
-* Get Kinds with filetering::
-
-   curl -X GET -d@get_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
-
-* Update Kinds::
-
-   curl -X PUT -d@put_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
-
-* Update Kind providers::
-
-   curl -X DELETE -d@put_providers.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
-
-* Delete Kinds::
-
-   curl -X DELETE -d@delete_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
-
-________________________________________________________________________________________________________________________
-
-________________________________________________________________________________________________________________________
-
-
-* Get Resources,Links and URLs below a path ::
+Get Resources,Links and URLs below a path ::
 
    curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{path}
 
-* Get Resources and Links below a path::
+* Response::
+
+   [
+    "http://localhost:8090/{path}/vm3",
+    "http://localhost:8090/{path}/fooVM",
+    "http://localhost:8090/{path}/user/"
+   ]
+
+Get Resources and Links below a path::
 
    curl -X GET -d@get_res_link_b_path.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{primary}/{secondary}
 
-* Delete all Resources and Links below a path::
+* Response::
+
+   {
+    "X-OCCI-Location": [
+        "http: //example.com/vms/foo/vm1",
+        "http: //example.com/vms/foo/vm2",
+        "http: //example.com/vms/foo/vm3"
+    ]
+   }
+
+Delete all Resources and Links below a path::
 
    curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{primary}/{secondary}
 
+* Response
+
+   200 OK
+
 ________________________________________________________________________________________________________________________
 
 ________________________________________________________________________________________________________________________
+
+4.1. Multiple resource management
+----------------------
 
 * Create Resources of a kind::
 
