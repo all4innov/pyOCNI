@@ -17,7 +17,6 @@ Redistribution of this software is permitted under the terms of the Apache Licen
 
 Table of Contents
 =================
-
 ::
 
   0. What is it?
@@ -42,16 +41,13 @@ Table of Contents
 
 pyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI server with a JSON/HTTP serialization and a Category Manager.
 
-
 1. The Latest Version
 =====================
 
 version 0.9
 
-
 2. API Documentation
 ====================
-
 the api documentation are available through this html file: pyOCNI/pyocni/doc/index.html
 
 3. Installation
@@ -99,20 +95,18 @@ To test CouchDB GUI:   http://127.0.0.1:5984/_utils/
 
    sudo python start.py
 
+
 4. HowTo use
 =====================================================================
-
 In order to use pyOCNI, you must respect certain rules :
 
 #. All requests/responses must follow the OCCI standard, any detected conflict will cancel the request.
 #. Kinds, Mixins and Actions can be created, retrieved, updated or deleted (CRUD) on the fly.
 #. Scheme + Term = OCCI_ID : unique identifier of the OCCI (Kind/Mixin/Action) description
-#. PyOCNI_Server_Address + term = OCCI_Location of (Kind/Mixin/Action) description
-#. PyOCNI_Server_Address + location = OCCI_Location of (Resource/link) description
+#. PyOCNI_Server_Address + location = OCCI_Location of (Kind/Mixin/Action) description
 
-PyOCNI offers two OCCI rendering formats : HTTP and JSON.
+PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands are JSON specific. If you want to see HTTP command please check here.
 
-The following commands are JSON specific. If you want to see HTTP command please check here.
 ________________________________________________________________________________________________________________________
 
 4.1. Category management
