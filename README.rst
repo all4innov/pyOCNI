@@ -501,6 +501,6 @@ Some of pyocni's needs might be:
 
 *
 
-10. JSON example files of the HowTo (available under client/request_examples folder)
-=======================================================================
+10. JSON example files of the HowTo 
+===================================
 
