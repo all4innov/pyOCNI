@@ -107,6 +107,7 @@ In order to use pyOCNI, you must respect certain rules :
 
 PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands are JSON specific. If you want to see HTTP command please check here.
 
+**Note:** To simplify the output, contents of the requests are available in section [**json files to execute the HowTo**]
 ________________________________________________________________________________________________________________________
 
 4.1. Category management
@@ -216,10 +217,17 @@ Response::
 
    curl -X PUT -d@put_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
-* Deletion of Kinds, Mixins and Actions at the same time::
+Response::
+
+   200 OK
+
+* Deletion of Categories (Kinds and/or Mixins and/or Actions)::
 
    curl -X DELETE -d@delete_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
+Response::
+
+   200 OK
 ________________________________________________________________________________________________________________________
 
 ________________________________________________________________________________________________________________________
