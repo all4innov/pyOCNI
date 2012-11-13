@@ -219,7 +219,7 @@ Update of Categories (Kinds and/or Mixins and/or Actions)::
 
 * Response::
 
-   200 OK
+   N/A
 
 Deletion of Categories (Kinds and/or Mixins and/or Actions)::
 
@@ -227,7 +227,7 @@ Deletion of Categories (Kinds and/or Mixins and/or Actions)::
 
 * Response::
 
-   200 OK
+   N/A
 
 
 4.1. Path management
@@ -265,7 +265,7 @@ Delete all Resources and Links below a path::
 
 * Response::
 
-   200 OK
+   N/A
 
 4.1. Multiple resource management
 ----------------------
@@ -292,8 +292,8 @@ Get specific resources of a kind/mixin::
 
     {
     "X-OCCI-Location": [
-        http://localhost:8090/{kind_location}/vm1",
-        http://localhost:8090/{kind_location}/vm2"
+        "http://localhost:8090/{kind_location}/vm1",
+        "http://localhost:8090/{kind_location}/vm2"
     ]
    }
 
@@ -307,9 +307,29 @@ Create multiple resources of a kind::
     "Location": [
         "http://localhost:8090/{kind}/resource1_id",
         "http://localhost:8090/{kind}/resource2_id",
-        "http://localhost:8090/{kind}/resource3_id/"
+        "http://localhost:8090/{kind}/resource3_id"
     ]
 }
+
+Trigger an action on multiple resources of a kind/mixin::
+
+   curl -X POST -d@trigger_action.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/?action={action_name}
+
+* Response::
+
+   N/A   
+
+Associate a mixin to multiple resources::
+
+   curl -X POST -d@associate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
+
+* Response::
+
+   N/A
+
+Full update of the mixin collection of multiple resources::
+
+   curl -X PUT -d@associate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
 * Create a Resource with a custom URL path::
 
