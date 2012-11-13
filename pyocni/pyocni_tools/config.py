@@ -200,14 +200,3 @@ def check_db():
      else:
         logger.warning("===== The DB is OFF:  ")
         return 0
-
-        #=======================================================================================================================
-        #
-        #        "my_occi_locations":{
-        #            "map": "(function(doc) {emit (doc.OCCI_Location,) });"
-        #        }
-
-        #"for_delete_entities" :{
-        #                           "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
-        #                                  "emit (,[doc.OCCI_Location,doc._id,doc._rev]) });"
-        #                       },

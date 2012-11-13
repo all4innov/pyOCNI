@@ -2,9 +2,9 @@
  pyOCNI - Python Open Cloud Networking Interface
 ==========================================================
 
-:Version: 0.4
+:Version: 0.9
 :Source: https://github.com/jordan-developer/pyOCNI
-:Keywords: OCNI, OCCI, REST, Interface, HTTP, JSON, CouchDB, Eventlet, Webob, Cloud Computing, Cloud Networking
+:Keywords: OCCI, OCNI, REST, Interface, HTTP, JSON, CouchDB, Eventlet, Webob, Cloud Computing, Cloud Networking
 
 Developers
 ==========
@@ -40,19 +40,19 @@ Table of Contents
 0. What is it?
 ==============
 
-pyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI with a JSON serialization and a cloud networking extension.
+pyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI server with a JSON/HTTP serialization and a Category Manager.
 
 
 1. The Latest Version
 =====================
 
-version 0.4
+version 0.9
 
 
 2. API Documentation
 ====================
-the api documentation are available through this html file:
-pyOCNI/pyocni/doc/index.html
+
+the api documentation are available through this html file: pyOCNI/pyocni/doc/index.html
 
 3. Installation
 ===============
@@ -99,109 +99,141 @@ To test CouchDB GUI:   http://127.0.0.1:5984/_utils/
 
    sudo python start.py
 
-4. HowTo use (examples. The json files are at the end of this README)
+4. HowTo use
 =====================================================================
 
 In order to use pyOCNI, you must respect certain rules :
 
-#. All data must follow the JSON format declared by OCCI [occi+json], any detected conflict will cancel the request.
+#. All requests/responses must follow the OCCI standard, any detected conflict will cancel the request.
 #. Kinds, Mixins and Actions can be created, retrieved, updated or deleted (CRUD) on the fly.
-#. Kinds, Mixins and Actions can be read and created by anyone but updated and deleted by only their creator
 #. Scheme + Term = OCCI_ID : unique identifier of the OCCI (Kind/Mixin/Action) description
-#. PyOCNI_Server_Address + Location : OCCI_Location of (Kind/Mixin) description
+#. PyOCNI_Server_Address + term = OCCI_Location of (Kind/Mixin/Action) description
+#. PyOCNI_Server_Address + location = OCCI_Location of (Resource/link) description
 
+PyOCNI offers two OCCI rendering formats : HTTP and JSON.
 
-These are some commands that you can use with pyOCNI
-
+The following commands are JSON specific. If you want to see HTTP command please check here.
 ________________________________________________________________________________________________________________________
 
-* Create Actions::
+4.1. Category management
+----------------------
 
-   curl -X POST -d@post_actions.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+* Retrieval of all registered Categories (Kinds, Mixins and Actions)::
 
-* Get Actions::
+#. Request: curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
+#. Response::
+   {
+           "actions": [
+               {
+                   "term": "start",
+                   "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                   "title": "Stop Compute instance",
+                   "attributes": {
+                       "method": {
+                           "mutable": true,
+                           "required": false,
+                           "type": "string",
+                           "pattern": "graceful|acpioff|poweroff",
+                           "default": "poweroff"
+                       }
+                   }
+               }
+           ],
+           "kinds": [
+               {
+                   "term": "storage",
+                   "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                   "title": "Compute Resource",
+                   "attributes": {
+                       "occi": {
+                           "compute": {
+                               "hostname": {
+                                   "mutable": true,
+                                   "required": false,
+                                   "type": "string",
+                                   "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                                   "minimum": "1",
+                                   "maximum": "255"
+                               },
+                               "state": {
+                                   "mutable": false,
+                                   "required": false,
+                                   "type": "string",
+                                   "pattern": "inactive|active|suspended|failed",
+                                   "default": "inactive"
+                               }
+                           }
+                       }
+                   },
+                   "actions": [
+                       "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                   ],
+                   "location": "/storage/"
+               }
+           ],
+           "mixins": [
+               {
+                   "term": "resource_tpl",
+                   "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                   "title": "Medium VM",
+                   "related": [],
+                   "attributes": {
+                       "occi": {
+                           "compute": {
+                               "speed": {
+                                   "type": "number",
+                                   "default": 2.8
+                               }
+                           }
+                       }
+                   },
+                   "location": "/template/resource/resource_tpl/"
+               }
+           ]
+       }
 
-   curl -X GET -d@get_actions.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+* Retrieval of specific Kinds, Mixins and Actions using filtering::
 
-* Update Actions::
-
-   curl -X PUT -d@put_actions.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
-
-* Delete Actions::
-
-   curl -X DELETE -d@delete_actions.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
-
-________________________________________________________________________________________________________________________
-
-________________________________________________________________________________________________________________________
-
-* Create Mixins::
-
-   curl -X POST -d@post_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
-
-* Get Mixins::
-
-   curl -X GET -d@get_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
-
-* Update Mixins::
-
-   curl -X PUT -d@put_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
-
-* Delete Mixins::
-
-   curl -X DELETE -d@delete_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
-
-________________________________________________________________________________________________________________________
-
-________________________________________________________________________________________________________________________
-
-* Creation of Kinds, Mixins and Actions at the same time::
-
-   curl -X POST -d@post_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
-
-* Retrieval of all registered Kinds, Mixins and Actions::
-
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
-
-* Retrieval of some registered Kinds, Mixins and Actions through filtering::
-
-   curl -X GET -d@filter_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X GET -d@filter_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
 * Update of Kinds, Mixins and Actions at the same time::
 
-   curl -X PUT -d@put_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X PUT -d@put_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
 * Deletion of Kinds, Mixins and Actions at the same time::
 
-   curl -X DELETE -d@delete_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X DELETE -d@delete_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
 ________________________________________________________________________________________________________________________
 
 ________________________________________________________________________________________________________________________
+
+4.1. Kind management
+----------------------
 
 * Create Kinds::
 
-   curl -X POST -d@post_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v 'http://localhost:8090/-/'
+   curl -X POST -d@post_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v 'http://localhost:8090/-/'
 
 * Retrieval of a registered Kind::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/{resource}/
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/{resource}/
 
 * Get Kinds with filetering::
 
-   curl -X GET -d@get_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X GET -d@get_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
 * Update Kinds::
 
-   curl -X PUT -d@put_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X PUT -d@put_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
 * Update Kind providers::
 
-   curl -X DELETE -d@put_providers.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X DELETE -d@put_providers.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
 * Delete Kinds::
 
-   curl -X DELETE -d@delete_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X DELETE -d@delete_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
 ________________________________________________________________________________________________________________________
 
@@ -210,15 +242,15 @@ ________________________________________________________________________________
 
 * Get Resources,Links and URLs below a path ::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{path}
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{path}
 
 * Get Resources and Links below a path::
 
-   curl -X GET -d@get_res_link_b_path.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{primary}/{secondary}
+   curl -X GET -d@get_res_link_b_path.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{primary}/{secondary}
 
 * Delete all Resources and Links below a path::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{primary}/{secondary}
+   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{primary}/{secondary}
 
 ________________________________________________________________________________________________________________________
 
@@ -226,27 +258,27 @@ ________________________________________________________________________________
 
 * Create Resources of a kind::
 
-   curl -X POST -d@post_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/
+   curl -X POST -d@post_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/
 
 * Create a Resource with a custom URL path::
 
-   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user_id}/{my_custom_resource_id}
+   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user_id}/{my_custom_resource_id}
 
 * Get a Resource::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user-id}/{resource-id}
 
 * Full Update a Resource::
 
-   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user-id}/{resource-id}
 
 * Partial Update a Resource::
 
-   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user-id}/{resource-id}
 
 * Delete a Resource::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{user-id}/{resource-id}
 
 ________________________________________________________________________________________________________________________
 
@@ -254,27 +286,27 @@ ________________________________________________________________________________
 
 * Create Links of a kind::
 
-   curl -X POST -d@post_links.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/
+   curl -X POST -d@post_links.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{link}/
 
 * Create a Link with a custom resource path::
 
-   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{my_custom_link_path}
+   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{my_custom_link_path}
 
 * Get a Link::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{link}/{user-id}/{link-id}
 
 * Full update a Link::
 
-   curl -X PUT -d@full_update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
+   curl -X PUT -d@full_update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{link}/{user-id}/{link-id}
 
 * Patial update a Link::
 
-   curl -X POST -d@partial_update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
+   curl -X POST -d@partial_update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{link}/{user-id}/{link-id}
 
 * Delete a link::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
+   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{link}/{user-id}/{link-id}
 
 ________________________________________________________________________________________________________________________
 

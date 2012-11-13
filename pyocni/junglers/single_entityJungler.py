@@ -105,6 +105,7 @@ class SingleEntityJungler(object):
                 #Step[2b]: This is an update resource request (More data is needed)
 
                 olddoc = self.rd_baker.bake_to_put_single_updateCase(path_url)
+
                 if olddoc is None:
                     return "An error has occurred, please check log for more details",return_code['Bad Request']
                 else:
@@ -123,14 +124,15 @@ class SingleEntityJungler(object):
                     if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
                         return "An error has occurred, please check log for more details",return_code['Bad Request']
 
+                    old_desc = olddoc['OCCI_Description']
                     olddoc['OCCI_Description'] = entity
 
-                    self.PostMan.save_updated_docs_in_db(olddoc)
+                    self.PostMan.save_updated_doc_in_db(olddoc)
 
                     logger.debug("===== Channel_post_single_resource ==== : Finished (2b) with success")
                     #return the locations of the resources
 
-                    backend_m.update_entity(entity,entity)
+                    backend_m.update_entity(old_desc,entity)
 
                     return olddoc['OCCI_Location'],return_code['OK, and location returned']
 
@@ -200,7 +202,8 @@ class SingleEntityJungler(object):
                 return "An error has occurred, please check log for more details",return_code['Bad Request']
 
             old_doc['OCCI_Description'] = entity
-            self.PostMan.save_updated_docs_in_db(old_doc)
+
+            self.PostMan.save_partial_updated_doc_in_db(old_doc)
 #            self.PostMan.database.save_doc(old_doc,force_update=True, all_or_nothing=True)
             logger.debug("===== Channel_post_single_resource ==== : Finished with success")
             backend_m.update_entity(old_data,entity)

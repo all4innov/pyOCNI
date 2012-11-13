@@ -61,18 +61,17 @@ def trigger_action_on_multi_resource(data):
 
 
 def choose_appropriate_provider(provider):
-    backend = None
 
+    backend = None
     backends_json_data = open(config.BACKENDS_FILE)
     backends_list = json.load(backends_json_data)
     backends_json_data.close()
-
+    print provider
     for i in backends_list["backends"]:
         if i["name"] == provider:
-            #print i["path"]
+            print " I am here !!!!!"
             backend_instance = imp.load_source('', i["path"])
             backend = backend_instance.backend()
-            backend.create('a')
 
     #    if provider == "dummy":
     #        backend = dummy_backend.dummy_backend()
