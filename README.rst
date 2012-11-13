@@ -230,7 +230,7 @@ Deletion of Categories (Kinds and/or Mixins and/or Actions)::
    N/A
 
 
-4.1. Path management
+4.2. Path management
 ----------------------
 
 Get Resources,Links and URLs below a path ::
@@ -267,7 +267,7 @@ Delete all Resources and Links below a path::
 
    N/A
 
-4.1. Multiple resource management
+4.3. Multiple resource management
 ----------------------
 
 Get multiple resources of a kind/mixin::
@@ -343,12 +343,12 @@ Dissociate resource from mixins::
    
    N/A
 
-4.1. Single resource management
+4.4. Single resource management
 ----------------------
 
 Create a Resource with a custom URL path::
 
-   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{my_custom_resource_id}
+   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{my_custom_resource_id}
 
 * Response::
 
@@ -356,21 +356,96 @@ Create a Resource with a custom URL path::
 
 Get a Resource::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{resource-id}
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind}/{resource-id}
 
-* Full Update a Resource::
+* Response::
 
-   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{resource-id}
+     {
+    "resources": [
+        {
+            "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
+            "mixins": [
+                "http: //schemas.opennebula.org/occi/infrastructure#my_mixin",
+                "http: //schemas.other.org/occi#my_mixin"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "speed": 2,
+                        "memory": 4,
+                        "cores": 2
+                    }
+                },
+                "org": {
+                    "other": {
+                        "occi": {
+                            "my_mixin": {
+                                "my_attribute": "my_value"
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": [
+                {
+                    "title": "Start My Server",
+                    "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                }
+            ],
+            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+            "title": "Compute resource",
+            "summary": "This is a compute resource",
+            "links": [
+                {
+                    "target": "http://myservice.tld/storage/59e06cf8-f390-5093-af2e-3685be593",
+                    "kind": "http: //schemas.ogf.org/occi/infrastructure#storagelink",
+                    "attributes": {
+                        "occi": {
+                            "storagelink": {
+                                "deviceid": "ide: 0: 1"
+                            }
+                        }
+                    },
+                    "id": "391ada15-580c-5baa-b16f-eeb35d9b1122",
+                    "title": "Mydisk"
+                }
+            ]
+        }
+    ]
+}
 
-* Partial Update a Resource::
+Full Update of a Resource::
 
-   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{resource-id}
+   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{resource-id}
 
-* Delete a Resource::
+* Response::
+
+   {
+    "X-OCCI-Location": [
+        "http://localhost:8090/{kind}/resource1_id"
+    ]
+   }
+
+Partial Update of a Resource::
+
+   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{resource-id}
+
+   * Response::
+
+   {
+    "X-OCCI-Location": [
+        "http://localhost:8090/{kind}/resource1_id"
+    ]
+}
+
+Delete a Resource::
 
    curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{resource-id}
 
+* Response::
 
+   N/A
 
 5. For developers
 =================
@@ -426,6 +501,6 @@ Some of pyocni's needs might be:
 
 *
 
-10. json files to execute the HowTo use examples (available under client/request_examples folder)
+10. JSON example files of the HowTo (available under client/request_examples folder)
 =======================================================================
 
