@@ -113,11 +113,11 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 4.1. Category management
 ----------------------
 
-* Retrieval of all registered Categories (Kinds, Mixins and Actions)::
+Retrieval of all registered Categories (Kinds, Mixins and Actions)::
    
     curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
-Response::
+* Response::
 
    {
            "actions": [
@@ -189,11 +189,11 @@ Response::
            ]
        }
 
-* Retrieval of specific Kinds, Mixins and Actions using filtering::
+Retrieval of specific Kinds, Mixins and Actions using filtering::
 
    curl -X GET -d@filter_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
-Response::
+* Response::
 
    {
     "actions": [
@@ -213,19 +213,19 @@ Response::
         }
     ]
    
-* Update of Categories (Kinds and/or Mixins and/or Actions)::
+Update of Categories (Kinds and/or Mixins and/or Actions)::
 
    curl -X PUT -d@put_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
-Response::
+* Response::
 
    200 OK
 
-* Deletion of Categories (Kinds and/or Mixins and/or Actions)::
+Deletion of Categories (Kinds and/or Mixins and/or Actions)::
 
    curl -X DELETE -d@delete_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
-Response::
+* Response::
 
    200 OK
 
