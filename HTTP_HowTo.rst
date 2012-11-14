@@ -254,13 +254,9 @@ In order to use pyOCNI, you must respect certain rules :
 
    curl -X POST -d@partial_update_resource -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}
 
-   * Response::
+* Response::
 
-   {
-    "X-OCCI-Location": [
-        "http://localhost:8090/{location}/{resource-id}"
-    ]
-   }
+   X-OCCI-Location: http://localhost:8090/{location}/{resource-id}
 
 5.Trigger an action on a resource::
 
@@ -342,224 +338,82 @@ Some of pyocni's needs might be:
         class="mixin";
 
 
-* post_categories::
+* post_category::
 
    Category: compute;
            scheme="http://schemas.ogf.org/occi/infrastructure#";
            class="kind";
            title="Compute Resource type";
            rel="http://schemas.ogf.org/occi/core#resource";
-           attributes="occi.compute.cores occi.compute.state{immutable} ...";
-           actions="http://schemas.ogf.org/occi/infrastructure/compute/action#stop ...";
+           attributes="occi.compute.cores occi.compute.state{immutable};
+           actions="http://schemas.ogf.org/occi/infrastructure/compute/action#stop;
            location="http://example.com/compute/"
 
-* put_categories::
+* put_category::
 
-   {
-       "mixins": [
-           {
-               "term": "resource_tpl",
-               "scheme": "http: //schemas.ogf.org/occi/infrastructure#",
-               "title": "MediumVM",
-               "related": [],
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "speed": {
-                               "type": "number",
-                               "default": 2.8
-                           }
-                       }
-                   }
-               },
-               "location": "/template/resource/resource_tpl/"
-           }
-       ]
-   }
+   Category: compute;
+           scheme="http://schemas.ogf.org/occi/infrastructure#";
+           class="kind";
+           title="Compute Resource type";
+           rel="http://schemas.ogf.org/occi/core#resource";
+           attributes="occi.compute.cores occi.compute.state{immutable}";
+           actions="http://schemas.ogf.org/occi/infrastructure/compute/action#stop";
+           location="http://example.com/compute/";
 
-* delete_categories.json::
 
-   {
-       "kinds": [
-           {
-               "term": "storage",
-               "scheme": "http: //schemas.ogf.org/occi/infrastructure#"
-           }
-       ]
-   }
+* delete_category.json::
+
+      Category: my_stuff;
+        scheme="http://example.com/occi/my_stuff#";
+        class="mixin";
 
 * get_resources.json::
 
-   {
-       "resources": [
-           {
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "speed": 2,
-                           "memory": 4,
-                           "cores": 2
-                       }
-                   }
-               }
-           }
-       ]
-   }
+   X-OCCI-Attribute: occi.compute.cores=2
+   X-OCCI-Attribute: occi.compute.hostname="dummy"
 
-* post_resources.json::
+* post_resource.json::
 
-   {
-       "resources": [
-           {
-               "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
-               "mixins": [
-                   "http: //schemas.opennebula.org/occi/infrastructure#my_mixin",
-                   "http: //schemas.other.org/occi#my_mixin"
-               ],
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "speed": 2,
-                           "memory": 4,
-                           "cores": 2
-                       }
-                   }
-               },
-               "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
-               "title": "Compute resource",
-               "summary": "This is a compute resource"
-           }
-       ]
-   }
+   Category: compute; scheme="http://schemas.ogf.org/occi/infrastructure#"; class="kind";
+   X-OCCI-Attribute: occi.compute.cores=2
+   X-OCCI-Attribute: occi.compute.hostname="foobar"
 
 * trigger_action.json::
 
-   {
-       "actions": [
-           {
-               "term": "start",
-               "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
-           }
-       ],
-       "attributes": {
-           "occi": {
-               "infrastructure": {
-                   "networkinterface": {
-                       "interface": "eth0",
-                       "mac": "00:80:41:ae:fd:7e",
-                       "address": "192.168.0.100",
-                       "gateway": "192.168.0.1",
-                       "allocation": "dynamic"
-                   }
-               }
-           }
-       }
-   }
+    Category: start;
+     scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#";
+     class=action;
+    X-OCCI-Attribute: occi.compute.cores=20:2
 
 * associate_mixin.json::
 
-    {
-    "X-OCCI-Location": [
-        "http://localhost:8090/{location1}/vm1",
-        "http://localhost:8090/{location2}/vm2"
-    ]
-   }
+    X-OCCI-Location: http://example.com/vms/foo/vm1
+    X-OCCI-Location: http://example.com/vms/foo/vm2
+    X-OCCI-Location: http://example.com/disks/foo/disk1
 
 * update_mixins.json::
 
-   {
-       "X-OCCI-Location": [
-           "http://localhost:8090/{location1}/vm1",
-           "http://localhost:8090/{location2}/vm2"
-       ]
-   }
+    X-OCCI-Location: http://example.com/vms/foo/vm1
+    X-OCCI-Location: http://example.com/vms/foo/vm2
 
 * dissociate_mixins.json::
 
-   {
-       "X-OCCI-Location": [
-           "http://localhost:8090/{location1}/vm1",
-           "http://localhost:8090/{location2}/vm2"
-       ]
-      }
+    X-OCCI-Location: http://example.com/vms/foo/vm1
+    X-OCCI-Location: http://example.com/vms/foo/vm2
 
 * post_custom_resource.json::
 
-   {
-       "resources": [
-           {
-               "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
-               "mixins": [
-                   "http://example.com/template/resource#medium"
-               ],
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "speed": 2,
-                           "memory": 4,
-                           "cores": 12
-                       }
-                   }
-               },
-               "actions": [
-                   {
-                       "title": "Start My Server",
-                       "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
-                       "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                   }
-               ],
-               "id": "9930",
-               "title": "Compute resource",
-               "summary": "This is a compute resource"
-           }
-       ]
-   }
+      Category: compute; scheme="http://schemas.ogf.org/occi/infrastructure#"; class="kind";
+      X-OCCI-Attribute: occi.compute.cores=2
+      X-OCCI-Attribute: occi.compute.hostname="foobar"
 
 * full_update_resource.json::
 
-   {
-       "resources": [
-           {
-               "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
-               "mixins": [
-                   "http://example.com/template/resource#medium"
-               ],
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "speed": 2,
-                           "memory": 4,
-                           "cores": 12
-                       }
-                   }
-               },
-               "actions": [
-                   {
-                       "title": "Start My Server",
-                       "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
-                       "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                   }
-               ],
-               "id": "9930",
-               "title": "Compute resource",
-               "summary": "This is a compute resource"
-           }
-       ]
-   }
+   Category: compute; scheme="http://schemas.ogf.org/occi/infrastructure#"; class="kind";
+   X-OCCI-Attribute: occi.compute.cores=2
+   X-OCCI-Attribute: occi.compute.hostname="foobar"
 
 * partial_update_resource.json::
 
-    {
-        "resources": [
-            {
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "speed": 5,
-                            "cores": 2
-                        }
-                    }
-                }
-            }
-        ]
-    }
+   X-OCCI-Attribute: occi.compute.cores=12
+   X-OCCI-Attribute: occi.compute.hostname="foobarOne"

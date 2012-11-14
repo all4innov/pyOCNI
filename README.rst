@@ -540,7 +540,7 @@ Some of pyocni's needs might be:
        ]
        }
 
-*post_categories.json::
+* post_categories.json::
 
     {
         "kinds": [
@@ -692,7 +692,7 @@ Some of pyocni's needs might be:
         "http://localhost:8090/{location1}/vm1",
         "http://localhost:8090/{location2}/vm2"
     ]
-   }
+    }
 
 * update_mixins.json::
 
