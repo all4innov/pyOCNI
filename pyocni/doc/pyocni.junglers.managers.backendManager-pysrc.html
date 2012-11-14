@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>pyocni.junglers.managers.backendManager</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >pyocni</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="pyocni-module.html">Package&nbsp;pyocni</a> ::
+        <a href="pyocni.junglers-module.html">Package&nbsp;junglers</a> ::
+        <a href="pyocni.junglers.managers-module.html">Package&nbsp;managers</a> ::
+        Module&nbsp;backendManager
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="pyocni.junglers.managers.backendManager-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="pyocni.junglers.managers.backendManager-module.html">Module pyocni.junglers.managers.backendManager</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#  Copyright 2010-2012 Institut Mines-Telecom</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment">#  Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment">#  you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">#  You may obtain a copy of the License at</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#  http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment">#  Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment">#  distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring">Created on Jun 12, 2012</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">@author: Bilel Msekni</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">@contact: bilel.msekni@telecom-sudparis.eu</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">@author: Houssem Medhioub</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">@contact: houssem.medhioub@it-sudparis.eu</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring">@organization: Institut Mines-Telecom - Telecom SudParis</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-docstring">@license: Apache License, Version 2.0</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package pyocni=pyocni-module.html"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-0', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package pyocni.backends=pyocni.backends-module.html"><a title="pyocni.backends" class="py-name" href="#" onclick="return doclink('link-1', 'backends', 'link-1');">backends</a></tt> <tt class="py-keyword">import</tt> <tt id="link-2" class="py-name" targets="Module pyocni.backends.dummy_backend=pyocni.backends.dummy_backend-module.html,Class pyocni.backends.dummy_backend.dummy_backend=pyocni.backends.dummy_backend.dummy_backend-class.html"><a title="pyocni.backends.dummy_backend
+pyocni.backends.dummy_backend.dummy_backend" class="py-name" href="#" onclick="return doclink('link-2', 'dummy_backend', 'link-2');">dummy_backend</a></tt><tt class="py-op">,</tt> <tt id="link-3" class="py-name" targets="Module pyocni.backends.l3vpn_backend=pyocni.backends.l3vpn_backend-module.html,Class pyocni.backends.l3vpn_backend.l3vpn_backend=pyocni.backends.l3vpn_backend.l3vpn_backend-class.html"><a title="pyocni.backends.l3vpn_backend
+pyocni.backends.l3vpn_backend.l3vpn_backend" class="py-name" href="#" onclick="return doclink('link-3', 'l3vpn_backend', 'link-3');">l3vpn_backend</a></tt><tt class="py-op">,</tt> <tt id="link-4" class="py-name" targets="Module pyocni.backends.libnetvirt_backend=pyocni.backends.libnetvirt_backend-module.html,Class pyocni.backends.libnetvirt_backend.libnetvirt_backend=pyocni.backends.libnetvirt_backend.libnetvirt_backend-class.html"><a title="pyocni.backends.libnetvirt_backend
+pyocni.backends.libnetvirt_backend.libnetvirt_backend" class="py-name" href="#" onclick="return doclink('link-4', 'libnetvirt_backend', 'link-4');">libnetvirt_backend</a></tt><tt class="py-op">,</tt> <tt id="link-5" class="py-name" targets="Module pyocni.backends.openflow_backend=pyocni.backends.openflow_backend-module.html,Class pyocni.backends.openflow_backend.openflow_backend=pyocni.backends.openflow_backend.openflow_backend-class.html"><a title="pyocni.backends.openflow_backend
+pyocni.backends.openflow_backend.openflow_backend" class="py-name" href="#" onclick="return doclink('link-5', 'openflow_backend', 'link-5');">openflow_backend</a></tt><tt class="py-op">,</tt> <tt id="link-6" class="py-name" targets="Module pyocni.backends.opennebula_backend=pyocni.backends.opennebula_backend-module.html,Class pyocni.backends.opennebula_backend.opennebula_backend=pyocni.backends.opennebula_backend.opennebula_backend-class.html"><a title="pyocni.backends.opennebula_backend
+pyocni.backends.opennebula_backend.opennebula_backend" class="py-name" href="#" onclick="return doclink('link-6', 'opennebula_backend', 'link-6');">opennebula_backend</a></tt><tt class="py-op">,</tt> <tt id="link-7" class="py-name" targets="Module pyocni.backends.openstack_backend=pyocni.backends.openstack_backend-module.html,Class pyocni.backends.openstack_backend.openstack_backend=pyocni.backends.openstack_backend.openstack_backend-class.html"><a title="pyocni.backends.openstack_backend
+pyocni.backends.openstack_backend.openstack_backend" class="py-name" href="#" onclick="return doclink('link-7', 'openstack_backend', 'link-7');">openstack_backend</a></tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-8" class="py-name"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-8', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-9" class="py-name" targets="Package pyocni.pyocni_tools=pyocni.pyocni_tools-module.html"><a title="pyocni.pyocni_tools" class="py-name" href="#" onclick="return doclink('link-9', 'pyocni_tools', 'link-9');">pyocni_tools</a></tt><tt class="py-op">.</tt><tt id="link-10" class="py-name" targets="Module pyocni.pyocni_tools.config=pyocni.pyocni_tools.config-module.html,Variable pyocni.pyocni_tools.config.config=pyocni.pyocni_tools.config-module.html#config"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-10', 'config', 'link-10');">config</a></tt> <tt class="py-keyword">as</tt> <tt id="link-11" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-11', 'config', 'link-10');">config</a></tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">simplejson</tt> <tt class="py-keyword">as</tt> <tt class="py-name">json</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-keyword">except</tt> <tt class="py-name">ImportError</tt><tt class="py-op">:</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">json</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-12" class="py-name"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-12', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-13" class="py-name"><a title="pyocni.pyocni_tools" class="py-name" href="#" onclick="return doclink('link-13', 'pyocni_tools', 'link-9');">pyocni_tools</a></tt><tt class="py-op">.</tt><tt id="link-14" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-14', 'config', 'link-10');">config</a></tt> <tt class="py-keyword">import</tt> <tt id="link-15" class="py-name" targets="Variable pyocni.pyocni_tools.config.return_code=pyocni.pyocni_tools.config-module.html#return_code"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-15', 'return_code', 'link-15');">return_code</a></tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"><tt class="py-comment"># getting the Logger</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line"><tt id="link-16" class="py-name" targets="Variable pyocni.TDD.fake_Data.server_Mock.logger=pyocni.TDD.fake_Data.server_Mock-module.html#logger,Variable pyocni.adapters.i_RequestAdapter.logger=pyocni.adapters.i_RequestAdapter-module.html#logger,Variable pyocni.backends.backend.logger=pyocni.backends.backend-module.html#logger,Variable pyocni.backends.dummy_backend.logger=pyocni.backends.dummy_backend-module.html#logger,Variable pyocni.backends.l3vpn_backend.logger=pyocni.backends.l3vpn_backend-module.html#logger,Variable pyocni.backends.libnetvirt_backend.logger=pyocni.backends.libnetvirt_backend-module.html#logger,Variable pyocni.backends.openflow_backend.logger=pyocni.backends.openflow_backend-module.html#logger,Variable pyocni.backends.opennebula_backend.logger=pyocni.backends.opennebula_backend-module.html#logger,Variable pyocni.backends.openstack_backend.logger=pyocni.backends.openstack_backend-module.html#logger,Variable pyocni.dataBakers.category_dataBaker.logger=pyocni.dataBakers.category_dataBaker-module.html#logger,Variable pyocni.dataBakers.resource_dataBaker.logger=pyocni.dataBakers.resource_dataBaker-module.html#logger,Variable pyocni.junglers.categoryJungler.logger=pyocni.junglers.categoryJungler-module.html#logger,Variable pyocni.junglers.managers.actionManager.logger=pyocni.junglers.managers.actionManager-module.html#logger,Variable pyocni.junglers.managers.backendManager.logger=pyocni.junglers.managers.backendManager-module.html#logger,Variable pyocni.junglers.managers.kindManager.logger=pyocni.junglers.managers.kindManager-module.html#logger,Variable pyocni.junglers.managers.mixinManager.logger=pyocni.junglers.managers.mixinManager-module.html#logger,Variable pyocni.junglers.managers.resourceManager.logger=pyocni.junglers.managers.resourceManager-module.html#logger,Variable pyocni.junglers.multi_entityJungler.logger=pyocni.junglers.multi_entityJungler-module.html#logger,Variable pyocni.junglers.pathJungler.logger=pyocni.junglers.pathJungler-module.html#logger,Variable pyocni.junglers.single_entityJungler.logger=pyocni.junglers.single_entityJungler-module.html#logger,Variable pyocni.occi_server.logger=pyocni.occi_server-module.html#logger,Variable pyocni.pyocni_tools.config.logger=pyocni.pyocni_tools.config-module.html#logger,Variable pyocni.pyocni_tools.couchdbdoc_Joker.logger=pyocni.pyocni_tools.couchdbdoc_Joker-module.html#logger,Variable pyocni.pyocni_tools.occi_Joker.logger=pyocni.pyocni_tools.occi_Joker-module.html#logger,Variable pyocni.suppliers.categorySupplier.logger=pyocni.suppliers.categorySupplier-module.html#logger,Variable pyocni.suppliers.resourceSupplier.logger=pyocni.suppliers.resourceSupplier-module.html#logger"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.occi_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-16', 'logger', 'link-16');">logger</a></tt> <tt class="py-op">=</tt> <tt id="link-17" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-17', 'config', 'link-10');">config</a></tt><tt class="py-op">.</tt><tt id="link-18" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.occi_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-18', 'logger', 'link-16');">logger</a></tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line"> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"><tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">simplejson</tt> <tt class="py-keyword">as</tt> <tt class="py-name">json</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"><tt class="py-keyword">except</tt> <tt class="py-name">ImportError</tt><tt class="py-op">:</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line">    <tt class="py-keyword">import</tt> <tt class="py-name">json</tt> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line"> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"> </tt>
+<a name="trigger_action_on_multi_resource"></a><div id="trigger_action_on_multi_resource-def"><a name="L43"></a><tt class="py-lineno"> 43</tt> <a class="py-toggle" href="#" id="trigger_action_on_multi_resource-toggle" onclick="return toggle('trigger_action_on_multi_resource');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#trigger_action_on_multi_resource">trigger_action_on_multi_resource</a><tt class="py-op">(</tt><tt class="py-param">data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="trigger_action_on_multi_resource-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="trigger_action_on_multi_resource-expanded"><a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line"><tt class="py-docstring">    Trigger the action on multiple resource</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line"><tt class="py-docstring">    Args:</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-docstring">        @param data: Data provided for triggering the action</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">item</tt> <tt class="py-keyword">in</tt> <tt class="py-name">data</tt><tt class="py-op">:</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt id="link-19" class="py-name" targets="Function pyocni.junglers.managers.backendManager.trigger_action_on_a_resource()=pyocni.junglers.managers.backendManager-module.html#trigger_action_on_a_resource"><a title="pyocni.junglers.managers.backendManager.trigger_action_on_a_resource" class="py-name" href="#" onclick="return doclink('link-19', 'trigger_action_on_a_resource', 'link-19');">trigger_action_on_a_resource</a></tt><tt class="py-op">(</tt><tt class="py-name">item</tt><tt class="py-op">[</tt><tt class="py-string">'resource_url'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">item</tt><tt class="py-op">[</tt><tt class="py-string">'action'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">item</tt><tt class="py-op">[</tt><tt class="py-string">'provider'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-string">""</tt><tt class="py-op">,</tt> <tt id="link-20" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-20', 'return_code', 'link-15');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'OK'</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line"> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"> </tt>
+<a name="choose_appropriate_provider"></a><div id="choose_appropriate_provider-def"><a name="L54"></a><tt class="py-lineno"> 54</tt> <a class="py-toggle" href="#" id="choose_appropriate_provider-toggle" onclick="return toggle('choose_appropriate_provider');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#choose_appropriate_provider">choose_appropriate_provider</a><tt class="py-op">(</tt><tt class="py-param">provider</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="choose_appropriate_provider-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="choose_appropriate_provider-expanded"><a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">    <tt id="link-21" class="py-name" targets="Module pyocni.backends.backend=pyocni.backends.backend-module.html,Class pyocni.backends.backend.backend=pyocni.backends.backend.backend-class.html"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-21', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line"> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">provider</tt> <tt class="py-op">==</tt> <tt class="py-string">"dummy"</tt><tt class="py-op">:</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">        <tt id="link-22" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-22', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-23" class="py-name"><a title="pyocni.backends.dummy_backend
+pyocni.backends.dummy_backend.dummy_backend" class="py-name" href="#" onclick="return doclink('link-23', 'dummy_backend', 'link-2');">dummy_backend</a></tt><tt class="py-op">.</tt><tt id="link-24" class="py-name"><a title="pyocni.backends.dummy_backend
+pyocni.backends.dummy_backend.dummy_backend" class="py-name" href="#" onclick="return doclink('link-24', 'dummy_backend', 'link-2');">dummy_backend</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">provider</tt> <tt class="py-op">==</tt> <tt class="py-string">"l3vpn"</tt><tt class="py-op">:</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt id="link-25" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-25', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-26" class="py-name"><a title="pyocni.backends.l3vpn_backend
+pyocni.backends.l3vpn_backend.l3vpn_backend" class="py-name" href="#" onclick="return doclink('link-26', 'l3vpn_backend', 'link-3');">l3vpn_backend</a></tt><tt class="py-op">.</tt><tt id="link-27" class="py-name"><a title="pyocni.backends.l3vpn_backend
+pyocni.backends.l3vpn_backend.l3vpn_backend" class="py-name" href="#" onclick="return doclink('link-27', 'l3vpn_backend', 'link-3');">l3vpn_backend</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">provider</tt> <tt class="py-op">==</tt> <tt class="py-string">"libnetvirt"</tt><tt class="py-op">:</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">        <tt id="link-28" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-28', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-29" class="py-name"><a title="pyocni.backends.libnetvirt_backend
+pyocni.backends.libnetvirt_backend.libnetvirt_backend" class="py-name" href="#" onclick="return doclink('link-29', 'libnetvirt_backend', 'link-4');">libnetvirt_backend</a></tt><tt class="py-op">.</tt><tt id="link-30" class="py-name"><a title="pyocni.backends.libnetvirt_backend
+pyocni.backends.libnetvirt_backend.libnetvirt_backend" class="py-name" href="#" onclick="return doclink('link-30', 'libnetvirt_backend', 'link-4');">libnetvirt_backend</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">provider</tt> <tt class="py-op">==</tt> <tt class="py-string">"openflow"</tt><tt class="py-op">:</tt> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt id="link-31" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-31', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-32" class="py-name"><a title="pyocni.backends.openflow_backend
+pyocni.backends.openflow_backend.openflow_backend" class="py-name" href="#" onclick="return doclink('link-32', 'openflow_backend', 'link-5');">openflow_backend</a></tt><tt class="py-op">.</tt><tt id="link-33" class="py-name"><a title="pyocni.backends.openflow_backend
+pyocni.backends.openflow_backend.openflow_backend" class="py-name" href="#" onclick="return doclink('link-33', 'openflow_backend', 'link-5');">openflow_backend</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">provider</tt> <tt class="py-op">==</tt> <tt class="py-string">"opennebula"</tt><tt class="py-op">:</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt id="link-34" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-34', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-35" class="py-name"><a title="pyocni.backends.opennebula_backend
+pyocni.backends.opennebula_backend.opennebula_backend" class="py-name" href="#" onclick="return doclink('link-35', 'opennebula_backend', 'link-6');">opennebula_backend</a></tt><tt class="py-op">.</tt><tt id="link-36" class="py-name"><a title="pyocni.backends.opennebula_backend
+pyocni.backends.opennebula_backend.opennebula_backend" class="py-name" href="#" onclick="return doclink('link-36', 'opennebula_backend', 'link-6');">opennebula_backend</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">    <tt class="py-keyword">elif</tt> <tt class="py-name">provider</tt> <tt class="py-op">==</tt> <tt class="py-string">"openstack"</tt><tt class="py-op">:</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt id="link-37" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-37', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-38" class="py-name"><a title="pyocni.backends.openstack_backend
+pyocni.backends.openstack_backend.openstack_backend" class="py-name" href="#" onclick="return doclink('link-38', 'openstack_backend', 'link-7');">openstack_backend</a></tt><tt class="py-op">.</tt><tt id="link-39" class="py-name"><a title="pyocni.backends.openstack_backend
+pyocni.backends.openstack_backend.openstack_backend" class="py-name" href="#" onclick="return doclink('link-39', 'openstack_backend', 'link-7');">openstack_backend</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line"> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt id="link-40" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-40', 'backend', 'link-21');">backend</a></tt> </tt>
+</div><a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line"> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line"> </tt>
+<a name="trigger_action_on_a_resource"></a><div id="trigger_action_on_a_resource-def"><a name="L73"></a><tt class="py-lineno"> 73</tt> <a class="py-toggle" href="#" id="trigger_action_on_a_resource-toggle" onclick="return toggle('trigger_action_on_a_resource');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#trigger_action_on_a_resource">trigger_action_on_a_resource</a><tt class="py-op">(</tt><tt class="py-param">path_url</tt><tt class="py-op">,</tt> <tt class="py-param">action</tt><tt class="py-op">,</tt> <tt class="py-param">provider</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="trigger_action_on_a_resource-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="trigger_action_on_a_resource-expanded"><a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"><tt class="py-docstring">    Send the action triggering request to the appropriate provider</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"><tt class="py-docstring">     Args:</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"><tt class="py-docstring">        @param path_url: Resource URL Path</tt> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line"><tt class="py-docstring">        @param action: Action description</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-docstring">        @param provider: Provider of the resource</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">    <tt id="link-41" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-41', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-42" class="py-name" targets="Function pyocni.junglers.managers.backendManager.choose_appropriate_provider()=pyocni.junglers.managers.backendManager-module.html#choose_appropriate_provider"><a title="pyocni.junglers.managers.backendManager.choose_appropriate_provider" class="py-name" href="#" onclick="return doclink('link-42', 'choose_appropriate_provider', 'link-42');">choose_appropriate_provider</a></tt><tt class="py-op">(</tt><tt class="py-name">provider</tt><tt class="py-op">)</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt id="link-43" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-43', 'backend', 'link-21');">backend</a></tt> <tt class="py-keyword">is</tt> <tt class="py-keyword">not</tt> <tt class="py-name">None</tt><tt class="py-op">:</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt id="link-44" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-44', 'backend', 'link-21');">backend</a></tt><tt class="py-op">.</tt><tt id="link-45" class="py-name" targets="Variable pyocni.TDD.fake_Data.categories.action=pyocni.TDD.fake_Data.categories-module.html#action,Method pyocni.backends.backend.backend.action()=pyocni.backends.backend.backend-class.html#action,Method pyocni.backends.dummy_backend.dummy_backend.action()=pyocni.backends.dummy_backend.dummy_backend-class.html#action,Method pyocni.backends.l3vpn_backend.l3vpn_backend.action()=pyocni.backends.l3vpn_backend.l3vpn_backend-class.html#action,Method pyocni.backends.libnetvirt_backend.libnetvirt_backend.action()=pyocni.backends.libnetvirt_backend.libnetvirt_backend-class.html#action,Method pyocni.backends.openflow_backend.openflow_backend.action()=pyocni.backends.openflow_backend.openflow_backend-class.html#action,Method pyocni.backends.opennebula_backend.opennebula_backend.action()=pyocni.backends.opennebula_backend.opennebula_backend-class.html#action,Method pyocni.backends.openstack_backend.openstack_backend.action()=pyocni.backends.openstack_backend.openstack_backend-class.html#action"><a title="pyocni.TDD.fake_Data.categories.action
+pyocni.backends.backend.backend.action
+pyocni.backends.dummy_backend.dummy_backend.action
+pyocni.backends.l3vpn_backend.l3vpn_backend.action
+pyocni.backends.libnetvirt_backend.libnetvirt_backend.action
+pyocni.backends.openflow_backend.openflow_backend.action
+pyocni.backends.opennebula_backend.opennebula_backend.action
+pyocni.backends.openstack_backend.openstack_backend.action" class="py-name" href="#" onclick="return doclink('link-45', 'action', 'link-45');">action</a></tt><tt class="py-op">(</tt><tt class="py-name">path_url</tt><tt class="py-op">,</tt> <tt id="link-46" class="py-name"><a title="pyocni.TDD.fake_Data.categories.action
+pyocni.backends.backend.backend.action
+pyocni.backends.dummy_backend.dummy_backend.action
+pyocni.backends.l3vpn_backend.l3vpn_backend.action
+pyocni.backends.libnetvirt_backend.libnetvirt_backend.action
+pyocni.backends.openflow_backend.openflow_backend.action
+pyocni.backends.opennebula_backend.opennebula_backend.action
+pyocni.backends.openstack_backend.openstack_backend.action" class="py-name" href="#" onclick="return doclink('link-46', 'action', 'link-45');">action</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-string">""</tt><tt class="py-op">,</tt> <tt id="link-47" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-47', 'return_code', 'link-15');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'Accepted'</tt><tt class="py-op">]</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt id="link-48" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.occi_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-48', 'logger', 'link-16');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">error</tt><tt class="py-op">(</tt><tt class="py-string">"trigger action_on_resource : Unknown provider"</tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-string">" An error has occurred, please check logs for more details"</tt><tt class="py-op">,</tt> <tt id="link-49" class="py-name"><a title="pyocni.pyocni_tools.config.return_code" class="py-name" href="#" onclick="return doclink('link-49', 'return_code', 'link-15');">return_code</a></tt><tt class="py-op">[</tt><tt class="py-string">'Not Found'</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line"> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line"> </tt>
+<a name="get_provider_of_a_kind"></a><div id="get_provider_of_a_kind-def"><a name="L90"></a><tt class="py-lineno"> 90</tt> <a class="py-toggle" href="#" id="get_provider_of_a_kind-toggle" onclick="return toggle('get_provider_of_a_kind');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#get_provider_of_a_kind">get_provider_of_a_kind</a><tt class="py-op">(</tt><tt class="py-param">kind</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="get_provider_of_a_kind-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="get_provider_of_a_kind-expanded"><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">    <tt class="py-name">database</tt> <tt class="py-op">=</tt> <tt id="link-50" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-50', 'config', 'link-10');">config</a></tt><tt class="py-op">.</tt><tt id="link-51" class="py-name" targets="Function pyocni.pyocni_tools.config.prepare_PyOCNI_db()=pyocni.pyocni_tools.config-module.html#prepare_PyOCNI_db"><a title="pyocni.pyocni_tools.config.prepare_PyOCNI_db" class="py-name" href="#" onclick="return doclink('link-51', 'prepare_PyOCNI_db', 'link-51');">prepare_PyOCNI_db</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line"> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">    <tt class="py-name">provider</tt> <tt class="py-op">=</tt> <tt class="py-name">None</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">    <tt class="py-keyword">try</tt><tt class="py-op">:</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">        <tt class="py-name">query</tt> <tt class="py-op">=</tt> <tt class="py-name">database</tt><tt class="py-op">.</tt><tt class="py-name">view</tt><tt class="py-op">(</tt><tt class="py-string">'/db_views/my_providers'</tt><tt class="py-op">,</tt> <tt class="py-name">key</tt><tt class="py-op">=</tt><tt id="link-52" class="py-name" targets="Variable pyocni.TDD.fake_Data.categories.kind=pyocni.TDD.fake_Data.categories-module.html#kind"><a title="pyocni.TDD.fake_Data.categories.kind" class="py-name" href="#" onclick="return doclink('link-52', 'kind', 'link-52');">kind</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">    <tt class="py-keyword">except</tt> <tt class="py-name">Exception</tt> <tt class="py-keyword">as</tt> <tt class="py-name">e</tt><tt class="py-op">:</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt id="link-53" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.occi_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-53', 'logger', 'link-16');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">error</tt><tt class="py-op">(</tt><tt class="py-string">"get_provider_of_a_kind : "</tt> <tt class="py-op">+</tt> <tt class="py-name">e</tt><tt class="py-op">.</tt><tt class="py-name">message</tt><tt class="py-op">)</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">"----------------------------------------------"</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">provider</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">    <tt class="py-keyword">if</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">count</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-keyword">is</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line">        <tt id="link-54" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.logger
+pyocni.adapters.i_RequestAdapter.logger
+pyocni.backends.backend.logger
+pyocni.backends.dummy_backend.logger
+pyocni.backends.l3vpn_backend.logger
+pyocni.backends.libnetvirt_backend.logger
+pyocni.backends.openflow_backend.logger
+pyocni.backends.opennebula_backend.logger
+pyocni.backends.openstack_backend.logger
+pyocni.dataBakers.category_dataBaker.logger
+pyocni.dataBakers.resource_dataBaker.logger
+pyocni.junglers.categoryJungler.logger
+pyocni.junglers.managers.actionManager.logger
+pyocni.junglers.managers.backendManager.logger
+pyocni.junglers.managers.kindManager.logger
+pyocni.junglers.managers.mixinManager.logger
+pyocni.junglers.managers.resourceManager.logger
+pyocni.junglers.multi_entityJungler.logger
+pyocni.junglers.pathJungler.logger
+pyocni.junglers.single_entityJungler.logger
+pyocni.occi_server.logger
+pyocni.pyocni_tools.config.logger
+pyocni.pyocni_tools.couchdbdoc_Joker.logger
+pyocni.pyocni_tools.occi_Joker.logger
+pyocni.suppliers.categorySupplier.logger
+pyocni.suppliers.resourceSupplier.logger" class="py-name" href="#" onclick="return doclink('link-54', 'logger', 'link-16');">logger</a></tt><tt class="py-op">.</tt><tt class="py-name">error</tt><tt class="py-op">(</tt><tt class="py-string">"get_provider_of_a_kind : No such provider"</tt><tt class="py-op">)</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">provider</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">    <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-name">provider</tt> <tt class="py-op">=</tt> <tt class="py-name">query</tt><tt class="py-op">.</tt><tt class="py-name">first</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-string">'value'</tt><tt class="py-op">]</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line"> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">    <tt class="py-keyword">return</tt> <tt class="py-name">provider</tt><tt class="py-op">[</tt><tt class="py-string">'local'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+</div><a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line"> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"> </tt>
+<a name="delete_entity"></a><div id="delete_entity-def"><a name="L111"></a><tt class="py-lineno">111</tt> <a class="py-toggle" href="#" id="delete_entity-toggle" onclick="return toggle('delete_entity');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#delete_entity">delete_entity</a><tt class="py-op">(</tt><tt class="py-param">entity</tt><tt class="py-op">,</tt> <tt class="py-param">kind</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="delete_entity-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="delete_entity-expanded"><a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">    <tt class="py-name">provider</tt> <tt class="py-op">=</tt> <tt id="link-55" class="py-name" targets="Function pyocni.junglers.managers.backendManager.get_provider_of_a_kind()=pyocni.junglers.managers.backendManager-module.html#get_provider_of_a_kind"><a title="pyocni.junglers.managers.backendManager.get_provider_of_a_kind" class="py-name" href="#" onclick="return doclink('link-55', 'get_provider_of_a_kind', 'link-55');">get_provider_of_a_kind</a></tt><tt class="py-op">(</tt><tt id="link-56" class="py-name"><a title="pyocni.TDD.fake_Data.categories.kind" class="py-name" href="#" onclick="return doclink('link-56', 'kind', 'link-52');">kind</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">    <tt id="link-57" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-57', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-58" class="py-name"><a title="pyocni.junglers.managers.backendManager.choose_appropriate_provider" class="py-name" href="#" onclick="return doclink('link-58', 'choose_appropriate_provider', 'link-42');">choose_appropriate_provider</a></tt><tt class="py-op">(</tt><tt class="py-name">provider</tt><tt class="py-op">)</tt> </tt>
+<a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line">    <tt id="link-59" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-59', 'backend', 'link-21');">backend</a></tt><tt class="py-op">.</tt><tt id="link-60" class="py-name" targets="Method pyocni.backends.backend.backend.delete()=pyocni.backends.backend.backend-class.html#delete,Method pyocni.backends.dummy_backend.dummy_backend.delete()=pyocni.backends.dummy_backend.dummy_backend-class.html#delete,Method pyocni.backends.l3vpn_backend.l3vpn_backend.delete()=pyocni.backends.l3vpn_backend.l3vpn_backend-class.html#delete,Method pyocni.backends.libnetvirt_backend.libnetvirt_backend.delete()=pyocni.backends.libnetvirt_backend.libnetvirt_backend-class.html#delete,Method pyocni.backends.openflow_backend.openflow_backend.delete()=pyocni.backends.openflow_backend.openflow_backend-class.html#delete,Method pyocni.backends.opennebula_backend.opennebula_backend.delete()=pyocni.backends.opennebula_backend.opennebula_backend-class.html#delete,Method pyocni.backends.openstack_backend.openstack_backend.delete()=pyocni.backends.openstack_backend.openstack_backend-class.html#delete,Method pyocni.dispachers.multi_entityDispatcher.MultiEntityDispatcher.delete()=pyocni.dispachers.multi_entityDispatcher.MultiEntityDispatcher-class.html#delete,Method pyocni.dispachers.queryDispatcher.QueryDispatcher.delete()=pyocni.dispachers.queryDispatcher.QueryDispatcher-class.html#delete,Method pyocni.dispachers.single_entityDispatcher.SingleEntityDispatcher.delete()=pyocni.dispachers.single_entityDispatcher.SingleEntityDispatcher-class.html#delete,Method pyocni.pyocni_tools.routes_test.ocni_server.Hello2.delete()=pyocni.pyocni_tools.routes_test.ocni_server.Hello2-class.html#delete"><a title="pyocni.backends.backend.backend.delete
+pyocni.backends.dummy_backend.dummy_backend.delete
+pyocni.backends.l3vpn_backend.l3vpn_backend.delete
+pyocni.backends.libnetvirt_backend.libnetvirt_backend.delete
+pyocni.backends.openflow_backend.openflow_backend.delete
+pyocni.backends.opennebula_backend.opennebula_backend.delete
+pyocni.backends.openstack_backend.openstack_backend.delete
+pyocni.dispachers.multi_entityDispatcher.MultiEntityDispatcher.delete
+pyocni.dispachers.queryDispatcher.QueryDispatcher.delete
+pyocni.dispachers.single_entityDispatcher.SingleEntityDispatcher.delete
+pyocni.pyocni_tools.routes_test.ocni_server.Hello2.delete" class="py-name" href="#" onclick="return doclink('link-60', 'delete', 'link-60');">delete</a></tt><tt class="py-op">(</tt><tt class="py-name">entity</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"> </tt>
+<a name="L116"></a><tt class="py-lineno">116</tt>  <tt class="py-line"> </tt>
+<a name="create_entity"></a><div id="create_entity-def"><a name="L117"></a><tt class="py-lineno">117</tt> <a class="py-toggle" href="#" id="create_entity-toggle" onclick="return toggle('create_entity');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#create_entity">create_entity</a><tt class="py-op">(</tt><tt class="py-param">entity</tt><tt class="py-op">,</tt> <tt class="py-param">res_adr</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="create_entity-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="create_entity-expanded"><a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line">    <tt id="link-61" class="py-name"><a title="pyocni.TDD.fake_Data.categories.kind" class="py-name" href="#" onclick="return doclink('link-61', 'kind', 'link-52');">kind</a></tt> <tt class="py-op">=</tt> <tt class="py-name">entity</tt><tt class="py-op">[</tt><tt class="py-string">'OCCI_Description'</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'kind'</tt><tt class="py-op">]</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line">    <tt class="py-name">provider</tt> <tt class="py-op">=</tt> <tt id="link-62" class="py-name"><a title="pyocni.junglers.managers.backendManager.get_provider_of_a_kind" class="py-name" href="#" onclick="return doclink('link-62', 'get_provider_of_a_kind', 'link-55');">get_provider_of_a_kind</a></tt><tt class="py-op">(</tt><tt id="link-63" class="py-name"><a title="pyocni.TDD.fake_Data.categories.kind" class="py-name" href="#" onclick="return doclink('link-63', 'kind', 'link-52');">kind</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line">    <tt id="link-64" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-64', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-65" class="py-name"><a title="pyocni.junglers.managers.backendManager.choose_appropriate_provider" class="py-name" href="#" onclick="return doclink('link-65', 'choose_appropriate_provider', 'link-42');">choose_appropriate_provider</a></tt><tt class="py-op">(</tt><tt class="py-name">provider</tt><tt class="py-op">)</tt> </tt>
+<a name="L121"></a><tt class="py-lineno">121</tt>  <tt class="py-line">    <tt id="link-66" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-66', 'backend', 'link-21');">backend</a></tt><tt class="py-op">.</tt><tt id="link-67" class="py-name" targets="Method pyocni.backends.backend.backend.create()=pyocni.backends.backend.backend-class.html#create,Method pyocni.backends.dummy_backend.dummy_backend.create()=pyocni.backends.dummy_backend.dummy_backend-class.html#create,Method pyocni.backends.l3vpn_backend.l3vpn_backend.create()=pyocni.backends.l3vpn_backend.l3vpn_backend-class.html#create,Method pyocni.backends.libnetvirt_backend.libnetvirt_backend.create()=pyocni.backends.libnetvirt_backend.libnetvirt_backend-class.html#create,Method pyocni.backends.openflow_backend.openflow_backend.create()=pyocni.backends.openflow_backend.openflow_backend-class.html#create,Method pyocni.backends.opennebula_backend.opennebula_backend.create()=pyocni.backends.opennebula_backend.opennebula_backend-class.html#create,Method pyocni.backends.openstack_backend.openstack_backend.create()=pyocni.backends.openstack_backend.openstack_backend-class.html#create"><a title="pyocni.backends.backend.backend.create
+pyocni.backends.dummy_backend.dummy_backend.create
+pyocni.backends.l3vpn_backend.l3vpn_backend.create
+pyocni.backends.libnetvirt_backend.libnetvirt_backend.create
+pyocni.backends.openflow_backend.openflow_backend.create
+pyocni.backends.opennebula_backend.opennebula_backend.create
+pyocni.backends.openstack_backend.openstack_backend.create" class="py-name" href="#" onclick="return doclink('link-67', 'create', 'link-67');">create</a></tt><tt class="py-op">(</tt><tt class="py-name">entity</tt><tt class="py-op">[</tt><tt class="py-string">'OCCI_Description'</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">res_adr</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line"> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line"> </tt>
+<a name="update_entity"></a><div id="update_entity-def"><a name="L124"></a><tt class="py-lineno">124</tt> <a class="py-toggle" href="#" id="update_entity-toggle" onclick="return toggle('update_entity');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#update_entity">update_entity</a><tt class="py-op">(</tt><tt class="py-param">old_data</tt><tt class="py-op">,</tt> <tt class="py-param">new_data</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="update_entity-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="update_entity-expanded"><a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">    <tt id="link-68" class="py-name"><a title="pyocni.TDD.fake_Data.categories.kind" class="py-name" href="#" onclick="return doclink('link-68', 'kind', 'link-52');">kind</a></tt> <tt class="py-op">=</tt> <tt class="py-name">old_data</tt><tt class="py-op">[</tt><tt class="py-string">'kind'</tt><tt class="py-op">]</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">    <tt class="py-name">provider</tt> <tt class="py-op">=</tt> <tt id="link-69" class="py-name"><a title="pyocni.junglers.managers.backendManager.get_provider_of_a_kind" class="py-name" href="#" onclick="return doclink('link-69', 'get_provider_of_a_kind', 'link-55');">get_provider_of_a_kind</a></tt><tt class="py-op">(</tt><tt id="link-70" class="py-name"><a title="pyocni.TDD.fake_Data.categories.kind" class="py-name" href="#" onclick="return doclink('link-70', 'kind', 'link-52');">kind</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">    <tt id="link-71" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-71', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-72" class="py-name"><a title="pyocni.junglers.managers.backendManager.choose_appropriate_provider" class="py-name" href="#" onclick="return doclink('link-72', 'choose_appropriate_provider', 'link-42');">choose_appropriate_provider</a></tt><tt class="py-op">(</tt><tt class="py-name">provider</tt><tt class="py-op">)</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">    <tt id="link-73" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-73', 'backend', 'link-21');">backend</a></tt><tt class="py-op">.</tt><tt id="link-74" class="py-name" targets="Method pyocni.backends.backend.backend.update()=pyocni.backends.backend.backend-class.html#update,Method pyocni.backends.dummy_backend.dummy_backend.update()=pyocni.backends.dummy_backend.dummy_backend-class.html#update,Method pyocni.backends.l3vpn_backend.l3vpn_backend.update()=pyocni.backends.l3vpn_backend.l3vpn_backend-class.html#update,Method pyocni.backends.libnetvirt_backend.libnetvirt_backend.update()=pyocni.backends.libnetvirt_backend.libnetvirt_backend-class.html#update,Method pyocni.backends.openflow_backend.openflow_backend.update()=pyocni.backends.openflow_backend.openflow_backend-class.html#update,Method pyocni.backends.opennebula_backend.opennebula_backend.update()=pyocni.backends.opennebula_backend.opennebula_backend-class.html#update,Method pyocni.backends.openstack_backend.openstack_backend.update()=pyocni.backends.openstack_backend.openstack_backend-class.html#update"><a title="pyocni.backends.backend.backend.update
+pyocni.backends.dummy_backend.dummy_backend.update
+pyocni.backends.l3vpn_backend.l3vpn_backend.update
+pyocni.backends.libnetvirt_backend.libnetvirt_backend.update
+pyocni.backends.openflow_backend.openflow_backend.update
+pyocni.backends.opennebula_backend.opennebula_backend.update
+pyocni.backends.openstack_backend.openstack_backend.update" class="py-name" href="#" onclick="return doclink('link-74', 'update', 'link-74');">update</a></tt><tt class="py-op">(</tt><tt class="py-name">old_data</tt><tt class="py-op">,</tt> <tt class="py-name">new_data</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line"> </tt>
+<a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"> </tt>
+<a name="read_entity"></a><div id="read_entity-def"><a name="L131"></a><tt class="py-lineno">131</tt> <a class="py-toggle" href="#" id="read_entity-toggle" onclick="return toggle('read_entity');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#read_entity">read_entity</a><tt class="py-op">(</tt><tt class="py-param">entity</tt><tt class="py-op">,</tt> <tt class="py-param">kind</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="read_entity-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="read_entity-expanded"><a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">    <tt class="py-name">provider</tt> <tt class="py-op">=</tt> <tt id="link-75" class="py-name"><a title="pyocni.junglers.managers.backendManager.get_provider_of_a_kind" class="py-name" href="#" onclick="return doclink('link-75', 'get_provider_of_a_kind', 'link-55');">get_provider_of_a_kind</a></tt><tt class="py-op">(</tt><tt id="link-76" class="py-name"><a title="pyocni.TDD.fake_Data.categories.kind" class="py-name" href="#" onclick="return doclink('link-76', 'kind', 'link-52');">kind</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">    <tt id="link-77" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-77', 'backend', 'link-21');">backend</a></tt> <tt class="py-op">=</tt> <tt id="link-78" class="py-name"><a title="pyocni.junglers.managers.backendManager.choose_appropriate_provider" class="py-name" href="#" onclick="return doclink('link-78', 'choose_appropriate_provider', 'link-42');">choose_appropriate_provider</a></tt><tt class="py-op">(</tt><tt class="py-name">provider</tt><tt class="py-op">)</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line">    <tt id="link-79" class="py-name"><a title="pyocni.backends.backend
+pyocni.backends.backend.backend" class="py-name" href="#" onclick="return doclink('link-79', 'backend', 'link-21');">backend</a></tt><tt class="py-op">.</tt><tt id="link-80" class="py-name" targets="Method pyocni.backends.backend.backend.read()=pyocni.backends.backend.backend-class.html#read,Method pyocni.backends.dummy_backend.dummy_backend.read()=pyocni.backends.dummy_backend.dummy_backend-class.html#read,Method pyocni.backends.l3vpn_backend.l3vpn_backend.read()=pyocni.backends.l3vpn_backend.l3vpn_backend-class.html#read,Method pyocni.backends.libnetvirt_backend.libnetvirt_backend.read()=pyocni.backends.libnetvirt_backend.libnetvirt_backend-class.html#read,Method pyocni.backends.openflow_backend.openflow_backend.read()=pyocni.backends.openflow_backend.openflow_backend-class.html#read,Method pyocni.backends.opennebula_backend.opennebula_backend.read()=pyocni.backends.opennebula_backend.opennebula_backend-class.html#read,Method pyocni.backends.openstack_backend.openstack_backend.read()=pyocni.backends.openstack_backend.openstack_backend-class.html#read"><a title="pyocni.backends.backend.backend.read
+pyocni.backends.dummy_backend.dummy_backend.read
+pyocni.backends.l3vpn_backend.l3vpn_backend.read
+pyocni.backends.libnetvirt_backend.libnetvirt_backend.read
+pyocni.backends.openflow_backend.openflow_backend.read
+pyocni.backends.opennebula_backend.opennebula_backend.read
+pyocni.backends.openstack_backend.openstack_backend.read" class="py-name" href="#" onclick="return doclink('link-80', 'read', 'link-80');">read</a></tt><tt class="py-op">(</tt><tt class="py-name">entity</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L135"></a><tt class="py-lineno">135</tt>  <tt class="py-line"> </tt>
+<a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line"> </tt>
+<a name="create_entities"></a><div id="create_entities-def"><a name="L137"></a><tt class="py-lineno">137</tt> <a class="py-toggle" href="#" id="create_entities-toggle" onclick="return toggle('create_entities');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#create_entities">create_entities</a><tt class="py-op">(</tt><tt class="py-param">entities</tt><tt class="py-op">,</tt> <tt class="py-param">res_adrs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="create_entities-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="create_entities-expanded"><a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-81" class="py-name" targets="Module pyocni.TDD.fake_Data.entities=pyocni.TDD.fake_Data.entities-module.html"><a title="pyocni.TDD.fake_Data.entities" class="py-name" href="#" onclick="return doclink('link-81', 'entities', 'link-81');">entities</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line">        <tt id="link-82" class="py-name" targets="Function pyocni.junglers.managers.backendManager.create_entity()=pyocni.junglers.managers.backendManager-module.html#create_entity"><a title="pyocni.junglers.managers.backendManager.create_entity" class="py-name" href="#" onclick="return doclink('link-82', 'create_entity', 'link-82');">create_entity</a></tt><tt class="py-op">(</tt><tt id="link-83" class="py-name"><a title="pyocni.TDD.fake_Data.entities" class="py-name" href="#" onclick="return doclink('link-83', 'entities', 'link-81');">entities</a></tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">res_adrs</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line"> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line"> </tt>
+<a name="update_entities"></a><div id="update_entities-def"><a name="L142"></a><tt class="py-lineno">142</tt> <a class="py-toggle" href="#" id="update_entities-toggle" onclick="return toggle('update_entities');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#update_entities">update_entities</a><tt class="py-op">(</tt><tt class="py-param">old_docs</tt><tt class="py-op">,</tt> <tt class="py-param">new_docs</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="update_entities-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="update_entities-expanded"><a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt class="py-name">old_docs</tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt id="link-84" class="py-name" targets="Function pyocni.junglers.managers.backendManager.update_entity()=pyocni.junglers.managers.backendManager-module.html#update_entity"><a title="pyocni.junglers.managers.backendManager.update_entity" class="py-name" href="#" onclick="return doclink('link-84', 'update_entity', 'link-84');">update_entity</a></tt><tt class="py-op">(</tt><tt class="py-name">old_docs</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt class="py-name">new_docs</tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line"> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line"> </tt>
+<a name="read_entities"></a><div id="read_entities-def"><a name="L147"></a><tt class="py-lineno">147</tt> <a class="py-toggle" href="#" id="read_entities-toggle" onclick="return toggle('read_entities');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.junglers.managers.backendManager-module.html#read_entities">read_entities</a><tt class="py-op">(</tt><tt class="py-param">entities</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="read_entities-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="read_entities-expanded"><a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">i</tt> <tt class="py-keyword">in</tt> <tt class="py-name">range</tt><tt class="py-op">(</tt><tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-85" class="py-name"><a title="pyocni.TDD.fake_Data.entities" class="py-name" href="#" onclick="return doclink('link-85', 'entities', 'link-81');">entities</a></tt><tt class="py-op">)</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line">        <tt id="link-86" class="py-name" targets="Function pyocni.junglers.managers.backendManager.read_entity()=pyocni.junglers.managers.backendManager-module.html#read_entity"><a title="pyocni.junglers.managers.backendManager.read_entity" class="py-name" href="#" onclick="return doclink('link-86', 'read_entity', 'link-86');">read_entity</a></tt><tt class="py-op">(</tt><tt id="link-87" class="py-name"><a title="pyocni.TDD.fake_Data.entities" class="py-name" href="#" onclick="return doclink('link-87', 'entities', 'link-81');">entities</a></tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">,</tt> <tt id="link-88" class="py-name"><a title="pyocni.TDD.fake_Data.entities" class="py-name" href="#" onclick="return doclink('link-88', 'entities', 'link-81');">entities</a></tt><tt class="py-op">[</tt><tt class="py-name">i</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-string">'kind'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >pyocni</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Oct 25 18:47:47 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

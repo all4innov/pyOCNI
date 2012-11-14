@@ -1,0 +1,41 @@
+/*
+
+ =1= Multiple actions can be updated at the same time
+ =2= Each description MUST at least contain term and scheme object members to be updated
+ =3= Action descriptions must follow the OCCI JSON rendering draft
+ =4= term and scheme are forbidden to change
+
+ */
+
+{
+    "actions":[
+        {
+            "term":"stop",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title":"Stop Compute instance",
+            "attributes":{
+                "method":{
+                    "mutable":true,
+                    "required":false,
+                    "type":"string",
+                    "pattern":"graceful|acpioff|poweroff",
+                    "default":"poweroff"
+                }
+            }
+        },
+        {
+            "term":"start",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title":"Start Compute instance",
+            "attributes":{
+                "method":{
+                    "mutable":true,
+                    "required":false,
+                    "type":"string",
+                    "pattern":"graceful|acpion|poweron",
+                    "default":"poweron"
+                }
+            }
+        }
+    ]
+}

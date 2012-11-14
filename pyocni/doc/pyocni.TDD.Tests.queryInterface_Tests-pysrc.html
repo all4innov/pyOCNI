@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>pyocni.TDD.Tests.queryInterface_Tests</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >pyocni</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="pyocni-module.html">Package&nbsp;pyocni</a> ::
+        <a href="pyocni.TDD-module.html">Package&nbsp;TDD</a> ::
+        <a href="pyocni.TDD.Tests-module.html">Package&nbsp;Tests</a> ::
+        Module&nbsp;queryInterface_Tests
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="pyocni.TDD.Tests.queryInterface_Tests-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="pyocni.TDD.Tests.queryInterface_Tests-module.html">Module pyocni.TDD.Tests.queryInterface_Tests</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-comment">#  Copyright 2010-2012 Institut Mines-Telecom</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-comment">#  Licensed under the Apache License, Version 2.0 (the "License");</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-comment">#  you may not use this file except in compliance with the License.</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-comment">#  You may obtain a copy of the License at</tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"><tt class="py-comment">#  http://www.apache.org/licenses/LICENSE-2.0</tt> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-comment">#</tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-comment">#  Unless required by applicable law or agreed to in writing, software</tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-comment">#  distributed under the License is distributed on an "AS IS" BASIS,</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"><tt class="py-comment">#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</tt> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-comment">#  See the License for the specific language governing permissions and</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"><tt class="py-comment">#  limitations under the License.</tt> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-docstring">Created on Jun 27, 2012</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt class="py-docstring"></tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"><tt class="py-docstring">@author: Bilel Msekni</tt> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt class="py-docstring">@contact: bilel.msekni@telecom-sudparis.eu</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"><tt class="py-docstring">@author: Houssem Medhioub</tt> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-docstring">@contact: houssem.medhioub@it-sudparis.eu</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-docstring">@organization: Institut Mines-Telecom - Telecom SudParis</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line"><tt class="py-docstring">@license: Apache License, Version 2.0</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line"><tt class="py-docstring">"""</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">multiprocessing</tt> <tt class="py-keyword">import</tt> <tt class="py-name">Process</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">unittest</tt> <tt class="py-keyword">import</tt> <tt class="py-name">TestLoader</tt><tt class="py-op">,</tt> <tt class="py-name">TextTestRunner</tt><tt class="py-op">,</tt> <tt class="py-name">TestCase</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-0" class="py-name" targets="Package pyocni=pyocni-module.html"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-0', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-1" class="py-name" targets="Package pyocni.TDD=pyocni.TDD-module.html"><a title="pyocni.TDD" class="py-name" href="#" onclick="return doclink('link-1', 'TDD', 'link-1');">TDD</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Package pyocni.TDD.fake_Data=pyocni.TDD.fake_Data-module.html"><a title="pyocni.TDD.fake_Data" class="py-name" href="#" onclick="return doclink('link-2', 'fake_Data', 'link-2');">fake_Data</a></tt><tt class="py-op">.</tt><tt id="link-3" class="py-name" targets="Module pyocni.TDD.fake_Data.server_Mock=pyocni.TDD.fake_Data.server_Mock-module.html"><a title="pyocni.TDD.fake_Data.server_Mock" class="py-name" href="#" onclick="return doclink('link-3', 'server_Mock', 'link-3');">server_Mock</a></tt> <tt class="py-keyword">import</tt> <tt id="link-4" class="py-name" targets="Class pyocni.TDD.fake_Data.server_Mock.ocni_server=pyocni.TDD.fake_Data.server_Mock.ocni_server-class.html,Class pyocni.pyocni_tools.routes_test.ocni_server=pyocni.pyocni_tools.routes_test.ocni_server-class.html"><a title="pyocni.TDD.fake_Data.server_Mock.ocni_server
+pyocni.pyocni_tools.routes_test.ocni_server" class="py-name" href="#" onclick="return doclink('link-4', 'ocni_server', 'link-4');">ocni_server</a></tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">pycurl</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">time</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">StringIO</tt> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-5" class="py-name"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-5', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-6" class="py-name"><a title="pyocni.TDD" class="py-name" href="#" onclick="return doclink('link-6', 'TDD', 'link-1');">TDD</a></tt><tt class="py-op">.</tt><tt id="link-7" class="py-name"><a title="pyocni.TDD.fake_Data" class="py-name" href="#" onclick="return doclink('link-7', 'fake_Data', 'link-2');">fake_Data</a></tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Module pyocni.TDD.fake_Data.initialize_fakeDB=pyocni.TDD.fake_Data.initialize_fakeDB-module.html"><a title="pyocni.TDD.fake_Data.initialize_fakeDB" class="py-name" href="#" onclick="return doclink('link-8', 'initialize_fakeDB', 'link-8');">initialize_fakeDB</a></tt> <tt class="py-keyword">import</tt> <tt id="link-9" class="py-name" targets="Function pyocni.TDD.fake_Data.initialize_fakeDB.init_fakeDB()=pyocni.TDD.fake_Data.initialize_fakeDB-module.html#init_fakeDB"><a title="pyocni.TDD.fake_Data.initialize_fakeDB.init_fakeDB" class="py-name" href="#" onclick="return doclink('link-9', 'init_fakeDB', 'link-9');">init_fakeDB</a></tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-10" class="py-name"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-10', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-11" class="py-name"><a title="pyocni.TDD" class="py-name" href="#" onclick="return doclink('link-11', 'TDD', 'link-1');">TDD</a></tt><tt class="py-op">.</tt><tt id="link-12" class="py-name"><a title="pyocni.TDD.fake_Data" class="py-name" href="#" onclick="return doclink('link-12', 'fake_Data', 'link-2');">fake_Data</a></tt><tt class="py-op">.</tt><tt id="link-13" class="py-name" targets="Module pyocni.TDD.fake_Data.categories=pyocni.TDD.fake_Data.categories-module.html"><a title="pyocni.TDD.fake_Data.categories" class="py-name" href="#" onclick="return doclink('link-13', 'categories', 'link-13');">categories</a></tt> <tt class="py-keyword">as</tt> <tt class="py-name">f_categories</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-14" class="py-name"><a title="pyocni" class="py-name" href="#" onclick="return doclink('link-14', 'pyocni', 'link-0');">pyocni</a></tt><tt class="py-op">.</tt><tt id="link-15" class="py-name" targets="Package pyocni.pyocni_tools=pyocni.pyocni_tools-module.html"><a title="pyocni.pyocni_tools" class="py-name" href="#" onclick="return doclink('link-15', 'pyocni_tools', 'link-15');">pyocni_tools</a></tt><tt class="py-op">.</tt><tt id="link-16" class="py-name" targets="Module pyocni.pyocni_tools.config=pyocni.pyocni_tools.config-module.html,Variable pyocni.pyocni_tools.config.config=pyocni.pyocni_tools.config-module.html#config"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-16', 'config', 'link-16');">config</a></tt> <tt class="py-keyword">as</tt> <tt id="link-17" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-17', 'config', 'link-16');">config</a></tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line"> </tt>
+<a name="start_server"></a><div id="start_server-def"><a name="L35"></a><tt class="py-lineno"> 35</tt> <a class="py-toggle" href="#" id="start_server-toggle" onclick="return toggle('start_server');">-</a><tt class="py-line"><tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests-module.html#start_server">start_server</a><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="start_server-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="start_server-expanded"><a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">    <tt class="py-name">ocni_server_instance</tt> <tt class="py-op">=</tt> <tt id="link-18" class="py-name"><a title="pyocni.TDD.fake_Data.server_Mock.ocni_server
+pyocni.pyocni_tools.routes_test.ocni_server" class="py-name" href="#" onclick="return doclink('link-18', 'ocni_server', 'link-4');">ocni_server</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line">    <tt class="py-name">ocni_server_instance</tt><tt class="py-op">.</tt><tt id="link-19" class="py-name" targets="Method pyocni.TDD.fake_Data.server_Mock.ocni_server.run_server()=pyocni.TDD.fake_Data.server_Mock.ocni_server-class.html#run_server,Method pyocni.occi_server.occi_server.run_server()=pyocni.occi_server.occi_server-class.html#run_server,Method pyocni.pyocni_tools.routes_test.ocni_server.run_server()=pyocni.pyocni_tools.routes_test.ocni_server-class.html#run_server"><a title="pyocni.TDD.fake_Data.server_Mock.ocni_server.run_server
+pyocni.occi_server.occi_server.run_server
+pyocni.pyocni_tools.routes_test.ocni_server.run_server" class="py-name" href="#" onclick="return doclink('link-19', 'run_server', 'link-19');">run_server</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line"> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line"> </tt>
+<a name="test_get"></a><div id="test_get-def"><a name="L40"></a><tt class="py-lineno"> 40</tt> <a class="py-toggle" href="#" id="test_get-toggle" onclick="return toggle('test_get');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_get-class.html">test_get</a><tt class="py-op">(</tt><tt class="py-base-class">TestCase</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_get-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="test_get-expanded"><a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line"><tt class="py-docstring">    Tests GET request scenarios</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line"> </tt>
+<a name="test_get.setUp"></a><div id="test_get.setUp-def"><a name="L45"></a><tt class="py-lineno"> 45</tt> <a class="py-toggle" href="#" id="test_get.setUp-toggle" onclick="return toggle('test_get.setUp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_get-class.html#setUp">setUp</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_get.setUp-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_get.setUp-expanded"><a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line"><tt class="py-docstring">        Set up the test environment</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt> <tt class="py-op">=</tt> <tt class="py-name">Process</tt><tt class="py-op">(</tt><tt class="py-name">target</tt><tt class="py-op">=</tt><tt id="link-20" class="py-name" targets="Function pyocni.TDD.Tests.multientityInterface_Tests.start_server()=pyocni.TDD.Tests.multientityInterface_Tests-module.html#start_server,Function pyocni.TDD.Tests.pathInterface_Tests.start_server()=pyocni.TDD.Tests.pathInterface_Tests-module.html#start_server,Function pyocni.TDD.Tests.queryInterface_Tests.start_server()=pyocni.TDD.Tests.queryInterface_Tests-module.html#start_server,Function pyocni.TDD.Tests.singleentityInterface_Tests.start_server()=pyocni.TDD.Tests.singleentityInterface_Tests-module.html#start_server"><a title="pyocni.TDD.Tests.multientityInterface_Tests.start_server
+pyocni.TDD.Tests.pathInterface_Tests.start_server
+pyocni.TDD.Tests.queryInterface_Tests.start_server
+pyocni.TDD.Tests.singleentityInterface_Tests.start_server" class="py-name" href="#" onclick="return doclink('link-20', 'start_server', 'link-20');">start_server</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">start</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">        <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">0.5</tt><tt class="py-op">)</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">        <tt id="link-21" class="py-name"><a title="pyocni.TDD.fake_Data.initialize_fakeDB.init_fakeDB" class="py-name" href="#" onclick="return doclink('link-21', 'init_fakeDB', 'link-9');">init_fakeDB</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line">        <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">0.5</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line"> </tt>
+<a name="test_get.tearDown"></a><div id="test_get.tearDown-def"><a name="L55"></a><tt class="py-lineno"> 55</tt> <a class="py-toggle" href="#" id="test_get.tearDown-toggle" onclick="return toggle('test_get.tearDown');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_get-class.html#tearDown">tearDown</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_get.tearDown-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_get.tearDown-expanded"><a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">        <tt id="link-22" class="py-name"><a title="pyocni.pyocni_tools.config
+pyocni.pyocni_tools.config.config" class="py-name" href="#" onclick="return doclink('link-22', 'config', 'link-16');">config</a></tt><tt class="py-op">.</tt><tt id="link-23" class="py-name" targets="Function pyocni.pyocni_tools.config.purge_PyOCNI_db()=pyocni.pyocni_tools.config-module.html#purge_PyOCNI_db"><a title="pyocni.pyocni_tools.config.purge_PyOCNI_db" class="py-name" href="#" onclick="return doclink('link-23', 'purge_PyOCNI_db', 'link-23');">purge_PyOCNI_db</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">terminate</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line"> </tt>
+<a name="test_get.test_get_categories"></a><div id="test_get.test_get_categories-def"><a name="L59"></a><tt class="py-lineno"> 59</tt> <a class="py-toggle" href="#" id="test_get.test_get_categories-toggle" onclick="return toggle('test_get.test_get_categories');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_get-class.html#test_get_categories">test_get_categories</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_get.test_get_categories-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_get.test_get_categories-expanded"><a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line"><tt class="py-docstring">        Get all kinds,mixins and actions</tt> </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">        <tt class="py-name">storage</tt> <tt class="py-op">=</tt> <tt class="py-name">StringIO</tt><tt class="py-op">.</tt><tt class="py-name">StringIO</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">        <tt class="py-name">c</tt> <tt class="py-op">=</tt> <tt class="py-name">pycurl</tt><tt class="py-op">.</tt><tt class="py-name">Curl</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">URL</tt><tt class="py-op">,</tt> <tt class="py-string">'http://127.0.0.1:8090/-/'</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">HTTPHEADER</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-string">'Accept:text/plain'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">VERBOSE</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">        <tt class="py-comment">#c.setopt(c.POSTFIELDS,f_entities.action_occci_id)</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">CUSTOMREQUEST</tt><tt class="py-op">,</tt> <tt class="py-string">'GET'</tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">WRITEFUNCTION</tt><tt class="py-op">,</tt> <tt class="py-name">storage</tt><tt class="py-op">.</tt><tt class="py-name">write</tt><tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">perform</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">        <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt class="py-name">storage</tt><tt class="py-op">.</tt><tt class="py-name">getvalue</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">" ========== Body content ==========\n "</tt> <tt class="py-op">+</tt> <tt class="py-name">content</tt> <tt class="py-op">+</tt> <tt class="py-string">" \n ==========\n"</tt> </tt>
+</div></div><a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line"> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line"> </tt>
+<a name="test_delete"></a><div id="test_delete-def"><a name="L77"></a><tt class="py-lineno"> 77</tt> <a class="py-toggle" href="#" id="test_delete-toggle" onclick="return toggle('test_delete');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_delete-class.html">test_delete</a><tt class="py-op">(</tt><tt class="py-base-class">TestCase</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_delete-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="test_delete-expanded"><a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line"><tt class="py-docstring">    Tests DELETE request scenarios</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line"> </tt>
+<a name="test_delete.setUp"></a><div id="test_delete.setUp-def"><a name="L82"></a><tt class="py-lineno"> 82</tt> <a class="py-toggle" href="#" id="test_delete.setUp-toggle" onclick="return toggle('test_delete.setUp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_delete-class.html#setUp">setUp</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_delete.setUp-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_delete.setUp-expanded"><a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line"><tt class="py-docstring">        Set up the test environment</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt> <tt class="py-op">=</tt> <tt class="py-name">Process</tt><tt class="py-op">(</tt><tt class="py-name">target</tt><tt class="py-op">=</tt><tt id="link-24" class="py-name"><a title="pyocni.TDD.Tests.multientityInterface_Tests.start_server
+pyocni.TDD.Tests.pathInterface_Tests.start_server
+pyocni.TDD.Tests.queryInterface_Tests.start_server
+pyocni.TDD.Tests.singleentityInterface_Tests.start_server" class="py-name" href="#" onclick="return doclink('link-24', 'start_server', 'link-20');">start_server</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">start</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">0.5</tt><tt class="py-op">)</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-comment">#init_fakeDB()</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">0.5</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line"> </tt>
+<a name="test_delete.tearDown"></a><div id="test_delete.tearDown-def"><a name="L92"></a><tt class="py-lineno"> 92</tt> <a class="py-toggle" href="#" id="test_delete.tearDown-toggle" onclick="return toggle('test_delete.tearDown');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_delete-class.html#tearDown">tearDown</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_delete.tearDown-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_delete.tearDown-expanded"><a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line">        <tt class="py-comment">#config.purge_PyOCNI_db()</tt> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">terminate</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line"> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line"> </tt>
+<a name="test_delete.test_delete_categories"></a><div id="test_delete.test_delete_categories-def"><a name="L97"></a><tt class="py-lineno"> 97</tt> <a class="py-toggle" href="#" id="test_delete.test_delete_categories-toggle" onclick="return toggle('test_delete.test_delete_categories');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_delete-class.html#test_delete_categories">test_delete_categories</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_delete.test_delete_categories-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_delete.test_delete_categories-expanded"><a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"><tt class="py-docstring">        delete a mixin</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line">        <tt class="py-name">storage</tt> <tt class="py-op">=</tt> <tt class="py-name">StringIO</tt><tt class="py-op">.</tt><tt class="py-name">StringIO</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line">        <tt class="py-name">c</tt> <tt class="py-op">=</tt> <tt class="py-name">pycurl</tt><tt class="py-op">.</tt><tt class="py-name">Curl</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">CUSTOMREQUEST</tt><tt class="py-op">,</tt> <tt class="py-string">'DELETE'</tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">URL</tt><tt class="py-op">,</tt> <tt class="py-string">'http://127.0.0.1:8090/-/'</tt><tt class="py-op">)</tt> </tt>
+<a name="L106"></a><tt class="py-lineno">106</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">HTTPHEADER</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-string">'Accept: application/occi+json'</tt><tt class="py-op">,</tt> <tt class="py-string">'Content-Type: text/plain'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L107"></a><tt class="py-lineno">107</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">POSTFIELDS</tt><tt class="py-op">,</tt> <tt class="py-name">f_categories</tt><tt class="py-op">.</tt><tt id="link-25" class="py-name" targets="Variable pyocni.TDD.fake_Data.categories.action_occci_id=pyocni.TDD.fake_Data.categories-module.html#action_occci_id"><a title="pyocni.TDD.fake_Data.categories.action_occci_id" class="py-name" href="#" onclick="return doclink('link-25', 'action_occci_id', 'link-25');">action_occci_id</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L108"></a><tt class="py-lineno">108</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">VERBOSE</tt><tt class="py-op">,</tt> <tt class="py-name">True</tt><tt class="py-op">)</tt> </tt>
+<a name="L109"></a><tt class="py-lineno">109</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">WRITEFUNCTION</tt><tt class="py-op">,</tt> <tt class="py-name">storage</tt><tt class="py-op">.</tt><tt class="py-name">write</tt><tt class="py-op">)</tt> </tt>
+<a name="L110"></a><tt class="py-lineno">110</tt>  <tt class="py-line"> </tt>
+<a name="L111"></a><tt class="py-lineno">111</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">perform</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L112"></a><tt class="py-lineno">112</tt>  <tt class="py-line">        <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt class="py-name">storage</tt><tt class="py-op">.</tt><tt class="py-name">getvalue</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L113"></a><tt class="py-lineno">113</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">" ===== Body content =====\n "</tt> <tt class="py-op">+</tt> <tt class="py-name">content</tt> <tt class="py-op">+</tt> <tt class="py-string">" ==========\n"</tt> </tt>
+</div></div><a name="L114"></a><tt class="py-lineno">114</tt>  <tt class="py-line"> </tt>
+<a name="L115"></a><tt class="py-lineno">115</tt>  <tt class="py-line"> </tt>
+<a name="test_post"></a><div id="test_post-def"><a name="L116"></a><tt class="py-lineno">116</tt> <a class="py-toggle" href="#" id="test_post-toggle" onclick="return toggle('test_post');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_post-class.html">test_post</a><tt class="py-op">(</tt><tt class="py-base-class">TestCase</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_post-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="test_post-expanded"><a name="L117"></a><tt class="py-lineno">117</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L118"></a><tt class="py-lineno">118</tt>  <tt class="py-line"><tt class="py-docstring">    Tests POST request scenarios</tt> </tt>
+<a name="L119"></a><tt class="py-lineno">119</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L120"></a><tt class="py-lineno">120</tt>  <tt class="py-line"> </tt>
+<a name="test_post.setUp"></a><div id="test_post.setUp-def"><a name="L121"></a><tt class="py-lineno">121</tt> <a class="py-toggle" href="#" id="test_post.setUp-toggle" onclick="return toggle('test_post.setUp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_post-class.html#setUp">setUp</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_post.setUp-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_post.setUp-expanded"><a name="L122"></a><tt class="py-lineno">122</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L123"></a><tt class="py-lineno">123</tt>  <tt class="py-line"><tt class="py-docstring">        Set up the test environment</tt> </tt>
+<a name="L124"></a><tt class="py-lineno">124</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L125"></a><tt class="py-lineno">125</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt> <tt class="py-op">=</tt> <tt class="py-name">Process</tt><tt class="py-op">(</tt><tt class="py-name">target</tt><tt class="py-op">=</tt><tt id="link-26" class="py-name"><a title="pyocni.TDD.Tests.multientityInterface_Tests.start_server
+pyocni.TDD.Tests.pathInterface_Tests.start_server
+pyocni.TDD.Tests.queryInterface_Tests.start_server
+pyocni.TDD.Tests.singleentityInterface_Tests.start_server" class="py-name" href="#" onclick="return doclink('link-26', 'start_server', 'link-20');">start_server</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L126"></a><tt class="py-lineno">126</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">start</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L127"></a><tt class="py-lineno">127</tt>  <tt class="py-line">        <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">0.5</tt><tt class="py-op">)</tt> </tt>
+<a name="L128"></a><tt class="py-lineno">128</tt>  <tt class="py-line">        <tt class="py-comment">#init_fakeDB()</tt> </tt>
+<a name="L129"></a><tt class="py-lineno">129</tt>  <tt class="py-line">        <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">0.5</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L130"></a><tt class="py-lineno">130</tt>  <tt class="py-line"> </tt>
+<a name="test_post.tearDown"></a><div id="test_post.tearDown-def"><a name="L131"></a><tt class="py-lineno">131</tt> <a class="py-toggle" href="#" id="test_post.tearDown-toggle" onclick="return toggle('test_post.tearDown');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_post-class.html#tearDown">tearDown</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_post.tearDown-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_post.tearDown-expanded"><a name="L132"></a><tt class="py-lineno">132</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">terminate</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L133"></a><tt class="py-lineno">133</tt>  <tt class="py-line">        <tt class="py-comment">#config.purge_PyOCNI_db()</tt> </tt>
+<a name="L134"></a><tt class="py-lineno">134</tt>  <tt class="py-line"> </tt>
+<a name="test_post.test_register_categories"></a><div id="test_post.test_register_categories-def"><a name="L135"></a><tt class="py-lineno">135</tt> <a class="py-toggle" href="#" id="test_post.test_register_categories-toggle" onclick="return toggle('test_post.test_register_categories');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_post-class.html#test_register_categories">test_register_categories</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_post.test_register_categories-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_post.test_register_categories-expanded"><a name="L136"></a><tt class="py-lineno">136</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L137"></a><tt class="py-lineno">137</tt>  <tt class="py-line"><tt class="py-docstring">        register kind, mixins or actions</tt> </tt>
+<a name="L138"></a><tt class="py-lineno">138</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L139"></a><tt class="py-lineno">139</tt>  <tt class="py-line"> </tt>
+<a name="L140"></a><tt class="py-lineno">140</tt>  <tt class="py-line">        <tt class="py-name">c</tt> <tt class="py-op">=</tt> <tt class="py-name">pycurl</tt><tt class="py-op">.</tt><tt class="py-name">Curl</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L141"></a><tt class="py-lineno">141</tt>  <tt class="py-line">        <tt class="py-name">storage</tt> <tt class="py-op">=</tt> <tt class="py-name">StringIO</tt><tt class="py-op">.</tt><tt class="py-name">StringIO</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L142"></a><tt class="py-lineno">142</tt>  <tt class="py-line"> </tt>
+<a name="L143"></a><tt class="py-lineno">143</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">URL</tt><tt class="py-op">,</tt> <tt class="py-string">'http://127.0.0.1:8090/-/'</tt><tt class="py-op">)</tt> </tt>
+<a name="L144"></a><tt class="py-lineno">144</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">HTTPHEADER</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-string">'Content-Type: text/plain'</tt><tt class="py-op">,</tt> <tt class="py-string">'Accept: application/occi+json'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L145"></a><tt class="py-lineno">145</tt>  <tt class="py-line"> </tt>
+<a name="L146"></a><tt class="py-lineno">146</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">POSTFIELDS</tt><tt class="py-op">,</tt> <tt class="py-name">f_categories</tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Variable pyocni.TDD.fake_Data.categories.kind_http=pyocni.TDD.fake_Data.categories-module.html#kind_http"><a title="pyocni.TDD.fake_Data.categories.kind_http" class="py-name" href="#" onclick="return doclink('link-27', 'kind_http', 'link-27');">kind_http</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L147"></a><tt class="py-lineno">147</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">CUSTOMREQUEST</tt><tt class="py-op">,</tt> <tt class="py-string">'POST'</tt><tt class="py-op">)</tt> </tt>
+<a name="L148"></a><tt class="py-lineno">148</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">WRITEFUNCTION</tt><tt class="py-op">,</tt> <tt class="py-name">storage</tt><tt class="py-op">.</tt><tt class="py-name">write</tt><tt class="py-op">)</tt> </tt>
+<a name="L149"></a><tt class="py-lineno">149</tt>  <tt class="py-line"> </tt>
+<a name="L150"></a><tt class="py-lineno">150</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">perform</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L151"></a><tt class="py-lineno">151</tt>  <tt class="py-line">        <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt class="py-name">storage</tt><tt class="py-op">.</tt><tt class="py-name">getvalue</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L152"></a><tt class="py-lineno">152</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">" ===== Body content =====\n "</tt> <tt class="py-op">+</tt> <tt class="py-name">content</tt> <tt class="py-op">+</tt> <tt class="py-string">" ==========\n"</tt> </tt>
+</div></div><a name="L153"></a><tt class="py-lineno">153</tt>  <tt class="py-line"> </tt>
+<a name="L154"></a><tt class="py-lineno">154</tt>  <tt class="py-line"> </tt>
+<a name="test_put"></a><div id="test_put-def"><a name="L155"></a><tt class="py-lineno">155</tt> <a class="py-toggle" href="#" id="test_put-toggle" onclick="return toggle('test_put');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_put-class.html">test_put</a><tt class="py-op">(</tt><tt class="py-base-class">TestCase</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_put-collapsed" style="display:none;" pad="+++" indent="++++"></div><div id="test_put-expanded"><a name="L156"></a><tt class="py-lineno">156</tt>  <tt class="py-line">    <tt class="py-docstring">"""</tt> </tt>
+<a name="L157"></a><tt class="py-lineno">157</tt>  <tt class="py-line"><tt class="py-docstring">    Tests PUT request scenarios</tt> </tt>
+<a name="L158"></a><tt class="py-lineno">158</tt>  <tt class="py-line"><tt class="py-docstring">    """</tt> </tt>
+<a name="L159"></a><tt class="py-lineno">159</tt>  <tt class="py-line"> </tt>
+<a name="test_put.setUp"></a><div id="test_put.setUp-def"><a name="L160"></a><tt class="py-lineno">160</tt> <a class="py-toggle" href="#" id="test_put.setUp-toggle" onclick="return toggle('test_put.setUp');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_put-class.html#setUp">setUp</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_put.setUp-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_put.setUp-expanded"><a name="L161"></a><tt class="py-lineno">161</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L162"></a><tt class="py-lineno">162</tt>  <tt class="py-line"><tt class="py-docstring">        Set up the test environment</tt> </tt>
+<a name="L163"></a><tt class="py-lineno">163</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L164"></a><tt class="py-lineno">164</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt> <tt class="py-op">=</tt> <tt class="py-name">Process</tt><tt class="py-op">(</tt><tt class="py-name">target</tt><tt class="py-op">=</tt><tt id="link-28" class="py-name"><a title="pyocni.TDD.Tests.multientityInterface_Tests.start_server
+pyocni.TDD.Tests.pathInterface_Tests.start_server
+pyocni.TDD.Tests.queryInterface_Tests.start_server
+pyocni.TDD.Tests.singleentityInterface_Tests.start_server" class="py-name" href="#" onclick="return doclink('link-28', 'start_server', 'link-20');">start_server</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L165"></a><tt class="py-lineno">165</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">start</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L166"></a><tt class="py-lineno">166</tt>  <tt class="py-line">        <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">0.5</tt><tt class="py-op">)</tt> </tt>
+<a name="L167"></a><tt class="py-lineno">167</tt>  <tt class="py-line">        <tt class="py-comment">#init_fakeDB()</tt> </tt>
+<a name="L168"></a><tt class="py-lineno">168</tt>  <tt class="py-line">        <tt class="py-name">time</tt><tt class="py-op">.</tt><tt class="py-name">sleep</tt><tt class="py-op">(</tt><tt class="py-number">0.5</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L169"></a><tt class="py-lineno">169</tt>  <tt class="py-line"> </tt>
+<a name="test_put.tearDown"></a><div id="test_put.tearDown-def"><a name="L170"></a><tt class="py-lineno">170</tt> <a class="py-toggle" href="#" id="test_put.tearDown-toggle" onclick="return toggle('test_put.tearDown');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_put-class.html#tearDown">tearDown</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_put.tearDown-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_put.tearDown-expanded"><a name="L171"></a><tt class="py-lineno">171</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">p</tt><tt class="py-op">.</tt><tt class="py-name">terminate</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+</div><a name="L172"></a><tt class="py-lineno">172</tt>  <tt class="py-line">        <tt class="py-comment">#config.purge_PyOCNI_db()</tt> </tt>
+<a name="L173"></a><tt class="py-lineno">173</tt>  <tt class="py-line"> </tt>
+<a name="test_put.test_update_categories"></a><div id="test_put.test_update_categories-def"><a name="L174"></a><tt class="py-lineno">174</tt> <a class="py-toggle" href="#" id="test_put.test_update_categories-toggle" onclick="return toggle('test_put.test_update_categories');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="pyocni.TDD.Tests.queryInterface_Tests.test_put-class.html#test_update_categories">test_update_categories</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="test_put.test_update_categories-collapsed" style="display:none;" pad="+++" indent="++++++++"></div><div id="test_put.test_update_categories-expanded"><a name="L175"></a><tt class="py-lineno">175</tt>  <tt class="py-line">        <tt class="py-docstring">"""</tt> </tt>
+<a name="L176"></a><tt class="py-lineno">176</tt>  <tt class="py-line"><tt class="py-docstring">        register kind, mixins or actions</tt> </tt>
+<a name="L177"></a><tt class="py-lineno">177</tt>  <tt class="py-line"><tt class="py-docstring">        """</tt> </tt>
+<a name="L178"></a><tt class="py-lineno">178</tt>  <tt class="py-line">        <tt class="py-name">storage</tt> <tt class="py-op">=</tt> <tt class="py-name">StringIO</tt><tt class="py-op">.</tt><tt class="py-name">StringIO</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L179"></a><tt class="py-lineno">179</tt>  <tt class="py-line">        <tt class="py-name">c</tt> <tt class="py-op">=</tt> <tt class="py-name">pycurl</tt><tt class="py-op">.</tt><tt class="py-name">Curl</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L180"></a><tt class="py-lineno">180</tt>  <tt class="py-line"> </tt>
+<a name="L181"></a><tt class="py-lineno">181</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">URL</tt><tt class="py-op">,</tt> <tt class="py-string">'http://127.0.0.1:8090/-/'</tt><tt class="py-op">)</tt> </tt>
+<a name="L182"></a><tt class="py-lineno">182</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">HTTPHEADER</tt><tt class="py-op">,</tt> <tt class="py-op">[</tt><tt class="py-string">'Content-Type: application/occi+json'</tt><tt class="py-op">,</tt> <tt class="py-string">'Accept: application/occi+json'</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L183"></a><tt class="py-lineno">183</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">CUSTOMREQUEST</tt><tt class="py-op">,</tt> <tt class="py-string">'PUT'</tt><tt class="py-op">)</tt> </tt>
+<a name="L184"></a><tt class="py-lineno">184</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">POSTFIELDS</tt><tt class="py-op">,</tt> <tt class="py-name">f_categories</tt><tt class="py-op">.</tt><tt id="link-29" class="py-name" targets="Variable pyocni.TDD.fake_Data.categories.action=pyocni.TDD.fake_Data.categories-module.html#action,Method pyocni.backends.backend.backend.action()=pyocni.backends.backend.backend-class.html#action,Method pyocni.backends.dummy_backend.dummy_backend.action()=pyocni.backends.dummy_backend.dummy_backend-class.html#action,Method pyocni.backends.l3vpn_backend.l3vpn_backend.action()=pyocni.backends.l3vpn_backend.l3vpn_backend-class.html#action,Method pyocni.backends.libnetvirt_backend.libnetvirt_backend.action()=pyocni.backends.libnetvirt_backend.libnetvirt_backend-class.html#action,Method pyocni.backends.openflow_backend.openflow_backend.action()=pyocni.backends.openflow_backend.openflow_backend-class.html#action,Method pyocni.backends.opennebula_backend.opennebula_backend.action()=pyocni.backends.opennebula_backend.opennebula_backend-class.html#action,Method pyocni.backends.openstack_backend.openstack_backend.action()=pyocni.backends.openstack_backend.openstack_backend-class.html#action"><a title="pyocni.TDD.fake_Data.categories.action
+pyocni.backends.backend.backend.action
+pyocni.backends.dummy_backend.dummy_backend.action
+pyocni.backends.l3vpn_backend.l3vpn_backend.action
+pyocni.backends.libnetvirt_backend.libnetvirt_backend.action
+pyocni.backends.openflow_backend.openflow_backend.action
+pyocni.backends.opennebula_backend.opennebula_backend.action
+pyocni.backends.openstack_backend.openstack_backend.action" class="py-name" href="#" onclick="return doclink('link-29', 'action', 'link-29');">action</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L185"></a><tt class="py-lineno">185</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">setopt</tt><tt class="py-op">(</tt><tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">WRITEFUNCTION</tt><tt class="py-op">,</tt> <tt class="py-name">storage</tt><tt class="py-op">.</tt><tt class="py-name">write</tt><tt class="py-op">)</tt> </tt>
+<a name="L186"></a><tt class="py-lineno">186</tt>  <tt class="py-line">        <tt class="py-name">c</tt><tt class="py-op">.</tt><tt class="py-name">perform</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L187"></a><tt class="py-lineno">187</tt>  <tt class="py-line">        <tt class="py-name">content</tt> <tt class="py-op">=</tt> <tt class="py-name">storage</tt><tt class="py-op">.</tt><tt class="py-name">getvalue</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L188"></a><tt class="py-lineno">188</tt>  <tt class="py-line"> </tt>
+<a name="L189"></a><tt class="py-lineno">189</tt>  <tt class="py-line">        <tt class="py-keyword">print</tt> <tt class="py-string">" ===== Body content =====\n "</tt> <tt class="py-op">+</tt> <tt class="py-name">content</tt> <tt class="py-op">+</tt> <tt class="py-string">" ==========\n"</tt> </tt>
+</div></div><a name="L190"></a><tt class="py-lineno">190</tt>  <tt class="py-line"> </tt>
+<a name="L191"></a><tt class="py-lineno">191</tt>  <tt class="py-line"> </tt>
+<a name="L192"></a><tt class="py-lineno">192</tt>  <tt class="py-line"><tt class="py-keyword">if</tt> <tt class="py-name">__name__</tt> <tt class="py-op">==</tt> <tt class="py-string">'__main__'</tt><tt class="py-op">:</tt> </tt>
+<a name="L193"></a><tt class="py-lineno">193</tt>  <tt class="py-line">    <tt class="py-comment">#Create the testing tools</tt> </tt>
+<a name="L194"></a><tt class="py-lineno">194</tt>  <tt class="py-line">    <tt class="py-name">loader</tt> <tt class="py-op">=</tt> <tt class="py-name">TestLoader</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L195"></a><tt class="py-lineno">195</tt>  <tt class="py-line">    <tt class="py-name">runner</tt> <tt class="py-op">=</tt> <tt class="py-name">TextTestRunner</tt><tt class="py-op">(</tt><tt class="py-name">verbosity</tt><tt class="py-op">=</tt><tt class="py-number">2</tt><tt class="py-op">)</tt> </tt>
+<a name="L196"></a><tt class="py-lineno">196</tt>  <tt class="py-line"> </tt>
+<a name="L197"></a><tt class="py-lineno">197</tt>  <tt class="py-line">    <tt class="py-comment">#Create the testing suites</tt> </tt>
+<a name="L198"></a><tt class="py-lineno">198</tt>  <tt class="py-line"> </tt>
+<a name="L199"></a><tt class="py-lineno">199</tt>  <tt class="py-line">    <tt class="py-name">get_suite</tt> <tt class="py-op">=</tt> <tt class="py-name">loader</tt><tt class="py-op">.</tt><tt class="py-name">loadTestsFromTestCase</tt><tt class="py-op">(</tt><tt id="link-30" class="py-name" targets="Class pyocni.TDD.Tests.multientityInterface_Tests.test_get=pyocni.TDD.Tests.multientityInterface_Tests.test_get-class.html,Class pyocni.TDD.Tests.pathInterface_Tests.test_get=pyocni.TDD.Tests.pathInterface_Tests.test_get-class.html,Class pyocni.TDD.Tests.queryInterface_Tests.test_get=pyocni.TDD.Tests.queryInterface_Tests.test_get-class.html,Class pyocni.TDD.Tests.singleentityInterface_Tests.test_get=pyocni.TDD.Tests.singleentityInterface_Tests.test_get-class.html"><a title="pyocni.TDD.Tests.multientityInterface_Tests.test_get
+pyocni.TDD.Tests.pathInterface_Tests.test_get
+pyocni.TDD.Tests.queryInterface_Tests.test_get
+pyocni.TDD.Tests.singleentityInterface_Tests.test_get" class="py-name" href="#" onclick="return doclink('link-30', 'test_get', 'link-30');">test_get</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L200"></a><tt class="py-lineno">200</tt>  <tt class="py-line">    <tt class="py-name">delete_suite</tt> <tt class="py-op">=</tt> <tt class="py-name">loader</tt><tt class="py-op">.</tt><tt class="py-name">loadTestsFromTestCase</tt><tt class="py-op">(</tt><tt id="link-31" class="py-name" targets="Class pyocni.TDD.Tests.multientityInterface_Tests.test_delete=pyocni.TDD.Tests.multientityInterface_Tests.test_delete-class.html,Class pyocni.TDD.Tests.pathInterface_Tests.test_delete=pyocni.TDD.Tests.pathInterface_Tests.test_delete-class.html,Class pyocni.TDD.Tests.queryInterface_Tests.test_delete=pyocni.TDD.Tests.queryInterface_Tests.test_delete-class.html,Class pyocni.TDD.Tests.singleentityInterface_Tests.test_delete=pyocni.TDD.Tests.singleentityInterface_Tests.test_delete-class.html"><a title="pyocni.TDD.Tests.multientityInterface_Tests.test_delete
+pyocni.TDD.Tests.pathInterface_Tests.test_delete
+pyocni.TDD.Tests.queryInterface_Tests.test_delete
+pyocni.TDD.Tests.singleentityInterface_Tests.test_delete" class="py-name" href="#" onclick="return doclink('link-31', 'test_delete', 'link-31');">test_delete</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L201"></a><tt class="py-lineno">201</tt>  <tt class="py-line">    <tt class="py-name">post_suite</tt> <tt class="py-op">=</tt> <tt class="py-name">loader</tt><tt class="py-op">.</tt><tt class="py-name">loadTestsFromTestCase</tt><tt class="py-op">(</tt><tt id="link-32" class="py-name" targets="Class pyocni.TDD.Tests.multientityInterface_Tests.test_post=pyocni.TDD.Tests.multientityInterface_Tests.test_post-class.html,Class pyocni.TDD.Tests.queryInterface_Tests.test_post=pyocni.TDD.Tests.queryInterface_Tests.test_post-class.html,Class pyocni.TDD.Tests.singleentityInterface_Tests.test_post=pyocni.TDD.Tests.singleentityInterface_Tests.test_post-class.html"><a title="pyocni.TDD.Tests.multientityInterface_Tests.test_post
+pyocni.TDD.Tests.queryInterface_Tests.test_post
+pyocni.TDD.Tests.singleentityInterface_Tests.test_post" class="py-name" href="#" onclick="return doclink('link-32', 'test_post', 'link-32');">test_post</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L202"></a><tt class="py-lineno">202</tt>  <tt class="py-line">    <tt class="py-name">put_suite</tt> <tt class="py-op">=</tt> <tt class="py-name">loader</tt><tt class="py-op">.</tt><tt class="py-name">loadTestsFromTestCase</tt><tt class="py-op">(</tt><tt id="link-33" class="py-name" targets="Class pyocni.TDD.Tests.multientityInterface_Tests.test_put=pyocni.TDD.Tests.multientityInterface_Tests.test_put-class.html,Class pyocni.TDD.Tests.queryInterface_Tests.test_put=pyocni.TDD.Tests.queryInterface_Tests.test_put-class.html,Class pyocni.TDD.Tests.singleentityInterface_Tests.test_put=pyocni.TDD.Tests.singleentityInterface_Tests.test_put-class.html"><a title="pyocni.TDD.Tests.multientityInterface_Tests.test_put
+pyocni.TDD.Tests.queryInterface_Tests.test_put
+pyocni.TDD.Tests.singleentityInterface_Tests.test_put" class="py-name" href="#" onclick="return doclink('link-33', 'test_put', 'link-33');">test_put</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L203"></a><tt class="py-lineno">203</tt>  <tt class="py-line"> </tt>
+<a name="L204"></a><tt class="py-lineno">204</tt>  <tt class="py-line">    <tt class="py-comment">#Run tests</tt> </tt>
+<a name="L205"></a><tt class="py-lineno">205</tt>  <tt class="py-line"> </tt>
+<a name="L206"></a><tt class="py-lineno">206</tt>  <tt class="py-line">    <tt class="py-name">runner</tt><tt class="py-op">.</tt><tt class="py-name">run</tt><tt class="py-op">(</tt><tt class="py-name">put_suite</tt><tt class="py-op">)</tt> </tt>
+<a name="L207"></a><tt class="py-lineno">207</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >pyocni</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Thu Oct 25 18:47:47 2012
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
