@@ -1,0 +1,20 @@
+/*
+
+ =1= Delete of multiple actions at the same time is possible
+ =2= Term and scheme are the only required object members to delete an action
+ =3= Delete actions is not safe, do it at your own risk
+
+ */
+
+{
+    "actions":[
+        {
+            "term":"stop",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure/compute/action#"
+        },
+        {
+            "term":"start",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure/compute/action#"
+        }
+    ]
+}

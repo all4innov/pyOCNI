@@ -1,0 +1,25 @@
+/*
+ =1= Multiple actions can be retrieved at the same time
+ =2= If there is no filter, all actions in the database will be retrieved
+ =3= If there is a filter, it should containt only the object members described in the OCCI JSON rendering draft
+ */
+
+{
+    "actions":[
+        {
+            "attributes":{
+                "method":{
+                    "mutable":true,
+                    "required":false,
+                    "type":"string",
+                    "pattern":"graceful|acpioff|poweroff",
+                    "default":"poweroff"
+                }
+            }
+        },
+        {
+            "term":"start",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure/compute/action#"
+        }
+    ]
+}

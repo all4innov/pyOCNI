@@ -1,0 +1,39 @@
+/*
+
+ =1= Multiple actions can be created at the same time
+ =2= Action descriptions MUST follow the OCCI JSON rendering draft specifications
+
+ */
+
+{
+    "actions":[
+        {
+            "term":"stop",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title":"Stop Compute instance",
+            "attributes":{
+                "method":{
+                    "mutable":true,
+                    "required":false,
+                    "type":"string",
+                    "pattern":"graceful|acpioff|poweroff",
+                    "default":"poweroff"
+                }
+            }
+        },
+        {
+            "term":"start",
+            "scheme":"http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title":"Start Compute instance",
+            "attributes":{
+                "method":{
+                    "mutable":true,
+                    "required":false,
+                    "type":"string",
+                    "pattern":"graceful|acpion|poweron",
+                    "default":"poweron"
+                }
+            }
+        }
+    ]
+}

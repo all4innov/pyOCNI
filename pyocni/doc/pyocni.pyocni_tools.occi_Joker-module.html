@@ -62,7 +62,7 @@
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
 <h1 class="epydoc">Module occi_Joker</h1><p class="nomargin-top"><span class="codelink"><a href="pyocni.pyocni_tools.occi_Joker-pysrc.html">source&nbsp;code</a></span></p>
-<p>Created on Jun 12, 2012</p>
+<p>Created on Jun 12, 2011</p>
 
 <hr />
 <div class="fields">      <p><strong>Author:</strong>
@@ -74,11 +74,8 @@
       <p><strong>Organization:</strong>
         Institut Mines-Telecom - Telecom SudParis
       </p>
-      <p><strong>Version:</strong>
-        0.3
-      </p>
       <p><strong>License:</strong>
-        LGPL - Lesser General Public License
+        Apache License, Version 2.0
       </p>
 </div><!-- ==================== FUNCTIONS ==================== -->
 <a name="section-Functions"></a>
@@ -143,6 +140,23 @@
       Retrieve the ID (proof of uniqueness) from the occi description Args:</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="pyocni.pyocni_tools.occi_Joker-pysrc.html#get_description_id">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="is_this_attribute_exist"></a><span class="summary-sig-name">is_this_attribute_exist</span>(<span class="summary-sig-arg">filter</span>,
+        <span class="summary-sig-arg">desc</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyocni.pyocni_tools.occi_Joker-pysrc.html#is_this_attribute_exist">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -282,13 +296,12 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="pyocni.pyocni_tools.occi_Joker-module.html#verify_exist_occi_id_creator" class="summary-sig-name">verify_exist_occi_id_creator</a>(<span class="summary-sig-arg">occi_id</span>,
-        <span class="summary-sig-arg">creator</span>,
+          <td><span class="summary-sig"><a href="pyocni.pyocni_tools.occi_Joker-module.html#verify_exist_occi_id" class="summary-sig-name">verify_exist_occi_id</a>(<span class="summary-sig-arg">occi_id</span>,
         <span class="summary-sig-arg">db_data</span>)</span><br />
       Verify the existence of a document with such an OCCI ID  and creator 
       in db_data Args:</td>
           <td align="right" valign="top">
-            <span class="codelink"><a href="pyocni.pyocni_tools.occi_Joker-pysrc.html#verify_exist_occi_id_creator">source&nbsp;code</a></span>
+            <span class="codelink"><a href="pyocni.pyocni_tools.occi_Joker-pysrc.html#verify_exist_occi_id">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -321,8 +334,7 @@
     </td><td class="summary">
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
         <tr>
-          <td><span class="summary-sig"><a href="pyocni.pyocni_tools.occi_Joker-module.html#make_entity_location_from_url" class="summary-sig-name">make_entity_location_from_url</a>(<span class="summary-sig-arg">creator</span>,
-        <span class="summary-sig-arg">url_path</span>,
+          <td><span class="summary-sig"><a href="pyocni.pyocni_tools.occi_Joker-module.html#make_entity_location_from_url" class="summary-sig-name">make_entity_location_from_url</a>(<span class="summary-sig-arg">url_path</span>,
         <span class="summary-sig-arg">uuid</span>)</span><br />
       Creates the location of the resource/link from the occi resource/link
       description Args:</td>
@@ -400,6 +412,39 @@
       format the category path to a URL path Args:</td>
           <td align="right" valign="top">
             <span class="codelink"><a href="pyocni.pyocni_tools.occi_Joker-pysrc.html#format_url_path">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="look_for_update_key_values"></a><span class="summary-sig-name">look_for_update_key_values</span>(<span class="summary-sig-arg">new_attr</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyocni.pyocni_tools.occi_Joker-pysrc.html#look_for_update_key_values">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="complete_occi_description_with_default_attributes"></a><span class="summary-sig-name">complete_occi_description_with_default_attributes</span>(<span class="summary-sig-arg">desc</span>,
+        <span class="summary-sig-arg">default_attributes</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="pyocni.pyocni_tools.occi_Joker-pysrc.html#complete_occi_description_with_default_attributes">source&nbsp;code</a></span>
             
           </td>
         </tr>
@@ -712,19 +757,18 @@
   </dl>
 </td></tr></table>
 </div>
-<a name="verify_exist_occi_id_creator"></a>
+<a name="verify_exist_occi_id"></a>
 <div>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">verify_exist_occi_id_creator</span>(<span class="sig-arg">occi_id</span>,
-        <span class="sig-arg">creator</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">verify_exist_occi_id</span>(<span class="sig-arg">occi_id</span>,
         <span class="sig-arg">db_data</span>)</span>
   </h3>
   </td><td align="right" valign="top"
-    ><span class="codelink"><a href="pyocni.pyocni_tools.occi_Joker-pysrc.html#verify_exist_occi_id_creator">source&nbsp;code</a></span>&nbsp;
+    ><span class="codelink"><a href="pyocni.pyocni_tools.occi_Joker-pysrc.html#verify_exist_occi_id">source&nbsp;code</a></span>&nbsp;
     </td>
   </tr></table>
   
@@ -734,7 +778,6 @@
     <dt>Parameters:</dt>
     <dd><ul class="nomargin-top">
         <li><strong class="pname"><code>occi_id</code></strong> - OCCI ID to be checked</li>
-        <li><strong class="pname"><code>creator</code></strong> - creator of the document</li>
         <li><strong class="pname"><code>db_data</code></strong> - Data to search in</li>
     </ul></dd>
   </dl>
@@ -773,8 +816,7 @@
 <tr><td>
   <table width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr valign="top"><td>
-  <h3 class="epydoc"><span class="sig"><span class="sig-name">make_entity_location_from_url</span>(<span class="sig-arg">creator</span>,
-        <span class="sig-arg">url_path</span>,
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">make_entity_location_from_url</span>(<span class="sig-arg">url_path</span>,
         <span class="sig-arg">uuid</span>)</span>
   </h3>
   </td><td align="right" valign="top"
@@ -790,9 +832,7 @@
         <li><strong class="pname"><code>url_path</code></strong> - Kind OCCI location to which this resource/link instance belongs 
           to</li>
         <li><strong class="pname"><code>uuid</code></strong> - UUID of the resource/link contained in the resource/link 
-          description</li>
-        <li><strong class="pname"><code>creator</code></strong> - ID creator of the resource/link instance @return :&lt;string&gt; 
-          Location of the resource/link</li>
+          description @return :&lt;string&gt; Location of the resource/link</li>
     </ul></dd>
   </dl>
 </td></tr></table>
@@ -906,7 +946,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
   <tr>
     <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Jul 23 11:54:51 2012
+    Generated by Epydoc 3.0.1 on Thu Oct 25 18:47:46 2012
     </td>
     <td align="right" class="footer">
       <a target="mainFrame" href="http://epydoc.sourceforge.net"

@@ -1,0 +1,13 @@
+/*
+ =1= Multiple Mixins can be retrieved at the same time
+ =2= If there is no filter, all mixins in the database will be retrieved
+ =3= If there is a filter, it should containt only the object members described in the OCCI JSON rendering draft
+ */
+
+{
+    "mixins":[
+        {
+            "location":"/template/resource/medium/"
+        }
+    ]
+}

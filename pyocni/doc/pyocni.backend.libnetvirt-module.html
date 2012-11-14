@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="ascii"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-          "DTD/xhtml1-transitional.dtd">
+        "DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>pyocni.backend.libnetvirt</title>
-  <link rel="stylesheet" href="epydoc.css" type="text/css" />
-  <script type="text/javascript" src="epydoc.js"></script>
+    <title>pyocni.backend.libnetvirt</title>
+    <link rel="stylesheet" href="epydoc.css" type="text/css"/>
+    <script type="text/javascript" src="epydoc.js"></script>
 </head>
 
 <body bgcolor="white" text="black" link="blue" vlink="#204080"
@@ -13,503 +13,602 @@
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
-  <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <tr valign="middle">
+        <!-- Home link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Tree link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Tree link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Index link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Index link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Help link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Help link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Project homepage -->
-      <th class="navbar" align="right" width="100%">
-        <table border="0" cellpadding="0" cellspacing="0">
-          <tr><th class="navbar" align="center"
-            >pyocni</th>
-          </tr></table></th>
-  </tr>
+        <!-- Project homepage -->
+        <th class="navbar" align="right" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="navbar" align="center"
+                            >pyocni
+                    </th>
+                </tr>
+            </table>
+        </th>
+    </tr>
 </table>
 <table width="100%" cellpadding="0" cellspacing="0">
-  <tr valign="top">
-    <td width="100%">
+    <tr valign="top">
+        <td width="100%">
       <span class="breadcrumbs">
         <a href="pyocni-module.html">Package&nbsp;pyocni</a> ::
         <a href="pyocni.backend-module.html">Package&nbsp;backend</a> ::
         Module&nbsp;libnetvirt
       </span>
-    </td>
-    <td>
-      <table cellpadding="0" cellspacing="0">
-        <!-- hide/show private -->
-        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
-    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
-        <tr><td align="right"><span class="options"
-            >[<a href="frames.html" target="_top">frames</a
-            >]&nbsp;|&nbsp;<a href="pyocni.backend.libnetvirt-module.html"
-            target="_top">no&nbsp;frames</a>]</span></td></tr>
-      </table>
-    </td>
-  </tr>
+        </td>
+        <td>
+            <table cellpadding="0" cellspacing="0">
+                <!-- hide/show private -->
+                <tr>
+                    <td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+                                                                onclick="toggle_private();">hide&nbsp;private</a>]</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right"><span class="options"
+                            >[<a href="frames.html" target="_top">frames</a
+                            >]&nbsp;|&nbsp;<a href="pyocni.backend.libnetvirt-module.html"
+                                              target="_top">no&nbsp;frames</a>]</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
 <!-- ==================== MODULE DESCRIPTION ==================== -->
-<h1 class="epydoc">Module libnetvirt</h1><p class="nomargin-top"><span class="codelink"><a href="pyocni.backend.libnetvirt-pysrc.html">source&nbsp;code</a></span></p>
+<h1 class="epydoc">Module libnetvirt</h1>
+
+<p class="nomargin-top"><span class="codelink"><a
+        href="pyocni.backend.libnetvirt-pysrc.html">source&nbsp;code</a></span></p>
 <!-- ==================== CLASSES ==================== -->
 <a name="section-Classes"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
-<tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Classes</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-Classes"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
-</tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="property-class.html" class="summary-name" onclick="show_private();">_swig_property</a><br />
-      property(fget=None, fset=None, fdel=None, doc=None) -&gt; property attribute
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="pyocni.backend.libnetvirt._object-class.html" class="summary-name" onclick="show_private();">_object</a>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="pyocni.backend.libnetvirt.endpoint-class.html" class="summary-name">endpoint</a>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="pyocni.backend.libnetvirt.constraint-class.html" class="summary-name">constraint</a>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="pyocni.backend.libnetvirt.fnsDesc-class.html" class="summary-name">fnsDesc</a>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="pyocni.backend.libnetvirt.libnetvirt_ops-class.html" class="summary-name">libnetvirt_ops</a>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="pyocni.backend.libnetvirt.libnetvirt_info-class.html" class="summary-name">libnetvirt_info</a>
-    </td>
-  </tr>
+    <tr bgcolor="#70b0f0" class="table-header">
+        <td colspan="2" class="table-header">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr valign="top">
+                    <td align="left"><span class="table-header">Classes</span></td>
+                    <td align="right" valign="top"
+                            ><span class="options">[<a href="#section-Classes"
+                                                       class="privatelink" onclick="toggle_private();"
+                            >hide private</a>]</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr class="private">
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a href="property-class.html" class="summary-name" onclick="show_private();">_swig_property</a><br/>
+            property(fget=None, fset=None, fdel=None, doc=None) -&gt; property attribute
+        </td>
+    </tr>
+    <tr class="private">
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a href="pyocni.backend.libnetvirt._object-class.html" class="summary-name" onclick="show_private();">_object</a>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a href="pyocni.backend.libnetvirt.endpoint-class.html" class="summary-name">endpoint</a>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a href="pyocni.backend.libnetvirt.constraint-class.html" class="summary-name">constraint</a>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a href="pyocni.backend.libnetvirt.fnsDesc-class.html" class="summary-name">fnsDesc</a>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a href="pyocni.backend.libnetvirt.libnetvirt_ops-class.html" class="summary-name">libnetvirt_ops</a>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a href="pyocni.backend.libnetvirt.libnetvirt_info-class.html" class="summary-name">libnetvirt_info</a>
+        </td>
+    </tr>
 </table>
 <!-- ==================== FUNCTIONS ==================== -->
 <a name="section-Functions"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
-<tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Functions</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-Functions"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
-</tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_swig_setattr_nondynamic"></a><span class="summary-sig-name">_swig_setattr_nondynamic</span>(<span class="summary-sig-arg">self</span>,
+    <tr bgcolor="#70b0f0" class="table-header">
+        <td colspan="2" class="table-header">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr valign="top">
+                    <td align="left"><span class="table-header">Functions</span></td>
+                    <td align="right" valign="top"
+                            ><span class="options">[<a href="#section-Functions"
+                                                       class="privatelink" onclick="toggle_private();"
+                            >hide private</a>]</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr class="private">
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td><span class="summary-sig"><a name="_swig_setattr_nondynamic"></a><span class="summary-sig-name">_swig_setattr_nondynamic</span>(<span
+                            class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">class_type</span>,
         <span class="summary-sig-arg">name</span>,
         <span class="summary-sig-arg">value</span>,
         <span class="summary-sig-arg">static</span>=<span class="summary-sig-default">1</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pyocni.backend.libnetvirt-pysrc.html#_swig_setattr_nondynamic">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_swig_setattr"></a><span class="summary-sig-name">_swig_setattr</span>(<span class="summary-sig-arg">self</span>,
+                    <td align="right" valign="top">
+                        <span class="codelink"><a href="pyocni.backend.libnetvirt-pysrc.html#_swig_setattr_nondynamic">source&nbsp;code</a></span>
+
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+    <tr class="private">
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td><span class="summary-sig"><a name="_swig_setattr"></a><span class="summary-sig-name">_swig_setattr</span>(<span
+                            class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">class_type</span>,
         <span class="summary-sig-arg">name</span>,
         <span class="summary-sig-arg">value</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pyocni.backend.libnetvirt-pysrc.html#_swig_setattr">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_swig_getattr"></a><span class="summary-sig-name">_swig_getattr</span>(<span class="summary-sig-arg">self</span>,
+                    <td align="right" valign="top">
+                        <span class="codelink"><a href="pyocni.backend.libnetvirt-pysrc.html#_swig_setattr">source&nbsp;code</a></span>
+
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+    <tr class="private">
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td><span class="summary-sig"><a name="_swig_getattr"></a><span class="summary-sig-name">_swig_getattr</span>(<span
+                            class="summary-sig-arg">self</span>,
         <span class="summary-sig-arg">class_type</span>,
         <span class="summary-sig-arg">name</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pyocni.backend.libnetvirt-pysrc.html#_swig_getattr">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td><span class="summary-sig"><a name="_swig_repr"></a><span class="summary-sig-name">_swig_repr</span>(<span class="summary-sig-arg">self</span>)</span></td>
-          <td align="right" valign="top">
-            <span class="codelink"><a href="pyocni.backend.libnetvirt-pysrc.html#_swig_repr">source&nbsp;code</a></span>
-            
-          </td>
-        </tr>
-      </table>
-      
-    </td>
-  </tr>
+                    <td align="right" valign="top">
+                        <span class="codelink"><a href="pyocni.backend.libnetvirt-pysrc.html#_swig_getattr">source&nbsp;code</a></span>
+
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
+    <tr class="private">
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td><span class="summary-sig"><a name="_swig_repr"></a><span
+                            class="summary-sig-name">_swig_repr</span>(<span class="summary-sig-arg">self</span>)</span>
+                    </td>
+                    <td align="right" valign="top">
+                        <span class="codelink"><a href="pyocni.backend.libnetvirt-pysrc.html#_swig_repr">source&nbsp;code</a></span>
+
+                    </td>
+                </tr>
+            </table>
+
+        </td>
+    </tr>
 </table>
 <!-- ==================== VARIABLES ==================== -->
 <a name="section-Variables"></a>
 <table class="summary" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
-<tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Variables</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-Variables"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
-</tr>
-<tr class="private">
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="_newclass"></a><span class="summary-name">_newclass</span> = <code title="0">0</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="DRIVER_OF_NOX"></a><span class="summary-name">DRIVER_OF_NOX</span> = <code title="_libnetvirt.DRIVER_OF_NOX">_libnetvirt.DRIVER_OF_NOX</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="DRIVER_MPLS"></a><span class="summary-name">DRIVER_MPLS</span> = <code title="_libnetvirt.DRIVER_MPLS">_libnetvirt.DRIVER_MPLS</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="MAX_NAME_SIZE"></a><span class="summary-name">MAX_NAME_SIZE</span> = <code title="_libnetvirt.MAX_NAME_SIZE">_libnetvirt.MAX_NAME_SIZE</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="endpoint_swigregister"></a><span class="summary-name">endpoint_swigregister</span> = <code title="_libnetvirt.endpoint_swigregister">_libnetvirt.endpoint_swigregister</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="constraint_swigregister"></a><span class="summary-name">constraint_swigregister</span> = <code title="_libnetvirt.constraint_swigregister">_libnetvirt.constraint_swigregister</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="fnsDesc_swigregister"></a><span class="summary-name">fnsDesc_swigregister</span> = <code title="_libnetvirt.fnsDesc_swigregister">_libnetvirt.fnsDesc_swigregister</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="pyocni.backend.libnetvirt-module.html#libnetvirt_ops_swigregister" class="summary-name">libnetvirt_ops_swigregister</a> = <code title="_libnetvirt.libnetvirt_ops_swigregister">_libnetvirt.libnetvirt_ops_swigr<code class="variable-ellipsis">...</code></code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a href="pyocni.backend.libnetvirt-module.html#libnetvirt_info_swigregister" class="summary-name">libnetvirt_info_swigregister</a> = <code title="_libnetvirt.libnetvirt_info_swigregister">_libnetvirt.libnetvirt_info_swi<code class="variable-ellipsis">...</code></code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="libnetvirt_init"></a><span class="summary-name">libnetvirt_init</span> = <code title="_libnetvirt.libnetvirt_init">_libnetvirt.libnetvirt_init</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="libnetvirt_stop"></a><span class="summary-name">libnetvirt_stop</span> = <code title="_libnetvirt.libnetvirt_stop">_libnetvirt.libnetvirt_stop</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="libnetvirt_connect"></a><span class="summary-name">libnetvirt_connect</span> = <code title="_libnetvirt.libnetvirt_connect">_libnetvirt.libnetvirt_connect</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="libnetvirt_disconnect"></a><span class="summary-name">libnetvirt_disconnect</span> = <code title="_libnetvirt.libnetvirt_disconnect">_libnetvirt.libnetvirt_disconnect</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="libnetvirt_create_fns"></a><span class="summary-name">libnetvirt_create_fns</span> = <code title="_libnetvirt.libnetvirt_create_fns">_libnetvirt.libnetvirt_create_fns</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="libnetvirt_modify_fns_add"></a><span class="summary-name">libnetvirt_modify_fns_add</span> = <code title="_libnetvirt.libnetvirt_modify_fns_add">_libnetvirt.libnetvirt_modify_fns_add</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="libnetvirt_modify_fns_del"></a><span class="summary-name">libnetvirt_modify_fns_del</span> = <code title="_libnetvirt.libnetvirt_modify_fns_del">_libnetvirt.libnetvirt_modify_fns_del</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="libnetvirt_remove_fns"></a><span class="summary-name">libnetvirt_remove_fns</span> = <code title="_libnetvirt.libnetvirt_remove_fns">_libnetvirt.libnetvirt_remove_fns</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="libnetvirt_request_ids"></a><span class="summary-name">libnetvirt_request_ids</span> = <code title="_libnetvirt.libnetvirt_request_ids">_libnetvirt.libnetvirt_request_ids</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="parse_fns"></a><span class="summary-name">parse_fns</span> = <code title="_libnetvirt.parse_fns">_libnetvirt.parse_fns</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="parse_fns_Mem"></a><span class="summary-name">parse_fns_Mem</span> = <code title="_libnetvirt.parse_fns_Mem">_libnetvirt.parse_fns_Mem</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="add_local_epoint"></a><span class="summary-name">add_local_epoint</span> = <code title="_libnetvirt.add_local_epoint">_libnetvirt.add_local_epoint</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="create_local_fns"></a><span class="summary-name">create_local_fns</span> = <code title="_libnetvirt.create_local_fns">_libnetvirt.create_local_fns</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="printFNS"></a><span class="summary-name">printFNS</span> = <code title="_libnetvirt.printFNS">_libnetvirt.printFNS</code>
-    </td>
-  </tr>
-<tr>
-    <td width="15%" align="right" valign="top" class="summary">
-      <span class="summary-type">&nbsp;</span>
-    </td><td class="summary">
-        <a name="getEndpoint"></a><span class="summary-name">getEndpoint</span> = <code title="_libnetvirt.getEndpoint">_libnetvirt.getEndpoint</code>
-    </td>
-  </tr>
+    <tr bgcolor="#70b0f0" class="table-header">
+        <td colspan="2" class="table-header">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr valign="top">
+                    <td align="left"><span class="table-header">Variables</span></td>
+                    <td align="right" valign="top"
+                            ><span class="options">[<a href="#section-Variables"
+                                                       class="privatelink" onclick="toggle_private();"
+                            >hide private</a>]</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr class="private">
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="_newclass"></a><span class="summary-name">_newclass</span> = <code title="0">0</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="DRIVER_OF_NOX"></a><span class="summary-name">DRIVER_OF_NOX</span> = <code
+                title="_libnetvirt.DRIVER_OF_NOX">_libnetvirt.DRIVER_OF_NOX</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="DRIVER_MPLS"></a><span class="summary-name">DRIVER_MPLS</span> = <code
+                title="_libnetvirt.DRIVER_MPLS">_libnetvirt.DRIVER_MPLS</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="MAX_NAME_SIZE"></a><span class="summary-name">MAX_NAME_SIZE</span> = <code
+                title="_libnetvirt.MAX_NAME_SIZE">_libnetvirt.MAX_NAME_SIZE</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="endpoint_swigregister"></a><span class="summary-name">endpoint_swigregister</span> = <code
+                title="_libnetvirt.endpoint_swigregister">_libnetvirt.endpoint_swigregister</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="constraint_swigregister"></a><span class="summary-name">constraint_swigregister</span> = <code
+                title="_libnetvirt.constraint_swigregister">_libnetvirt.constraint_swigregister</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="fnsDesc_swigregister"></a><span class="summary-name">fnsDesc_swigregister</span> = <code
+                title="_libnetvirt.fnsDesc_swigregister">_libnetvirt.fnsDesc_swigregister</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a href="pyocni.backend.libnetvirt-module.html#libnetvirt_ops_swigregister" class="summary-name">libnetvirt_ops_swigregister</a>
+            = <code title="_libnetvirt.libnetvirt_ops_swigregister">_libnetvirt.libnetvirt_ops_swigr<code
+                class="variable-ellipsis">...</code></code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a href="pyocni.backend.libnetvirt-module.html#libnetvirt_info_swigregister" class="summary-name">libnetvirt_info_swigregister</a>
+            = <code title="_libnetvirt.libnetvirt_info_swigregister">_libnetvirt.libnetvirt_info_swi<code
+                class="variable-ellipsis">...</code></code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="libnetvirt_init"></a><span class="summary-name">libnetvirt_init</span> = <code
+                title="_libnetvirt.libnetvirt_init">_libnetvirt.libnetvirt_init</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="libnetvirt_stop"></a><span class="summary-name">libnetvirt_stop</span> = <code
+                title="_libnetvirt.libnetvirt_stop">_libnetvirt.libnetvirt_stop</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="libnetvirt_connect"></a><span class="summary-name">libnetvirt_connect</span> = <code
+                title="_libnetvirt.libnetvirt_connect">_libnetvirt.libnetvirt_connect</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="libnetvirt_disconnect"></a><span class="summary-name">libnetvirt_disconnect</span> = <code
+                title="_libnetvirt.libnetvirt_disconnect">_libnetvirt.libnetvirt_disconnect</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="libnetvirt_create_fns"></a><span class="summary-name">libnetvirt_create_fns</span> = <code
+                title="_libnetvirt.libnetvirt_create_fns">_libnetvirt.libnetvirt_create_fns</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="libnetvirt_modify_fns_add"></a><span class="summary-name">libnetvirt_modify_fns_add</span> = <code
+                title="_libnetvirt.libnetvirt_modify_fns_add">_libnetvirt.libnetvirt_modify_fns_add</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="libnetvirt_modify_fns_del"></a><span class="summary-name">libnetvirt_modify_fns_del</span> = <code
+                title="_libnetvirt.libnetvirt_modify_fns_del">_libnetvirt.libnetvirt_modify_fns_del</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="libnetvirt_remove_fns"></a><span class="summary-name">libnetvirt_remove_fns</span> = <code
+                title="_libnetvirt.libnetvirt_remove_fns">_libnetvirt.libnetvirt_remove_fns</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="libnetvirt_request_ids"></a><span class="summary-name">libnetvirt_request_ids</span> = <code
+                title="_libnetvirt.libnetvirt_request_ids">_libnetvirt.libnetvirt_request_ids</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="parse_fns"></a><span class="summary-name">parse_fns</span> = <code title="_libnetvirt.parse_fns">_libnetvirt.parse_fns</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="parse_fns_Mem"></a><span class="summary-name">parse_fns_Mem</span> = <code
+                title="_libnetvirt.parse_fns_Mem">_libnetvirt.parse_fns_Mem</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="add_local_epoint"></a><span class="summary-name">add_local_epoint</span> = <code
+                title="_libnetvirt.add_local_epoint">_libnetvirt.add_local_epoint</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="create_local_fns"></a><span class="summary-name">create_local_fns</span> = <code
+                title="_libnetvirt.create_local_fns">_libnetvirt.create_local_fns</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="printFNS"></a><span class="summary-name">printFNS</span> = <code title="_libnetvirt.printFNS">_libnetvirt.printFNS</code>
+        </td>
+    </tr>
+    <tr>
+        <td width="15%" align="right" valign="top" class="summary">
+            <span class="summary-type">&nbsp;</span>
+        </td>
+        <td class="summary">
+            <a name="getEndpoint"></a><span class="summary-name">getEndpoint</span> = <code
+                title="_libnetvirt.getEndpoint">_libnetvirt.getEndpoint</code>
+        </td>
+    </tr>
 </table>
 <!-- ==================== VARIABLES DETAILS ==================== -->
 <a name="section-VariablesDetails"></a>
 <table class="details" border="1" cellpadding="3"
        cellspacing="0" width="100%" bgcolor="white">
-<tr bgcolor="#70b0f0" class="table-header">
-  <td colspan="2" class="table-header">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-      <tr valign="top">
-        <td align="left"><span class="table-header">Variables Details</span></td>
-        <td align="right" valign="top"
-         ><span class="options">[<a href="#section-VariablesDetails"
-         class="privatelink" onclick="toggle_private();"
-         >hide private</a>]</span></td>
-      </tr>
-    </table>
-  </td>
-</tr>
+    <tr bgcolor="#70b0f0" class="table-header">
+        <td colspan="2" class="table-header">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                <tr valign="top">
+                    <td align="left"><span class="table-header">Variables Details</span></td>
+                    <td align="right" valign="top"
+                            ><span class="options">[<a href="#section-VariablesDetails"
+                                                       class="privatelink" onclick="toggle_private();"
+                            >hide private</a>]</span></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
 </table>
 <a name="libnetvirt_ops_swigregister"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <h3 class="epydoc">libnetvirt_ops_swigregister</h3>
-  
-  <dl class="fields">
-  </dl>
-  <dl class="fields">
-    <dt>Value:</dt>
-      <dd><table><tr><td><pre class="variable">
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <h3 class="epydoc">libnetvirt_ops_swigregister</h3>
+
+                <dl class="fields">
+                </dl>
+                <dl class="fields">
+                    <dt>Value:</dt>
+                    <dd>
+                        <table>
+                            <tr>
+                                <td><pre class="variable">
 _libnetvirt.libnetvirt_ops_swigregister
-</pre></td></tr></table>
-</dd>
-  </dl>
-</td></tr></table>
+</pre>
+                                </td>
+                            </tr>
+                        </table>
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <a name="libnetvirt_info_swigregister"></a>
+
 <div>
-<table class="details" border="1" cellpadding="3"
-       cellspacing="0" width="100%" bgcolor="white">
-<tr><td>
-  <h3 class="epydoc">libnetvirt_info_swigregister</h3>
-  
-  <dl class="fields">
-  </dl>
-  <dl class="fields">
-    <dt>Value:</dt>
-      <dd><table><tr><td><pre class="variable">
+    <table class="details" border="1" cellpadding="3"
+           cellspacing="0" width="100%" bgcolor="white">
+        <tr>
+            <td>
+                <h3 class="epydoc">libnetvirt_info_swigregister</h3>
+
+                <dl class="fields">
+                </dl>
+                <dl class="fields">
+                    <dt>Value:</dt>
+                    <dd>
+                        <table>
+                            <tr>
+                                <td><pre class="variable">
 _libnetvirt.libnetvirt_info_swigregister
-</pre></td></tr></table>
-</dd>
-  </dl>
-</td></tr></table>
+</pre>
+                                </td>
+                            </tr>
+                        </table>
+                    </dd>
+                </dl>
+            </td>
+        </tr>
+    </table>
 </div>
-<br />
+<br/>
 <!-- ==================== NAVIGATION BAR ==================== -->
 <table class="navbar" border="0" width="100%" cellpadding="0"
        bgcolor="#a0c0ff" cellspacing="0">
-  <tr valign="middle">
-  <!-- Home link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+    <tr valign="middle">
+        <!-- Home link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="pyocni-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Tree link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Tree link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Index link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Index link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Help link -->
-      <th>&nbsp;&nbsp;&nbsp;<a
-        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+        <!-- Help link -->
+        <th>&nbsp;&nbsp;&nbsp;<a
+                href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
 
-  <!-- Project homepage -->
-      <th class="navbar" align="right" width="100%">
-        <table border="0" cellpadding="0" cellspacing="0">
-          <tr><th class="navbar" align="center"
-            >pyocni</th>
-          </tr></table></th>
-  </tr>
+        <!-- Project homepage -->
+        <th class="navbar" align="right" width="100%">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th class="navbar" align="center"
+                            >pyocni
+                    </th>
+                </tr>
+            </table>
+        </th>
+    </tr>
 </table>
 <table border="0" cellpadding="0" cellspacing="0" width="100%%">
-  <tr>
-    <td align="left" class="footer">
-    Generated by Epydoc 3.0.1 on Mon Jul 23 11:54:51 2012
-    </td>
-    <td align="right" class="footer">
-      <a target="mainFrame" href="http://epydoc.sourceforge.net"
-        >http://epydoc.sourceforge.net</a>
-    </td>
-  </tr>
+    <tr>
+        <td align="left" class="footer">
+            Generated by Epydoc 3.0.1 on Mon Jul 23 11:54:51 2012
+        </td>
+        <td align="right" class="footer">
+            <a target="mainFrame" href="http://epydoc.sourceforge.net"
+                    >http://epydoc.sourceforge.net</a>
+        </td>
+    </tr>
 </table>
 
 <script type="text/javascript">
-  <!--
-  // Private objects are initially displayed (because if
-  // javascript is turned off then we want them to be
-  // visible); but by default, we want to hide them.  So hide
-  // them unless we have a cookie that says to show them.
-  checkCookie();
-  // -->
+    <!--
+    // Private objects are initially displayed (because if
+    // javascript is turned off then we want them to be
+    // visible); but by default, we want to hide them.  So hide
+    // them unless we have a cookie that says to show them.
+    checkCookie();
+    // -->
 </script>
 </body>
 </html>

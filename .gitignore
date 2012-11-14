@@ -41,12 +41,8 @@ Thumbs.db
 build/
 dist/
 pyocni.egg-info/
+pyocni/TDD
 
-# ZODB - Database Files #
+# Testing file
 #########################
-locations.fs.index
-locations.fs.lock
-locations.fs.tmp
-objects.fs.index
-objects.fs.lock
-objects.fs.tmp
+CommandTester.py

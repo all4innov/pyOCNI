@@ -153,10 +153,10 @@ if __name__ == '__main__':
 
         def post(self):
             print self.request.body
-            return 'Hello2 from POST %s!' % self.request. params
+            return 'Hello2 from POST %s!' % self.request.params
 
         def get(self):
-            return 'Hello2 from GET: 33333333 ' + str(self.a)  + ' ' + str(self.b)
+            return 'Hello2 from GET: 33333333 ' + str(self.a) + ' ' + str(self.b)
 
         def put(self):
             return 'Hello2 from PUT %s!' % self.request.params['name']
