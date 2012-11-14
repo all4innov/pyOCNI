@@ -1,0 +1,9 @@
+{
+    "backends":
+            [
+                {
+                    "name": "dummy",
+                    "path": "/home/skible/PycharmProjects/PyOCNI/pyocni/backends/dummy_backend.py"
+                }
+            ]
+}

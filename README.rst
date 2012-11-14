@@ -2,9 +2,9 @@
  pyOCNI - Python Open Cloud Networking Interface
 ==========================================================
 
-:Version: 0.3
-:Source: https://github.com/jordan-developer/PyOCNI
-:Keywords: OCNI, OCCI, REST, Interface, HTTP, JSON, CouchDB, Eventlet, Webob, Cloud Computing, Cloud Networking
+:Version: 0.9
+:Source: https://github.com/jordan-developer/pyOCNI
+:Keywords: OCCI, OCNI, REST, Interface, HTTP, JSON, CouchDB, Eventlet, Webob, Cloud Computing, Cloud Networking
 
 Developers
 ==========
@@ -13,11 +13,10 @@ Copyright (C) Houssem Medhioub <houssem.medhioub@it-sudparis.eu>
 
 Copyright (C) Bilel Msekni <bilel.msekni@telecom-sudparis.eu>
 
-Redistribution of this software is permitted under the terms of the **LGPL** License
+Redistribution of this software is permitted under the terms of the Apache License, Version 2.0
 
 Table of Contents
 =================
-
 ::
 
   0. What is it?
@@ -40,21 +39,16 @@ Table of Contents
 0. What is it?
 ==============
 
-PyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI with a JSON serialization and a cloud networking extension.
-
+pyOCNI (Python Open Cloud Networking Interface): A Python implementation of an extended OCCI server with a JSON/HTTP serialization and a Category Manager.
 
 1. The Latest Version
 =====================
 
-version 0.3
-
-Status: Still an ongoing work
-
+version 0.9
 
 2. API Documentation
 ====================
-the api documentation are available through this html file:
-pyOCNI/pyocni/doc/index.html
+the api documentation are available through this html file: pyOCNI/pyocni/doc/index.html
 
 3. Installation
 ===============
@@ -101,184 +95,375 @@ To test CouchDB GUI:   http://127.0.0.1:5984/_utils/
 
    sudo python start.py
 
-4. HowTo use (examples. The json files are at the end of this README)
+
+4. HowTo use
 =====================================================================
+In order to use pyOCNI, you must respect certain rules :
 
-In order to use PyOCNI, you must respect certain rules :
-
-#. All data must follow the JSON format declared by OCCI [occi+json], any detected conflict will cancel the request.
+#. All requests/responses must follow the OCCI standard, any detected conflict will cancel the request.
 #. Kinds, Mixins and Actions can be created, retrieved, updated or deleted (CRUD) on the fly.
-#. Kinds, Mixins and Actions can be read and created by anyone but updated and deleted by only their creator
 #. Scheme + Term = OCCI_ID : unique identifier of the OCCI (Kind/Mixin/Action) description
-#. PyOCNI_Server_Address + Location : OCCI_Location of (Kind/Mixin) description
+#. PyOCNI_Server_Address + location = OCCI_Location of (Kind/Mixin/Action) description
+#. location word refers to a kind or mixin location.
+
+PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following commands are JSON specific. If you want to see HTTP command please check `here <https://github.com/mseknibilel/PyOCNI/blob/milestone/HTTP_HowTo.rst>`_.
+
+**Note:** To simplify the output, contents of the requests are available in section **json files to execute the HowTo**.
+
+
+4.1. Category management
+----------------------
+
+1.Retrieval of all registered Categories (Kinds, Mixins and Actions)::
+
+    curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/-/
+
+* Response::
+
+   {
+           "actions": [
+               {
+                   "term": "start",
+                   "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+                   "title": "Stop Compute instance",
+                   "attributes": {
+                       "method": {
+                           "mutable": true,
+                           "required": false,
+                           "type": "string",
+                           "pattern": "graceful|acpioff|poweroff",
+                           "default": "poweroff"
+                       }
+                   }
+               }
+           ],
+           "kinds": [
+               {
+                   "term": "storage",
+                   "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                   "title": "Compute Resource",
+                   "attributes": {
+                       "occi": {
+                           "compute": {
+                               "hostname": {
+                                   "mutable": true,
+                                   "required": false,
+                                   "type": "string",
+                                   "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                                   "minimum": "1",
+                                   "maximum": "255"
+                               },
+                               "state": {
+                                   "mutable": false,
+                                   "required": false,
+                                   "type": "string",
+                                   "pattern": "inactive|active|suspended|failed",
+                                   "default": "inactive"
+                               }
+                           }
+                       }
+                   },
+                   "actions": [
+                       "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                   ],
+                   "location": "/storage/"
+               }
+           ],
+           "mixins": [
+               {
+                   "term": "resource_tpl",
+                   "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                   "title": "Medium VM",
+                   "related": [],
+                   "attributes": {
+                       "occi": {
+                           "compute": {
+                               "speed": {
+                                   "type": "number",
+                                   "default": 2.8
+                               }
+                           }
+                       }
+                   },
+                   "location": "/template/resource/resource_tpl/"
+               }
+           ]
+       }
+
+2.Retrieval of specific Kinds, Mixins and Actions using filtering::
+
+   curl -X GET -d@filter_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
+
+* Response::
+
+   {
+    "actions": [
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Stop Compute instance",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpioff|poweroff",
+                    "default": "poweroff"
+                }
+            }
+        }
+    ]
+    }
+   
+3.Add categories (Kinds and/or Mixins and/or Actions)::
 
+   curl -X POST -d@post_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
-These are some commands that you can use with PyOCNI
+* Response::
 
-________________________________________________________________________________________________________________________
+   N/A
 
-* Create Actions::
+4.Update of Categories (Kinds and/or Mixins and/or Actions)::
 
-   curl -X POST -d@post_actions.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X PUT -d@put_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
-* Get Actions::
+* Response::
 
-   curl -X GET -d@get_actions.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   N/A
 
-* Update Actions::
+5.Deletion of Categories (Kinds and/or Mixins and/or Actions)::
 
-   curl -X PUT -d@put_actions.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X DELETE -d@delete_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
-* Delete Actions::
+* Response::
 
-   curl -X DELETE -d@delete_actions.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   N/A
 
-________________________________________________________________________________________________________________________
 
-________________________________________________________________________________________________________________________
+4.2. Path management
+----------------------
 
-* Create Mixins::
+1.Get Resources,Links and URLs below a path ::
 
-   curl -X POST -d@post_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/{path}
 
-* Get Mixins::
+* Response::
 
-   curl -X GET -d@get_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   [
+    "http://localhost:8090/{path}/vm3",
+    "http://localhost:8090/{path}/fooVM",
+    "http://localhost:8090/{path}/user/"
+   ]
 
-* Update Mixins::
+2.Get Resources and Links below a path::
 
-   curl -X PUT -d@put_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/{primary}/{secondary}
 
-* Delete Mixins::
+* Response::
 
-   curl -X DELETE -d@delete_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   {
+    "X-OCCI-Location": [
+       " http://localhost:8090/{primary}/{secondary}/vm1",
+        "http://localhost:8090/{primary}/{secondary}/vm2",
+        "http://localhost:8090/{primary}/{secondary}/vm3"
+    ]
+   }
 
-________________________________________________________________________________________________________________________
+3.Delete all Resources and Links below a path::
 
-________________________________________________________________________________________________________________________
+   curl -X DELETE -H 'accept: application/occi+json' -v http://localhost:8090/{primary}/{secondary}
 
-* Creation of Kinds, Mixins and Actions at the same time::
+* Response::
 
-   curl -X POST -d@post_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   N/A
 
-* Retrieval of all registered Kinds, Mixins and Actions::
+4.3. Multiple resource management
+----------------------
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+1.Get multiple resources of a kind/mixin::
+ 
+   curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/{location}/
 
-* Retrieval of some registered Kinds, Mixins and Actions through filtering::
+* Response::
 
-   curl -X GET -d@filter_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+       {
+    "X-OCCI-Location": [
+        http://localhost:8090/{location}/vm1",
+        http://localhost:8090/{location}/vm2",
+        http://localhost:8090/{location}/vm3"
+    ]
+   }
 
-* Update of Kinds, Mixins and Actions at the same time::
+2.Get specific resources of a kind/mixin using filtering::
 
-   curl -X PUT -d@put_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X GET -d@get_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/
 
-* Deletion of Kinds, Mixins and Actions at the same time::
+* Response::
 
-   curl -X DELETE -d@delete_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+    {
+    "X-OCCI-Location": [
+        "http://localhost:8090/{location}/vm1",
+        "http://localhost:8090/{location}/vm2"
+    ]
+   }
 
-________________________________________________________________________________________________________________________
+3.Create multiple resources of a kind::
 
-________________________________________________________________________________________________________________________
+   curl -X POST -d@post_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
 
-* Create Kinds::
+* Response::
 
-   curl -X POST -d@post_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v 'http://localhost:8090/-/'
+   {
+    "Location": [
+        "http://localhost:8090/{kind_location}/resource1_id",
+        "http://localhost:8090/{kind_location}/resource2_id",
+        "http://localhost:8090/{kind_location}/resource3_id"
+    ]
+   }
 
-* Retrieval of a registered Kind::
+4.Trigger an action on multiple resources of a kind/mixin::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/{resource}/
+   curl -X POST -d@trigger_action.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/?action={action_name}
 
-* Get Kinds with filetering::
+* Response::
 
-   curl -X GET -d@get_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   N/A   
 
-* Update Kinds::
+3.Associate a mixin to multiple resources::
 
-   curl -X PUT -d@put_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X POST -d@associate_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
-* Update Kind providers::
+* Response::
 
-   curl -X DELETE -d@put_providers.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   N/A
 
-* Delete Kinds::
+5.Full update of the mixin collection of multiple resources::
 
-   curl -X DELETE -d@delete_kinds.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/-/
+   curl -X PUT -d@update_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
-________________________________________________________________________________________________________________________
+* Response::
 
-________________________________________________________________________________________________________________________
+   N/A
 
+6.Dissociate resource from mixins::
 
-* Get Resources,Links and URLs below a path ::
+   curl -X DELETE -d@dissociate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{path}
+* Response::
+   
+   N/A
 
-* Get Resources and Links below a path::
+4.4. Single resource management
+----------------------
 
-   curl -X GET -d@get_res_link_b_path.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{primary}/{secondary}
+1.Create a Resource with a custom URL path::
 
-* Delete all Resources and Links below a path::
+   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{my_custom_resource_id}
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{primary}/{secondary}
+* Response::
 
-________________________________________________________________________________________________________________________
+   N/A
 
-________________________________________________________________________________________________________________________
+2.Get a Resource::
 
-* Create Resources of a kind::
+   curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
 
-   curl -X POST -d@post_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/
+* Response::
 
-* Create a Resource with a custom URL path::
+     {
+     "resources": [
+        {
+            "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
+            "mixins": [
+                "http: //schemas.opennebula.org/occi/infrastructure#my_mixin",
+                "http: //schemas.other.org/occi#my_mixin"
+            ],
+            "attributes": {
+                "occi": {
+                    "compute": {
+                        "speed": 2,
+                        "memory": 4,
+                        "cores": 2
+                    }
+                },
+                "org": {
+                    "other": {
+                        "occi": {
+                            "my_mixin": {
+                                "my_attribute": "my_value"
+                            }
+                        }
+                    }
+                }
+            },
+            "actions": [
+                {
+                    "title": "Start My Server",
+                    "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                }
+            ],
+            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+            "title": "Compute resource",
+            "summary": "This is a compute resource",
+            "links": [
+                {
+                    "target": "http://myservice.tld/storage/59e06cf8-f390-5093-af2e-3685be593",
+                    "kind": "http: //schemas.ogf.org/occi/infrastructure#storagelink",
+                    "attributes": {
+                        "occi": {
+                            "storagelink": {
+                                "deviceid": "ide: 0: 1"
+                            }
+                        }
+                    },
+                    "id": "391ada15-580c-5baa-b16f-eeb35d9b1122",
+                    "title": "Mydisk"
+                }
+            ]
+        }
+     ]
+     }
 
-   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user_id}/{my_custom_resource_id}
+3.Full Update of a Resource::
 
-* Get a Resource::
+   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+* Response::
 
-* Full Update a Resource::
+   {
+    "X-OCCI-Location": [
+        "http://localhost:8090/{location}/{resource-id}"
+    ]
+   }
 
-   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+4.Partial Update of a Resource::
 
-* Partial Update a Resource::
+   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
 
-   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+   * Response::
 
-* Delete a Resource::
+   {
+    "X-OCCI-Location": [
+        "http://localhost:8090/{location}/resource-id"
+    ]
+   }
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{resource}/{user-id}/{resource-id}
+5.Trigger an action on a resource::
 
-________________________________________________________________________________________________________________________
+   curl -X POST -d@action_on_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}?action={action_name}
 
-________________________________________________________________________________________________________________________
+* Response::
 
-* Create Links of a kind::
+   N/A
 
-   curl -X POST -d@post_links.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/
+6.Delete a Resource::
 
-* Create a Link with a custom resource path::
+   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
 
-   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{my_custom_link_path}
+* Response::
 
-* Get a Link::
-
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
-
-* Full update a Link::
-
-   curl -X PUT -d@full_update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
-
-* Patial update a Link::
-
-   curl -X POST -d@partial_update_link.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
-
-* Delete a link::
-
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' --user user_1:pass -v http://localhost:8090/{link}/{user-id}/{link-id}
-
-________________________________________________________________________________________________________________________
+   N/A
 
 5. For developers
 =================
@@ -294,20 +479,20 @@ If you want export the use of your service through OCCI, two parts should be dev
 
 ::
 
-  Copyright (C) 2011 Houssem Medhioub - Institut Mines-Telecom
+  Copyright 2010-2012 Institut Mines-Telecom
 
-  This library is free software: you can redistribute it and/or modify
-  it under the terms of the GNU Lesser General Public License as
-  published by the Free Software Foundation, either version 3 of
-  the License, or (at your option) any later version.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU Lesser General Public License for more details.
+  http://www.apache.org/licenses/LICENSE-2.0
 
-  You should have received a copy of the GNU Lesser General Public License
-  along with this library. If not, see <http://www.gnu.org/licenses/>.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
 
 7. Contacts
 ===========
@@ -334,17 +519,14 @@ Some of pyocni's needs might be:
 
 *
 
-10. json files to execute the HowTo use examples (available under client/request_examples folder)
-=======================================================================
+10. JSON example files of the HowTo 
+===================================
 
-* post_actions.json::
+* filter_categories.json::
 
-   {
+      {
        "actions": [
            {
-               "term": "stop",
-               "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-               "title": "Stop Compute instance",
                "attributes": {
                    "method": {
                        "mutable": true,
@@ -356,174 +538,19 @@ Some of pyocni's needs might be:
                }
            }
        ]
-   }
-
-* get_actions.json::
-
-   {
-       "actions": [
-           {
-               "term": "stop",
-               "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-               "title": "Stop Compute instance",
-               "attributes": {
-                   "method": {
-                       "mutable": true,
-                       "required": false,
-                       "type": "string",
-                       "pattern": "graceful|acpioff|poweroff",
-                       "default": "poweroff"
-                   }
-               }
-           }
-       ]
-   }
-
-* put_actions.json::
-
-    {
-        "actions": [
-            {
-                "attributes": {
-                    "method": {
-                        "default": "poweroff",
-                        "mutable": true,
-                        "required": false,
-                        "type": "string",
-                        "pattern": "graceful|acpioff|poweroff"
-                    }
-                },
-                "term": "start",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-                "title": "start Compute instance"
-            }
-        ]
-    }
-
-* delete_actions.json::
-
-    {
-        "actions": [
-            {
-                "term": "stop",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
-            }
-        ]
-    }
-
-* post_mixins.json::
-
-   {
-       "mixins": [
-           {
-               "term": "medium",
-               "scheme": "http://example.com/template/resource#",
-               "title": "Medium VM",
-               "related": [
-                   "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-               ],
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "speed": {
-                               "type": "number",
-                               "default": 2.8
-                           }
-                       }
-                   }
-               },
-               "location": "/template/resource/medium/"
-           }
-       ]
-   }
-
-* get_mixins.json::
-
-   {
-       "mixins": [
-           {
-               "term": "medium",
-               "scheme": "http://example.com/template/resource#",
-               "title": "Medium VM",
-               "related": [
-                   "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-               ],
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "speed": {
-                               "type": "number",
-                               "default": 2.8
-                           }
-                       }
-                   }
-               },
-               "location": "/template/resource/medium/"
-           }
-       ]
-   }
-
-* put_mixins.json::
-
-    {
-        "mixins": [
-            {
-                "term": "medium",
-                "scheme": "http://example.com/template/resource#",
-                "title": "Large VM",
-                "related": [
-                    "http://schemas.ogf.org/occi/infrastructure#resource_tpl"
-                ],
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "speed": {
-                                "type": "number",
-                                "default": 3
-                            }
-                        }
-                    }
-                },
-                "location": "/template/resource/medium/"
-            }
-        ]
-    }
-
-* delete_mixins.json::
-
-   {
-       "mixins": [
-           {
-               "term": "medium",
-               "scheme": "http://example.com/template/resource#"
-           }
-       ]
-   }
+       }
 
 * post_categories.json::
 
     {
-        "actions": [
-            {
-                "term": "start",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-                "title": "Stop Compute instance",
-                "attributes": {
-                    "method": {
-                        "mutable": true,
-                        "required": false,
-                        "type": "string",
-                        "pattern": "graceful|acpioff|poweroff",
-                        "default": "poweroff"
-                    }
-                }
-            }
-        ],
         "kinds": [
             {
-                "term": "storage",
+                "term": "compute",
                 "scheme": "http://schemas.ogf.org/occi/infrastructure#",
                 "title": "Compute Resource",
+                "related": [
+                    "http://schemas.ogf.org/occi/core#resource"
+                ],
                 "attributes": {
                     "occi": {
                         "compute": {
@@ -546,364 +573,67 @@ Some of pyocni's needs might be:
                     }
                 },
                 "actions": [
-                    "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
                 ],
-                "location": "/storage/"
-            }
-        ],
-        "mixins": [
-            {
-                "term": "resource_tpl",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-                "title": "Medium VM",
-                "related": [],
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "speed": {
-                                "type": "number",
-                                "default": 2.8
-                            }
-                        }
-                    }
-                },
-                "location": "/template/resource/resource_tpl/"
-            }
-        ]
-    }
-
-
-* filter_categories.json::
-
-    {
-        "actions": [
-            {
-                "term": "start",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-                "title": "Stop Compute instance",
-                "attributes": {
-                    "method": {
-                        "mutable": true,
-                        "required": false,
-                        "type": "string",
-                        "pattern": "graceful|acpioff|poweroff",
-                        "default": "poweroff"
-                    }
-                }
-            }
-        ],
-        "kinds": [
-            {
-                "term": "storage",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-                "title": "Compute Resource",
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "hostname": {
-                                "mutable": true,
-                                "required": false,
-                                "type": "string",
-                                "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                                "minimum": "1",
-                                "maximum": "255"
-                            },
-                            "state": {
-                                "mutable": false,
-                                "required": false,
-                                "type": "string",
-                                "pattern": "inactive|active|suspended|failed",
-                                "default": "inactive"
-                            }
-                        }
-                    }
-                },
-                "actions": [
-                    "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                ],
-                "location": "/storage/"
-            }
-        ],
-        "mixins": [
-            {
-                "term": "resource_tpl",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-                "title": "Medium VM",
-                "related": [],
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "speed": {
-                                "type": "number",
-                                "default": 2.8
-                            }
-                        }
-                    }
-                },
-                "location": "/template/resource/resource_tpl/"
+                "location": "/compute/"
             }
         ]
     }
 
 * put_categories.json::
 
-    {
-        "actions": [
-            {
-                "term": "start",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-                "title": "Stop Compute instance",
-                "attributes": {
-                    "method": {
-                        "mutable": true,
-                        "required": false,
-                        "type": "string",
-                        "pattern": "graceful|acpioff|poweroff",
-                        "default": "poweroff"
-                    }
-                }
-            }
-        ],
-        "kinds": [
-            {
-                "term": "storage",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-                "title": "Compute Resource",
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "hostname": {
-                                "mutable": true,
-                                "required": false,
-                                "type": "string",
-                                "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                                "minimum": "1",
-                                "maximum": "255"
-                            },
-                            "state": {
-                                "mutable": false,
-                                "required": false,
-                                "type": "string",
-                                "pattern": "inactive|active|suspended|failed",
-                                "default": "inactive"
-                            }
-                        }
-                    }
-                },
-                "actions": [
-                    "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                ],
-                "location": "/storage/"
-            }
-        ],
-        "mixins": [
-            {
-                "term": "resource_tpl",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-                "title": "Medium VM",
-                "related": [],
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "speed": {
-                                "type": "number",
-                                "default": 2.8
-                            }
-                        }
-                    }
-                },
-                "location": "/template/resource/resource_tpl/"
-            }
-        ],
-        "providers": [
-            {
-                "Provider": {
-                    "local": [
-                        "Houssem"
-                    ],
-                    "remote": [
-                        "Bilel"
-                    ]
-                },
-                "OCCI_ID": "http://schemas.ogf.org/occi/core#resource"
-            }
-        ]
-    }
+   {
+       "mixins": [
+           {
+               "term": "resource_tpl",
+               "scheme": "http: //schemas.ogf.org/occi/infrastructure#",
+               "title": "MediumVM",
+               "related": [],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "speed": {
+                               "type": "number",
+                               "default": 2.8
+                           }
+                       }
+                   }
+               },
+               "location": "/template/resource/resource_tpl/"
+           }
+       ]
+   }
 
 * delete_categories.json::
 
-    {
-        "actions": [
-            {
-                "term": "start",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
-            }
-        ],
-        "kinds": [
-            {
-                "term": "storage",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure#"
-            }
-        ],
-        "mixins": [
-            {
-                "term": "resource_tpl",
-                "scheme": "http://schemas.ogf.org/occi/infrastructure#"
-            }
-        ]
-    }
-
-* post_kinds.json::
-
    {
        "kinds": [
            {
-               "term": "compute",
-               "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-               "title": "Compute Resource",
-               "related": [
-                   "http://schemas.ogf.org/occi/core#resource"
-               ],
-               "attributes": {
-                   "occi": {
-                       "compute": {
-                           "hostname": {
-                               "mutable": true,
-                               "required": false,
-                               "type": "string",
-                               "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                               "minimum": "1",
-                               "maximum": "255"
-                           },
-                           "state": {
-                               "mutable": false,
-                               "required": false,
-                               "type": "string",
-                               "pattern": "inactive|active|suspended|failed",
-                               "default": "inactive"
-                           }
-                       }
-                   }
-               },
-               "actions": [
-                   "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                   "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                   "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-               ],
-               "location": "/compute/"
+               "term": "storage",
+               "scheme": "http: //schemas.ogf.org/occi/infrastructure#"
            }
        ]
    }
 
-* get_kinds.json::
+* get_resources.json::
 
    {
-       "kinds": [
+       "resources": [
            {
-               "term": "compute",
-               "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-               "title": "Compute Resource",
-               "related": [
-                   "http://schemas.ogf.org/occi/core#resource"
-               ],
                "attributes": {
                    "occi": {
                        "compute": {
-                           "hostname": {
-                               "mutable": true,
-                               "required": false,
-                               "type": "string",
-                               "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                               "minimum": "1",
-                               "maximum": "255"
-                           },
-                           "state": {
-                               "mutable": false,
-                               "required": false,
-                               "type": "string",
-                               "pattern": "inactive|active|suspended|failed",
-                               "default": "inactive"
-                           }
+                           "speed": 2,
+                           "memory": 4,
+                           "cores": 2
                        }
                    }
-               },
-               "actions": [
-                   "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
-                   "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
-                   "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
-               ],
-               "location": "/compute/"
+               }
            }
        ]
    }
-
-* put_kinds.json::
-
-    {
-        "Kinds": [
-            {
-                "term": "compute",
-                "title": "Compute Resource",
-                "related": [
-                    "http://schemas.ogf.org/occi/core#resource"
-                ],
-                "actions": [],
-                "attributes": {
-                    "occi": {
-                        "compute": {
-                            "state": {
-                                "default": "inactive",
-                                "mutable": false,
-                                "required": false,
-                                "type": "string",
-                                "pattern": "inactive|active|suspended|failed"
-                            },
-                            "hostname": {
-                                "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                                "required": false,
-                                "maximum": "255",
-                                "minimum": "1",
-                                "mutable": true,
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-                "location": "/compute/"
-            }
-        ]
-    }
-
-* put_providers.json::
-
-    {
-        "providers": [
-            {
-                "Provider": {
-                    "local": [
-                        "Houssem"
-                    ],
-                    "remote": [
-                        "Bilel"
-                    ]
-                },
-                "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#compute"
-            }
-        ]
-    }
-
-
-* delete_kinds.json::
-
-    {
-        "Kinds": [
-            {
-                    "term": "compute",
-                    "scheme": "http://schemas.ogf.org/occi/infrastructure#"
-            }
-        ]
-    }
 
 * post_resources.json::
 
@@ -922,14 +652,81 @@ Some of pyocni's needs might be:
                            "memory": 4,
                            "cores": 2
                        }
-                   },
-                   "org": {
-                       "other": {
-                           "occi": {
-                               "my_mixin": {
-                                   "my_attribute": "my_value"
-                               }
-                           }
+                   }
+               },
+               "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+               "title": "Compute resource",
+               "summary": "This is a compute resource"
+           }
+       ]
+   }
+
+* trigger_action.json::
+
+   {
+       "actions": [
+           {
+               "term": "start",
+               "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
+           }
+       ],
+       "attributes": {
+           "occi": {
+               "infrastructure": {
+                   "networkinterface": {
+                       "interface": "eth0",
+                       "mac": "00:80:41:ae:fd:7e",
+                       "address": "192.168.0.100",
+                       "gateway": "192.168.0.1",
+                       "allocation": "dynamic"
+                   }
+               }
+           }
+       }
+   }
+
+* associate_mixin.json::
+
+    {
+    "X-OCCI-Location": [
+        "http://localhost:8090/{location1}/vm1",
+        "http://localhost:8090/{location2}/vm2"
+    ]
+    }
+
+* update_mixins.json::
+
+   {
+       "X-OCCI-Location": [
+           "http://localhost:8090/{location1}/vm1",
+           "http://localhost:8090/{location2}/vm2"
+       ]
+   }
+
+* dissociate_mixins.json::
+
+   {
+       "X-OCCI-Location": [
+           "http://localhost:8090/{location1}/vm1",
+           "http://localhost:8090/{location2}/vm2"
+       ]
+      }
+
+* post_custom_resource.json::
+
+   {
+       "resources": [
+           {
+               "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
+               "mixins": [
+                   "http://example.com/template/resource#medium"
+               ],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "speed": 2,
+                           "memory": 4,
+                           "cores": 12
                        }
                    }
                },
@@ -940,24 +737,9 @@ Some of pyocni's needs might be:
                        "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
                    }
                ],
-               "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+               "id": "9930",
                "title": "Compute resource",
-               "summary": "This is a compute resource",
-               "links": [
-                   {
-                       "target": "http://myservice.tld/storage/59e06cf8-f390-5093-af2e-3685be593",
-                       "kind": "http: //schemas.ogf.org/occi/infrastructure#storagelink",
-                       "attributes": {
-                           "occi": {
-                               "storagelink": {
-                                   "deviceid": "ide: 0: 1"
-                               }
-                           }
-                       },
-                       "id": "391ada15-580c-5baa-b16f-eeb35d9b1122",
-                       "title": "Mydisk"
-                   }
-               ]
+               "summary": "This is a compute resource"
            }
        ]
    }
@@ -965,77 +747,48 @@ Some of pyocni's needs might be:
 * full_update_resource.json::
 
    {
-       "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
-       "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0"
-
-   }
-
-* post_links.json::
-
-   {
-       "links": [
+       "resources": [
            {
-               "kind": "http://schemas.ogf.org/occi/infrastructure#networkinterface",
+               "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
                "mixins": [
-                   "http://schemas.ogf.org/occi/infrastructure/networkinterface#ipnetworkinterface"
+                   "http://example.com/template/resource#medium"
                ],
                "attributes": {
                    "occi": {
-                       "infrastructure": {
-                           "networkinterface": {
-                               "interface": "eth0",
-                               "mac": "00:80:41:ae:fd:7e",
-                               "address": "192.168.0.100",
-                               "gateway": "192.168.0.1",
-                               "allocation": "dynamic"
-                           }
+                       "compute": {
+                           "speed": 2,
+                           "memory": 4,
+                           "cores": 12
                        }
                    }
                },
                "actions": [
                    {
-                       "title": "Disable networkinterface",
-                       "href": "/networkinterface/22fe83ae-a20f-54fc-b436-cec85c94c5e8?action=up",
-                       "category": "http: //schemas.ogf.org/occi/infrastructure/networkinterface/action#"
+                       "title": "Start My Server",
+                       "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                       "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
                    }
                ],
-               "id": "22fe83ae-a20f-54fc-b436-cec85c94c5e8",
-               "title": "Mynetworkinterface",
-               "target": "http: //myservice.tld/network/b7d55bf4-7057-5113-85c8-141871bf7635",
-               "source": "http: //myservice.tld/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29"
+               "id": "9930",
+               "title": "Compute resource",
+               "summary": "This is a compute resource"
            }
        ]
    }
 
-* full_update_link.json::
+* partial_update_resource.json::
 
-   {
-       "_id": "fb1cff2a-641c-47b2-ab50-0e340bce9cc2",
-       "_rev": "2-8d02bacda9bcb93c8f03848191fd64f0"
-   }
-
-* DocumentSkeleton::
-
-   {
-       "_id": "id value",
-       "_rev": "rev value",
-       "LastUpdate": "datetime",
-       "CreationDate": "datetime",
-       "OCCI_Description": {
-       },
-       "Creator": "creator login",
-       "OCCI_ID": "scheme+term",
-       #OCCI_Location not available for actions documents
-       "OCCI_Location": "path to the document",
-       "Type": "Type of the OCCI description",
-       #Provider field is available only in kind documents
-       "Provider": {
-           "remote": [
-
-           ],
-           "local": [
-
-           ]
-       }
-   }
-
+    {
+        "resources": [
+            {
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "speed": 5,
+                            "cores": 2
+                        }
+                    }
+                }
+            }
+        ]
+    }
