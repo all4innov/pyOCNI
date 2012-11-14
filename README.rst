@@ -215,7 +215,15 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
     ]
     }
    
-3.Update of Categories (Kinds and/or Mixins and/or Actions)::
+3.Add categories (Kinds and/or Mixins and/or Actions)::
+
+   curl -X POST -d@post_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
+
+* Response::
+
+   N/A
+
+4.Update of Categories (Kinds and/or Mixins and/or Actions)::
 
    curl -X PUT -d@put_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
@@ -223,7 +231,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
    N/A
 
-4.Deletion of Categories (Kinds and/or Mixins and/or Actions)::
+5.Deletion of Categories (Kinds and/or Mixins and/or Actions)::
 
    curl -X DELETE -d@delete_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
@@ -363,7 +371,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 * Response::
 
      {
-    "resources": [
+     "resources": [
         {
             "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
             "mixins": [
@@ -414,8 +422,8 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
                 }
             ]
         }
-    ]
-   }
+     ]
+     }
 
 3.Full Update of a Resource::
 
@@ -425,7 +433,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
    {
     "X-OCCI-Location": [
-        "http://localhost:8090/{kind}/resource1_id"
+        "http://localhost:8090/{location}/{resource-id}"
     ]
    }
 
@@ -437,7 +445,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
    {
     "X-OCCI-Location": [
-        "http://localhost:8090/{kind}/resource1_id"
+        "http://localhost:8090/{location}/resource-id"
     ]
    }
 
@@ -531,6 +539,48 @@ Some of pyocni's needs might be:
            }
        ]
        }
+
+*post_categories.json::
+
+    {
+        "kinds": [
+            {
+                "term": "compute",
+                "scheme": "http://schemas.ogf.org/occi/infrastructure#",
+                "title": "Compute Resource",
+                "related": [
+                    "http://schemas.ogf.org/occi/core#resource"
+                ],
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "hostname": {
+                                "mutable": true,
+                                "required": false,
+                                "type": "string",
+                                "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
+                                "minimum": "1",
+                                "maximum": "255"
+                            },
+                            "state": {
+                                "mutable": false,
+                                "required": false,
+                                "type": "string",
+                                "pattern": "inactive|active|suspended|failed",
+                                "default": "inactive"
+                            }
+                        }
+                    }
+                },
+                "actions": [
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#start",
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#stop",
+                    "http://schemas.ogf.org/occi/infrastructure/compute/action#restart"
+                ],
+                "location": "/compute/"
+            }
+        ]
+    }
 
 * put_categories.json::
 

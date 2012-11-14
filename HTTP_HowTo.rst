@@ -39,11 +39,11 @@ In order to use pyOCNI, you must respect certain rules :
 #. PyOCNI_Server_Address + location = OCCI_Location of (Kind/Mixin/Action) description
 #. location word refers to a kind or mixin location.
 
-PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occi**. The difference between this two
+ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occi**. The difference between these two
  formats is that the response will be inside the body for the text/plain while it will be inside the headers for the text/occi.
  It's up to the user to define what format he wants in the request Content-Type header.
 
-**Note:** To simplify the output, contents of the requests are available in section **json files to execute the HowTo**.
+**Note:** To simplify the output, contents of the requests are using the text/plain format and available under section **HTTP files to execute the HowTo**.
 
 
 4.1. Category management
@@ -64,25 +64,25 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
         actions="http://schemas.ogf.org/occi/infrastructure/compute/action#stop ...";
         location="http://example.com/compute/"
 
-  Category: start;
+   Category: start;
         scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#";
         class="action";
         title="Start Compute Resource";
         attributes="method"
 
-  Category: stop;
+   Category: stop;
         scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#";
         class="action";
         title="Stop Compute Resource";
         attributes="method"
 
-  Category: my_stuff;
+   Category: my_stuff;
         scheme="http://example.com/occi/my_stuff#";
         class="mixin";
         location="http://example.com/my_stuff/"
 
 
-2.Retrieval of specific Kinds, Mixins and Actions using filtering::
+2.Retrieval of specific categories (Kinds, Mixins and Actions) using filtering::
 
    curl -X GET -d@filter_categories -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
 
@@ -94,17 +94,25 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
            title="Stop Compute Resource";
            attributes="method"
 
-3.Full Update of Categories (Kinds and/or Mixins and/or Actions)::
+5.Adding a category (Kind or Mixin or Action)::
 
-   curl -X PUT -d@put_categories -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
+    curl -X POST -d@post_category -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
 
 * Response::
 
    N/A
 
-4.Deletion of Categories (Kinds and/or Mixins and/or Actions)::
+4.Full Update of a category (Kind or Mixin or Action)::
 
-   curl -X DELETE -d@delete_categories -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
+   curl -X PUT -d@put_category -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
+
+* Response::
+
+   N/A
+
+5.Deletion of a category (Kind or Mixins or Actions)::
+
+   curl -X DELETE -d@delete_category -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
 
 * Response::
 
@@ -146,44 +154,30 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 1.Get multiple resources of a kind/mixin::
 
-   curl -X GET -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/
+   curl -X GET -H 'accept: text/plain' -v http://localhost:8090/{location}/
 
 * Response::
 
-       {
-    "X-OCCI-Location": [
-        http://localhost:8090/{location}/vm1",
-        http://localhost:8090/{location}/vm2",
-        http://localhost:8090/{location}/vm3"
-    ]
-   }
+    X-OCCI-Location: http://localhost:8090/{location}/vm1
+    X-OCCI-Location: http://localhost:8090/{location}/vm2
+    X-OCCI-Location: http://localhost:8090/{location}/vm3
 
 2.Get specific resources of a kind/mixin using filtering::
 
-   curl -X GET -d@get_resources.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/
+   curl -X GET -d@get_resources -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/
 
 * Response::
 
-    {
-    "X-OCCI-Location": [
-        "http://localhost:8090/{location}/vm1",
-        "http://localhost:8090/{location}/vm2"
-    ]
-   }
+    X-OCCI-Location: http://localhost:8090/{location}/vm1
+    X-OCCI-Location: http://localhost:8090/{location}/vm2
 
-3.Create multiple resources of a kind::
+3.Create a resource of a kind::
 
-   curl -X POST -d@post_resources.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{kind_location}/
+   curl -X POST -d@post_resource -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{kind_location}/
 
 * Response::
 
-   {
-    "Location": [
-        "http://localhost:8090/{kind_location}/resource1_id",
-        "http://localhost:8090/{kind_location}/resource2_id",
-        "http://localhost:8090/{kind_location}/resource3_id"
-    ]
-   }
+        Location: http://localhost:8090/{kind_location}/resource1_id
 
 4.Trigger an action on multiple resources of a kind/mixin::
 
@@ -234,88 +228,43 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 * Response::
 
-     {
-    "resources": [
-        {
-            "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
-            "mixins": [
-                "http: //schemas.opennebula.org/occi/infrastructure#my_mixin",
-                "http: //schemas.other.org/occi#my_mixin"
-            ],
-            "attributes": {
-                "occi": {
-                    "compute": {
-                        "speed": 2,
-                        "memory": 4,
-                        "cores": 2
-                    }
-                },
-                "org": {
-                    "other": {
-                        "occi": {
-                            "my_mixin": {
-                                "my_attribute": "my_value"
-                            }
-                        }
-                    }
-                }
-            },
-            "actions": [
-                {
-                    "title": "Start My Server",
-                    "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
-                    "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                }
-            ],
-            "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
-            "title": "Compute resource",
-            "summary": "This is a compute resource",
-            "links": [
-                {
-                    "target": "http://myservice.tld/storage/59e06cf8-f390-5093-af2e-3685be593",
-                    "kind": "http: //schemas.ogf.org/occi/infrastructure#storagelink",
-                    "attributes": {
-                        "occi": {
-                            "storagelink": {
-                                "deviceid": "ide: 0: 1"
-                            }
-                        }
-                    },
-                    "id": "391ada15-580c-5baa-b16f-eeb35d9b1122",
-                    "title": "Mydisk"
-                }
-            ]
-        }
-    ]
-   }
+     Category: compute;
+      scheme="http://schemas.ogf.org/occi/infrastructure#"
+      class="kind";
+     Link: </users/foo/compute/b9ff813e-fee5-4a9d-b839-673f39746096?action=start>;
+      rel="http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+     X-OCCI-Attribute: occi.core.id="urn:uuid:b9ff813e-fee5-4a9d-b839-673f39746096"
+     X-OCCI-Attribute: occi.core.title="My Dummy VM"
+     X-OCCI-Attribute: occi.compute.architecture="x86"
+     X-OCCI-Attribute: occi.compute.state="inactive"
+     X-OCCI-Attribute: occi.compute.speed=1.33
+     X-OCCI-Attribute: occi.compute.memory=2.0
+     X-OCCI-Attribute: occi.compute.cores=2
+     X-OCCI-Attribute: occi.compute.hostname="dummy"
 
 3.Full Update of a Resource::
 
-   curl -X PUT -d@full_update_resource.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}
+   curl -X PUT -d@full_update_resource -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}
 
 * Response::
 
-   {
-    "X-OCCI-Location": [
-        "http://localhost:8090/{kind}/resource1_id"
-    ]
-   }
+    X-OCCI-Location: http://localhost:8090/{location}/{resource-id}
 
 4.Partial Update of a Resource::
 
-   curl -X POST -d@partial_update_resource.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}
+   curl -X POST -d@partial_update_resource -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}
 
    * Response::
 
    {
     "X-OCCI-Location": [
-        "http://localhost:8090/{kind}/resource1_id"
+        "http://localhost:8090/{location}/{resource-id}"
     ]
    }
 
 5.Trigger an action on a resource::
 
-   curl -X POST -d@action_on_resource.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}?action={action_name}
+   curl -X POST -d@action_on_resource -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}?action={action_name}
 
 * Response::
 
@@ -388,23 +337,23 @@ Some of pyocni's needs might be:
 
 * filter_categories.json::
 
-      {
-       "actions": [
-           {
-               "attributes": {
-                   "method": {
-                       "mutable": true,
-                       "required": false,
-                       "type": "string",
-                       "pattern": "graceful|acpioff|poweroff",
-                       "default": "poweroff"
-                   }
-               }
-           }
-       ]
-       }
+      Category: my_stuff;
+        scheme="http://example.com/occi/my_stuff#";
+        class="mixin";
 
-* put_categories.json::
+
+* post_categories::
+
+   Category: compute;
+           scheme="http://schemas.ogf.org/occi/infrastructure#";
+           class="kind";
+           title="Compute Resource type";
+           rel="http://schemas.ogf.org/occi/core#resource";
+           attributes="occi.compute.cores occi.compute.state{immutable} ...";
+           actions="http://schemas.ogf.org/occi/infrastructure/compute/action#stop ...";
+           location="http://example.com/compute/"
+
+* put_categories::
 
    {
        "mixins": [
