@@ -111,28 +111,27 @@ class SingleEntityJungler(object):
                 else:
                     if jBody.has_key('resources'):
                         logger.debug("===== Channel_put_single_resources ==== : Resource full update channeled")
-                        entity, resp_code_r = self.manager_r.update_resource(olddoc['OCCI_Description'],jBody['resources'][0],db_occi_ids_locs)
+                        entity, resp_code_r = self.manager_r.update_resource(olddoc,jBody['resources'][0])
                     else:
                         resp_code_r = return_code['OK, and location returned']
 
                     if jBody.has_key('links'):
                         logger.debug("===== Channel_put_single_resources ==== : Link full update channeled")
-                        entity, resp_code_l = self.manager_l.update_link(olddoc['OCCI_Description'],jBody['links'][0],db_occi_ids_locs)
+                        entity, resp_code_l = self.manager_l.update_link(olddoc,jBody['links'][0])
                     else:
                         resp_code_l = return_code['OK, and location returned']
 
                     if resp_code_r is not return_code['OK, and location returned'] or resp_code_l is not return_code['OK, and location returned']:
                         return "An error has occurred, please check log for more details",return_code['Bad Request']
 
-                    old_desc = olddoc['OCCI_Description']
-                    olddoc['OCCI_Description'] = entity
 
-                    self.PostMan.save_updated_doc_in_db(olddoc)
+
+                    self.PostMan.save_updated_doc_in_db(entity)
 
                     logger.debug("===== Channel_post_single_resource ==== : Finished (2b) with success")
                     #return the locations of the resources
 
-                    backend_m.update_entity(old_desc,entity)
+                    backend_m.update_entity(olddoc['OCCI_Description'],entity['OCCI_Description'])
 
                     return olddoc['OCCI_Location'],return_code['OK, and location returned']
 

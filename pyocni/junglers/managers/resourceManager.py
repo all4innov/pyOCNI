@@ -148,32 +148,24 @@ class ResourceManager(object):
         logger.debug("===== Register_custom_resource :  Resources sent for creation")
         return jData, return_code['OK, and location returned']
 
-    def update_resource(self, old_description, occi_description, db_occi_ids_locs):
+    def update_resource(self, old_doc, occi_new_description):
         """
         Verifies the validity of a resource's new data
         Args:
 
-            @param old_description: Old resource description
-            @param occi_description: Resource description
-            @param db_occi_ids_locs: Ids and locations from the database
+            @param old_doc: Old resource document
+            @param occi_new_description: New resource description
         """
-        #Verify if the kind of the resource exists in the database
-        #ok_k = joker.verify_existences_beta([occi_description['kind']],db_occi_ids_locs)
-        ok_k = True
-        if ok_k is True:
-            problems, occi_description = joker.update_occi_entity_description(old_description, occi_description)
+        try:
 
-            if problems is False:
-                logger.debug("===== Update_resource: Resource sent for update =====")
-                return occi_description, return_code['OK, and location returned']
-            else:
-                logger.error("===== Update_partial_resource: Resource couldn't have been fully updated =====")
-                return list(), return_code['Conflict']
-        else:
-            mesg = "Kind description does not exist match"
-            logger.error("===== Update_resource: " + mesg + " =====")
+            logger.debug("===== Update_resource: Resource sent for update =====")
+            old_doc['OCCI_Description'] = occi_new_description
+            return old_doc, return_code['OK, and location returned']
 
-            return list(), return_code['Not Found']
+        except Exception as e:
+
+            logger.error("===== Update_partial_resource: Resource couldn't be updated =====")
+            return {}, return_code['Internal Server Error']
 
     def partial_resource_update(self, old_data, occi_description):
         """
