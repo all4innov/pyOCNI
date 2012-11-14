@@ -116,7 +116,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
 1.Retrieval of all registered Categories (Kinds, Mixins and Actions)::
 
-    curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
+    curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/-/
 
 * Response::
 
@@ -237,7 +237,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
 1.Get Resources,Links and URLs below a path ::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{path}
+   curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/{path}
 
 * Response::
 
@@ -249,7 +249,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
 2.Get Resources and Links below a path::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{primary}/{secondary}
+   curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/{primary}/{secondary}
 
 * Response::
 
@@ -263,7 +263,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
 3.Delete all Resources and Links below a path::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{primary}/{secondary}
+   curl -X DELETE -H 'accept: application/occi+json' -v http://localhost:8090/{primary}/{secondary}
 
 * Response::
 
@@ -274,7 +274,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
 1.Get multiple resources of a kind/mixin::
  
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/
+   curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/{location}/
 
 * Response::
 
@@ -358,7 +358,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
 2.Get a Resource::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
+   curl -X GET -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
 
 * Response::
 

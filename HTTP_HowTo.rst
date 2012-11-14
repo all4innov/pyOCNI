@@ -39,7 +39,9 @@ In order to use pyOCNI, you must respect certain rules :
 #. PyOCNI_Server_Address + location = OCCI_Location of (Kind/Mixin/Action) description
 #. location word refers to a kind or mixin location.
 
-PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occi**. It's up to the user to specify what format he is using in the request Content-Type header.
+PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occi**. The difference between this two
+ formats is that the response will be inside the body for the text/plain while it will be inside the headers for the text/occi.
+ It's up to the user to define what format he wants in the request Content-Type header.
 
 **Note:** To simplify the output, contents of the requests are available in section **json files to execute the HowTo**.
 
@@ -53,104 +55,48 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 * Response::
 
-   {
-           "actions": [
-               {
-                   "term": "start",
-                   "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-                   "title": "Stop Compute instance",
-                   "attributes": {
-                       "method": {
-                           "mutable": true,
-                           "required": false,
-                           "type": "string",
-                           "pattern": "graceful|acpioff|poweroff",
-                           "default": "poweroff"
-                       }
-                   }
-               }
-           ],
-           "kinds": [
-               {
-                   "term": "storage",
-                   "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-                   "title": "Compute Resource",
-                   "attributes": {
-                       "occi": {
-                           "compute": {
-                               "hostname": {
-                                   "mutable": true,
-                                   "required": false,
-                                   "type": "string",
-                                   "pattern": "(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\\\-]*[a-zA-Z0-9])\\\\.)*",
-                                   "minimum": "1",
-                                   "maximum": "255"
-                               },
-                               "state": {
-                                   "mutable": false,
-                                   "required": false,
-                                   "type": "string",
-                                   "pattern": "inactive|active|suspended|failed",
-                                   "default": "inactive"
-                               }
-                           }
-                       }
-                   },
-                   "actions": [
-                       "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
-                   ],
-                   "location": "/storage/"
-               }
-           ],
-           "mixins": [
-               {
-                   "term": "resource_tpl",
-                   "scheme": "http://schemas.ogf.org/occi/infrastructure#",
-                   "title": "Medium VM",
-                   "related": [],
-                   "attributes": {
-                       "occi": {
-                           "compute": {
-                               "speed": {
-                                   "type": "number",
-                                   "default": 2.8
-                               }
-                           }
-                       }
-                   },
-                   "location": "/template/resource/resource_tpl/"
-               }
-           ]
-       }
+   Category: compute;
+        scheme="http://schemas.ogf.org/occi/infrastructure#";
+        class="kind";
+        title="Compute Resource type";
+        rel="http://schemas.ogf.org/occi/core#resource";
+        attributes="occi.compute.cores occi.compute.state{immutable} ...";
+        actions="http://schemas.ogf.org/occi/infrastructure/compute/action#stop ...";
+        location="http://example.com/compute/"
+
+  Category: start;
+        scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#";
+        class="action";
+        title="Start Compute Resource";
+        attributes="method"
+
+  Category: stop;
+        scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#";
+        class="action";
+        title="Stop Compute Resource";
+        attributes="method"
+
+  Category: my_stuff;
+        scheme="http://example.com/occi/my_stuff#";
+        class="mixin";
+        location="http://example.com/my_stuff/"
+
 
 2.Retrieval of specific Kinds, Mixins and Actions using filtering::
 
-   curl -X GET -d@filter_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
+   curl -X GET -d@filter_categories -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
 
 * Response::
 
-   {
-    "actions": [
-        {
-            "term": "start",
-            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
-            "title": "Stop Compute instance",
-            "attributes": {
-                "method": {
-                    "mutable": true,
-                    "required": false,
-                    "type": "string",
-                    "pattern": "graceful|acpioff|poweroff",
-                    "default": "poweroff"
-                }
-            }
-        }
-    ]
-    }
+   Category: stop;
+           scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#";
+           class="action";
+           title="Stop Compute Resource";
+           attributes="method"
 
-3.Update of Categories (Kinds and/or Mixins and/or Actions)::
+3.Full Update of Categories (Kinds and/or Mixins and/or Actions)::
 
-   curl -X PUT -d@put_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
+   curl -X PUT -d@put_categories -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
 
 * Response::
 
@@ -158,45 +104,38 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 4.Deletion of Categories (Kinds and/or Mixins and/or Actions)::
 
-   curl -X DELETE -d@delete_categories.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
+   curl -X DELETE -d@delete_categories -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
 
 * Response::
 
    N/A
-
 
 4.2. Path management
 ----------------------
 
 1.Get Resources,Links and URLs below a path ::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{path}
+   curl -X GET -H 'accept: text/plain' -v http://localhost:8090/{path}
 
 * Response::
 
-   [
-    "http://localhost:8090/{path}/vm3",
-    "http://localhost:8090/{path}/fooVM",
-    "http://localhost:8090/{path}/user/"
-   ]
+   http://localhost:8090/{path}/vm3
+   http://localhost:8090/{path}/fooVM
+   http://localhost:8090/{path}/user/
 
 2.Get Resources and Links below a path::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{primary}/{secondary}
+   curl -X GET -H 'accept: text/plain' -v http://localhost:8090/{primary}/{secondary}
 
 * Response::
 
-   {
-    "X-OCCI-Location": [
-       " http://localhost:8090/{primary}/{secondary}/vm1",
-        "http://localhost:8090/{primary}/{secondary}/vm2",
-        "http://localhost:8090/{primary}/{secondary}/vm3"
-    ]
-   }
+    X-OCCI-Location: http://localhost:8090/{primary}/{secondary}/vm1
+    X-OCCI-Location: http://localhost:8090/{primary}/{secondary}/vm2
+    X-OCCI-Location: http://localhost:8090/{primary}/{secondary}/vm3
 
 3.Delete all Resources and Links below a path::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{primary}/{secondary}
+   curl -X DELETE -H 'accept: text/plain' -v http://localhost:8090/{primary}/{secondary}
 
 * Response::
 
@@ -207,7 +146,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 1.Get multiple resources of a kind/mixin::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/
+   curl -X GET -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/
 
 * Response::
 
@@ -221,7 +160,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 2.Get specific resources of a kind/mixin using filtering::
 
-   curl -X GET -d@get_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/
+   curl -X GET -d@get_resources.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/
 
 * Response::
 
@@ -234,7 +173,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 3.Create multiple resources of a kind::
 
-   curl -X POST -d@post_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
+   curl -X POST -d@post_resources.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{kind_location}/
 
 * Response::
 
@@ -248,7 +187,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 4.Trigger an action on multiple resources of a kind/mixin::
 
-   curl -X POST -d@trigger_action.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/?action={action_name}
+   curl -X POST -d@trigger_action.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/?action={action_name}
 
 * Response::
 
@@ -256,7 +195,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 3.Associate a mixin to multiple resources::
 
-   curl -X POST -d@associate_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
+   curl -X POST -d@associate_mixins.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{mixin_location}/
 
 * Response::
 
@@ -264,7 +203,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 5.Full update of the mixin collection of multiple resources::
 
-   curl -X PUT -d@update_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
+   curl -X PUT -d@update_mixins.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{mixin_location}/
 
 * Response::
 
@@ -272,7 +211,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 6.Dissociate resource from mixins::
 
-   curl -X DELETE -d@dissociate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
+   curl -X DELETE -d@dissociate_mixin.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{mixin_location}/
 
 * Response::
 
@@ -283,7 +222,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 1.Create a Resource with a custom URL path::
 
-   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{my_custom_resource_id}
+   curl -X PUT -d@post_custom_resource.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{my_custom_resource_id}
 
 * Response::
 
@@ -291,7 +230,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 2.Get a Resource::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
+   curl -X GET -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}
 
 * Response::
 
@@ -352,7 +291,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 3.Full Update of a Resource::
 
-   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
+   curl -X PUT -d@full_update_resource.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}
 
 * Response::
 
@@ -364,7 +303,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 4.Partial Update of a Resource::
 
-   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
+   curl -X POST -d@partial_update_resource.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}
 
    * Response::
 
@@ -376,7 +315,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 5.Trigger an action on a resource::
 
-   curl -X POST -d@action_on_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}?action={action_name}
+   curl -X POST -d@action_on_resource.json -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}?action={action_name}
 
 * Response::
 
@@ -384,7 +323,7 @@ PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occ
 
 6.Delete a Resource::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
+   curl -X DELETE -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/{location}/{resource-id}
 
 * Response::
 
