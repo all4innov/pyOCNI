@@ -39,9 +39,9 @@ In order to use pyOCNI, you must respect certain rules :
 #. PyOCNI_Server_Address + location = OCCI_Location of (Kind/Mixin/Action) description
 #. location word refers to a kind or mixin location.
 
- PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occi**. The difference between these two
- formats is that the response will be inside the body for the text/plain while it will be inside the headers for the text/occi.
- It's up to the user to define what format he wants in the request Content-Type header.
+PyOCNI supports both OCCI HTTP rendering formats : **text/plain** and **text/occi**. The difference between these two
+formats is that the response will be inside the body for the text/plain while it will be inside the headers for the text/occi.
+It's up to the user to define what format he wants in the request Content-Type header.
 
 **Note:** To simplify the output, contents of the requests are using the text/plain format and available under section **HTTP files to execute the HowTo**.
 
