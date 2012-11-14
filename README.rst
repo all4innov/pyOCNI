@@ -212,6 +212,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
             }
         }
     ]
+    }
    
 3.Update of Categories (Kinds and/or Mixins and/or Actions)::
 
@@ -235,7 +236,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 1.Get Resources,Links and URLs below a path ::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{path}
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{path}
 
 * Response::
 
@@ -247,7 +248,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 2.Get Resources and Links below a path::
 
-   curl -X GET -d@get_res_link_b_path.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{primary}/{secondary}
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{primary}/{secondary}
 
 * Response::
 
@@ -261,7 +262,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 3.Delete all Resources and Links below a path::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{primary}/{secondary}
+   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{primary}/{secondary}
 
 * Response::
 
@@ -272,19 +273,19 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 1.Get multiple resources of a kind/mixin::
  
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/
 
 * Response::
 
        {
     "X-OCCI-Location": [
-        http://localhost:8090/{kind_location}/vm1",
-        http://localhost:8090/{kind_location}/vm2",
-        http://localhost:8090/{kind_location}/vm3"
+        http://localhost:8090/{location}/vm1",
+        http://localhost:8090/{location}/vm2",
+        http://localhost:8090/{location}/vm3"
     ]
    }
 
-2.Get specific resources of a kind/mixin::
+2.Get specific resources of a kind/mixin using filtering::
 
    curl -X GET -d@get_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
 
@@ -309,7 +310,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
         "http://localhost:8090/{kind}/resource2_id",
         "http://localhost:8090/{kind}/resource3_id"
     ]
-}
+   }
 
 4.Trigger an action on multiple resources of a kind/mixin::
 
@@ -321,7 +322,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 3.Associate a mixin to multiple resources::
 
-   curl -X POST -d@associate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
+   curl -X POST -d@associate_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
 * Response::
 
@@ -329,7 +330,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 5.Full update of the mixin collection of multiple resources::
 
-   curl -X PUT -d@associate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
+   curl -X PUT -d@update_mixins.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
 * Response::
 
@@ -337,7 +338,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 6.Dissociate resource from mixins::
 
-   curl -X DELETE -d@associate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
+   curl -X DELETE -d@dissociate_mixin.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{mixin_location}/
 
 * Response::
    
@@ -514,39 +515,151 @@ Some of pyocni's needs might be:
 
 * filter_categories.json::
 
-   Uploading
+      {
+       "actions": [
+           {
+               "attributes": {
+                   "method": {
+                       "mutable": true,
+                       "required": false,
+                       "type": "string",
+                       "pattern": "graceful|acpioff|poweroff",
+                       "default": "poweroff"
+                   }
+               }
+           }
+       ]
+       }
 
 * put_categories.json::
 
-   Uploading
+   {
+       "mixins": [
+           {
+               "term": "resource_tpl",
+               "scheme": "http: //schemas.ogf.org/occi/infrastructure#",
+               "title": "MediumVM",
+               "related": [],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "speed": {
+                               "type": "number",
+                               "default": 2.8
+                           }
+                       }
+                   }
+               },
+               "location": "/template/resource/resource_tpl/"
+           }
+       ]
+   }
 
 * delete_categories.json::
 
-   Uploading
+   {
+       "kinds": [
+           {
+               "term": "storage",
+               "scheme": "http: //schemas.ogf.org/occi/infrastructure#"
+           }
+       ]
+   }
 
 * get_resources.json::
 
-   Uploading
+   {
+       "resources": [
+           {
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "speed": 2,
+                           "memory": 4,
+                           "cores": 2
+                       }
+                   }
+               }
+           }
+       ]
+   }
 
 * post_resources.json::
 
-   Uploading
+   {
+       "resources": [
+           {
+               "kind": "http: //schemas.ogf.org/occi/infrastructure#compute",
+               "mixins": [
+                   "http: //schemas.opennebula.org/occi/infrastructure#my_mixin",
+                   "http: //schemas.other.org/occi#my_mixin"
+               ],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "speed": 2,
+                           "memory": 4,
+                           "cores": 2
+                       }
+                   }
+               },
+               "id": "996ad860-2a9a-504f-8861-aeafd0b2ae29",
+               "title": "Compute resource",
+               "summary": "This is a compute resource"
+           }
+       ]
+   }
 
 * trigger_action.json::
 
-   Uploading
+   {
+       "actions": [
+           {
+               "term": "start",
+               "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#"
+           }
+       ],
+       "attributes": {
+           "occi": {
+               "infrastructure": {
+                   "networkinterface": {
+                       "interface": "eth0",
+                       "mac": "00:80:41:ae:fd:7e",
+                       "address": "192.168.0.100",
+                       "gateway": "192.168.0.1",
+                       "allocation": "dynamic"
+                   }
+               }
+           }
+       }
+   }
 
 * associate_mixin.json::
 
-   Uploading
+    {
+    "X-OCCI-Location": [
+        "http://localhost:8090/{location1}/vm1",
+        "http://localhost:8090/{location2}/vm2"
+    ]
+   }
 
-* associate_mixin.json::
+* update_mixins.json::
 
-   Uploading
+   {
+       "X-OCCI-Location": [
+           "http://localhost:8090/{location1}/vm1",
+           "http://localhost:8090/{location2}/vm2"
+       ]
+   }
 
-* associate_mixin.json::
+* dissociate_mixins.json::
 
-   Uploading
+   {
+       "X-OCCI-Location": [
+           "http://localhost:8090/{location1}/vm1",
+           "http://localhost:8090/{location2}/vm2"
+       ]
+      }
 
 * post_custom_resource.json::
 
