@@ -104,10 +104,11 @@ In order to use pyOCNI, you must respect certain rules :
 #. Kinds, Mixins and Actions can be created, retrieved, updated or deleted (CRUD) on the fly.
 #. Scheme + Term = OCCI_ID : unique identifier of the OCCI (Kind/Mixin/Action) description
 #. PyOCNI_Server_Address + location = OCCI_Location of (Kind/Mixin/Action) description
+#. location word refers to a kind or mixin location.
 
-PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands are JSON specific. If you want to see HTTP command please check here.
+PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following commands are JSON specific. If you want to see HTTP command please check here.
 
-**Note:** To simplify the output, contents of the requests are available in section [**json files to execute the HowTo**]
+**Note:** To simplify the output, contents of the requests are available in section **json files to execute the HowTo**.
 
 
 4.1. Category management
@@ -287,14 +288,14 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 2.Get specific resources of a kind/mixin using filtering::
 
-   curl -X GET -d@get_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind_location}/
+   curl -X GET -d@get_resources.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/
 
 * Response::
 
     {
     "X-OCCI-Location": [
-        "http://localhost:8090/{kind_location}/vm1",
-        "http://localhost:8090/{kind_location}/vm2"
+        "http://localhost:8090/{location}/vm1",
+        "http://localhost:8090/{location}/vm2"
     ]
    }
 
@@ -306,9 +307,9 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
    {
     "Location": [
-        "http://localhost:8090/{kind}/resource1_id",
-        "http://localhost:8090/{kind}/resource2_id",
-        "http://localhost:8090/{kind}/resource3_id"
+        "http://localhost:8090/{kind_location}/resource1_id",
+        "http://localhost:8090/{kind_location}/resource2_id",
+        "http://localhost:8090/{kind_location}/resource3_id"
     ]
    }
 
@@ -349,7 +350,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 1.Create a Resource with a custom URL path::
 
-   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{my_custom_resource_id}
+   curl -X PUT -d@post_custom_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{my_custom_resource_id}
 
 * Response::
 
@@ -357,7 +358,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 2.Get a Resource::
 
-   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{kind}/{resource-id}
+   curl -X GET -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
 
 * Response::
 
@@ -418,7 +419,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 3.Full Update of a Resource::
 
-   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{resource-id}
+   curl -X PUT -d@full_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
 
 * Response::
 
@@ -430,7 +431,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 4.Partial Update of a Resource::
 
-   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{resource-id}
+   curl -X POST -d@partial_update_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
 
    * Response::
 
@@ -442,7 +443,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 5.Trigger an action on a resource::
 
-   curl -X POST -d@action_on_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{resource}/{resource-id}?action={action_name}
+   curl -X POST -d@action_on_resource.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}?action={action_name}
 
 * Response::
 
@@ -450,7 +451,7 @@ PyOCNI offers two OCCI rendering formats : HTTP and JSON. The following commands
 
 6.Delete a Resource::
 
-   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json'  -v http://localhost:8090/{resource}/{resource-id}
+   curl -X DELETE -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/{location}/{resource-id}
 
 * Response::
 
@@ -663,12 +664,81 @@ Some of pyocni's needs might be:
 
 * post_custom_resource.json::
 
-   Uploading
+   {
+       "resources": [
+           {
+               "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
+               "mixins": [
+                   "http://example.com/template/resource#medium"
+               ],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "speed": 2,
+                           "memory": 4,
+                           "cores": 12
+                       }
+                   }
+               },
+               "actions": [
+                   {
+                       "title": "Start My Server",
+                       "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                       "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                   }
+               ],
+               "id": "9930",
+               "title": "Compute resource",
+               "summary": "This is a compute resource"
+           }
+       ]
+   }
 
 * full_update_resource.json::
 
-   Uploading
+   {
+       "resources": [
+           {
+               "kind": "http://schemas.ogf.org/occi/infrastructure#compute",
+               "mixins": [
+                   "http://example.com/template/resource#medium"
+               ],
+               "attributes": {
+                   "occi": {
+                       "compute": {
+                           "speed": 2,
+                           "memory": 4,
+                           "cores": 12
+                       }
+                   }
+               },
+               "actions": [
+                   {
+                       "title": "Start My Server",
+                       "href": "/compute/996ad860-2a9a-504f-8861-aeafd0b2ae29?action=start",
+                       "category": "http://schemas.ogf.org/occi/infrastructure/compute/action#start"
+                   }
+               ],
+               "id": "9930",
+               "title": "Compute resource",
+               "summary": "This is a compute resource"
+           }
+       ]
+   }
 
 * partial_update_resource.json::
 
-   Uploading
+    {
+        "resources": [
+            {
+                "attributes": {
+                    "occi": {
+                        "compute": {
+                            "speed": 5,
+                            "cores": 2
+                        }
+                    }
+                }
+            }
+        ]
+    }
