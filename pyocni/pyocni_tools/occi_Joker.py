@@ -93,6 +93,41 @@ def update_occi_entity_description(oldData, newData):
 
     return False, oldData
 
+def update_occi_entity_description(oldData, newData):
+    """
+    Update only a part of the occi entity description
+    Args:
+        @param newData: The new OCCI entity description
+        @param oldData: The old OCCI entity description
+        @return : Updated data and a boolean (false if all fields are updated, true if there were some un-updated fields)
+    """
+
+    #Try to get the keys from occi entity description dictionary
+    oldData_keys = oldData.keys()
+    newData_keys = newData.keys()
+    #    forbidden_keys = ["id","kind"]
+    #    for key in newData_keys:
+    #        try:
+    #            forbidden_keys.index(key)
+    #            if oldData[key] != newData[key]:
+    #                logger.debug("update description : " + key + " is forbidden to change")
+    #                return True,None
+    #        except ValueError:
+    for key in newData_keys:
+        try:
+            oldData_keys.index(key)
+            if key == 'attributes':
+                oldData['attributes'] = complete_occi_description_with_default_attributes(newData['attributes'],
+                    oldData['attributes'])
+
+            else:
+                oldData[key] = newData[key]
+        except ValueError:
+            #Keep the record of the keys(=parts) that couldn't be updated
+            logger.debug("update entity description : " + key + " could not be found")
+            return True, None
+
+    return False, oldData
 
 def get_description_id(occi_description):
     """

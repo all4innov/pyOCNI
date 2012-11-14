@@ -64,9 +64,9 @@ class test_post(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(c.URL, 'http://127.0.0.1:8090/compute/')
-        c.setopt(c.HTTPHEADER, ['Accept:application/occi+json', 'Content-Type: text/plain'])
+        c.setopt(c.HTTPHEADER, ['Accept:application/occi+json', 'Content-Type: application/occi+json'])
         c.setopt(c.VERBOSE, True)
-        c.setopt(pycurl.POSTFIELDS, f_entities.entity_http)
+        c.setopt(pycurl.POSTFIELDS, f_entities.resource)
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -116,11 +116,11 @@ class test_get(TestCase):
         c = pycurl.Curl()
 
         c.setopt(c.URL, "http://127.0.0.1:8090/compute/")
-        c.setopt(c.HTTPHEADER, ['Content-type: text/plain', 'Accept: text/occi', f_entities.x_occi_att])
+        c.setopt(c.HTTPHEADER, ['Content-type: application/occi+json', 'Accept: application/occi+json'])
         c.setopt(c.VERBOSE, True)
         c.setopt(c.CUSTOMREQUEST, 'GET')
         c.setopt(c.WRITEFUNCTION, storage.write)
-        #c.setopt(c.POSTFIELDS,f_entities.x_occi_att)
+        c.setopt(c.POSTFIELDS,f_entities.j_occi_att)
         c.perform()
 
         content = storage.getvalue()
@@ -225,4 +225,5 @@ if __name__ == '__main__':
 
     #Run tests
 
-    runner.run(get_suite)
+    #runner.run(get_suite)
+    runner.run(post_suite)

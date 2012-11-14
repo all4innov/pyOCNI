@@ -33,8 +33,11 @@ class PostMan():
     def save_registered_docs_in_db(self, docs):
         self.database.save_docs(docs, use_uuids=True, all_or_nothing=True)
 
-    def save_updated_docs_in_db(self, categories):
-        self.database.save_docs(categories, force_update=True, all_or_nothing=True)
+    def save_updated_doc_in_db(self, categories):
+        self.database.save_doc(categories, force_update=True, all_or_nothing=True)
+
+    def save_partial_updated_doc_in_db(self, categories):
+        self.database.save_doc(categories, force_update=True, all_or_nothing=True)
 
     def save_deleted_categories_in_db(self, categories, to_update):
         self.database.delete_docs(categories)
