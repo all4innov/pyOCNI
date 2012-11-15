@@ -42,7 +42,7 @@ logger = config.logger
 class CategoryJungler:
     """
 
-        Extracts category (a.k.a Kinds, Mixins and Actions) data from the database
+        Handles category (a.k.a Kinds, Mixins and Actions) requests
 
     """
 

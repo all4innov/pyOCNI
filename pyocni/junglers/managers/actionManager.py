@@ -40,8 +40,7 @@ logger = config.logger
 
 class ActionManager:
     """
-
-        Manager for Action documents on couch database
+        Manager for Action documents
 
     """
 
@@ -49,15 +48,16 @@ class ActionManager:
         """
         Returns action documents matching the filter provided
         Args:
-            @param jfilters: description of the action document to retrieve
+            @param jfilters: description of the action filter
             @param db_actions: action descriptions that already exist in database
-            @return : <list> OCCI action description contained inside of the action document
+
         """
         var = list()
-        #Extract action descriptions from the dictionary
+        #Step[1]: Extract action descriptions from the dictionary
         try:
             for elem in db_actions:
                 for jfilter in jfilters:
+                    #Step[2]: Filter action documents
                     ok = joker.filter_occi_description(elem, jfilter)
 
                     if ok is True:
@@ -82,9 +82,10 @@ class ActionManager:
         resp_code = return_code['OK']
 
         for desc in descriptions:
+            #Step[1]: Verify action uniqueness
             occi_id = joker.get_description_id(desc)
             ok_k = joker.verify_occi_uniqueness(occi_id, db_actions)
-
+            #Step[2]: Create action
             if ok_k is True:
                 jData = dict()
                 jData['_id'] = uuid_Generator.get_UUID()
@@ -97,27 +98,29 @@ class ActionManager:
                 logger.error("===== Register_actions : " + message + " ===== ")
                 resp_code = return_code['Conflict']
                 return list(), resp_code
-
+        #Step[3]: return the newly created actions
         return loc_res, resp_code
 
 
     def update_OCCI_action_descriptions(self, new_data, db_data):
         """
         Updates the OCCI description field of the action which document OCCI_ID is equal to OCCI_ID contained in data
-        (Should only be done by the creator of the action document)
+
         Args:
             @param new_data: Data containing the OCCI ID of the action and the new OCCI action description
             @param db_data: Data already contained in the database
-            @return : <string>, return_code
+
         """
         to_update = list()
         resp_code = return_code['OK']
 
         for desc in new_data:
+            #Step[1]: Extract the action document
             occi_id = joker.get_description_id(desc)
             old_doc = joker.extract_doc(occi_id, db_data)
 
             if old_doc is not None:
+                #Step[2]: Update the Action OCCI description
                 problems, occi_description = joker.update_occi_category_description(old_doc['OCCI_Description'], desc)
 
                 if problems is True:
@@ -135,7 +138,7 @@ class ActionManager:
                 message = "Action document " + occi_id + " couldn\'t be found "
                 logger.error("===== Update_OCCI_action_description: " + message + " =====")
                 return list(), return_code['Not Found']
-
+        #Step[3]: Return the collection of documents to update
         return to_update, resp_code
 
     def delete_action_documents(self, descriptions, db_categories):
@@ -149,13 +152,14 @@ class ActionManager:
         message = list()
         res_code = return_code['OK']
 
-        #Verify the existence of such action document
+        #Step[1]: Verify the existence of such action document
         for desc in descriptions:
             occi_id = joker.get_description_id(desc)
 
             action_id_rev = joker.verify_exist_occi_id(occi_id, db_categories)
 
             if action_id_rev is not None:
+                #Step[2]: Store the ref of the action document to send it for delete
                 message.append(action_id_rev)
                 event = "Action document " + occi_id + " is sent for delete "
                 logger.debug("===== Delete_action_documents: " + event + " =====")
@@ -163,7 +167,7 @@ class ActionManager:
                 event = "Could not find this action document " + occi_id
                 logger.error("===== Delete_action_documents : " + event + " =====")
                 return list(), return_code['Bad Request']
-
+        #Send doc ref collection for delete
         return message, res_code
 
 

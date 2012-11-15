@@ -48,6 +48,7 @@ logger = config.logger
 
 class SingleEntityJungler(object):
     """
+    Handles requests concerning single entities
 
     """
 

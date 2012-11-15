@@ -47,6 +47,7 @@ logger = config.logger
 
 class MultiEntityJungler(object):
     """
+    Handles requests concerning multiple entities
 
     """
 

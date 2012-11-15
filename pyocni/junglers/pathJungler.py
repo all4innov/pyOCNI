@@ -38,26 +38,31 @@ logger = config.logger
 
 class PathManager(object):
     """
-    dispachers operations on Path
+    Handles operations concerning Paths
     """
 
     def __init__(self):
+
         self.rd_baker = ResourceDataBaker()
         self.PostMan = PostMan()
 
     def channel_get_on_path(self, req_path, terms):
         """
-        Channel the get request to the right method
+        Channel get on path request to the manager responsible
         Args:
             @param req_path: Address to which this post request was sent
             @param terms: Data provided for filtering
         """
 
         locations = list()
+        #Step[1]: get the necessary data from DB
         query = self.rd_baker.bake_to_get_on_path()
+
         if terms is "":
+            #Step[2a]: Get on path without filtering
             if query is None:
                 return "An error has occurred, please check log for more details", return_code['Internal Server Error']
+
             else:
                 for q in query:
                     str_loc = str(q['key'])
@@ -70,12 +75,14 @@ class PathManager(object):
             logger.debug("===== Channel_get_on_Path: Finished with success ===== ")
             return locations, return_code['OK']
         else:
+            #Step[2b]: Get on path with filtering
             for q in query:
                 str_loc = str(q['key'])
                 if str_loc.endswith("/") is False and str_loc.find(req_path) is not -1:
                     locations.append(str_loc)
 
             descriptions = self.rd_baker.bake_to_get_on_path_filtered(locations)
+
             if descriptions is None:
                 return "An error has occurred, please check log for more details", return_code['Internal Server Error']
             else:
@@ -101,17 +108,16 @@ class PathManager(object):
                 return result, return_code['OK']
 
 
-    def channel_delete_on_path(self, req_path, user_id):
+    def channel_delete_on_path(self, req_path):
         """
-        Channel the get request to the right method
+        Channel the delete resources request to the path manager
         Args:
-            @param user_id: ID of the issuer of the post request
             @param req_path: Address to which this post request was sent
         """
         database = config.prepare_PyOCNI_db()
         locations = list()
         try:
-            query = database.view('/db_views/for_delete_entities', key=user_id)
+            query = database.view('/db_views/for_delete_entities', key="")
         except Exception as e:
             logger.error("Delete on Path: " + e.message)
             return "An error has occurred, please check log for more details", return_code['Internal Server Error']

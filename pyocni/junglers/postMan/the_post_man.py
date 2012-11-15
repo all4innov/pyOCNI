@@ -27,6 +27,11 @@ import pyocni.pyocni_tools.config as config
 
 
 class PostMan():
+    """
+    Imports new data into the database
+
+    """
+
     def __init__(self):
         self.database = config.get_PyOCNI_db()
 

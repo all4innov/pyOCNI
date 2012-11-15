@@ -30,7 +30,6 @@ except ImportError:
 
 import imp
 
-#from pyocni.backends import dummy_backend,l3vpn_backend,libnetvirt_backend,openflow_backend,opennebula_backend,openstack_backend
 import pyocni.pyocni_tools.config as config
 
 
@@ -66,25 +65,12 @@ def choose_appropriate_provider(provider):
     backends_json_data = open(config.BACKENDS_FILE)
     backends_list = json.load(backends_json_data)
     backends_json_data.close()
-    print provider
+
     for i in backends_list["backends"]:
         if i["name"] == provider:
-            print " I am here !!!!!"
+
             backend_instance = imp.load_source('', i["path"])
             backend = backend_instance.backend()
-
-    #    if provider == "dummy":
-    #        backend = dummy_backend.dummy_backend()
-    #    elif provider == "l3vpn":
-    #        backend = l3vpn_backend.l3vpn_backend()
-    #    elif provider == "libnetvirt":
-    #        backend = libnetvirt_backend.libnetvirt_backend()
-    #    elif provider == "openflow":
-    #        backend = openflow_backend.openflow_backend()
-    #    elif provider == "opennebula":
-    #        backend = opennebula_backend.opennebula_backend()
-    #    elif provider == "openstack":
-    #        backend = openstack_backend.openstack_backend()
 
     return backend
 
