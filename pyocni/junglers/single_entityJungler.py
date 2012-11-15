@@ -60,7 +60,7 @@ class SingleEntityJungler(object):
 
     def channel_put_single_resource(self, jBody, path_url):
         """
-        Creates a new resource or performs a full description update of the resource
+        Creates a new resource or performs a full update of the resource description
         Args:
             @param jBody: Data contained in the request body
             @param path_url: URL of the request
@@ -77,7 +77,7 @@ class SingleEntityJungler(object):
 
             if db_resources_nb is 0:
 
-                #Step[2a]: This is a create a new resource request
+                #Step[2a]: This is a create a new resource request with a custom URL
 
                 if jBody.has_key('resources'):
                     logger.debug("===== Channel_put_single_resources ==== : Resource custom creation channeled")
@@ -102,7 +102,7 @@ class SingleEntityJungler(object):
                 return entity['OCCI_Location'],return_code['OK, and location returned']
 
             else:
-                #Step[2b]: This is an update resource request (More data is needed)
+                #Step[2b]: This is a full update resource request (More data is needed)
 
                 olddoc = self.rd_baker.bake_to_put_single_updateCase(path_url)
 
@@ -141,6 +141,7 @@ class SingleEntityJungler(object):
         Args:
             @param path_url: URL of the request
         """
+        #Step[1]: Get data from the database
         res,entity = self.rd_baker.bake_to_get_single_res(path_url)
 
         if res is None:
@@ -153,7 +154,7 @@ class SingleEntityJungler(object):
         else:
             logger.debug("===== Channel_get_single_resource ==== : Finished with success")
 
-            #backend_m.read_entity(entity,entity['kind'])
+            #Step[2]: return OCCI resource description to the dispatcher
 
             return res,return_code['OK']
 
@@ -161,12 +162,12 @@ class SingleEntityJungler(object):
         """
         Performs a partial description update of the resource
         Args:
-            @param jBody: Data contained in the request body
+            @param jBody: New OCCI values
             @param path_url: URL of the request
         """
 
+        #Step[1]: Get the necessary data from the database
         db_occi_ids_locs,old_doc = self.rd_baker.bake_to_post_single(path_url)
-
 
         if old_doc is 0:
 
@@ -178,7 +179,7 @@ class SingleEntityJungler(object):
             old_data = old_doc['OCCI_Description']
             entity = dict()
 
-            #This is an update of a resource
+            #Step[2]: update only the part that exist in both the new values and the old resource description
 
             if jBody.has_key('resources'):
 
@@ -203,10 +204,11 @@ class SingleEntityJungler(object):
             old_doc['OCCI_Description'] = entity
 
             self.PostMan.save_partial_updated_doc_in_db(old_doc)
-#            self.PostMan.database.save_doc(old_doc,force_update=True, all_or_nothing=True)
+
             logger.debug("===== Channel_post_single_resource ==== : Finished with success")
             backend_m.update_entity(old_data,entity)
-            #return the locations of the resources
+
+            #Step[3]: Return the locations of the resource
             return old_doc['OCCI_Location'],return_code['OK, and location returned']
 
     def channel_delete_single_resource(self, path_url):
@@ -215,6 +217,8 @@ class SingleEntityJungler(object):
         Args:
             @param path_url: URL of the resource
         """
+
+        #Step[1]: Get the necessary data from the database
         res,res_value = self.rd_baker.bake_to_delete_single_resource(path_url)
 
         if res is None:
@@ -224,12 +228,12 @@ class SingleEntityJungler(object):
         elif res is 0:
             logger.warning("===== Channel_delete_single_resource ==== : Resource not found")
         else:
+            #Step[2]: Instruct the post man to delete the OCCI resource from the database
             self.PostMan.delete_single_resource_in_db(res_value)
 
-            #get the kind to get the provider
+            #Note: Save the entity description to send it to the backend
             entity = res_value['OCCI_Description']
 
-            #send the request to the appropriate provider
             backend_m.delete_entity(entity,entity['kind'])
             logger.debug("===== Channel_delete_single_resource ==== : Finished with success")
             return "",return_code['OK']
@@ -243,7 +247,10 @@ class SingleEntityJungler(object):
             @param triggered_action: Action name to trigger
         """
 
+        #Step[1]: Get the necessary data from DB
+
         nb_res, value_res = self.rd_baker.bake_to_trigger_action_on_single_resource(path_url)
+
         if nb_res is None:
             return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
@@ -251,24 +258,27 @@ class SingleEntityJungler(object):
             return "An error has occurred, please check log for more details",return_code['Not Found']
 
         else:
-
+            #Step[2]: Identify the provider
             provider = self.rd_baker.bake_to_get_provider(value_res[0])
 
-            if jBody.has_key('attributes') is True:
-                parameters = jBody['attributes']
-            else:
-                parameters = None
+            #Step[3]: Get the attributes if there are ones
 
-            print parameters
+            if jBody.has_key('attributes') is True:
+
+                parameters = jBody['attributes']
+
+            else:
+
+                parameters = None
 
             if provider is None:
                 return "An error has occurred, please check log for more details",return_code['Internal Server Error']
 
             else:
+                #Step[4]: Trigger the action on the resources
                 resp, resp_code = backend_m.trigger_action_on_a_resource(value_res[1],triggered_action,provider['local'][0],parameters)
                 logger.debug("===== Channel_triggered_action_single ==== : Finished with success")
                 return resp,return_code['OK']
-
 
 #=======================================================================================================================
 #                                           Independent Functions
