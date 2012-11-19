@@ -33,6 +33,7 @@ class PostMan():
     """
 
     def __init__(self):
+        #Step[1]: Create the database connection
         self.database = config.get_PyOCNI_db()
 
     def save_registered_docs_in_db(self, docs):

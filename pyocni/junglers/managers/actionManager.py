@@ -167,6 +167,7 @@ class ActionManager:
                 event = "Could not find this action document " + occi_id
                 logger.error("===== Delete_action_documents : " + event + " =====")
                 return list(), return_code['Bad Request']
+
         #Send doc ref collection for delete
         return message, res_code
 
