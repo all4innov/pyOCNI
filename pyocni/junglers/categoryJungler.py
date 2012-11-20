@@ -42,7 +42,7 @@ logger = config.logger
 class CategoryJungler:
     """
 
-        Extracts category (a.k.a Kinds, Mixins and Actions) data from the database
+        Handles category (a.k.a Kinds, Mixins and Actions) requests
 
     """
 
@@ -56,17 +56,19 @@ class CategoryJungler:
 
     def channel_register_categories(self, jreq):
         """
-        Channel the post request to the right methods
+        Create new categories (Kind and/or mixin and/or actions)
+
         Args:
-            @param jreq: Body content of the post request
+            @param jreq: OCCI category descriptions
 
         """
 
-        #Step[1]: Get the data from the database to avoid replicates:
+        #Step[1]: Get the data from the database:
 
         db_occi_ids, db_occi_locs = self.d_baker.bake_to_register_categories()
 
-        #Step[2]: Verify the uniqueness of the new categories:
+        #Step[2]: Ask the managers to create the new categories:
+
         if (db_occi_ids is None) or (db_occi_locs is None):
             return "An error has occurred, please check log for more details", return_code['Bad Request']
         else:
@@ -101,23 +103,27 @@ class CategoryJungler:
                 return "An error has occurred, please check log for more details", return_code['Bad Request']
 
             else:
-                #Step[3]: Save the new categories in the database
+
                 categories = new_kinds + new_mixins + new_actions
+
+                #Step[3]: Save the new categories in the database using the PostMan
                 self.PostMan.save_registered_docs_in_db(categories)
                 logger.debug("===== channel_register_categories ==== : Done with success")
                 return "", return_code['OK']
 
     def channel_get_all_categories(self):
         """
-        Retrieve all categories to show the server's capacity
+        Retrieve all categories (Kinds, Mixins and Actions)
 
         """
-        #Step[1]: Call the dataBakers to get the Data
+        #Step[1]: Call the dataBaker to get the Data from DB
 
         res = self.d_baker.bake_to_get_all_categories()
 
         #Step[2]: Return all the results back to the dispatcher
+
         if res is None:
+
             return res, return_code['Internal Server Error']
 
         else:
@@ -127,14 +133,19 @@ class CategoryJungler:
 
     def channel_get_filtered_categories(self, jreq):
         """
-        Channel the post request to the right methods
+        Retrieve the categories (Kinds, Mixins and Actions) matching the filter
+
         Args:
-            @param jreq: Body content of the post request
+            @param jreq: Category filter
 
         """
+
+        #Step[1]: Call the dataBaker to get the Data from DB
+
         res = self.d_baker.bake_to_get_all_categories()
 
-        #Step[2]: filter the results
+        #Step[2]: Ask the managers to filter the results
+
         if res is None:
             return return_code['Internal Server Error'], res
         else:
@@ -174,13 +185,13 @@ class CategoryJungler:
 
     def channel_delete_categories(self, jreq):
         """
-        Channel the delete request to the right methods
+        Delete categories
+
         Args:
-            @param user_id: ID of the issuer of the post request
-            @param jreq: Body content of the post request
+            @param jreq: OCCI_ID of the categories to delete
 
         """
-        #Step[1]: Get the data from the database to avoid replicates:
+        #Step[1]: Get the data from the database:
 
         db_occi_id = self.d_baker.bake_to_delete_categories()
 
@@ -188,6 +199,8 @@ class CategoryJungler:
             return "An error has occurred, please check log for more details", return_code['Bad Request']
 
         else:
+            #Step[2]: Ask the managers to delete these documents
+
             if jreq.has_key('kinds'):
                 logger.debug("===== Channel_delete_categories : Kind filter is found and channeled =====")
                 delete_kinds, resp_code_k = self.manager_k.delete_kind_documents(jreq['kinds'], db_occi_id)
@@ -197,6 +210,7 @@ class CategoryJungler:
                 resp_code_k = return_code['OK']
 
             if jreq.has_key('mixins'):
+                #Note: Resources must be dissociated from mixins before deleting mixin
                 db_mixin_entities = self.d_baker.bake_to_delete_categories_mixins(jreq['mixins'])
                 logger.debug("===== Channel_delete_categories : Mixin filter is found and channeled =====")
                 delete_mixins, to_update, resp_code_m = self.manager_m.delete_mixin_documents(jreq['mixins'],
@@ -221,6 +235,7 @@ class CategoryJungler:
 
             categories = delete_kinds + delete_mixins + delete_actions
 
+            #Step[3]: Ask to post man to delete the categories from DB
             self.PostMan.save_deleted_categories_in_db(categories, to_update)
 
             logger.debug("===== channel_delete_categories ==== : Done with success")
@@ -230,17 +245,22 @@ class CategoryJungler:
 
     def channel_update_categories(self, j_newData):
         """
-        Channel the PUT requests to their right methods
+        Update the categories
+
         Args:
-            @param j_newData: Body content of the post request
+            @param j_newData: new OCCI category description
         """
-        #Step[1]: Get the data from the database to avoid replicates:
+
+        #Step[1]: Get the data from the database:
 
         db_occi_id_doc = self.d_baker.bake_to_update_categories()
 
         if db_occi_id_doc is None:
             return "An error has occurred, please check log for more details", return_code['Bad Request']
+
         else:
+            #Step[2]: Ask the managers to update the categories
+
             if j_newData.has_key('actions'):
                 logger.debug("===== Update categories : Action filter is found and channeled =====")
                 updated_actions, resp_code_a = self.manager_a.update_OCCI_action_descriptions(j_newData['actions'],
@@ -258,6 +278,8 @@ class CategoryJungler:
                 logger.debug("===== Update categories : No Kind filter was found =====")
                 updated_kinds = list()
                 resp_code_k = return_code['OK']
+
+            #Note: Update the kind providers
 
             if j_newData.has_key('providers'):
                 logger.debug("===== Update categories : Provider filter is found and channeled =====")
@@ -282,6 +304,9 @@ class CategoryJungler:
                 return "An error has occurred, please check log for more details", return_code['Bad Request']
 
             categories = updated_kinds + updated_providers + updated_mixins + updated_actions
+
+            #Step[3]: Ask the post man to update the categories in DB
+
             self.PostMan.save_updated_docs_in_db(categories)
             logger.debug("===== channel_update_categories ==== : Done with success")
 
