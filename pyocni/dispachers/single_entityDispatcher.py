@@ -40,11 +40,12 @@ except ImportError:
 #=======================================================================================================================
 class SingleEntityDispatcher(object):
     """
-
+    Dispatches requests concerning a single entity
 
     """
 
     def __init__(self, req, location, idontknow=None, idontcare=None):
+
         self.req = req
 
         self.location = location
@@ -66,8 +67,9 @@ class SingleEntityDispatcher(object):
     def put(self):
         """
         Create a new entity instance with a customized URL or perform a full update of the resource
+
         """
-        #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
+        #Step[1]: Detect the data type (HTTP ,JSON:OCCI or OCCI+JSON)
 
         jBody = self.req_adapter.convert_request_entity_content(self.req)
 
@@ -76,7 +78,7 @@ class SingleEntityDispatcher(object):
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
-            #Step[2]: Treat the request
+            #Step[2]: create the resource with custom URL
             var, self.res.status_code = self.jungler.channel_put_single_resource(jBody, self.path_url)
 
             #Step[3]: Adapt the response to the required accept-type
@@ -87,15 +89,21 @@ class SingleEntityDispatcher(object):
                 self.res.content_type = "text/html"
                 self.res.body = var
 
+        #Step[4]: Send back the response to the caller
+
         return self.res
 
     def get(self):
         """
-        Retrieve the representation of a resource
+        Retrieve the OCCI resource description
+
         """
-        #add the JSON to database along with other attributes
+
+        #Step[1]: get the resource description
 
         var, self.res.status_code = self.jungler.channel_get_single_resource(self.path_url)
+
+        #Step[2]: Adapt the response to the required accept-type
 
         if self.res.status_code == return_code['OK']:
             self.res = self.res_adapter.convert_response_entity_content(self.res, var)
@@ -104,16 +112,22 @@ class SingleEntityDispatcher(object):
             self.res.content_type = "text/html"
             self.res.body = var
 
+        #Step[3]: Send back the response to the caller
+
         return self.res
 
     def post(self):
         """
-        Perform a partial update of a resource
+        Perform a partial update of a resource OCCI description or Trigger an action on a resource
+
         """
+        #Step[1]: Identify the action name (if there is)
+
         if self.req.params.has_key('action'):
+
             self.triggered_action = self.req.params['action']
 
-        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+        #Step[2]: Detect the data type (HTTP ,OCCI:JSON or OCCI+JSON)
 
         jBody = self.req_adapter.convert_request_entity_content_v2(self.req)
 
@@ -122,17 +136,23 @@ class SingleEntityDispatcher(object):
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
-            #add the JSON to database along with other attributes
+            #Step[3a]: Partially update the resource if there was no action defined.
+
             if self.triggered_action is None:
+
                 var, self.res.status_code = self.jungler.channel_post_single_resource(jBody, self.path_url)
 
                 if self.res.status_code == return_code['OK, and location returned']:
+
+                    #Step[4a]: Adapt the response to the required accept-type
                     self.res = self.res_adapter.convert_response_entity_location_content(var, self.res)
                 else:
                     self.res.content_type = "text/html"
                     self.res.body = var
 
             else:
+                # Step[3b]: Trigger an action on a resource
+
                 self.res.body, self.res.status_code = self.jungler.channel_triggered_action_single(jBody, self.path_url,
                     self.triggered_action)
 
@@ -145,11 +165,11 @@ class SingleEntityDispatcher(object):
 
         """
 
-        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+        #Step[1]: Delete a single resource
 
-
-        #add the JSON to database along with other attributes
         self.res.body, self.res.status_code = self.jungler.channel_delete_single_resource(self.path_url)
+
+        #Step[2]: return the response back to the caller
 
         return self.res
 
