@@ -97,7 +97,7 @@ j_occi_att = """
             "attributes": {
                 "occi": {
                     "compute": {
-                        "speed": 2,
+                        "speed": 12,
                         "memory": 4,
                         "cores": 12
                     }
@@ -108,7 +108,40 @@ j_occi_att = """
 }
 """
 
-
+action_plus_attributes =\
+"""
+            {
+                "actions": [
+        {
+            "term": "start",
+            "scheme": "http://schemas.ogf.org/occi/infrastructure/compute/action#",
+            "title": "Start Compute instance now",
+            "attributes": {
+                "method": {
+                    "mutable": true,
+                    "required": false,
+                    "type": "string",
+                    "pattern": "graceful|acpion|poweron",
+                    "default": "poweron"
+                }
+            }
+        }
+    ],
+    "attributes": {
+                "occi": {
+                    "infrastructure": {
+                        "networkinterface": {
+                            "interface": "eth0",
+                            "mac": "00:80:41:ae:fd:7e",
+                            "address": "192.168.0.100",
+                            "gateway": "192.168.0.1",
+                            "allocation": "dynamic"
+                        }
+                    }
+                }
+            }
+}
+"""
 #=======================================================================================================================
 #                                                           HTTP format
 #=======================================================================================================================
@@ -125,3 +158,9 @@ entity_http = "Category: compute; scheme=\"http://schemas.ogf.org/occi/infrastru
 
 
 x_occi_att = "X-OCCI-Attribute: occi.compute.cores=20:2"
+
+action_att_http = """Category: start;
+ scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#";
+ class=action;
+ X-OCCI-Attribute: occi.compute.cores=20:2
+"""

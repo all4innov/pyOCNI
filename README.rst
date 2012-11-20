@@ -369,7 +369,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
 * Response::
 
-   N/A
+   {"Location": ["http://localhost:8090/{location}/{my_custom_resource_id}"]}
 
 2.Get a Resource::
 
@@ -439,7 +439,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 * Response::
 
    {
-    "X-OCCI-Location": [
+    Location": [
         "http://localhost:8090/{location}/{resource-id}"
     ]
    }
@@ -451,8 +451,8 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
    * Response::
 
    {
-    "X-OCCI-Location": [
-        "http://localhost:8090/{location}/resource-id"
+    "Location": [
+        "http://localhost:8090/{location}/{resource-id}"
     ]
    }
 

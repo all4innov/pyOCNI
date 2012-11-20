@@ -129,7 +129,7 @@ class SingleEntityJungler(object):
 
                     self.PostMan.save_updated_doc_in_db(entity)
 
-                    logger.debug("===== Channel_post_single_resource ==== : Finished (2b) with success")
+                    logger.debug("===== Channel_put_single_resource ==== : Finished (2b) with success")
                     #return the locations of the resources
 
                     backend_m.update_entity(olddoc['OCCI_Description'],entity['OCCI_Description'])
