@@ -45,15 +45,14 @@ logger = config.logger
 #                                           MultiEntityManager
 #=======================================================================================================================
 
-
-
-
 class MultiEntityJungler(object):
     """
+    Handles requests concerning multiple entities
 
     """
 
     def __init__(self):
+
         self.manager_r = ResourceManager()
         self.manager_l = LinkManager()
         self.jungler_p = PathManager()
@@ -67,7 +66,7 @@ class MultiEntityJungler(object):
             @param jreq: Body content of the post request
             @param req_path: Address to which this post request was sent
         """
-        #Step[1]: detect the request's goal
+        #Step[1]: detect the goal of the request
 
         if jreq.has_key('resources') or jreq.has_key('links'):
             is_kind_loc = True
@@ -75,14 +74,19 @@ class MultiEntityJungler(object):
             is_kind_loc = False
 
         if is_kind_loc is True:
+
             #Step[2a]: This is a create new resources request
+
             db_occi_ids_locs = self.rd_baker.bake_to_post_multi_resources_2a()
+
+            #Step[3a]: Look for the default attributes to complete the attribute description of the resource:
             default_attributes = self.rd_baker.bake_to_get_default_attributes(req_path)
 
             if db_occi_ids_locs is None or default_attributes is None:
                 return "An error has occurred, please check log for more details", return_code['Internal Server Error']
             else:
-                #Look for the default attributes to complete the attribute description of the resource:
+
+                #Step[4a]: Ask the managers to create the new resources
 
                 if jreq.has_key('resources'):
                     logger.debug(
@@ -106,7 +110,7 @@ class MultiEntityJungler(object):
                 or resp_code_l is not return_code['OK, and location returned']:
                     return "An error has occurred, please check log for more details", return_code['Bad Request']
 
-                #Step[3a]: Save the new resources
+                #Step[5a]: Save the new resources
                 entities = new_resources + new_links
 
                 self.PostMan.save_registered_docs_in_db(entities)
@@ -116,7 +120,6 @@ class MultiEntityJungler(object):
 
                 for item in entities:
                     locations.append(item['OCCI_Location'])
-                    #return the locations of the resources
 
                 backend_m.create_entities(entities, locations)
 
@@ -125,6 +128,8 @@ class MultiEntityJungler(object):
                 #Step[2b]: This is an associate mixins to resources request
 
         elif jreq.has_key('X-OCCI-Location'):
+
+            #Step[3b]: Get the necessary data from DB
             nb_res, mix_id = self.rd_baker.bake_to_post_multi_resources_2b(req_path)
 
             if nb_res is None:
@@ -144,7 +149,7 @@ class MultiEntityJungler(object):
                                                                                        'Internal Server Error']
 
                 else:
-                    #Step[3b]: Treat the data to associate mixins to resources
+                    #Step[4b]: Ask the managers to associate mixins to resources
                     logger.debug(
                         "===== Channel_post_multi_resources ==== : Post on mixin path to associate a mixin channeled")
                     updated_entities, resp_code_e = associate_entities_to_a_mixin(mix_id, db_docs)
@@ -158,47 +163,57 @@ class MultiEntityJungler(object):
 
     def channel_get_all_entities(self, req_path, jreq):
         """
-        retrieve all entities belonging to a kind or a mixin
+        Retrieve all entities belonging to a kind or a mixin or get on a path
+
         Args:
             @param req_path: Address to which this post request was sent
             @param jreq: Data provided for filtering
         """
+
+        #Step[1]: Retrieve the kind/mixin from DB
+
         res = self.rd_baker.bake_to_channel_get_all_entities(req_path)
 
         if res is None:
             return "An error has occurred, please check log for more details", return_code['Internal Server Error']
-        elif res is 0:
-            # Retrieve the state of the name space hierarchy
-            logger.warning("===== Channel_get_all_multi_entities ===== : This is a get on a path " + req_path)
 
+        elif res is 0:
+
+            logger.warning("===== Channel_get_all_multi_entities ===== : This is a get on a path " + req_path)
+            #Step[1b]: Get on path to retrieve the entities under that path
             var, resp_code = self.jungler_p.channel_get_on_path(req_path, jreq)
             return var, resp_code
 
         else:
             q = res.first()
+            #Step[2]: Retrieve the entities related to the kind/mixin
             entities = self.rd_baker.bake_to_get_all_entities(q['value'][1], q['value'][0])
             if entities is None:
                 return "An error has occurred, please check log for more details", return_code['Internal Server Error']
 
             else:
-                #backend_m.read_entities(occi_descriptions)
+
                 logger.debug("===== Channel_get_all_entities ==== : Finished with success")
                 return entities, return_code['OK']
 
     def channel_get_filtered_entities(self, req_path, terms):
         """
-        Retrieve entities belonging to a kind or a mixin matching the terms specified
+        Retrieve entities belonging to a kind or a mixin matching the terms specified or get entities on a path with filtering
         Args:
             @param req_path: Address to which this post request was sent
             @param terms: Terms to filter entities
         """
+        #Step[1]: Get all the entities related to kind/mixin or get on a path with filtering
         entities, ok = self.channel_get_all_entities(req_path, terms)
+
         if ok == return_code['OK']:
+            #Note: what does this do ?
             descriptions_res, descriptions_link = self.rd_baker.bake_to_get_filtered_entities(entities)
 
             if descriptions_res is None:
                 return "An error has occurred, please check log for more details", return_code['Internal Server Error']
             else:
+                #Step[2]: Ask the managers to do the filtering
                 if terms.has_key('resources'):
                     logger.debug("===== Channel_get_filtered: Resources are sent to filter =====")
                     filtered_res, resp_code_r = self.manager_r.get_filtered_resources(terms['resources'],
@@ -222,9 +237,7 @@ class MultiEntityJungler(object):
                 result = filtered_res + filtered_links
 
                 logger.debug("===== Channel_get_filtered_entities ==== : Finished with success")
-                #occi_descriptions = self.rd_baker.bake_to_get_filtered_entities_2(result)
 
-                #backend_m.read_entities(occi_descriptions)
                 return result, return_code['OK']
 
 
@@ -337,15 +350,16 @@ class MultiEntityJungler(object):
 
     def channel_trigger_actions(self, jBody, req_url, triggered_action):
         """
-        Trigger action on a collection of kind or mixin
+        Trigger action on a collection of resources related to a kind or mixin
         Args:
             @param jBody: Action provided
             @param req_url: URL of the request
             @param triggered_action: Action name
         """
 
+        #Step[1]: Get the necessary data:
+
         kind_ids, entities = self.rd_baker.bake_to_channel_trigger_actions(req_url)
-        # Get OCCI_ID from OCCI_Location
 
         if kind_ids is None:
             return "An error has occurred, please check log for more details", return_code['Internal Server Error']
@@ -353,11 +367,13 @@ class MultiEntityJungler(object):
             return "An error has occured, please check log for more details", return_code['Not Found']
         else:
             providers = list()
+            #Step[2]: Get the providers of the instances
             for item in kind_ids:
                 provider = self.rd_baker.bake_to_get_provider(item)
                 providers.append(provider)
 
-            backend_m.trigger_action_on_multi_resource(entities, providers, jBody['action'][0])
+            #Step[3]: Ask the backend to trigger the action on the resources
+            backend_m.trigger_action_on_multi_resource({'resource_url':entities, 'provider':providers, 'action':jBody['action'][0]})
 
             return "", return_code['OK']
 

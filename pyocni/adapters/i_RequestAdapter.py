@@ -35,7 +35,7 @@ except ImportError:
 
 class RequestAdapter():
     """
-    Converts the data contained inside the request to the occi+json data format.
+    Converts the data contained inside the request to the application/occi+json data format.
     """
 
     def __init__(self):
@@ -43,6 +43,7 @@ class RequestAdapter():
         self.from_text_occi_f = From_Text_OCCI_to_JSON()
 
     def convert_request_category_content(self, req):
+
         if req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
             jdata = self.from_text_plain_f.format_text_plain_categories_to_json(req.body)
@@ -64,6 +65,7 @@ class RequestAdapter():
         return jdata
 
     def convert_request_entity_content(self, req):
+
         if req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
             jdata = self.from_text_plain_f.format_text_plain_entity_to_json(req.body)
@@ -85,9 +87,9 @@ class RequestAdapter():
         return jdata
 
     def convert_request_entity_content_v2(self, req):
-        '''
+        """
         Used only for partial update.
-        '''
+        """
 
         if req.content_type == "text/plain":
             # Solution To adopt : Validate HTTP then convert to JSON
@@ -109,7 +111,5 @@ class RequestAdapter():
 
         return jdata
 
-    #=======================================================================================================================
-#Register the Request adapter class under the I_RequestAdapter abstract base class
-#=======================================================================================================================
+
 

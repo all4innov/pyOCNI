@@ -193,30 +193,30 @@ class ResourceSupplier():
 
 
 
-def recursive_for_attribute(attributes):
-    """
-
-    """
-
-    att_http = list()
-    for key in attributes.keys():
-        if type(attributes[key]) is dict:
-            items = recursive_for_attribute(attributes[key])
-            for item in items:
-                if not (item.find('{')):
-                    att_http.append(key + item)
-                else:
-                    att_http.append(key + "." + item)
-        else:
-            attributes = treat_attribute_members(attributes)
-            return attributes
-    final_att = list()
-    for item in att_http:
-        if item.endswith('.'):
-            final_att.append(item[:-1])
-        else:
-            final_att.append(item)
-    return final_att
+#def recursive_for_attribute(attributes):
+#    """
+#
+#    """
+#
+#    att_http = list()
+#    for key in attributes.keys():
+#        if type(attributes[key]) is dict:
+#            items = recursive_for_attribute(attributes[key])
+#            for item in items:
+#                if not (item.find('{')):
+#                    att_http.append(key + item)
+#                else:
+#                    att_http.append(key + "." + item)
+#        else:
+#            attributes = treat_attribute_members(attributes)
+#            return attributes
+#    final_att = list()
+#    for item in att_http:
+#        if item.endswith('.'):
+#            final_att.append(item[:-1])
+#        else:
+#            final_att.append(item)
+#    return final_att
 
 
 
