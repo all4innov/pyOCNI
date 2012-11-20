@@ -97,7 +97,7 @@ j_occi_att = """
             "attributes": {
                 "occi": {
                     "compute": {
-                        "speed": 12,
+                        "speed": 2,
                         "memory": 4,
                         "cores": 12
                     }

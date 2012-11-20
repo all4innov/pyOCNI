@@ -295,9 +295,9 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
        {
     "X-OCCI-Location": [
-        http://localhost:8090/{location}/vm1",
-        http://localhost:8090/{location}/vm2",
-        http://localhost:8090/{location}/vm3"
+        "http://localhost:8090/{location}/vm1",
+        "http://localhost:8090/{location}/vm2",
+        "http://localhost:8090/{location}/vm3"
     ]
    }
 
