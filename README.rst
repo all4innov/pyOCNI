@@ -239,6 +239,13 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
    N/A
 
+6.Update a kind provider::
+
+   curl -X PUT -d@update_provider.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
+
+* Response::
+
+   N/A
 
 4.2. Path management
 ----------------------
@@ -615,6 +622,24 @@ Some of pyocni's needs might be:
                "scheme": "http: //schemas.ogf.org/occi/infrastructure#"
            }
        ]
+   }
+
+* update_provider.json::
+
+   {
+    "providers": [
+            {
+            "Provider": {
+                "local": [
+                    "dummy"
+                ],
+                "remote": [
+                    "Bilel"
+                ]
+            },
+            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#compute"
+        }
+    ]
    }
 
 * get_resources.json::

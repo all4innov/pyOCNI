@@ -102,7 +102,7 @@ It's up to the user to define what format he wants in the request Content-Type h
 
    N/A
 
-4.Full Update of a category (Kind or Mixin or Action)::
+4.Update of a category (Kind or Mixin or Action)::
 
    curl -X PUT -d@put_category -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
 

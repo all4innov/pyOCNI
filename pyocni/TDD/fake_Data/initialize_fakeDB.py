@@ -34,6 +34,7 @@ def init_fakeDB():
     add_fake_action()
     add_fake_kind()
     add_fake_mixin()
+    add_fake_resource()
 
 
 def add_fake_kind():

@@ -42,6 +42,7 @@ occi_config = ConfigObj(get_absolute_path_from_relative_path("../occi_server.con
 OCNI_IP = occi_config['OCNI_IP']
 OCNI_PORT = occi_config['OCNI_PORT']
 BACKENDS_FILE = occi_config['backends_file']
+DEFAULT_BACKEND = occi_config['default_backend']
 
 # Loading the DB server configuration file
 DB_config = ConfigObj(get_absolute_path_from_relative_path("../couchdb_server.conf"))
