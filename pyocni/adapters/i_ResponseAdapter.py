@@ -33,10 +33,11 @@ except ImportError:
 
 class ResponseAdapter():
     """
-    Converts the response data into the required data format.
+    Converts the response data into the required data format (text/plain, text/occi ,text/uri, application/occi+json).
     """
 
     def __init__(self):
+
         self.text_plain_f = To_HTTP_Text_Plain()
         self.text_occi_f = To_HTTP_Text_OCCI()
         self.text_uri_f = To_HTTP_Text_URI_List()
