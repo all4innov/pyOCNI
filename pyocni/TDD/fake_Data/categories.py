@@ -107,7 +107,7 @@ action =\
             "title": "Start Compute instance now",
             "attributes": {
                 "method": {
-                    "mutable": true,
+                    "mutable": false,
                     "required": false,
                     "type": "string",
                     "pattern": "graceful|acpion|poweron",
@@ -139,16 +139,6 @@ put_provider = """
     ]
 }
 """
-
-provider_up = """
-{
-    "Providers": {
-        "remote": [],
-        "local": [
-            "dummy"
-        ]
-    }
-}"""
 
 action_plus_attributes =\
 """
@@ -192,8 +182,8 @@ action_plus_attributes =\
 #=======================================================================================================================
 
 kind_occci_id = """Category: compute;
- scheme="http://schemas.ogf.org/occi/infrastructure#";
- class=kind;
+scheme="http://schemas.ogf.org/occi/infrastructure#";
+class=kind;
 """
 #=======================================================================================================================
 
@@ -203,9 +193,7 @@ mixin_occci_id = """Category: medium;
 """
 #=======================================================================================================================
 
-action_occci_id = """Category: start;
- scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#";
- class=action;
+action_occci_id = """Category: start;scheme="http://schemas.ogf.org/occi/infrastructure/compute/action#"; class=action;
 """
 #=======================================================================================================================
 
@@ -214,16 +202,16 @@ mixin_http = "Category : my_stuff;\""\
              "class=\"mixin\";"\
              "title=\"Storage Resource\";"\
              "location=\"/my_stuff/\";"\
-             "attributes=\"occi.storage.size{required} occi.storage.state{immutable}\";"\
+             "attributes=\"occi.storage.size{required},occi.storage.state{immutable}\";"\
 \
 #=======================================================================================================================
 
-kind_http = "Category: compute;"\
+kind_http = "Category: compute5;"\
             "scheme=\"http://schemas.ogf.org/occi/infrastructure#\";"\
             "class=\"kind\";"\
             "title=\"Compute Resource type\";"\
             "rel=\"http://schemas.ogf.org/occi/core#resource\";"\
-            "attributes=\"occi.compute.cores occi.compute.state{immutable}\";"\
+            "attributes=\"occi.compute.cores, occi.compute.state{immutable}\";"\
             "actions=\"http://schemas.ogf.org/occi/infrastructure/compute/action#stop\";"\
             "location=\"http://example.com/compute/\""
 #=======================================================================================================================

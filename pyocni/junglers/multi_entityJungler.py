@@ -121,7 +121,7 @@ class MultiEntityJungler(object):
                 for item in entities:
                     locations.append(item['OCCI_Location'])
 
-                backend_m.create_entities(entities, locations)
+                backend_m.create_entities(entities)
 
                 return locations, return_code['OK, and location returned']
 
@@ -207,7 +207,7 @@ class MultiEntityJungler(object):
         entities, ok = self.channel_get_all_entities(req_path, terms)
 
         if ok == return_code['OK']:
-            #Note: what does this do ?
+            #Note: We now need the resources OCCI descriptions so we go back to the database
             descriptions_res, descriptions_link = self.rd_baker.bake_to_get_filtered_entities(entities)
 
             if descriptions_res is None:
@@ -372,8 +372,14 @@ class MultiEntityJungler(object):
                 provider = self.rd_baker.bake_to_get_provider(item)
                 providers.append(provider)
 
+            if jBody.has_key('attributes') is True:
+
+                parameters = jBody['attributes']
+            else:
+                parameters = None
+
             #Step[3]: Ask the backend to trigger the action on the resources
-            backend_m.trigger_action_on_multi_resource({'resource_url':entities, 'provider':providers, 'action':jBody['action'][0]})
+            backend_m.trigger_action_on_multi_resource(entities,providers, jBody['actions'][0],parameters)
 
             return "", return_code['OK']
 

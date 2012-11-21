@@ -214,16 +214,21 @@ def read_entities(entities):
         read_entity(entities[i],entities[i]['kind'])
 
 
-def trigger_action_on_multi_resource(data):
+def trigger_action_on_multi_resource(entities,providers, action,parameters):
     """
     Trigger the action on multiple resource
     Args:
-        @param data: Data provided for triggering the action
+        @param entities: entities on which the action will be triggered
+        @param providers: providers of the entities
+        @param action: action to be performed
+        @param parameters: parameters belonging to the action
     """
-    for item in data:
-        trigger_action_on_a_resource(item['resource_url'],item['action'],item['provider'][0])
+    for i in range(len(entities)):
+        trigger_action_on_a_resource(entities[i],action,providers[i]['local'][0],parameters)
+
     return "",return_code['OK']
 
 
 if __name__ == "__main__":
+
     choose_appropriate_provider("dummy_backend")

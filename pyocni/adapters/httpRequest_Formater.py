@@ -68,7 +68,9 @@ class From_Text_Plain_to_JSON():
         return categories
 
     def format_text_plain_entity_to_json(self, body):
+
         kind, mixins, attributes, actions, links = extractor.get_entity_members_from_body(body)
+
         entity = dict()
 
         if kind is not None:

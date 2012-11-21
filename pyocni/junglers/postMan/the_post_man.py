@@ -58,4 +58,7 @@ class PostMan():
     def delete_single_resource_in_db(self, res_value):
         self.database.delete_doc(res_value)
 
+    def delete_entities_in_db(self, to_delete):
+        self.database.delete_docs(to_delete)
+
 
