@@ -175,18 +175,18 @@ class MultiEntityDispatcher(object):
         """
 
         #Step[1]: Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+        if  self.req.content_type == 'text/occi' or (
+            self.req.body != ""):
 
-        jBody = self.req_adapter.convert_request_category_content(self.req)
+            jBody = self.req_adapter.convert_request_category_content(self.req)
 
-        if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
-            self.res.body = self.req.content_type + " is an unknown request content type"
-        else:
+            if jBody is None:
+                self.res.status_code = return_code['Not Acceptable']
+                self.res.body = self.req.content_type + " is an unknown request content type"
 
-            if self.req.body is not "":
                 #Step[2a]: This is a dissociate mixin request
                 self.res.body, self.res.status_code = self.jungler.channel_delete_multi(jBody, self.path_url)
-            else:
+        else:
                 #Step[2b]: This is a delete on path request:
                 self.jungler_p.channel_delete_on_path(self.path_url)
 

@@ -61,8 +61,6 @@ class QueryDispatcher(object):
 
             jreq = self.req_adapter.convert_request_category_content(self.req)
 
-
-
             if jreq is None:
                 self.res.status_code = return_code['Not Acceptable']
                 self.res.body = self.req.content_type + " is an unknown request content type"
@@ -124,7 +122,6 @@ class QueryDispatcher(object):
         else:
 
         #Step[2]: Update the new data:
-
             self.res.body, self.res.status_code = self.jungler.channel_update_categories(jBody)
 
         return self.res

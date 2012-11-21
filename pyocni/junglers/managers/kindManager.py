@@ -103,7 +103,7 @@ class KindManager:
                     jData['OCCI_ID'] = occi_id
                     jData['Type'] = "Kind"
                     #Default backend is dummy
-                    jData['Provider'] = {"local": ["dummy"], "remote": []}
+                    jData['Provider'] = {"local": [config.DEFAULT_BACKEND], "remote": []}
                     loc_res.append(jData)
 
                 else:
