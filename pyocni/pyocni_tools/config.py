@@ -154,9 +154,12 @@ design_doc = {
         "get_default_attributes_from_kind": {
             "map": "(function(doc) { if (doc.Type == \"Kind\")"
                    "emit (doc.OCCI_Location,doc.OCCI_Description.attributes)});"
+        },
+        "my_occi_locations":{
+            "map": "(function(doc) {if (doc.OCCI_Location != null)"
+                    "emit (null, doc.OCCI_Location) });"
+
         }
-
-
     }
 
 }

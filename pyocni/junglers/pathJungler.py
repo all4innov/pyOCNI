@@ -56,28 +56,27 @@ class PathManager(object):
 
         locations = list()
         #Step[1]: get the necessary data from DB
-        query = self.rd_baker.bake_to_get_on_path()
+        occi_loc = self.rd_baker.bake_to_get_on_path()
 
         if terms is "":
             #Step[2a]: Get on path without filtering
-            if query is None:
+            if occi_loc is None:
                 return "An error has occurred, please check log for more details", return_code['Internal Server Error']
 
             else:
-                for q in query:
-                    str_loc = str(q['key'])
-                    if str_loc.endswith("/"):
-                        str_loc = joker.format_url_path(str_loc)
+
+                for str_loc in occi_loc:
 
                     if str_loc.find(req_path) is not -1:
                         locations.append(str_loc)
 
             logger.debug("===== Channel_get_on_Path: Finished with success ===== ")
             return locations, return_code['OK']
+
         else:
             #Step[2b]: Get on path with filtering
-            for q in query:
-                str_loc = str(q['key'])
+            for str_loc in occi_loc:
+
                 if str_loc.endswith("/") is False and str_loc.find(req_path) is not -1:
                     locations.append(str_loc)
 
@@ -139,15 +138,19 @@ def get_filtered(filters, descriptions_entities):
         @param descriptions_entities: Entity descriptions
     """
     var = list()
+
     try:
         for desc in descriptions_entities:
             for filter in filters:
+
                 checks = joker.filter_occi_description(desc['OCCI_Description'], filter)
+
                 if checks is True:
                     var.append(desc['OCCI_ID'])
                     logger.debug("Entity filtered : document found")
                     break
         return var, return_code['OK']
+
     except Exception as e:
         logger.error("filtered entity : " + e.message)
         return list(), return_code['Internal Server Error']

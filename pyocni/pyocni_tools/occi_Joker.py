@@ -172,6 +172,7 @@ def filter_occi_description(description, filter):
         @return : Updated  a boolean (false if no match, true if there is a match)
     """
     #Try to get the keys from filter dictionary
+
     filter_keys = filter.keys()
     desc_keys = description.keys()
 

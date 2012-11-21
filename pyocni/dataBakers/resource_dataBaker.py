@@ -326,8 +326,15 @@ class ResourceDataBaker():
         Prepare data for get on path method
         """
         query = self.resource_sup.get_my_occi_locations()
+        if query is None:
+            return None
+        else:
+            occi_location = list()
 
-        return query
+            for q in query:
+                occi_location.append(q['value'])
+
+            return occi_location
 
     def bake_to_get_on_path_filtered(self,locations):
 
@@ -344,7 +351,7 @@ class ResourceDataBaker():
             if query is None:
                 return None
             else:
-                descriptions.append({'OCCI_Description' : query.first()['value'],'OCCI_ID':loc})
+                descriptions.append({'OCCI_Description' : query.first()['value'][1],'OCCI_ID':loc})
         #Step[2]: return data
         return descriptions
 

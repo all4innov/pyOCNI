@@ -166,7 +166,7 @@ class test_put(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,'http://127.0.0.1:8090/compute/this_is_bilel')
+        c.setopt(c.URL,'http://127.0.0.1:8090/bilel/home/vm02')
 
         c.setopt(c.HTTPHEADER, ['Accept: application/occi+json','Content-Type: text/plain'])
         c.setopt(c.CUSTOMREQUEST, 'PUT')
@@ -191,4 +191,4 @@ if __name__ == '__main__':
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
 
-    runner.run(delete_suite)
+    runner.run(put_suite)
