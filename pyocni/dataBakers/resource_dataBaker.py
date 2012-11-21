@@ -464,6 +464,21 @@ class ResourceDataBaker():
             if type(kind_attribute_description[key]) is dict:
                 self.recursive_get_attribute_names(kind_attribute_description)
 
+    def bake_to_delete_on_path(self):
+
+        query = self.resource_sup.get_delete_on_path()
+
+        if query is None:
+            return None, None
+        else:
+            doc_locations = list()
+            occi_locations = list()
+            for q in query:
+                doc_locations.append({'_id': q['value'][0], '_rev': q['value'][1]})
+                occi_locations.append(q['key'])
+
+            return occi_locations, doc_locations
+
 #=======================================================================================================================
 #                                                   Independant functions
 #=======================================================================================================================

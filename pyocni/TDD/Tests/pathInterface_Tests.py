@@ -85,7 +85,7 @@ class test_delete(TestCase):
         self.p = Process(target=start_server)
         self.p.start()
         time.sleep(0.5)
-        init_fakeDB()
+        #init_fakeDB()
         time.sleep(0.5)
 
     def tearDown(self):
@@ -98,9 +98,8 @@ class test_delete(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(pycurl.URL, "http://127.0.0.1:8090/user_1/compute/")
+        c.setopt(pycurl.URL, "http://127.0.0.1:8090/compute/bilel/")
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json','Content-Type: application/occi+json'])
-
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -119,4 +118,4 @@ if __name__ == '__main__':
 
     #Run tests
 
-    runner.run(get_suite)
+    runner.run(delete_suite)

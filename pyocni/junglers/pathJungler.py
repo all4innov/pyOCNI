@@ -113,21 +113,23 @@ class PathManager(object):
         Args:
             @param req_path: Address to which this post request was sent
         """
-        database = config.prepare_PyOCNI_db()
-        locations = list()
-        try:
-            query = database.view('/db_views/for_delete_entities', key="")
-        except Exception as e:
-            logger.error("Delete on Path: " + e.message)
-            return "An error has occurred, please check log for more details", return_code['Internal Server Error']
-        for q in query:
-            str_loc = str(q['value'][0])
-            if str_loc.find(req_path) is not -1:
-                locations.append({'_id': q['value'][1], '_rev': q['value'][2]})
+        occi_loc,doc_loc = self.rd_baker.bake_to_delete_on_path()
 
-        logger.debug("Delete on Path: done with success")
-        database.delete_docs(locations)
-        return "", return_code['OK']
+        if occi_loc is None or doc_loc is None:
+            return "An error has occurred, please check log for more details", return_code['Internal Server Error']
+        else:
+            to_delete = list()
+
+            for i in range(len(occi_loc)):
+
+                str_loc = str(occi_loc[i])
+                if str_loc.find(req_path) is not -1:
+                    to_delete.append(doc_loc[i])
+
+            self.PostMan.delete_entities_in_db(to_delete)
+
+            logger.debug("===== Channel Delete on Path: Finished with success =====")
+            return "", return_code['OK']
 
 
 def get_filtered(filters, descriptions_entities):
