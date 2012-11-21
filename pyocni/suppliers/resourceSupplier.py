@@ -192,6 +192,17 @@ class ResourceSupplier():
         return query
 
 
+    def get_delete_on_path(self):
+
+
+
+        try:
+            query = self.database.view('/db_views/for_delete_entities')
+        except Exception as e:
+            logger.error("===== Get_delete_on_Path: " + e.message + " ===== ")
+            return None
+        return query
+
 
 #def recursive_for_attribute(attributes):
 #    """

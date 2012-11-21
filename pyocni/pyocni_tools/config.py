@@ -42,6 +42,7 @@ occi_config = ConfigObj(get_absolute_path_from_relative_path("../occi_server.con
 OCNI_IP = occi_config['OCNI_IP']
 OCNI_PORT = occi_config['OCNI_PORT']
 BACKENDS_FILE = occi_config['backends_file']
+DEFAULT_BACKEND = occi_config['default_backend']
 
 # Loading the DB server configuration file
 DB_config = ConfigObj(get_absolute_path_from_relative_path("../couchdb_server.conf"))
@@ -153,9 +154,16 @@ design_doc = {
         "get_default_attributes_from_kind": {
             "map": "(function(doc) { if (doc.Type == \"Kind\")"
                    "emit (doc.OCCI_Location,doc.OCCI_Description.attributes)});"
+        },
+        "my_occi_locations":{
+            "map": "(function(doc) {if (doc.OCCI_Location != null)"
+                    "emit (null, doc.OCCI_Location) });"
+
+        },
+        "for_delete_entities" :{
+            "map": "(function(doc) {if ((doc.Type == \"Resource\")||(doc.Type == \"Link\"))"
+                   "emit (doc.OCCI_Location,[doc._id,doc._rev]) });"
         }
-
-
     }
 
 }

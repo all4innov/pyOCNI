@@ -66,11 +66,11 @@ class test_post(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,'http://127.0.0.1:8090/compute/258af9df-dcba-4ff5-89f6-2c5f17c46e6f')
-        c.setopt(c.HTTPHEADER, ['Accept: application/occi+json','Content-Type: application/occi+json'])
+        c.setopt(c.URL,'http://127.0.0.1:8090/compute/this_is_bilel?action=start')
+        c.setopt(c.HTTPHEADER, ['Accept: application/occi+json','Content-Type: text/plain'])
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.VERBOSE, True)
-        c.setopt(c.POSTFIELDS,entities.j_occi_att)
+        c.setopt(c.POSTFIELDS,entities.action_att_http)
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
@@ -104,7 +104,7 @@ class test_get(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(c.URL,"http://127.0.0.1:8090/compute/9930")
-        c.setopt(c.HTTPHEADER, ['Accept:text/occi'])
+        c.setopt(c.HTTPHEADER, ['Accept:application/occi+json'])
         c.setopt(c.VERBOSE, True)
         c.setopt(c.CUSTOMREQUEST, 'GET')
         c.setopt(c.WRITEFUNCTION, storage.write)
@@ -135,10 +135,9 @@ class test_delete(TestCase):
 
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,"http://127.0.0.1:8090/bilel/vms/v01")
+        c.setopt(c.URL,"http://127.0.0.1:8090/compute/this_is_bilel")
         c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json', 'Accept: application/occi+json'])
         c.setopt(c.CUSTOMREQUEST, 'DELETE')
-        c.setopt(c.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
@@ -156,6 +155,8 @@ class test_put(TestCase):
         self.p = Process(target = start_server)
         self.p.start()
         time.sleep(0.5)
+        #init_fakeDB()
+        time.sleep(0.5)
 
     def tearDown(self):
         self.p.terminate()
@@ -165,10 +166,11 @@ class test_put(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL,'http://127.0.0.1:8090/compute/d4e49287-e8bd-4cd8-953a-b90f327084e5')
+        c.setopt(c.URL,'http://127.0.0.1:8090/bilel/home/vm02')
 
-        c.setopt(c.HTTPHEADER, ['Accept: text/plain','Content-Type: text/occi',entities.part_entity_http])
+        c.setopt(c.HTTPHEADER, ['Accept: application/occi+json','Content-Type: text/plain'])
         c.setopt(c.CUSTOMREQUEST, 'PUT')
+        c.setopt(c.POSTFIELDS,entities.entity_http)
         c.setopt(c.VERBOSE, True)
 
         c.setopt(c.WRITEFUNCTION, storage.write)
@@ -189,4 +191,4 @@ if __name__ == '__main__':
     post_suite = loader.loadTestsFromTestCase(test_post)
     #Run tests
 
-    runner.run(post_suite)
+    runner.run(put_suite)

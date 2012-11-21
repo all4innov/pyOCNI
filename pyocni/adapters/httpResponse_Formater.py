@@ -243,13 +243,11 @@ class To_HTTP_Text_URI_List():
             @param var: JSON location object
         """
         resp = ""
-        is_text_uri = False
+
         for item in var:
             resp += item + "\n"
-            if item.endswith("/"):
-                is_text_uri = True
 
-        return resp, is_text_uri
+        return resp, True
 
 
 def cnv_JSON_category(category, type):

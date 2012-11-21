@@ -239,6 +239,13 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
    N/A
 
+6.Update a kind provider::
+
+   curl -X PUT -d@update_provider.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
+
+* Response::
+
+   N/A
 
 4.2. Path management
 ----------------------
@@ -288,9 +295,9 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
        {
     "X-OCCI-Location": [
-        http://localhost:8090/{location}/vm1",
-        http://localhost:8090/{location}/vm2",
-        http://localhost:8090/{location}/vm3"
+        "http://localhost:8090/{location}/vm1",
+        "http://localhost:8090/{location}/vm2",
+        "http://localhost:8090/{location}/vm3"
     ]
    }
 
@@ -362,7 +369,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
 * Response::
 
-   N/A
+   {"Location": ["http://localhost:8090/{location}/{my_custom_resource_id}"]}
 
 2.Get a Resource::
 
@@ -432,7 +439,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 * Response::
 
    {
-    "X-OCCI-Location": [
+    Location": [
         "http://localhost:8090/{location}/{resource-id}"
     ]
    }
@@ -444,8 +451,8 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
    * Response::
 
    {
-    "X-OCCI-Location": [
-        "http://localhost:8090/{location}/resource-id"
+    "Location": [
+        "http://localhost:8090/{location}/{resource-id}"
     ]
    }
 
@@ -615,6 +622,24 @@ Some of pyocni's needs might be:
                "scheme": "http: //schemas.ogf.org/occi/infrastructure#"
            }
        ]
+   }
+
+* update_provider.json::
+
+   {
+    "providers": [
+            {
+            "Provider": {
+                "local": [
+                    "dummy"
+                ],
+                "remote": [
+                    "Bilel"
+                ]
+            },
+            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#compute"
+        }
+    ]
    }
 
 * get_resources.json::

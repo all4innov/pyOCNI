@@ -149,13 +149,14 @@ def get_description_id(occi_description):
 
 
 def is_this_attribute_exist(filter, desc):
+
     for key in filter.keys():
         if type(filter[key]) is dict:
             exists = is_this_attribute_exist(desc[key], filter[key])
 
         else:
             if filter[key] == desc[key]:
-                return True
+                exists = True
             else:
                 return False
 
@@ -171,6 +172,7 @@ def filter_occi_description(description, filter):
         @return : Updated  a boolean (false if no match, true if there is a match)
     """
     #Try to get the keys from filter dictionary
+
     filter_keys = filter.keys()
     desc_keys = description.keys()
 

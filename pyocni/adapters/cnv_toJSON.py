@@ -133,6 +133,7 @@ def extract_categories_from_body(http_body):
 
 
 def extract_categories_from_headers(http_headers):
+
     res = http_headers['Category']
     res = res.split("Category")
     return res
@@ -143,10 +144,13 @@ def create_JSON_format_relateds(rel):
 
 
 def create_JSON_format_attributes(attributes):
+
     att_list = my_split(attributes, [',', ' '])
+    print att_list
     atts = list()
     for item in att_list:
         atts.extend(item.split('.'))
+
     return atts
 
 
