@@ -193,7 +193,7 @@ class SingleEntityJungler(object):
 
             if jBody.has_key('links'):
                 logger.debug("===== Channel_post_single_resource ==== : Link was found and channeled")
-                entity, resp_code_l = self.manager_l.partial_link_update(old_doc['OCCI_Description'],jBody['links'][0],db_occi_ids_locs)
+                entity, resp_code_l = self.manager_l.partial_link_update(old_doc['OCCI_Description'],jBody['links'][0])
             else:
                 logger.debug("===== Channel_post_single_resource ==== : No Link was found")
                 resp_code_l = return_code['OK, and location returned']

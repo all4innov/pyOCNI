@@ -101,7 +101,7 @@ class MultiEntityJungler(object):
                     logger.debug(
                         "===== Channel_post_multi_resources ==== : Post on kind path to create a new link channeled")
                     new_links, resp_code_l = self.manager_l.register_links_explicit(jreq['links'], req_path,
-                        db_occi_ids_locs)
+                        db_occi_ids_locs, default_attributes)
                 else:
                     new_links = list()
                     resp_code_l = return_code['OK, and location returned']
