@@ -300,8 +300,10 @@ def verify_occi_uniqueness(occi_term, db_categories):
         @param occi_term: OCCI term to verify its uniqueness
         @param db_categories: Collection of OCCI IDs
     """
+
     try:
         db_categories.index(occi_term)
+        print occi_term
         return False
     except ValueError as e:
         logger.info("===== Verify_occi_uniqueness =====: " + e.message)

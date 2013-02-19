@@ -362,7 +362,7 @@ class MultiEntityJungler(object):
 #                                           Independent Functions
 #=======================================================================================================================
 
-def associate_entities_to_a_mixin( mix_id, db_docs):
+def associate_entities_to_a_mixin(mix_id, db_docs):
     """
     Add a single mixin to entities
     Args:

@@ -79,7 +79,7 @@ class MultiEntityDispatcher(object):
         jBody = self.req_adapter.convert_request_entity_content(self.req)
 
         if jBody is None:
-            self.res.status = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
@@ -92,11 +92,11 @@ class MultiEntityDispatcher(object):
 
             if self.triggered_action is None:
 
-                var, self.res.status = self.jungler.channel_post_multi_resources(jBody, self.path_url)
+                var, self.res.status_int = self.jungler.channel_post_multi_resources(jBody, self.path_url)
 
                 #Step[4a]: Adapt response to the required Accept-Type
 
-                if self.res.status == return_code['OK, and location returned']:
+                if self.res.status_int == return_code['OK, and location returned']:
                     self.res_adapter.convert_response_entity_multi_location_content(var, self.res)
 
                 else:
@@ -105,7 +105,7 @@ class MultiEntityDispatcher(object):
 
             #Step[3b]: Trigger an action on all resources belonging to a kind
             else:
-                self.res.body, self.res.status = self.jungler.channel_trigger_actions(jBody, self.path_url,
+                self.res.body, self.res.status_int = self.jungler.channel_trigger_actions(jBody, self.path_url,
                     self.triggered_action)
 
             return self.res
@@ -124,20 +124,20 @@ class MultiEntityDispatcher(object):
             jBody = self.req_adapter.convert_request_entity_content_v2(self.req)
 
             if jBody is None:
-                self.res.status = return_code['Not Acceptable']
+                self.res.status_int = return_code['Not Acceptable']
                 self.res.body = self.req.content_type + " is an unknown request content type"
 
             else:
                 #Step[2a]: Retrieve entities matching the filter provided
-                var, self.res.status = self.jungler.channel_get_filtered_entities(self.path_url, jBody)
+                var, self.res.status_int = self.jungler.channel_get_filtered_entities(self.path_url, jBody)
 
         else:
             #Step[2b]: Retrieve all the entities
-            var, self.res.status = self.jungler.channel_get_all_entities(self.path_url, "")
+            var, self.res.status_int = self.jungler.channel_get_all_entities(self.path_url, "")
 
         #Step[3]: Adapt the response to the format defined in the Accept-Type header
 
-        if self.res.status == return_code['OK']:
+        if self.res.status_int == return_code['OK']:
 
             self.res_adapter.convert_response_entity_multi_x_occi_location_content(var, self.res)
 
@@ -158,13 +158,13 @@ class MultiEntityDispatcher(object):
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
-            self.res.status = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
         else:
 
             #Step[2]: Fully update the mixin collection of entities
 
-            self.res.body, self.res.status = self.jungler.channel_put_multi(jBody, self.path_url)
+            self.res.body, self.res.status_int = self.jungler.channel_put_multi(jBody, self.path_url)
 
         return self.res
 
@@ -181,11 +181,11 @@ class MultiEntityDispatcher(object):
             jBody = self.req_adapter.convert_request_category_content(self.req)
 
             if jBody is None:
-                self.res.status = return_code['Not Acceptable']
+                self.res.status_int = return_code['Not Acceptable']
                 self.res.body = self.req.content_type + " is an unknown request content type"
 
                 #Step[2a]: This is a dissociate mixin request
-                self.res.body, self.res.status = self.jungler.channel_delete_multi(jBody, self.path_url)
+                self.res.body, self.res.status_int = self.jungler.channel_delete_multi(jBody, self.path_url)
         else:
                 #Step[2b]: This is a delete on path request:
                 self.jungler_p.channel_delete_on_path(self.path_url)
