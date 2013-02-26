@@ -74,16 +74,16 @@ class SingleEntityDispatcher(object):
         jBody = self.req_adapter.convert_request_entity_content(self.req)
 
         if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
             #Step[2]: create the resource with custom URL
-            var, self.res.status_code = self.jungler.channel_put_single_resource(jBody, self.path_url)
+            var, self.res.status_int = self.jungler.channel_put_single_resource(jBody, self.path_url)
 
             #Step[3]: Adapt the response to the required accept-type
 
-            if self.res.status_code == return_code['OK, and location returned']:
+            if self.res.status_int == return_code['OK, and location returned']:
                 self.res = self.res_adapter.convert_response_entity_location_content(var, self.res)
             else:
                 self.res.content_type = "text/html"
@@ -101,11 +101,11 @@ class SingleEntityDispatcher(object):
 
         #Step[1]: get the resource description
 
-        var, self.res.status_code = self.jungler.channel_get_single_resource(self.path_url)
+        var, self.res.status_int = self.jungler.channel_get_single_resource(self.path_url)
 
         #Step[2]: Adapt the response to the required accept-type
 
-        if self.res.status_code == return_code['OK']:
+        if self.res.status_int == return_code['OK']:
             self.res = self.res_adapter.convert_response_entity_content(self.res, var)
 
         else:
@@ -132,7 +132,7 @@ class SingleEntityDispatcher(object):
         jBody = self.req_adapter.convert_request_entity_content_v2(self.req)
 
         if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
@@ -140,9 +140,9 @@ class SingleEntityDispatcher(object):
 
             if self.triggered_action is None:
 
-                var, self.res.status_code = self.jungler.channel_post_single_resource(jBody, self.path_url)
+                var, self.res.status_int = self.jungler.channel_post_single_resource(jBody, self.path_url)
 
-                if self.res.status_code == return_code['OK, and location returned']:
+                if self.res.status_int == return_code['OK, and location returned']:
 
                     #Step[4a]: Adapt the response to the required accept-type
                     self.res = self.res_adapter.convert_response_entity_location_content(var, self.res)
@@ -153,7 +153,7 @@ class SingleEntityDispatcher(object):
             else:
                 # Step[3b]: Trigger an action on a resource
 
-                self.res.body, self.res.status_code = self.jungler.channel_triggered_action_single(jBody, self.path_url,
+                self.res.body, self.res.status_int = self.jungler.channel_triggered_action_single(jBody, self.path_url,
                     self.triggered_action)
 
         return self.res
@@ -167,7 +167,7 @@ class SingleEntityDispatcher(object):
 
         #Step[1]: Delete a single resource
 
-        self.res.body, self.res.status_code = self.jungler.channel_delete_single_resource(self.path_url)
+        self.res.body, self.res.status_int = self.jungler.channel_delete_single_resource(self.path_url)
 
         #Step[2]: return the response back to the caller
 

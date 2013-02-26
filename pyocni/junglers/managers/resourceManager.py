@@ -173,7 +173,7 @@ class ResourceManager(object):
 
         except Exception as e:
 
-            logger.error("===== Update_partial_resource: Resource couldn't be updated =====")
+            logger.error("===== Update_resource: Resource couldn't be updated =====")
             return {}, return_code['Internal Server Error']
 
     def partial_resource_update(self, old_data, occi_description):

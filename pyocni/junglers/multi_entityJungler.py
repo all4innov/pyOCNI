@@ -101,7 +101,7 @@ class MultiEntityJungler(object):
                     logger.debug(
                         "===== Channel_post_multi_resources ==== : Post on kind path to create a new link channeled")
                     new_links, resp_code_l = self.manager_l.register_links_explicit(jreq['links'], req_path,
-                        db_occi_ids_locs)
+                        db_occi_ids_locs, default_attributes)
                 else:
                     new_links = list()
                     resp_code_l = return_code['OK, and location returned']
@@ -249,104 +249,78 @@ class MultiEntityJungler(object):
             @param jreq: OCCI_Locations of the resources
             @param req_url: URL of the request
         """
-        return "This method is under reconstruction", return_code['Not Implemented']
 
-    #        database = config.prepare_PyOCNI_db()
-    #
-    #        if jreq.has_key('Resource_Locations') and jreq.has_key('Mixin_Locations'):
-    #            url_path = joker.reformat_url_path(req_url)
-    #            db_docs = list()
-    #            to_validate = jreq['Mixin_Locations']
-    #            to_validate.append(url_path)
-    #            mix_ids = list()
-    #            for occi_loc in to_validate:
-    #                try:
-    #                    query = database.view('/db_views/my_mixins',key = occi_loc)
-    #                except Exception as e:
-    #                    logger.error("Associate mixins : " + e.message)
-    #                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
-    #                if query.count() is 0:
-    #                    logger.error("Associate mixins : " + occi_loc)
-    #                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
-    #                else:
-    #                    mix_ids.append(query.first()['value'])
-    #
-    #            to_search_for = jreq['Resource_Locations']
-    #            for item in to_search_for:
-    #                try:
-    #                    query = database.view('/db_views/for_associate_mixin',key=[item,user_id])
-    #                except Exception as e:
-    #                    logger.error("Associate mixins : " + e.message)
-    #                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
-    #                if query.count() is 0:
-    #                    logger.error("Associate mixins  : " + item)
-    #                    return "An error has occurred, please check log for more details",return_code['Not Found']
-    #                else:
-    #                    q = query.first()
-    #                    db_docs.append(q['value'])
-    #
-    #            logger.debug("Post path : Post on mixin path to associate mixins channeled")
-    #            updated_entities,resp_code_e = associate_entities_to_mixins(mix_ids,db_docs)
-    #        else:
-    #            updated_entities = list()
-    #            resp_code_e = return_code['Bad Request']
-    #
-    #        if resp_code_e is not return_code['OK']:
-    #            return "An error has occurred, please check log for more details",return_code['Bad Request']
-    #
-    #        database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
-    #        backend_m.update_entities(db_docs,updated_entities)
-    #        return "",return_code['OK']
+        #Step[1]: Get the necessary data from DB
+
+        nb_res, mix_id = self.rd_baker.bake_to_post_multi_resources_2b(req_url)
+        if nb_res is None:
+            return "An error has occurred, please check log for more details", return_code['Internal Server Error']
+        elif nb_res is 0:
+            return "An error has occurred, please check log for more details", return_code['Not Found']
+        else:
+            to_search_for = jreq['X-OCCI-Location']
+            db_docs = self.rd_baker.bake_to_post_multi_resources_2b2(to_search_for)
+
+            if db_docs is 0:
+                return "An error has occurred, please check log for more details", return_code['Not Found']
+
+            elif db_docs is None:
+                return "An error has occurred, please check log for more details", return_code[
+                    'Internal Server Error']
+
+            else:
+                #Step[2]: Ask the managers to associate mixins to resources
+                logger.debug(
+                    "===== Channel_put_multi_resources ==== : Put on mixin path to associate a mixin channeled")
+                updated_entities, resp_code_e = associate_entities_to_a_mixin(mix_id, db_docs)
+
+                self.PostMan.save_updated_docs_in_db(updated_entities)
+
+                logger.debug("===== Channel_put_multi_resources ==== : Finished (2b) with success")
+                backend_m.update_entities(db_docs, updated_entities)
+                return "", return_code['OK']
+
 
     def channel_delete_multi(self, jreq, req_url):
         """
-        Update the mixin collection of resources
+        Remove the mixin from the resources
         Args:
             @param jreq: OCCI_Locations of the resources
             @param req_url: URL of the request
         """
-        return "This method is under reconstruction", return_code['Not Implemented']
 
-    #        if jreq.has_key('X-OCCI-Location'):
-    #
-    #            url_path = joker.reformat_url_path(req_url)
-    #            db_docs = list()
-    #
-    #            try:
-    #                query = database.view('/db_views/my_mixins',key = url_path)
-    #            except Exception as e:
-    #                logger.error("Dissociate mixins : " + e.message)
-    #                return "An error has occurred, please check log for more details",return_code['Internal Server Error']
-    #
-    #
-    #            mix_id = query.first()['value']
-    #
-    #            to_search_for = jreq['X-OCCI-Location']
-    #            for item in to_search_for:
-    #                try:
-    #                    query = database.view('/db_views/for_associate_mixin',key=item)
-    #                except Exception as e:
-    #                    logger.error("Associate mixins : " + e.message)
-    #                    return "An error has occurred, please check log for more details",return_code['Internal Server Error']
-    #                if query.count() is 0:
-    #                    logger.error("Associate mixins  : " + item)
-    #                    return "An error has occurred, please check log for more details",return_code['Not Found']
-    #                else:
-    #                    q = query.first()
-    #                    db_docs.append(q['value'])
-    #
-    #            logger.debug("Delete path: delete on mixin path to Dissociate mixins channeled")
-    #            updated_entities,resp_code_e = dissociate_entities_from_a_mixin(mix_id,db_docs)
-    #        else:
-    #            updated_entities = list()
-    #            resp_code_e = return_code['Bad Request']
-    #
-    #        if resp_code_e is not return_code['OK']:
-    #            return "An error has occurred, please check log for more details",return_code['Bad Request']
-    #
-    #        database.save_docs(updated_entities,force_update=True,all_or_nothing=True)
-    #        backend_m.update_entities(db_docs,updated_entities)
-    #        return "",return_code['OK']
+        #Step[1]: Get the necessary data from DB
+
+        nb_res, mix_id = self.rd_baker.bake_to_post_multi_resources_2b(req_url)
+        if nb_res is None:
+            return "An error has occurred, please check log for more details", return_code['Internal Server Error']
+
+        elif nb_res is 0:
+            return "An error has occurred, please check log for more details", return_code['Not Found']
+
+        else:
+            to_search_for = jreq['X-OCCI-Location']
+            db_docs = self.rd_baker.bake_to_post_multi_resources_2b2(to_search_for)
+
+            if db_docs is 0:
+                return "An error has occurred, please check log for more details", return_code['Not Found']
+
+            elif db_docs is None:
+                return "An error has occurred, please check log for more details", return_code[
+                    'Internal Server Error']
+
+            else:
+                logger.debug(" ===== Delete_multi_entities : Delete on mixin to Dissociate mixins channeled =====")
+                updated_entities, resp_code_e = dissociate_entities_from_a_mixin(mix_id, db_docs)
+
+            if resp_code_e is not return_code['OK']:
+                return "An error has occurred, please check log for more details", return_code['Bad Request']
+
+            self.PostMan.save_updated_docs_in_db(updated_entities)
+
+            backend_m.update_entities(db_docs,updated_entities)
+
+            return "", return_code['OK']
 
     def channel_trigger_actions(self, jBody, req_url, triggered_action):
         """
@@ -388,7 +362,7 @@ class MultiEntityJungler(object):
 #                                           Independent Functions
 #=======================================================================================================================
 
-def associate_entities_to_a_mixin( mix_id, db_docs):
+def associate_entities_to_a_mixin(mix_id, db_docs):
     """
     Add a single mixin to entities
     Args:
@@ -425,8 +399,6 @@ def dissociate_entities_from_a_mixin(mix_id, db_docs):
             if doc['OCCI_Description'].has_key('mixins'):
                 var = doc['OCCI_Description']['mixins']
                 try:
-                    print mix_id
-                    print var
                     var.remove(mix_id)
 
                     doc['OCCI_Description']['mixins'] = var

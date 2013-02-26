@@ -62,25 +62,25 @@ class QueryDispatcher(object):
             jreq = self.req_adapter.convert_request_category_content(self.req)
 
             if jreq is None:
-                self.res.status_code = return_code['Not Acceptable']
+                self.res.status_int = return_code['Not Acceptable']
                 self.res.body = self.req.content_type + " is an unknown request content type"
 
             else:
                 #Step[2a]: Retrieve the categories matching with the filter provided in the request:
-                var, self.res.status_code = self.jungler.channel_get_filtered_categories(jreq)
+                var, self.res.status_int = self.jungler.channel_get_filtered_categories(jreq)
 
         else:
             #Step[2b]: Retrieve all the categories:
-            var, self.res.status_code = self.jungler.channel_get_all_categories()
+            var, self.res.status_int = self.jungler.channel_get_all_categories()
 
         #Step[3]: Adapt the response to the required accept-type
 
-        if self.res.status_code == return_code['OK']:
+        if self.res.status_int == return_code['OK']:
             self.res = self.res_adapter.convert_response_category_content(self.res, var)
 
         else:
             self.res.content_type = "text/html"
-            self.res.body = var
+            self.res.body = str(var)
 
         return self.res
 
@@ -96,12 +96,12 @@ class QueryDispatcher(object):
 
         if jBody is None:
 
-            self.res.status_code = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
             #Step[2]: Create the categories
-            self.res.body, self.res.status_code = self.jungler.channel_register_categories(jBody)
+            self.res.body, self.res.status_int = self.jungler.channel_register_categories(jBody)
 
         return self.res
 
@@ -116,13 +116,13 @@ class QueryDispatcher(object):
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
 
         #Step[2]: Update the new data:
-            self.res.body, self.res.status_code = self.jungler.channel_update_categories(jBody)
+            self.res.body, self.res.status_int = self.jungler.channel_update_categories(jBody)
 
         return self.res
 
@@ -136,12 +136,12 @@ class QueryDispatcher(object):
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
             #Step[2]: Delete the category
-            self.res.body, self.res.status_code = self.jungler.channel_delete_categories(jBody)
+            self.res.body, self.res.status_int = self.jungler.channel_delete_categories(jBody)
 
         return self.res
 

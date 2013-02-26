@@ -47,6 +47,7 @@ class CategoryJungler:
     """
 
     def __init__(self):
+
         self.manager_k = KindManager()
         self.manager_m = MixinManager()
         self.manager_a = ActionManager()
