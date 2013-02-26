@@ -105,6 +105,7 @@ In order to use pyOCNI, you must respect certain rules :
 #. Scheme + Term = OCCI_ID : unique identifier of the OCCI (Kind/Mixin/Action) description
 #. PyOCNI_Server_Address + location = OCCI_Location of (Kind/Mixin/Action) description
 #. location word refers to a kind or mixin location.
+#. Links will be treated the same way as resources and internal links are not taking into account for clarity reasons.
 
 PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following commands are JSON specific. If you want to see HTTP command please check `here <https://github.com/mseknibilel/PyOCNI/blob/milestone/HTTP_HowTo.rst>`_.
 
