@@ -40,7 +40,7 @@ logger = config.logger
 
 class ResourceManager(object):
     """
-    Manager of resource documents in the couch database.
+    Manager of resource documents
     """
 
     def register_resources(self, occi_descriptions, url_path, db_occi_ids_locs, default_attributes):
@@ -55,7 +55,9 @@ class ResourceManager(object):
         """
         loc_res = list()
         kind_occi_id = None
-        #Get the kind on which the request was sent
+
+        #Step[1]: Get the kind on which the request was sent
+
         for elem in db_occi_ids_locs:
             if elem['OCCI_Location'] == url_path:
                 kind_occi_id = elem['OCCI_ID']
@@ -63,11 +65,13 @@ class ResourceManager(object):
 
         if kind_occi_id is not None:
             for desc in occi_descriptions:
-                #Verify if the kind to which this request is sent is the same as the one in the link description
+                #Note: Verify if the kind to which this request is sent is the same as the one in the link description
                 if desc['kind'] == kind_occi_id:
+                    #Note: create the url of the id based on the id provided in the request
                     loc = joker.make_entity_location_from_url(url_path, desc['id'])
                     exist_same = joker.verify_existences_teta([loc], db_occi_ids_locs)
 
+                    #Step[2]: Create the new resource
                     if exist_same is False:
                         jData = dict()
                         jData['_id'] = uuid_Generator.get_UUID()
@@ -86,7 +90,7 @@ class ResourceManager(object):
                     mesg = "Kind description and kind location don't match"
                     logger.error("===== Register_resources: " + mesg + " ===== ")
                     return list(), return_code['Conflict']
-
+            #Step[3]: return the list of resources for creation
             logger.debug("===== Register_resources: Resources sent for creation =====")
             return loc_res, return_code['OK, and location returned']
         else:
@@ -95,11 +99,11 @@ class ResourceManager(object):
             return list(), return_code['Not Found']
 
 
-        #
+
 
     def get_filtered_resources(self, filters, descriptions_res):
         """
-        Retrieve the resources  that match the filters provided
+        Retrieve the resources that match the filters provided
         Args:
             @param filters: Filters
             @param descriptions_res: Resource descriptions
@@ -108,9 +112,11 @@ class ResourceManager(object):
         try:
             for desc in descriptions_res:
                 for filter in filters:
+                    #Step[1]: Check if descriptions match the filters
                     checks = joker.filter_occi_description(desc['OCCI_Description'], filter)
 
                     if checks is True:
+                        #Step[2]: Keep record of those description matching the filter
                         var.append(desc['OCCI_ID'])
                         logger.debug("===== Get_filtered_resources: A resource document is found =====")
 
@@ -130,9 +136,10 @@ class ResourceManager(object):
             @param db_occi_ids_locs: Ids and locations from the database
         """
 
-        #Verify if the kind of the new resource exists
+        #Step[1]: Verify if the kind of the new resource exists
         ok_k = joker.verify_existences_beta([occi_description['kind']], db_occi_ids_locs)
 
+        #Step[2]: create the resource
         if ok_k is True:
             jData = dict()
             jData['_id'] = uuid_Generator.get_UUID()
@@ -145,97 +152,46 @@ class ResourceManager(object):
             logger.error(" ===== Register_custom_resource : " + mesg + " =====")
             return list(), return_code['Not Found']
 
+        #Step[3]: send resource for creation
         logger.debug("===== Register_custom_resource :  Resources sent for creation")
         return jData, return_code['OK, and location returned']
 
     def update_resource(self, old_doc, occi_new_description):
         """
-        Verifies the validity of a resource's new data
+        Fully update the resource's old description
         Args:
-
             @param old_doc: Old resource document
             @param occi_new_description: New resource description
         """
         try:
 
             logger.debug("===== Update_resource: Resource sent for update =====")
+            #Step[1]: Replace the old occi description with the new occi description
             old_doc['OCCI_Description'] = occi_new_description
+            #Step[2]: Return the hole document for update
             return old_doc, return_code['OK, and location returned']
 
         except Exception as e:
 
-            logger.error("===== Update_partial_resource: Resource couldn't be updated =====")
+            logger.error("===== Update_resource: Resource couldn't be updated =====")
             return {}, return_code['Internal Server Error']
 
     def partial_resource_update(self, old_data, occi_description):
         """
-        Verifies the validity of a resource's new data
+        Partially update the resource's old occi description
         Args:
 
             @param occi_description: Resource description
             @param old_data: Old resource description
         """
 
+        #Step[1]: try a partial resource update
         problems, updated_data = joker.update_occi_entity_description(old_data, occi_description)
 
+        #Step[2]: if no problem then return the new data for update else return the old data with conflict status code
         if problems is False:
             logger.debug("===== Update_partial_resource: Resource sent for update =====")
             return updated_data, return_code['OK, and location returned']
         else:
             logger.error("===== Update_partial_resource: Resource couldn't have been fully updated =====")
-            return updated_data, return_code['Conflict']
-
-
-
-            #=======================================================================================================================
-            #                                                             Functions to review
-            #=======================================================================================================================
-
-            #def verify_links_implicit(self,occi_descriptions,creator,db_occi_ids_locs):
-            #        """
-            #        Checks the integrity of internal resource links (Called only during the creation of a new resource instance)
-            #        Args:
-            #
-            #            @param occi_descriptions: the OCCI descriptions of new links
-            #            @param creator: Issuer of the request
-            #            @param db_occi_ids_locs: OCCI IDs and locations contained in the database
-            #        """
-            #        impl_link_locs = list()
-            #        for desc in occi_descriptions:
-            #            ok_k = joker.verify_existences_beta([desc['kind']],db_occi_ids_locs)
-            #            #Verify if the kind to which this request is sent is the same as the one in the link description
-            #            if ok_k is True:
-            #                ok_target = joker.verify_existences_teta([desc['target']],db_occi_ids_locs)
-            #                if ok_target is True:
-            #                    if desc.has_key('actions'):
-            #                        ok_a = joker.verify_existences_delta(desc['actions'],db_occi_ids_locs)
-            #                    else:
-            #                        ok_a = True
-            #                    if ok_a is True:
-            #                        if desc.has_key('mixins'):
-            #                            ok_m = joker.verify_existences_beta(desc['mixins'],db_occi_ids_locs)
-            #                        else:
-            #                            ok_m = True
-            #                        if ok_m is True:
-            #                            loc = joker.make_implicit_link_location(desc['id'],desc['kind'],creator,db_occi_ids_locs)
-            #                            exist_same = joker.verify_existences_teta([loc],db_occi_ids_locs)
-            #                            if exist_same is True:
-            #                                logger.error("Reg links impl : Bad link id ")
-            #                                return False,return_code['Conflict']
-            #                            else:
-            #                                impl_link_locs.append(loc)
-            #                        else:
-            #                            logger.error("Reg links impl : Bad Mixins description ")
-            #                            return False,return_code['Not Found']
-            #                    else:
-            #                        logger.error("Reg links impl : Bad Actions description ")
-            #                        return False,return_code['Not Found']
-            #                else:
-            #                    logger.error("Reg links impl : Bad target description ")
-            #                    return False,return_code['Not Found']
-            #            else:
-            #                mesg = "Kind description does not exist"
-            #                logger.error("Reg links impl: " + mesg)
-            #                return False,return_code['Not Found']
-            #        logger.debug("Internal links validated with success")
-            #        return True,impl_link_locs
+            return old_data, return_code['Conflict']

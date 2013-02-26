@@ -192,31 +192,42 @@ class ResourceSupplier():
         return query
 
 
+    def get_delete_on_path(self):
 
-def recursive_for_attribute(attributes):
-    """
 
-    """
 
-    att_http = list()
-    for key in attributes.keys():
-        if type(attributes[key]) is dict:
-            items = recursive_for_attribute(attributes[key])
-            for item in items:
-                if not (item.find('{')):
-                    att_http.append(key + item)
-                else:
-                    att_http.append(key + "." + item)
-        else:
-            attributes = treat_attribute_members(attributes)
-            return attributes
-    final_att = list()
-    for item in att_http:
-        if item.endswith('.'):
-            final_att.append(item[:-1])
-        else:
-            final_att.append(item)
-    return final_att
+        try:
+            query = self.database.view('/db_views/for_delete_entities')
+        except Exception as e:
+            logger.error("===== Get_delete_on_Path: " + e.message + " ===== ")
+            return None
+        return query
+
+
+#def recursive_for_attribute(attributes):
+#    """
+#
+#    """
+#
+#    att_http = list()
+#    for key in attributes.keys():
+#        if type(attributes[key]) is dict:
+#            items = recursive_for_attribute(attributes[key])
+#            for item in items:
+#                if not (item.find('{')):
+#                    att_http.append(key + item)
+#                else:
+#                    att_http.append(key + "." + item)
+#        else:
+#            attributes = treat_attribute_members(attributes)
+#            return attributes
+#    final_att = list()
+#    for item in att_http:
+#        if item.endswith('.'):
+#            final_att.append(item[:-1])
+#        else:
+#            final_att.append(item)
+#    return final_att
 
 
 

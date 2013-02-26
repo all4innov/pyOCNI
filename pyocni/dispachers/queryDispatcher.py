@@ -36,11 +36,12 @@ from pyocni.adapters.i_RequestAdapter import RequestAdapter
 
 class QueryDispatcher(object):
     """
-        Dispatches operations concerning the Query Interface.
+        Dispatches requests concerning the Query Interface.
 
     """
 
     def __init__(self, req):
+
         self.req = req
         self.res = Response()
         self.res.content_type = str(req.accept)
@@ -54,33 +55,32 @@ class QueryDispatcher(object):
         Retrieval of all registered Kinds, mixins and actions
         """
 
-        #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON) if there is a body:
+        #Step[1]: Detect the data type (HTTP ,JSON:OCCI or OCCI+JSON) if there is one:
 
         if  self.req.content_type == 'text/occi' or (self.req.body != ""):
+
             jreq = self.req_adapter.convert_request_category_content(self.req)
 
-            #Step[2]: Treat the converted data:
             if jreq is None:
-                self.res.status_code = return_code['Not Acceptable']
+                self.res.status_int = return_code['Not Acceptable']
                 self.res.body = self.req.content_type + " is an unknown request content type"
 
             else:
-                var, self.res.status_code = self.jungler.channel_get_filtered_categories(jreq)
+                #Step[2a]: Retrieve the categories matching with the filter provided in the request:
+                var, self.res.status_int = self.jungler.channel_get_filtered_categories(jreq)
 
         else:
-            var, self.res.status_code = self.jungler.channel_get_all_categories()
-
-
-
+            #Step[2b]: Retrieve all the categories:
+            var, self.res.status_int = self.jungler.channel_get_all_categories()
 
         #Step[3]: Adapt the response to the required accept-type
 
-        if self.res.status_code == return_code['OK']:
+        if self.res.status_int == return_code['OK']:
             self.res = self.res_adapter.convert_response_category_content(self.res, var)
 
         else:
             self.res.content_type = "text/html"
-            self.res.body = var
+            self.res.body = str(var)
 
         return self.res
 
@@ -90,17 +90,18 @@ class QueryDispatcher(object):
 
         """
 
-        #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
+        #Step[1]: Detect the data type (HTTP ,JSON:OCCI or OCCI+JSON)
 
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
+
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
-            #add the JSON to database along with other attributes
-            self.res.body, self.res.status_code = self.jungler.channel_register_categories(jBody)
+            #Step[2]: Create the categories
+            self.res.body, self.res.status_int = self.jungler.channel_register_categories(jBody)
 
         return self.res
 
@@ -110,37 +111,37 @@ class QueryDispatcher(object):
 
         """
 
-        #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
+        #Step[1]: Detect the data type (HTTP ,JSON:OCCI or OCCI+JSON):
 
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
-        #Step[2]: Update new data from the request
 
-            self.res.body, self.res.status_code = self.jungler.channel_update_categories(jBody)
+        #Step[2]: Update the new data:
+            self.res.body, self.res.status_int = self.jungler.channel_update_categories(jBody)
 
         return self.res
 
     def delete(self):
         """
-
         Delete a category document using the data provided in the request
 
         """
-        #Step[1]: Detect the body type (HTTP ,JSON:OCCI or OCCI+JSON)
+        #Step[1]: Detect the data type (HTTP ,JSON:OCCI or OCCI+JSON)
 
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
-            self.res.body, self.res.status_code = self.jungler.channel_delete_categories(jBody)
+            #Step[2]: Delete the category
+            self.res.body, self.res.status_int = self.jungler.channel_delete_categories(jBody)
 
         return self.res
 

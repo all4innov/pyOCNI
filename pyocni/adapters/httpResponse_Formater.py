@@ -32,7 +32,7 @@ from webob import Response
 
 class To_HTTP_Text_Plain():
     """
-    formats JSON object to HTTP text/plain descriptions
+    Converts Response data from application/occi+json object to HTTP text/plain descriptions
     """
 
     def format_to_text_plain_categories(self, var):
@@ -128,7 +128,7 @@ class To_HTTP_Text_Plain():
 
 class To_HTTP_Text_OCCI():
     """
-    formats JSON object to HTTP text/plain descriptions
+    Converts Response data from application/occi+json object to HTTP text/occi descriptions
     """
 
     def format_to_text_occi_categories(self, var):
@@ -230,7 +230,7 @@ class To_HTTP_Text_OCCI():
 
 class To_HTTP_Text_URI_List():
     """
-    formats JSON object to HTTP text/plain descriptions
+    Converts Response data from application/occi+json object to HTTP text/uri descriptions
     """
 
     def __init__(self):
@@ -243,13 +243,11 @@ class To_HTTP_Text_URI_List():
             @param var: JSON location object
         """
         resp = ""
-        is_text_uri = False
+
         for item in var:
             resp += item + "\n"
-            if item.endswith("/"):
-                is_text_uri = True
 
-        return resp, is_text_uri
+        return resp, True
 
 
 def cnv_JSON_category(category, type):

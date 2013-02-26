@@ -33,6 +33,7 @@ import pyocni.TDD.fake_Data.categories as f_categories
 import pyocni.pyocni_tools.config as config
 
 def start_server():
+
     ocni_server_instance = ocni_server()
     ocni_server_instance.run_server()
 
@@ -49,11 +50,12 @@ class test_get(TestCase):
         self.p = Process(target=start_server)
         self.p.start()
         time.sleep(0.5)
-        init_fakeDB()
+        #init_fakeDB()
         time.sleep(0.5)
 
     def tearDown(self):
-        config.purge_PyOCNI_db()
+
+        #config.purge_PyOCNI_db()
         self.p.terminate()
 
     def test_get_categories(self):
@@ -64,9 +66,9 @@ class test_get(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(c.URL, 'http://127.0.0.1:8090/-/')
-        c.setopt(c.HTTPHEADER, ['Accept:text/plain'])
+        c.setopt(c.HTTPHEADER, ['Accept:application/occi+json','content-type:application/occi+json'])
         c.setopt(c.VERBOSE, True)
-        #c.setopt(c.POSTFIELDS,f_entities.action_occci_id)
+        c.setopt(c.POSTFIELDS,f_categories.kind)
         c.setopt(c.CUSTOMREQUEST, 'GET')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
@@ -86,7 +88,7 @@ class test_delete(TestCase):
         self.p = Process(target=start_server)
         self.p.start()
         time.sleep(0.5)
-        #init_fakeDB()
+        init_fakeDB()
         time.sleep(0.5)
 
     def tearDown(self):
@@ -103,8 +105,8 @@ class test_delete(TestCase):
 
         c.setopt(c.CUSTOMREQUEST, 'DELETE')
         c.setopt(c.URL, 'http://127.0.0.1:8090/-/')
-        c.setopt(c.HTTPHEADER, ['Accept: application/occi+json', 'Content-Type: text/plain'])
-        c.setopt(c.POSTFIELDS, f_categories.action_occci_id)
+        c.setopt(c.HTTPHEADER, ['Accept: application/occi+json', 'Content-Type: application/occi+json'])
+        c.setopt(c.POSTFIELDS, f_categories.kind)
         c.setopt(c.VERBOSE, True)
         c.setopt(c.WRITEFUNCTION, storage.write)
 
@@ -129,6 +131,7 @@ class test_post(TestCase):
         time.sleep(0.5)
 
     def tearDown(self):
+
         self.p.terminate()
         #config.purge_PyOCNI_db()
 
@@ -141,9 +144,9 @@ class test_post(TestCase):
         storage = StringIO.StringIO()
 
         c.setopt(c.URL, 'http://127.0.0.1:8090/-/')
-        c.setopt(c.HTTPHEADER, ['Content-Type: text/plain', 'Accept: application/occi+json'])
+        c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json', 'Accept: application/occi+json'])
 
-        c.setopt(c.POSTFIELDS, f_categories.kind_http)
+        c.setopt(c.POSTFIELDS, f_categories.kind)
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.WRITEFUNCTION, storage.write)
 
@@ -181,7 +184,7 @@ class test_put(TestCase):
         c.setopt(c.URL, 'http://127.0.0.1:8090/-/')
         c.setopt(c.HTTPHEADER, ['Content-Type: application/occi+json', 'Accept: application/occi+json'])
         c.setopt(c.CUSTOMREQUEST, 'PUT')
-        c.setopt(c.POSTFIELDS, f_categories.action)
+        c.setopt(c.POSTFIELDS, f_categories.put_provider)
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
@@ -203,4 +206,4 @@ if __name__ == '__main__':
 
     #Run tests
 
-    runner.run(put_suite)
+    runner.run(delete_suite)

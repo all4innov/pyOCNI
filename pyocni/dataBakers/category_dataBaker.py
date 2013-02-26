@@ -36,14 +36,17 @@ import pyocni.pyocni_tools.occi_Joker as joker
 logger = config.logger
 
 class CategoryDataBaker():
-    #DataBaker's role is to prepare the data for Junglers
+    """
+    DataBaker prepares categories (extracted by the supplier from DB) for Junglers
+    """
 
     def __init__(self):
+
         self.category_sup = CategorySupplier()
 
     def bake_to_get_all_categories(self):
         """
-        Adapt categories to the standard data
+        Adapt categories to the get all categories method
         """
         db_kinds = list()
         db_mixins = list()
@@ -74,6 +77,10 @@ class CategoryDataBaker():
         return result
 
     def bake_to_register_categories(self):
+        """
+        Prepare categories to register categories method
+        """
+        #Step[1]: Get the data from the supplier
         query = self.category_sup.get_ids_and_location_categories()
 
         if query is None:
@@ -81,37 +88,57 @@ class CategoryDataBaker():
         else:
             db_occi_ids = list()
             db_occi_locs = list()
-
+            #Step[2]: Adapt data to the format understood by the jungler
             for q in query:
                 db_occi_ids.append(q['key'])
                 db_occi_locs.append(q['value'])
-
+            #Step[3]: return the data
             return db_occi_ids, db_occi_locs
 
     def bake_to_update_categories(self):
+        """
+        Prepare categories to update categories method
+        """
+        #Step[1]: get the data from the supplier
         query = self.category_sup.get_ids_and_docs_categories()
 
         if query is None:
             return None
         else:
+            #Step[2]: prepare the data
             db_occi_id_doc = list()
             for q in query:
                 db_occi_id_doc.append({"OCCI_ID": q['key'], "Doc": q['value']})
-
+            #Step[3]: return the data
             return db_occi_id_doc
 
     def bake_to_delete_categories(self):
+        """
+        Prepare categories for the delete categories method
+        """
+        #Step[1]: Get the data from the supplier
         query = self.category_sup.get_ids_categories()
+
         if query is None:
             return None
         else:
             db_occi_id = list()
+
+            #Step[2]: prepare the data
             for q in query:
                 if q['key'] is not None:
                     db_occi_id.append({"_id": q['key'], "_rev": q['value'][0], "OCCI_ID": q['value'][1]})
+
+            #Step[3]: return data
             return db_occi_id
 
     def bake_to_delete_categories_mixins(self, mixins):
+        """
+        Get entities related to the mixin for the delete categories method
+        @param mixins: mixin OCCI ID
+        """
+
+        #Step[1]: Get data from the supplier
         db_mixin_entities = list()
 
         for mix in mixins:
@@ -120,10 +147,12 @@ class CategoryDataBaker():
 
             if query is None:
                 return None
+            #Step[2]: prepare data
             else:
                 if query.count() is not 0:
                     db_mixin_entities.append(query.first()['value'])
 
+        #Step[3]: Return data
         return db_mixin_entities
 
 

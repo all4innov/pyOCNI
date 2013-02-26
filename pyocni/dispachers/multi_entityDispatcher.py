@@ -40,11 +40,12 @@ except ImportError:
 #=======================================================================================================================
 class MultiEntityDispatcher(object):
     """
-
+    Dispatches requests concerning multiple entities
 
     """
 
     def __init__(self, req, location=None, idontknow=None, idontcare=None):
+
         self.req = req
 
         self.location = location
@@ -67,66 +68,77 @@ class MultiEntityDispatcher(object):
 
     def post(self):
         """
-        Create a new entity instance or trigger an action on all resources belonging to a kind or attach a mixin to a
+        Create a new entity or trigger an action on all resources belonging to a kind or attach a mixin to a
         resource instance
 
         """
 
-        #Step[1]: Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+        #Step[1]: Detect the data type (HTTP ,OCCI:JSON or OCCI+JSON)
 
 
         jBody = self.req_adapter.convert_request_entity_content(self.req)
 
         if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
 
         else:
-            #Step[2]: Treat the data and define what the request really wants:
+            #Step[2]: Identify the action name if there is one:
 
             if self.req.params.has_key('action'):
                 self.triggered_action = self.req.params['action']
 
-            #add the JSON to database along with other attributes
-            if self.triggered_action is None:
-                var, self.res.status_code = self.jungler.channel_post_multi_resources(jBody, self.path_url)
+            #Step[3a]: Dispatch a post request
 
-                if self.res.status_code == return_code['OK, and location returned']:
+            if self.triggered_action is None:
+
+                var, self.res.status_int = self.jungler.channel_post_multi_resources(jBody, self.path_url)
+
+                #Step[4a]: Adapt response to the required Accept-Type
+
+                if self.res.status_int == return_code['OK, and location returned']:
                     self.res_adapter.convert_response_entity_multi_location_content(var, self.res)
 
                 else:
                     self.res.content_type = "text/html"
                     self.res.body = str(var)
 
+            #Step[3b]: Trigger an action on all resources belonging to a kind
             else:
-                self.res.body, self.res.status_code = self.jungler.channel_trigger_actions(jBody, self.path_url,
+                self.res.body, self.res.status_int = self.jungler.channel_trigger_actions(jBody, self.path_url,
                     self.triggered_action)
 
             return self.res
 
     def get(self):
         """
-        Gets entities belonging to a kind or a mixin
+        Get entities belonging to a kind or a mixin
 
         """
 
-        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+        #Step[1]: Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
 
         if  self.req.content_type == 'text/occi' or (
         self.req.body != ""):
+
             jBody = self.req_adapter.convert_request_entity_content_v2(self.req)
 
             if jBody is None:
-                self.res.status_code = return_code['Not Acceptable']
+                self.res.status_int = return_code['Not Acceptable']
                 self.res.body = self.req.content_type + " is an unknown request content type"
 
             else:
-                var, self.res.status_code = self.jungler.channel_get_filtered_entities(self.path_url, jBody)
+                #Step[2a]: Retrieve entities matching the filter provided
+                var, self.res.status_int = self.jungler.channel_get_filtered_entities(self.path_url, jBody)
 
         else:
-            var, self.res.status_code = self.jungler.channel_get_all_entities(self.path_url, "")
+            #Step[2b]: Retrieve all the entities
+            var, self.res.status_int = self.jungler.channel_get_all_entities(self.path_url, "")
 
-        if self.res.status_code == return_code['OK']:
+        #Step[3]: Adapt the response to the format defined in the Accept-Type header
+
+        if self.res.status_int == return_code['OK']:
+
             self.res_adapter.convert_response_entity_multi_x_occi_location_content(var, self.res)
 
         else:
@@ -137,45 +149,45 @@ class MultiEntityDispatcher(object):
 
     def put(self):
         """
-        Update the mixin collection of entities
+        Fully update the mixin collection of entities
 
         """
 
-        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
-        #Not implemented yet for text/plain and text/occi formats
-
+        #Step[1]: Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
 
         jBody = self.req_adapter.convert_request_category_content(self.req)
 
         if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
+            self.res.status_int = return_code['Not Acceptable']
             self.res.body = self.req.content_type + " is an unknown request content type"
         else:
-            #add the JSON to database along with other attributes
-            self.res.body, self.res.status_code = self.jungler.channel_put_multi(jBody, self.path_url)
+
+            #Step[2]: Fully update the mixin collection of entities
+
+            self.res.body, self.res.status_int = self.jungler.channel_put_multi(jBody, self.path_url)
 
         return self.res
 
     def delete(self):
         """
-        Dissociates a resource instance from a mixin
+        Dissociates a resource instance from a mixin or delete all resource under a path
 
         """
 
-        #Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
-        #Not implemented yet for text/plain and text/occi formats
+        #Step[1]: Detect the body type (HTTP ,OCCI:JSON or OCCI+JSON)
+        if  self.req.content_type == 'text/occi' or (
+            self.req.body != ""):
 
-        jBody = self.req_adapter.convert_request_category_content(self.req)
+            jBody = self.req_adapter.convert_request_category_content(self.req)
 
-        if jBody is None:
-            self.res.status_code = return_code['Not Acceptable']
-            self.res.body = self.req.content_type + " is an unknown request content type"
+            if jBody is None:
+                self.res.status_int = return_code['Not Acceptable']
+                self.res.body = self.req.content_type + " is an unknown request content type"
+
+                #Step[2a]: This is a dissociate mixin request
+                self.res.body, self.res.status_int = self.jungler.channel_delete_multi(jBody, self.path_url)
         else:
-            if self.req.body is not "":
-                #This is a dissociate mixin request:
-                self.res.body, self.res.status_code = self.jungler.channel_delete_multi(jBody, self.path_url)
-            else:
-                #This is a delete on path request:
+                #Step[2b]: This is a delete on path request:
                 self.jungler_p.channel_delete_on_path(self.path_url)
 
         return self.res
