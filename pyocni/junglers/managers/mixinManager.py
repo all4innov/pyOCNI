@@ -159,7 +159,7 @@ class MixinManager:
     def delete_mixin_documents(self, descriptions, db_categories, db_entities):
         """
         Delete mixin documents that is related to the OCCI_ID(scheme + term) contained in the description provided
-        #Note: Dissociate entities from mixins before deleting them.
+
         Args:
             @param descriptions: OCCI description of the mixin document to delete
             @param db_categories: Category data already contained in the database

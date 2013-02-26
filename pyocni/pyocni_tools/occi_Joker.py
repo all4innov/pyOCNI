@@ -105,14 +105,6 @@ def update_occi_entity_description(oldData, newData):
     #Try to get the keys from occi entity description dictionary
     oldData_keys = oldData.keys()
     newData_keys = newData.keys()
-    #    forbidden_keys = ["id","kind"]
-    #    for key in newData_keys:
-    #        try:
-    #            forbidden_keys.index(key)
-    #            if oldData[key] != newData[key]:
-    #                logger.debug("update description : " + key + " is forbidden to change")
-    #                return True,None
-    #        except ValueError:
     for key in newData_keys:
         try:
             oldData_keys.index(key)
@@ -308,8 +300,10 @@ def verify_occi_uniqueness(occi_term, db_categories):
         @param occi_term: OCCI term to verify its uniqueness
         @param db_categories: Collection of OCCI IDs
     """
+
     try:
         db_categories.index(occi_term)
+        print occi_term
         return False
     except ValueError as e:
         logger.info("===== Verify_occi_uniqueness =====: " + e.message)
@@ -413,9 +407,11 @@ def look_for_update_key_values(new_attr):
 
 
 def complete_occi_description_with_default_attributes(desc, default_attributes):
+
     for key in desc.keys():
-        if type(desc[key]) is dict:
+        if type(desc[key]) is dict and key in default_attributes.keys():
             complete_occi_description_with_default_attributes(default_attributes[key], desc[key])
         else:
             default_attributes[key] = desc[key]
+
     return default_attributes

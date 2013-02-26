@@ -50,7 +50,7 @@ class test_post(TestCase):
         self.p = Process(target=start_server)
         self.p.start()
         time.sleep(0.5)
-        init_fakeDB()
+        #init_fakeDB()
         time.sleep(0.5)
 
     def tearDown(self):
@@ -63,10 +63,10 @@ class test_post(TestCase):
         """
         storage = StringIO.StringIO()
         c = pycurl.Curl()
-        c.setopt(c.URL, 'http://127.0.0.1:8090/compute/?action=start')
+        c.setopt(c.URL, 'http://127.0.0.1:8090/compute/')
         c.setopt(c.HTTPHEADER, ['Accept:text/plain', 'Content-Type: application/occi+json'])
         c.setopt(c.VERBOSE, True)
-        c.setopt(pycurl.POSTFIELDS, f_entities.action_plus_attributes)
+        c.setopt(pycurl.POSTFIELDS, f_entities.link)
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()

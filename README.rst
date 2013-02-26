@@ -61,16 +61,10 @@ This software needs this packages to run:
 * python-all-dev (for eventlet/greenlet install/make)
 * python-setuptools (to execute the setup.py file)
 * couchdb >= 1.2.0:
-Example of installing couchdb using build-couchdb on Ubuntu (more details on: https://github.com/iriscouch/build-couchdb)
+To install couchdb on Ubuntu
 ::
 
-    sudo apt-get install help2man make gcc zlib1g-dev libssl-dev rake help2man
-    git clone git://github.com/iriscouch/build-couchdb
-    cd build-couchdb
-    git submodule init
-    git submodule update
-    rake
-    build/bin/couchdb
+    sudo apt-get install couchdb
 
 To test CouchDB:       http://127.0.0.1:5984
 
@@ -105,6 +99,7 @@ In order to use pyOCNI, you must respect certain rules :
 #. Scheme + Term = OCCI_ID : unique identifier of the OCCI (Kind/Mixin/Action) description
 #. PyOCNI_Server_Address + location = OCCI_Location of (Kind/Mixin/Action) description
 #. location word refers to a kind or mixin location.
+#. Links will be treated the same way as resources and internal links are not taking into account for clarity reasons.
 
 PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following commands are JSON specific. If you want to see HTTP command please check `here <https://github.com/mseknibilel/PyOCNI/blob/milestone/HTTP_HowTo.rst>`_.
 
