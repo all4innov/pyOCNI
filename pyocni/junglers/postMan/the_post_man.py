@@ -27,11 +27,20 @@ import pyocni.pyocni_tools.config as config
 
 
 class PostMan():
+    """
+    Imports new data into the database
+
+    """
+
     def __init__(self):
+        #Step[1]: Create the database connection
         self.database = config.get_PyOCNI_db()
 
     def save_registered_docs_in_db(self, docs):
         self.database.save_docs(docs, use_uuids=True, all_or_nothing=True)
+
+    def save_updated_docs_in_db(self, categories):
+        self.database.save_docs(categories, force_update=True, all_or_nothing=True)
 
     def save_updated_doc_in_db(self, categories):
         self.database.save_doc(categories, force_update=True, all_or_nothing=True)
@@ -48,5 +57,8 @@ class PostMan():
 
     def delete_single_resource_in_db(self, res_value):
         self.database.delete_doc(res_value)
+
+    def delete_entities_in_db(self, to_delete):
+        self.database.delete_docs(to_delete)
 
 

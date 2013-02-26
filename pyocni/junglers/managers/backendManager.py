@@ -30,7 +30,6 @@ except ImportError:
 
 import imp
 
-#from pyocni.backends import dummy_backend,l3vpn_backend,libnetvirt_backend,openflow_backend,opennebula_backend,openstack_backend
 import pyocni.pyocni_tools.config as config
 
 
@@ -49,133 +48,187 @@ except ImportError:
     import json
 
 
-def trigger_action_on_multi_resource(data):
-    """
-    Trigger the action on multiple resource
-    Args:
-        @param data: Data provided for triggering the action
-    """
-    for item in data:
-        trigger_action_on_a_resource(item['resource_url'],item['action'],item['provider'][0])
-    return "",return_code['OK']
-
-
 def choose_appropriate_provider(provider):
 
+    """
+    Retrieves the provider of the resource to use its backend
+
+        @param provider: provider name
+    """
     backend = None
     backends_json_data = open(config.BACKENDS_FILE)
     backends_list = json.load(backends_json_data)
     backends_json_data.close()
-    print provider
+
     for i in backends_list["backends"]:
         if i["name"] == provider:
-            print " I am here !!!!!"
+
             backend_instance = imp.load_source('', i["path"])
             backend = backend_instance.backend()
 
-    #    if provider == "dummy":
-    #        backend = dummy_backend.dummy_backend()
-    #    elif provider == "l3vpn":
-    #        backend = l3vpn_backend.l3vpn_backend()
-    #    elif provider == "libnetvirt":
-    #        backend = libnetvirt_backend.libnetvirt_backend()
-    #    elif provider == "openflow":
-    #        backend = openflow_backend.openflow_backend()
-    #    elif provider == "opennebula":
-    #        backend = opennebula_backend.opennebula_backend()
-    #    elif provider == "openstack":
-    #        backend = openstack_backend.openstack_backend()
-
     return backend
+
+def get_provider_of_a_kind(kind):
+
+    """
+    Get the provider name
+    @param kind: OCCI_ID of the kind
+    """
+    database = config.prepare_PyOCNI_db()
+
+    provider = None
+
+    #Step[1]: Extract the kind description
+    try:
+        query = database.view('/db_views/my_providers', key=kind)
+
+    except Exception as e:
+        logger.error("===== Get_provider_of_a_kind : =====" + e.message)
+        return provider
+
+    if query.count() is 0:
+        logger.error("===== Get_provider_of_a_kind : No such kind =====")
+        return provider
+
+    #Step[2]: return the provider name
+    else:
+        provider = query.first()['value']
+
+    return provider['local'][0]
+
+#======================================================================================================================
+#                                               Actions on single entities
+#======================================================================================================================
+
+def delete_entity(entity,kind):
+    """
+    Dispatches the delete request to the backend
+    @param entity: resource to be deleted
+    @param kind: OCCI ID of the resource's kind
+    """
+
+    #Step[1]: retrieve the provider name
+    provider = get_provider_of_a_kind(kind)
+    #Step[2]: Dynamically load the backend
+    backend = choose_appropriate_provider(provider)
+    #Step[3]: Perform the delete method
+    backend.delete(entity)
+
+
+def create_entity(entity):
+    """
+    Dispatches the create request to the appropriate backend
+    @param entity: OCCI description of the entity
+    """
+    #Step[1]: get the provider
+    kind = entity['OCCI_Description']['kind']
+    provider = get_provider_of_a_kind(kind)
+    #Step[2]: load the backend
+    backend = choose_appropriate_provider(provider)
+    #Step[3]: perform the create method
+    backend.create(entity['OCCI_Description'])
+
+
+def update_entity(old_data, new_data):
+    """
+    Dispatches the update request to the appropriate backend
+    @param old_data: old OCCI description
+    @param new_data: new OCCI description
+    """
+    #Step[1]: get the provider name
+    kind = old_data['kind']
+    provider = get_provider_of_a_kind(kind)
+    #Step[2]: load the backend
+    backend = choose_appropriate_provider(provider)
+    #Step[3]: perform the update method
+    backend.update(old_data,new_data)
+
+
+def read_entity(entity,kind):
+    """
+    Dispatches the read request to the appropriate provider
+    @param entity: OCCI description
+    @param kind: resource kind
+    """
+
+    #Step[1]: get the provider name
+    provider = get_provider_of_a_kind(kind)
+    #Step[2]: load the backend
+    backend = choose_appropriate_provider(provider)
+    #Step[3]: perform the read method
+    backend.read(entity)
 
 
 def trigger_action_on_a_resource(path_url, action, provider,attributes):
     """
-    Send the action triggering request to the appropriate provider
+    Dispatches an action triggering request to the appropriate provider backend
      Args:
         @param path_url: Resource URL Path
         @param action: Action description
         @param provider: Provider of the resource
         @param attributes: Attributes sent with the request
     """
+    #Step[1]: Retrieve the appropriate provider backend
     backend = choose_appropriate_provider(provider)
     if backend is not None:
-
+        #Step[2]: Call the action methods of the backend with the action name and attributes
         backend.action(path_url,action,attributes)
         return "", return_code['Accepted']
     else:
         logger.error("trigger action_on_resource : Unknown provider")
         return " An error has occurred, please check logs for more details", return_code['Not Found']
 
+#======================================================================================================================
+#                                               Actions on multiple entities
+#======================================================================================================================
 
-def get_provider_of_a_kind(kind):
-    database = config.prepare_PyOCNI_db()
+#Note: This is basically a multiple "call on a single resource"
 
-    provider = None
-    try:
-        query = database.view('/db_views/my_providers', key=kind)
+def create_entities(entities):
+    """
+    perform create entity method on a list of entities
+    @param entities: list of entities
+    """
 
-    except Exception as e:
-        logger.error("get_provider_of_a_kind : " + e.message)
-        print "----------------------------------------------"
-        return provider
-
-    if query.count() is 0:
-        logger.error("get_provider_of_a_kind : No such provider")
-        return provider
-    else:
-        provider = query.first()['value']
-
-    return provider['local'][0]
-
-
-
-def delete_entity(entity,kind):
-
-    provider = get_provider_of_a_kind(kind)
-    backend = choose_appropriate_provider(provider)
-    backend.delete(entity)
-
-
-def create_entity(entity,res_adr):
-
-    kind = entity['OCCI_Description']['kind']
-    provider = get_provider_of_a_kind(kind)
-    backend = choose_appropriate_provider(provider)
-    backend.create(entity['OCCI_Description'],res_adr)
-
-
-def update_entity(old_data, new_data):
-
-    kind = old_data['kind']
-    provider = get_provider_of_a_kind(kind)
-    backend = choose_appropriate_provider(provider)
-    backend.update(old_data,new_data)
-
-
-def read_entity(entity,kind):
-
-    provider = get_provider_of_a_kind(kind)
-    backend = choose_appropriate_provider(provider)
-    backend.read(entity)
-
-
-def create_entities(entities, res_adrs):
     for i in range(len(entities)):
-        create_entity(entities[i],res_adrs[i])
+        create_entity(entities[i])
 
 
 def update_entities(old_docs, new_docs):
-
+    """
+    perform update entities method on a list of entities
+    @param old_docs: old entities OCCI description
+    @param new_docs: new entities OCCI description
+    """
 
     for i in range(len(old_docs)):
         update_entity(old_docs[i],new_docs[i])
 
 
 def read_entities(entities):
-
+    """
+    perform read entity method on a list of entities
+    @param entities: list of entities
+    """
     for i in range(len(entities)):
         read_entity(entities[i],entities[i]['kind'])
 
+
+def trigger_action_on_multi_resource(entities,providers, action,parameters):
+    """
+    Trigger the action on multiple resource
+    Args:
+        @param entities: entities on which the action will be triggered
+        @param providers: providers of the entities
+        @param action: action to be performed
+        @param parameters: parameters belonging to the action
+    """
+    for i in range(len(entities)):
+        trigger_action_on_a_resource(entities[i],action,providers[i]['local'][0],parameters)
+
+    return "",return_code['OK']
+
+
 if __name__ == "__main__":
+
     choose_appropriate_provider("dummy_backend")

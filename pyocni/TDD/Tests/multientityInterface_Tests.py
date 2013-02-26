@@ -64,32 +64,14 @@ class test_post(TestCase):
         storage = StringIO.StringIO()
         c = pycurl.Curl()
         c.setopt(c.URL, 'http://127.0.0.1:8090/compute/')
-        c.setopt(c.HTTPHEADER, ['Accept:application/occi+json', 'Content-Type: application/occi+json'])
+        c.setopt(c.HTTPHEADER, ['Accept:text/plain', 'Content-Type: application/occi+json'])
         c.setopt(c.VERBOSE, True)
-        c.setopt(pycurl.POSTFIELDS, f_entities.resource)
+        c.setopt(pycurl.POSTFIELDS, f_entities.link)
         c.setopt(c.CUSTOMREQUEST, 'POST')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()
         print " ========== Body content ==========\n " + content + " \n ==========\n"
-
-
-#    def test_associate_mixin(self):
-#        """
-#        register resources & links
-#        """
-#        storage = StringIO.StringIO()
-#        c = pycurl.Curl()
-#        c.setopt(pycurl.URL,'http://127.0.0.1:8090/template/resource/')
-#        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-#        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-#        c.setopt(pycurl.CUSTOMREQUEST, 'POST')
-#        c.setopt(pycurl.POSTFIELDS,fake_data.associate_mixin)
-#        c.setopt(pycurl.USERPWD, 'user_1:password')
-#        c.setopt(c.WRITEFUNCTION, storage.write)
-#        c.perform()
-#        content = storage.getvalue()
-#        print " ===== Body content =====\n " + content + " ==========\n"
 
 class test_get(TestCase):
     """
@@ -116,7 +98,7 @@ class test_get(TestCase):
         c = pycurl.Curl()
 
         c.setopt(c.URL, "http://127.0.0.1:8090/compute/")
-        c.setopt(c.HTTPHEADER, ['Content-type: application/occi+json', 'Accept: application/occi+json'])
+        c.setopt(c.HTTPHEADER, ['Content-type: application/occi+json', 'Accept:application/occi+json'])
         c.setopt(c.VERBOSE, True)
         c.setopt(c.CUSTOMREQUEST, 'GET')
         c.setopt(c.WRITEFUNCTION, storage.write)
@@ -125,25 +107,6 @@ class test_get(TestCase):
 
         content = storage.getvalue()
         print " ===== Body content =====\n " + content + " ==========\n"
-
-
-#    def test_get_filtred_entities(self):
-#        """
-#        get filtred resources & links
-#        """
-#
-#        storage = StringIO.StringIO()
-#        c = pycurl.Curl()
-#        c.setopt(pycurl.URL,"http://127.0.0.1:8090/compute/")
-#        c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
-#        c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
-#        c.setopt(pycurl.CUSTOMREQUEST, 'GET')
-#        c.setopt(pycurl.USERPWD, 'user_1:password')
-#        c.setopt(pycurl.POSTFIELDS,fake_data.links)
-#        c.setopt(c.WRITEFUNCTION, storage.write)
-#        c.perform()
-#        content = storage.getvalue()
-#        print " ===== Body content =====\n " + content + " ==========\n"
 
 class test_put(TestCase):
     """
@@ -203,8 +166,6 @@ class test_delete(TestCase):
         c.setopt(pycurl.HTTPHEADER, ['Accept: application/occi+json'])
         c.setopt(pycurl.HTTPHEADER, ['Content-Type: application/occi+json'])
         c.setopt(pycurl.CUSTOMREQUEST, 'DELETE')
-        c.setopt(pycurl.POSTFIELDS, fake_data.associate_mixin)
-        c.setopt(pycurl.USERPWD, 'user_1:password')
         c.setopt(c.WRITEFUNCTION, storage.write)
         c.perform()
         content = storage.getvalue()

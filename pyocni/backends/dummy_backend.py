@@ -38,7 +38,7 @@ class backend(backend_interface):
 
         '''
 
-        logger.debug('The create operation of the dummy_backend')
+        logger.debug('***The create operation of the dummy_backend***')
 
     def read(self, entity):
         '''
@@ -46,7 +46,7 @@ class backend(backend_interface):
         Get the Entity's information
 
         '''
-        logger.debug('The read operation of the dummy_backend')
+        logger.debug('***The read operation of the dummy_backend***')
 
     def update(self, old_entity, new_entity):
         '''
@@ -54,7 +54,7 @@ class backend(backend_interface):
         Update an Entity's information
 
         '''
-        logger.debug('The update operation of the dummy_backend')
+        logger.debug('***The update operation of the dummy_backend***')
 
     def delete(self, entity):
         '''
@@ -62,7 +62,7 @@ class backend(backend_interface):
         Delete an Entity
 
         '''
-        logger.debug('The delete operation of the dummy_backend')
+        logger.debug('***The delete operation of the dummy_backend***')
 
     def action(self, entity, action, attributes):
         '''
@@ -70,10 +70,4 @@ class backend(backend_interface):
         Perform an action on an Entity
 
         '''
-
-        print "i got entity = " + str(entity)
-        print "i got to do action = " + action
-        print " my attributes are = "
-        print attributes
-
-        logger.debug('The Entity\'s action operation of the dummy_backend')
+        logger.debug('***The Entity\'s action operation of the dummy_backend***')

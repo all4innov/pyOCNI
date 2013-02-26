@@ -42,7 +42,7 @@ logger = config.logger
 class KindManager:
     """
 
-        Manager for Kind documents on couch database
+        Manager for Kind documents
 
     """
 
@@ -50,29 +50,32 @@ class KindManager:
         """
         Returns kind documents matching the filter provided
         Args:
-            @param jfilters: description of the kind document to retrieve
+            @param jfilters: description of the kind filter document
             @param db_kinds: Kind descriptions that already exist in database
-            @return : <list> OCCI kind description contained inside of the kind document
         """
         var = list()
-        #Extract kind descriptions from the dictionary
+
         try:
             for elem in db_kinds:
                 for jfilter in jfilters:
+                    #Step[1]: compare kinds to the filter
                     ok = joker.filter_occi_description(elem, jfilter)
                     if ok is True:
+                        #Step[2]: Store the filter matching documents
                         var.append(elem)
                         logger.debug("===== Get_filtered_Kinds: A kind was found =====")
                         break
             return var, return_code['OK']
+
         except Exception as e:
+
             logger.error("===== Get_filtered_Kinds: " + e.message + "=====")
             return "An error has occurred", return_code['Internal Server Error']
 
 
     def register_kinds(self, descriptions, db_occi_ids, db_occi_locs):
         """
-        Add new kinds to the database
+        Create new kinds
         Args:
             @param descriptions: OCCI kind descriptions
             @param db_occi_ids: Kind IDs already existing in the database
@@ -83,7 +86,9 @@ class KindManager:
         resp_code = return_code['OK']
 
         for desc in descriptions:
+
             occi_id = joker.get_description_id(desc)
+            #Step[1]: verify uniqueness of the new kind
             ok_k = joker.verify_occi_uniqueness(occi_id, db_occi_ids)
 
             if ok_k is True:
@@ -97,17 +102,18 @@ class KindManager:
                     jData['OCCI_Description'] = desc
                     jData['OCCI_ID'] = occi_id
                     jData['Type'] = "Kind"
-                    jData['Provider'] = {"local": ["dummy"], "remote": []}
+                    #Default backend is dummy
+                    jData['Provider'] = {"local": [config.DEFAULT_BACKEND], "remote": []}
                     loc_res.append(jData)
 
                 else:
                     message = "Location conflict, kind will not be created."
-                    logger.error("===== Register kind ERROR: " + message + " =====")
+                    logger.error("===== Register kind : " + message + " =====")
                     resp_code = return_code['Conflict']
                     return list(), resp_code
             else:
                 message = "This kind description already exists in document "
-                logger.error("===== Register kind ERROR: " + message + " =====")
+                logger.error("===== Register kind : " + message + " =====")
                 resp_code = return_code['Conflict']
                 return list(), resp_code
 
@@ -116,8 +122,7 @@ class KindManager:
 
     def update_OCCI_kind_descriptions(self, new_data, db_data):
         """
-        Updates the OCCI description field of the kind which document OCCI_ID is equal to OCCI_ID contained in data
-        (Should only be done by the creator of the kind document)
+        Updates the OCCI kind description which OCCI_ID is equal to OCCI_ID contained in new_data
         Args:
 
             @param new_data: Data containing the OCCI ID of the kind and the new OCCI kind description
@@ -129,13 +134,18 @@ class KindManager:
         resp_code = return_code['OK']
 
         for desc in new_data:
+
             occi_id = joker.get_description_id(desc)
+            #Step[1]: Extract the old document
             old_doc = joker.extract_doc(occi_id, db_data)
 
             if old_doc is not None:
+                #Step[2]: Update kind OCCI description
                 problems, occi_description = joker.update_occi_category_description(old_doc['OCCI_Description'], desc)
 
+                #Step[3]: Detect if there is problems
                 if problems is True:
+
                     message = "Kind OCCI description " + occi_id + " has not been totally updated."
                     logger.error("===== Kind OCCI description update:" + message + " =====")
                     return list(), return_code['Bad Request']
@@ -143,6 +153,7 @@ class KindManager:
                     message = "Kind OCCI description " + occi_id + " has been updated successfully"
                     old_doc['OCCI_Description'] = occi_description
 
+                    #Step[4]: If no problem, just append the doc to the to_update list
                     to_update.append(old_doc)
 
                     logger.debug("===== Update kind OCCI description : " + message + " =====")
@@ -156,8 +167,8 @@ class KindManager:
 
     def update_kind_providers(self, new_data, db_data):
         """
-        Updates the provider field of the kind which document OCCI_ID is equal to OCCI_ID contained in data
-        (Should only be done by the creator of the kind document)
+        Updates the kind provider field which document OCCI_ID is equal to OCCI_ID contained in data
+
         Args:
 
             @param new_data: Data containing the OCCI ID of the kind and the new kind provider description
@@ -168,10 +179,13 @@ class KindManager:
         resp_code = return_code['OK']
 
         for desc in new_data:
+
+            #Step[1]: Extract the old document
             occi_id = desc['OCCI_ID']
             old_doc = joker.extract_doc(occi_id, db_data)
 
             if old_doc is not None:
+                #Step[2]: Update the kind provider
                 provider_description, problems = doc_Joker.update_kind_provider(old_doc['Provider'], desc['Provider'])
 
                 if problems is True:
@@ -181,7 +195,7 @@ class KindManager:
                 else:
                     message = "Kind provider description " + occi_id + " has been updated successfully"
                     old_doc['Provider'] = provider_description
-
+                    #Step[3]: if OK, append the kind doc to the to_update list
                     to_update.append(old_doc)
                     logger.debug("===== Update kind provider description : " + message + " =====")
 
@@ -203,13 +217,17 @@ class KindManager:
 
         kind_ref = list()
         res_code = return_code['OK']
-        #Verify the existence of such kind document
+
+        #Step[1]: Verify the existence of such kind document
+
         for desc in descriptions:
+
             occi_id = joker.get_description_id(desc)
 
             kind_id_rev = joker.verify_exist_occi_id(occi_id, db_categories)
 
             if kind_id_rev is not None:
+                #Step[2]: if Yes, return kind doc ref for delete
                 kind_ref.append(kind_id_rev)
                 event = "Kind document " + occi_id + " is sent for delete "
                 logger.debug("===== Delete_kind_documents : " + event + " =====")
@@ -220,23 +238,3 @@ class KindManager:
                 return list(), return_code['Bad Request']
 
         return kind_ref, res_code
-
-
-
-        #========================================================================================================================
-        #                                                   Independant Functions
-        #========================================================================================================================
-        #
-        #    def get_entities_belonging_to_kind(self, occi_id,db_data):
-        #        """
-        #        Verifies if there are entities of this kind
-        #        Args:
-        #            @param occi_id: OCCI_ID of the kind
-        #            @param db_data: OCCI_IDs of the kind that has entities running
-        #        """
-        #        try:
-        #            db_data.index(occi_id)
-        #        except ValueError as e:
-        #            logger.debug("Entities belong kind : " + e.message)
-        #            return False
-        #        return True

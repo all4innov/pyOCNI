@@ -61,16 +61,10 @@ This software needs this packages to run:
 * python-all-dev (for eventlet/greenlet install/make)
 * python-setuptools (to execute the setup.py file)
 * couchdb >= 1.2.0:
-Example of installing couchdb using build-couchdb on Ubuntu (more details on: https://github.com/iriscouch/build-couchdb)
+To install couchdb on Ubuntu
 ::
 
-    sudo apt-get install help2man make gcc zlib1g-dev libssl-dev rake help2man
-    git clone git://github.com/iriscouch/build-couchdb
-    cd build-couchdb
-    git submodule init
-    git submodule update
-    rake
-    build/bin/couchdb
+    sudo apt-get install couchdb
 
 To test CouchDB:       http://127.0.0.1:5984
 
@@ -105,6 +99,7 @@ In order to use pyOCNI, you must respect certain rules :
 #. Scheme + Term = OCCI_ID : unique identifier of the OCCI (Kind/Mixin/Action) description
 #. PyOCNI_Server_Address + location = OCCI_Location of (Kind/Mixin/Action) description
 #. location word refers to a kind or mixin location.
+#. Links will be treated the same way as resources and internal links are not taking into account for clarity reasons.
 
 PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following commands are JSON specific. If you want to see HTTP command please check `here <https://github.com/mseknibilel/PyOCNI/blob/milestone/HTTP_HowTo.rst>`_.
 
@@ -239,6 +234,13 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
    N/A
 
+6.Update a kind provider::
+
+   curl -X PUT -d@update_provider.json -H 'content-type: application/occi+json' -H 'accept: application/occi+json' -v http://localhost:8090/-/
+
+* Response::
+
+   N/A
 
 4.2. Path management
 ----------------------
@@ -288,9 +290,9 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
        {
     "X-OCCI-Location": [
-        http://localhost:8090/{location}/vm1",
-        http://localhost:8090/{location}/vm2",
-        http://localhost:8090/{location}/vm3"
+        "http://localhost:8090/{location}/vm1",
+        "http://localhost:8090/{location}/vm2",
+        "http://localhost:8090/{location}/vm3"
     ]
    }
 
@@ -362,7 +364,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 
 * Response::
 
-   N/A
+   {"Location": ["http://localhost:8090/{location}/{my_custom_resource_id}"]}
 
 2.Get a Resource::
 
@@ -432,7 +434,7 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
 * Response::
 
    {
-    "X-OCCI-Location": [
+    Location": [
         "http://localhost:8090/{location}/{resource-id}"
     ]
    }
@@ -444,8 +446,8 @@ PyOCNI offers two OCCI rendering formats : **HTTP and JSON**. The following comm
    * Response::
 
    {
-    "X-OCCI-Location": [
-        "http://localhost:8090/{location}/resource-id"
+    "Location": [
+        "http://localhost:8090/{location}/{resource-id}"
     ]
    }
 
@@ -615,6 +617,24 @@ Some of pyocni's needs might be:
                "scheme": "http: //schemas.ogf.org/occi/infrastructure#"
            }
        ]
+   }
+
+* update_provider.json::
+
+   {
+    "providers": [
+            {
+            "Provider": {
+                "local": [
+                    "dummy"
+                ],
+                "remote": [
+                    "Bilel"
+                ]
+            },
+            "OCCI_ID": "http://schemas.ogf.org/occi/infrastructure#compute"
+        }
+    ]
    }
 
 * get_resources.json::

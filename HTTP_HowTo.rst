@@ -102,7 +102,7 @@ It's up to the user to define what format he wants in the request Content-Type h
 
    N/A
 
-4.Full Update of a category (Kind or Mixin or Action)::
+4.Update of a category (Kind or Mixin or Action)::
 
    curl -X PUT -d@put_category -H 'content-type: text/plain' -H 'accept: text/plain' -v http://localhost:8090/-/
 
@@ -220,7 +220,7 @@ It's up to the user to define what format he wants in the request Content-Type h
 
 * Response::
 
-   N/A
+   Location: http://localhost:8090/{location}/{my_custom_resource_id}
 
 2.Get a Resource::
 
@@ -248,7 +248,7 @@ It's up to the user to define what format he wants in the request Content-Type h
 
 * Response::
 
-    X-OCCI-Location: http://localhost:8090/{location}/{resource-id}
+    Location: http://localhost:8090/{location}/{resource-id}
 
 4.Partial Update of a Resource::
 
@@ -256,7 +256,7 @@ It's up to the user to define what format he wants in the request Content-Type h
 
 * Response::
 
-   X-OCCI-Location: http://localhost:8090/{location}/{resource-id}
+   Location: http://localhost:8090/{location}/{resource-id}
 
 5.Trigger an action on a resource::
 

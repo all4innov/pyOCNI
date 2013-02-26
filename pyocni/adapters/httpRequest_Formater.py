@@ -31,6 +31,9 @@ import pyocni.adapters.cnv_toJSON as extractor
 import pyocni.pyocni_tools.uuid_Generator as generator
 
 class From_Text_Plain_to_JSON():
+    """
+    Converts Request data from the text/plain to the application/occi+json format
+    """
     def format_text_plain_categories_to_json(self, var):
         """
         Converts a HTTP text/plain category into a JSON category
@@ -65,7 +68,9 @@ class From_Text_Plain_to_JSON():
         return categories
 
     def format_text_plain_entity_to_json(self, body):
+
         kind, mixins, attributes, actions, links = extractor.get_entity_members_from_body(body)
+
         entity = dict()
 
         if kind is not None:
@@ -110,6 +115,9 @@ class From_Text_Plain_to_JSON():
 
 
 class From_Text_OCCI_to_JSON():
+    """
+    Converts Request data from the text/occi to the application/occi+json format
+    """
     def format_text_occi_categories_to_json(self, var):
         """
         Converts a HTTP text/plain category into a JSON category
